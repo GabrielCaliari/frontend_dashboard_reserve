@@ -24,6 +24,9 @@ export async function listLeadQualification() {
             lead_name: messages[0].profile_name,
             phone_number: messages[0].phone_number,
             card: messages[0].kb_card,
+            screening_complete: messages[0].screening_complete,
+            temperature: messages[0].temperature,
+            analyzed: messages[0].analyzed,
             messages
         }
     });

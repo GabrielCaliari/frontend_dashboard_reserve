@@ -16,8 +16,9 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
-import type { CardType, ColumnType } from "./kanban-board"
+import type { ColumnType } from "./kanban-board"
 import KanbanCard from "./kanban-card"
+import { CardType } from "./kanban-board-with-autosave"
 
 interface KanbanColumnProps {
   column: ColumnType

@@ -3,10 +3,9 @@
 import { useState } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { MoreHorizontal, Trash2 } from "lucide-react"
 
 import { Button } from "@nextui-org/react"
-// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@nextui-org/react"
+
 import {
   Modal,
   ModalHeader,
@@ -24,9 +23,11 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
-import { Textarea } from "@nextui-org/react"
 import { CardType } from "./kanban-board-with-autosave"
 import { formatDateTimeToBRL } from "@/src/common/utils"
+import useCompleteScreening from "@/src/common/hooks/use-complete-screening"
+import { useRouter } from "next/navigation"
+import { ETemperature } from "@/src/interfaces/lead-qualification.interface"
 
 interface KanbanCardProps {
   card: CardType
@@ -34,8 +35,14 @@ interface KanbanCardProps {
 }
 
 export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
+  const { refresh } = useRouter()
+  const { execCompleteScreening } = useCompleteScreening()
+
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [isCloseScreeningOpen, setIsCloseScreeningOpen] = useState(false)
   const [cardDetails, setCardDetails] = useState(card)
+
+  const [isLoadingCloseScreening, setIsLoadingCloseScreening] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id,
@@ -51,9 +58,18 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
     zIndex: isDragging ? 1 : 0,
   }
 
-  const handleSaveDetails = () => {
-    // Em uma aplicação real, você salvaria isso no backend
+  const onCompleteScreeningModalOpen = () => {
     setIsDetailsOpen(false)
+    setIsCloseScreeningOpen(true)
+  }
+
+  const completeScreening = async () => {
+    setIsLoadingCloseScreening(true);
+    const id = card.id.split('-')[0];
+    await execCompleteScreening(id)
+    setIsLoadingCloseScreening(false);
+    setIsCloseScreeningOpen(false);
+    refresh();
   }
 
   return (
@@ -63,7 +79,7 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
         style={style}
         {...attributes}
         {...listeners}
-        className="cursor-grab rounded-md border bg-card p-3 shadow-sm"
+        className="cursor-grab rounded-md border bg-card p-3 relative"
         onClick={() => setIsDetailsOpen(true)}
       >
         <div className="flex items-start justify-between">
@@ -96,12 +112,42 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
             {card.description.length > 100 ? `${card.description.substring(0, 100)}...` : card.description}
           </p>
         )}
+        <div className={`absolute top-2 right-2 w-3 h-3 rounded-full 
+        ${card.details[0].temperature == ETemperature.cold ? 'bg-blue-700' :
+            card.details[0].temperature == ETemperature.warm ? 'bg-yellow-700' :
+              card.details[0].temperature == ETemperature.hot ? 'bg-red-700' :
+                'bg-gray-400'}
+        `}
+          title={`
+            ${card.details[0].temperature == ETemperature.cold ? 'Lead frio' :
+              card.details[0].temperature == ETemperature.warm ? 'Lead morno' :
+                card.details[0].temperature == ETemperature.hot ? 'Lead quente' :
+                  'Temperatura do lead indefinido'}
+                  `}
+        />
       </div>
+      <Modal isOpen={isCloseScreeningOpen} onOpenChange={setIsDetailsOpen}>
+        <ModalContent className="sm:max-w-1xl overflow-auto hide-scrollbar py-4">
+          <ModalHeader className="flex items-center justify-between">
+            <h2>Concluir triagem</h2>
+          </ModalHeader>
+          <ModalBody>
+            <p>Você tem certeza que deseja fechar o processo de triagem do lead: <b>{card.title}</b></p>
+          </ModalBody>
+          <ModalFooter>
+            <div className="flex items-center gap-2 w-full">
+              <Button isDisabled={isLoadingCloseScreening} className="w-full bg-red-600 text-white" onClick={completeScreening}>Confirmar</Button>
+              <Button className="w-full" onClick={() => setIsCloseScreeningOpen(false)}>Cancelar</Button>
+            </div>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       <Modal isOpen={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <ModalContent className="sm:max-w-2xl max-h-[500px] overflow-auto">
-          <ModalHeader>
+        <ModalContent className="sm:max-w-2xl max-h-[500px] overflow-auto hide-scrollbar">
+          <ModalHeader className="flex items-center justify-between px-8">
             <h2>Detalhes da conversa</h2>
+            <Button isDisabled={card.details[0].screening_complete} className="bg-red-600 text-white" variant="solid" onClick={onCompleteScreeningModalOpen}>Concluir triagem</Button>
           </ModalHeader>
           <ModalBody>
             {

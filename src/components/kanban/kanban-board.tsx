@@ -30,14 +30,9 @@ import KanbanCard from "./kanban-card"
 import KanbanColumn from "./kanban-column"
 import toast from "react-hot-toast"
 import { ILeadQualificationMessage } from "@/src/interfaces/lead-qualification.interface"
+import { CardType } from "./kanban-board-with-autosave"
 
 // Tipos para nossos dados
-export type CardType = {
-  id: string
-  title: string
-  description: string
-  columnId: string
-}
 
 export type ColumnType = {
   id: string
@@ -51,42 +46,9 @@ const initialColumns: ColumnType[] = [
   { id: "column-3", title: "Concluído" },
 ]
 
-const initialCards: CardType[] = [
-  {
-    id: "card-1",
-    title: "Criar design do projeto",
-    description: "Desenvolver wireframes e mockups",
-    columnId: "column-1",
-  },
-  {
-    id: "card-2",
-    title: "Implementar autenticação",
-    description: "Adicionar login com Google e email",
-    columnId: "column-1",
-  },
-  {
-    id: "card-3",
-    title: "Desenvolver API",
-    description: "Criar endpoints para CRUD de usuários",
-    columnId: "column-2",
-  },
-  {
-    id: "card-4",
-    title: "Testes unitários",
-    description: "Escrever testes para componentes principais",
-    columnId: "column-2",
-  },
-  {
-    id: "card-5",
-    title: "Deploy inicial",
-    description: "Configurar CI/CD e fazer deploy na Vercel",
-    columnId: "column-3",
-  },
-]
-
 export default function KanbanBoard() {
   const [columns, setColumns] = useState<ColumnType[]>(initialColumns)
-  const [cards, setCards] = useState<CardType[]>(initialCards)
+  const [cards, setCards] = useState<CardType[]>([])
   const [activeCard, setActiveCard] = useState<CardType | null>(null)
   const [activeColumn, setActiveColumn] = useState<ColumnType | null>(null)
 
@@ -241,6 +203,7 @@ export default function KanbanBoard() {
       title: newCardTitle,
       description: newCardDescription,
       columnId: newCardColumnId,
+      details: []
     }
 
     setCards([...cards, newCard])
@@ -301,7 +264,7 @@ export default function KanbanBoard() {
           </Button>
         </div>
 
-        <DragOverlay>{activeCard && <KanbanCard card={activeCard} onRemove={() => {}} />}</DragOverlay>
+        <DragOverlay>{activeCard && <KanbanCard card={activeCard} onRemove={() => { }} />}</DragOverlay>
       </DndContext>
 
       {/* Modal para adicionar coluna */}
