@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f0f0f0 !important;
+  box-sizing: border-box !important;
+  font-size: "Montserrat", sans-serif !important;
+  overflow-y: hidden!important;
+}
+
+.radio-large {
+  transform: scale(1.3);
+  color: #667085;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0929e2;
+}
+
+.loader {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.play-icon {
+  position: absolute;
+  font-size: 24px;
+  color: #ccc;
+  z-index: 2;
+}
+
+.spinner {
+  position: absolute;
+  border: 4px solid transparent;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+}
+
+.spinner-outer {
+  width: 100%;
+  height: 100%;
+  border-top: 4px solid #ccc;
+}
+
+.spinner-inner {
+  width: 70%;
+  height: 70%;
+  border-bottom: 4px solid #ccc;
+  animation-direction: reverse;
+}
+
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+.floatbutton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 0;
+  right: 0;
+  width: 70px;
+  height: 70px;
+  margin: 20px;
+  border-radius: 100%;
+  background-color: #001586;
+  border: 3px solid #0038ff;
+  cursor: pointer;
+  position: fixed;
+  transition: all 0.3s ease;
+}
+
+.floatbutton:hover {
+  transform: scale(1.1);
+}
+
+.widget {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 380px;
+  height: 490px;
+  overflow-y: scroll;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-header {
+  background-color: #001374;
+  color: white;
+  padding: 10px;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.widget-title {
+  display: flex;
+  font-weight: bold;
+  align-items: center;
+  gap: 10px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 33px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.widget-content {
+  padding: 10px;
+}
+
+.widget-content p {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.widget-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.widget-options button {
+  flex: 1 1 calc(50% - 8px);
+  padding: 8px;
+  background-color: #0062ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.widget-options button:hover {
+  background-color: #0051cc;
+}
+
+.message-input {
+  width: calc(100% - 20px);
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+}
+
+.send-button {
+  margin: 10px;
+  padding: 10px;
+  background-color: #0062ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.send-button:hover {
+  background-color: #0051cc;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.markdown-container h1 {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.markdown-container h1 {
+  @apply mb-3;
+}
+
+.markdown-container h2 {
+  @apply text-base mb-2 font-semibold text-gray-800;
+}
+
+.markdown-container h3 {
+  @apply text-base mb-2 font-semibold text-gray-800;
+}
+
+.markdown-container p {
+  @apply text-base mb-3 text-gray-600;
+}
+
+.markdown-container table {
+  @apply text-sm mb-5 text-gray-800 border-collapse rounded-2xl w-full;
+}
+
+.markdown-container th {
+  @apply text-sm mb-1 text-gray-800 p-3 border-2 border-solid border-[#ddd];
+}
+
+.markdown-container li {
+  @apply text-sm text-gray-800 p-1 list-disc ml-3;
+}
+
+.markdown-container th:nth-child(1) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100px;
+}
+
+.markdown-container th:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+}
+
+.markdown-container td:nth-child(1),
+.markdown-container td:nth-child(2) {
+  text-align: center
+}
+
+.markdown-container td {
+  @apply text-sm mb-1 text-gray-600 p-3 border-2 border-solid border-[#ddd];
+}
+
+.hide-scrollbar {
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; 
+}

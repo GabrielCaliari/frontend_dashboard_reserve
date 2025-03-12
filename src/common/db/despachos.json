@@ -1,0 +1,578 @@
+[
+    {
+        "titulo": "Exigência formal",
+        "codigo": "005",
+        "descricao": "Exigência Formal, relativa ao Pedido de Registro de Marca, elaborada nos termos do artigo 157 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996). Art. 155 - O pedido deverá referir-se a um único sinal distintivo e, nas condições estabelecidas pelo INPI, conterá: I - requerimento; II - etiquetas, quando for o caso; e III - comprovante do pagamento da retribuição relativa ao depósito. Art. 157 - O pedido que não atender formalmente ao disposto no art. 155, mas que contiver dados suficientes relativos ao depositante, sinal marcário e classe, poderá ser entregue, mediante recibo datado, ao INPI, que estabelecerá as exigências a serem cumpridas pelo depositante, em 5 (cinco) dias, sob pena de ser considerado inexistente.",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Publicação de pedido de registro para oposição (exame formal concluído)",
+        "codigo": "009",
+        "descricao": "Publicado o pedido de registro de marca para a apresentação de oposição, nos termos do artigo 158 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996). Art. 158 - Protocolizado, o pedido será publicado para apresentação de oposição no prazo de 60 (sessenta) dias.",
+        "orientacao": "O pedido foi publicado para que outras pessoas possam se manifestar sobre ele."
+    },
+    {
+        "titulo": "Indeferimento do pedido",
+        "codigo": "024",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados. Concluído o exame, indefere-se o pedido de registro com base nos fundamentos legais",
+        "orientacao": "O pedido foi negado. Se desejar, você pode recorrer da decisão."
+    },
+    {
+        "titulo": "Deferimento do pedido",
+        "codigo": "029",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados. Concluído o exame, não foram encontradas anterioridades relevantes e, ausentes quaisquer impedimentos legais, defere-se o pedido.",
+        "orientacao": "O pedido foi aceito e segue para as próximas etapas."
+    },
+    {
+        "titulo": "Decisão de considerar pedido inexistente por exigência de pagamento não respondida",
+        "codigo": "033",
+        "descricao": "Considerado inexistente o pedido de registro de marca em vista da falta de resposta à exigência de pagamento, nos termos do artigo 157 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 157 - O pedido que não atender formalmente ao disposto no art. 155, mas que contiver dados suficientes relativos ao depositante, sinal marcário e classe, poderá ser entregue, mediante recibo datado, ao INPI, que estabelecerá as exigências a serem cumpridas pelo depositante, em 5 (cinco) dias, sob pena de ser considerado inexistente.",
+        "orientacao": "O pedido não foi aceito porque alguma exigência não foi cumprida."
+    },
+    {
+        "titulo": "Decisão de considerar pedido inexistente por falta de pagamento",
+        "codigo": "047",
+        "descricao": "Considerado inexistente o pedido de registro de marca em vista da falta de pagamento da retribuição devida nos termos do inciso III do artigo 155 e do artigo 157 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 155 - O pedido deverá referir-se a um único sinal distintivo e, nas condições estabelecidas pelo INPI, conterá: I - requerimento; II - etiquetas, quando for o caso; e III - comprovante do pagamento da retribuição relativa ao depósito. Art. 157 Œ O pedido que não atender formalmente ao disposto no art. 155, mas que contiver dados suficientes relativos ao depositante, sinal marcário e classe, poderá ser entregue, mediante recibo datado, ao INPI, que estabelecerá as exigências a serem cumpridas pelo depositante, em 5 (cinco) dias, sob pena de ser  considerado inexistente.",
+        "orientacao": "O pedido não foi aceito porque alguma exigência não foi cumprida."
+    },
+    {
+        "titulo": "Decisão de considerar pedido inexistente por exigência de pagamento não cumprida",
+        "codigo": "091",
+        "descricao": "Considerado inexistente o pedido de registro de marca em vista da falta de cumprimento de exigência de pagamento, nos termos do artigo 157 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 157 - O pedido que não atender formalmente ao disposto no art. 155, mas que contiver dados suficientes relativos ao depositante, sinal marcário e classe, poderá ser entregue, mediante recibo datado, ao INPI, que estabelecerá as exigências a serem cumpridas pelo depositante, em 5 (cinco) dias, sob pena de ser considerado inexistente.",
+        "orientacao": "O pedido não foi aceito porque alguma exigência não foi cumprida."
+    },
+    {
+        "titulo": "Arquivamento definitivo de pedido de registro por falta de procuração",
+        "codigo": "106",
+        "descricao": "Arquivado definitivamente o pedido de registro de marca em vista da ausência de procuração, encerrando-se a instância administrativa nos termos do parágrafo 2º do artigo 216 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 216 - Os atos previstos nesta Lei serão praticados pelas partes ou por seus procuradores, devidamente qualificados. – Parágrafo 2º.- A procuração deverá ser apresentada em até 60 (sessenta) dias contados da prática do primeiro ato da parte no processo, independente de notificação ou exigência, sob pena de arquivamento, sendo definitivo o arquivamento do pedido de patente, do pedido de registro de desenho industrial e de registro de marca.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Decisão de considerar pedido inexistente por exigência formal não respondida",
+        "codigo": "112",
+        "descricao": "Considerado inexistente o pedido de registro de marca em vista da falta de resposta à exigência formal, nos termos do artigo 157 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996). Art. 157 - O pedido que não atender formalmente ao disposto no art. 155, mas que contiver dados suficientes relativos ao depositante, sinal marcário e classe, poderá ser entregue, mediante recibo datado, ao INPI, que estabelecerá as exigências a serem cumpridas pelo depositante, em 5 (cinco) dias, sob pena de ser considerado inexistente.",
+        "orientacao": "O pedido não foi aceito porque alguma exigência não foi cumprida."
+    },
+    {
+        "titulo": "Decisão de considerar pedido inexistente por exigência formal não cumprida",
+        "codigo": "113",
+        "descricao": "Considerado inexistente o pedido de registro de marca em vista da falta de cumprimento de exigência formal, nos termos do artigo 157 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 157 - O pedido que não atender formalmente ao disposto no art. 155, mas que contiver dados suficientes relativos ao depositante, sinal marcário e classe, poderá ser entregue, mediante recibo datado, ao INPI, que estabelecerá as exigências a serem cumpridas pelo depositante, em 5 (cinco) dias, sob pena de ser considerado inexistente.",
+        "orientacao": "O pedido não foi aceito porque alguma exigência não foi cumprida."
+    },
+    {
+        "titulo": "Republicação de pedido (por perda da prioridade)",
+        "codigo": "135",
+        "descricao": "Republicado o pedido de registro de marca para a apresentação de oposição, nos termos do artigo 158 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996), em vista da perda da prioridade indicada abaixo. Art. 158 - Protocolizado, o pedido será publicado para apresentação de oposição no prazo de 60 (sessenta) dias.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Exigência de mérito",
+        "codigo": "136",
+        "descricao": "Como etapa do exame de mérito do pedido de registro de marca no presente processo Œ nos termos do artigo 159 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996) Œ formula-se exigência de mérito relativa.",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Arquivamento definitivo de pedido de registro por falta de cumprimento de exigência de mérito",
+        "codigo": "139",
+        "descricao": "Arquivado definitivamente o pedido de registro de marca, em vista do não cumprimento da exigência formulada, encerrando-se a instância administrativa nos termos do parágrafo 1º do artigo 159 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 159 - Decorrido o prazo de oposição ou, se interposta esta, findo o prazo de manifestação, será feito o exame, durante o qual poderão ser formuladas exigências, que deverão ser respondidas no prazo de 60  (sessenta) dias. Parágrafo 1º - Não respondida a exigência, o pedido será definitivamente arquivado.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Sobrestamento do exame de mérito",
+        "codigo": "142",
+        "descricao": "Sobrestado o exame de mérito do pedido de registro de marca até a decisão definitiva do(s) pedido(s), registro(s) ou petição(ões) anterior(es) listado(s) a seguir:",
+        "orientacao": "O processo foi pausado até que outras questões sejam resolvidas."
+    },
+    {
+        "titulo": "Arquivamento definitivo de pedido de registro por falta de pagamento da concessão",
+        "codigo": "157",
+        "descricao": "Arquivado definitivamente o pedido de registro de marca em vista da ausência de pagamento da retribuição relativa à expedição de certificado de registro e à proteção do primeiro decênio de sua vigência, nos termos do parágrafo único do artigo 162 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 162 - O pagamento das retribuições, e sua comprovação, relativas à expedição do certificado de registro e ao primeiro decênio de sua vigência, deverão ser efetuados no prazo de 60 (sessenta) dias contados do deferimento. Parágrafo único - A retribuição poderá ainda ser paga e comprovada dentro de 30 (trinta) dias após o prazo previsto neste artigo, independentemente de notificação, mediante o pagamento de retribuição específica, sob pena de arquivamento definitivo do pedido.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Concessão de registro",
+        "codigo": "158",
+        "descricao": "Concedido o registro de marca em vista do pagamento tempestivo das retribuições relativas à expedição do certificado e ao 1º decênio de vigência do registro, nos termos dos artigos 161 e 163 da Lei da Propriedade Industrial (Lei n.º 9.279, de 14/05/1996). Art. 161 Œ O certificado de registro será concedido depois de deferido o pedido e comprovado o pagamento das retribuições correspondentes. Art. 163 - Reputa-se concedido o certificado de registro na data da publicação do respectivo ato. O prazo de vigência do registro de marca será de 10 (dez) anos contados da data de publicação deste ato na Revista da Propriedade Industrial (RPI), nos termos do artigo 133 da LPI. Art. 133 - O registro da marca vigorará pelo prazo de 10 (dez) anos, contados da data da concessão do registro, prorrogável por períodos iguais e sucessivos. O certificado de registro da marca ora concedido estará disponível no portal do INPI para download, em até 60 dias contados da publicação desse despacho na RPI.",
+        "orientacao": "O registro foi concedido e está válido pelo período determinado."
+    },
+    {
+        "titulo": "Extinção de registro pela expiração do prazo de vigência",
+        "codigo": "161",
+        "descricao": "Extinto o registro de marca em vista da expiração do prazo de vigência, nos termos do inciso I do artigo 142 da Lei da Propriedade Industrial - LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 142 - O registro da marca extingue-se: I - pela expiração do prazo de vigência;",
+        "orientacao": "O registro perdeu a validade e não pode mais ser usado."
+    },
+    {
+        "titulo": "Arquivamento definitivo de pedido de registro por falta de documentos de marca de certificação",
+        "codigo": "289",
+        "descricao": "Arquivado definitivamente o pedido de registro de marca de certificação em vista da ausência de documentação relativa às características do produto ou serviço objeto de certificação e às medidas de controle que seriam adotadas pelo titular, encerrando-se a instância administrativa nos termos dos incisos I e II e do parágrafo único do artigo 148 da Lei da Propriedade Industrial - LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 148 - O pedido de registro da marca de certificação conterá: I - as características do produto ou serviço objeto de certificação; e II - as medidas de controle que serão adotadas pelo titular. Parágrafo único - A documentação prevista nos incisos I e II deste artigo, quando não acompanhar o pedido, deverá ser protocolizada no prazo de 60 (sessenta) dias, sob pena de arquivamento definitivo do pedido.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Arquivamento definitivo de pedido de registro por falta de documentos de marca coletiva",
+        "codigo": "291",
+        "descricao": "Arquivado definitivamente o pedido de registro de marca coletiva por não ter sido apresentado regulamento de utilização da marca, encerrando-se a instância administrativa nos termos do parágrafo único do artigo 147 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 147 - O pedido de registro de marca coletiva conterá regulamento de utilização, dispondo sobre condições e proibições de uso da marca. Parágrafo único - O regulamento de utilização, quando não acompanhar o pedido, deverá ser protocolizado no prazo de 60 (sessenta) dias do depósito, sob pena de arquivamento definitivo do pedido.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Extinção de registro pela caducidade",
+        "codigo": "304",
+        "descricao": "Extinto o registro de marca em vista de declaração de caducidade total, nos termos do inciso III do artigo 142 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 142 - O registro da marca extingue-se: ... III - pela caducidade",
+        "orientacao": "O registro perdeu a validade e não pode mais ser usado."
+    },
+    {
+        "titulo": "Exigência de pagamento",
+        "codigo": "395",
+        "descricao": "Como etapa do exame formal preliminar do pedido de registro de marca Œ nos termos do artigo 157 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996) Œ formula-se exigência formal relativa às questões de pagamento da retribuição, relativa ao depósito.",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Anulação de despacho (em processo)",
+        "codigo": "402",
+        "descricao": "Anulados o(s) despacho(s) listado(s) a seguir:",
+        "orientacao": "Uma decisão anterior foi cancelada e pode ser revista."
+    },
+    {
+        "titulo": "Arquivamento de ofício de pedido de registro de marca",
+        "codigo": "404",
+        "descricao": "Arquivado de ofício o pedido de registro de marca, em vista da não inclusão do mesmo no Termo de Cessão, onde constam marcas iguais ou semelhantes, relativas a produto ou serviço idêntico, semelhante ou afim, nos termos do artigo 135 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 135 - A cessão deverá compreender todos os registros ou pedidos, em nome do cedente, de marcas iguais ou semelhantes, relativas a produto ou serviço idêntico, semelhante ou afim, sob pena de cancelamento dos registros ou arquivamento dos pedidos não cedidos.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Cancelamento de ofício de registro de marca",
+        "codigo": "409",
+        "descricao": "Cancelado de ofício o registro de marca, em vista da não inclusão do mesmo no Termo de Cessão, onde constam marcas iguais ou semelhantes, relativas a produto ou serviço idêntico, semelhante ou afim, nos termos do artigo 135 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 135 - A cessão deverá compreender todos os registros ou pedidos, em nome do cedente, de marcas iguais ou semelhantes, relativas a produto ou serviço idêntico, semelhante ou afim, sob pena de cancelamento dos registros ou arquivamento dos pedidos não cedidos.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Extinção de registro pela inobservância do disposto no art. 217 da LPI",
+        "codigo": "414",
+        "descricao": "Extinto o registro de marca em vista da inobservância do disposto no art. 217 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996), nos termos do inciso IV do artigo 142 da LPI. Art. 142 - O registro da marca extingue-se: – IV - pela inobservância do disposto no art. 217. Art. 217 - A pessoa domiciliada no exterior deverá constituir e manter procurador devidamente qualificado e domiciliado no País, com poderes para representá-la administrativa e judicialmente, inclusive para receber citações.",
+        "orientacao": "O registro perdeu a validade e não pode mais ser usado."
+    },
+    {
+        "titulo": "Republicação de pedido",
+        "codigo": "421",
+        "descricao": "Republicado o pedido de registro de marca para a apresentação de oposição, nos termos do artigo 158 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996), em vista dos motivos indicados a seguir. Art. 158 - Protocolizado, o pedido será publicado para apresentação de oposição no prazo de 60 (sessenta) dias.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Notificação de oposição",
+        "codigo": "423",
+        "descricao": "Em vista da apresentação da(s) oposição(ões) ao pedido de registro de marca, listada(s) a seguir, notifica-se prazo para manifestação do requerente, nos termos do parágrafo 1º do artigo 158 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 158 - Protocolizado, o pedido será publicado para apresentação de oposição no prazo de 60 (sessenta) dias. Parágrafo 1º Œ O depositante será intimado da oposição, podendo se manifestar no prazo de 60 (sessenta) dias.  Oposições:",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Deferimento do pedido (em retificação)",
+        "codigo": "654",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados. Concluído o exame, não foram encontradas anterioridades relevantes e, ausentes quaisquer impedimentos legais, defere-se o pedido.",
+        "orientacao": "O pedido foi aceito e segue para as próximas etapas."
+    },
+    {
+        "titulo": "Indeferimento do pedido (em retificação)",
+        "codigo": "658",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados. Concluído o exame, indefere-se o pedido de registro com base nos fundamentos legais.",
+        "orientacao": "O pedido foi negado. Se desejar, você pode recorrer da decisão."
+    },
+    {
+        "titulo": "Notificação de oposição (em retificação)",
+        "codigo": "668",
+        "descricao": "Em vista da apresentação da(s) oposição(ões) ao pedido de registro de marca, listada(s) a seguir, notifica-se prazo para manifestação do requerente, nos termos do parágrafo 1º do artigo 158 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 158 - Protocolizado, o pedido será publicado para apresentação de oposição no prazo de 60 (sessenta) dias. Parágrafo 1º Œ O depositante será intimado da oposição, podendo se manifestar no prazo de 60 (sessenta) dias. Oposições:  Tabela de Códigos de Despachos - Marcas Despachos em petições",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Exigência de pagamento (em petição)",
+        "codigo": "089",
+        "descricao": "Exigência de Conformidade, relativa ao pagamento da Petição, elaborada nos termos dos artigos 220 e 224 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996). Art. 220 - O INPI aproveitará os atos das partes, sempre que possível, fazendo as exigências cabíveis. Art. 224 - Não havendo expressa estipulação nesta Lei, o prazo para a prática do ato será de 60 (sessenta) dias.",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Arquivamento de petição por falta de procuração",
+        "codigo": "185",
+        "descricao": "Arquivada a petição, em vista da ausência de procuração, nos termos do parágrafo 2º do artigo 216 da Lei da Propriedade Industrial - LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 216 - Os atos previstos nesta Lei serão praticados pelas partes ou por seus procuradores, devidamente qualificados. – Parágrafo 2º.- A procuração deverá ser apresentada em até 60 (sessenta) dias contados da prática do primeiro ato da parte no processo, independente de notificação ou exigência, sob pena de arquivamento, sendo definitivo o arquivamento do pedido de patente, do pedido de registro de desenho industrial e de registro de marca.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Exigência de conformidade",
+        "codigo": "192",
+        "descricao": "Como etapa do exame da conformidade de petições e a fim de assegurar que sejam atendidas as formalidades previstas em lei, formula-se exigência de conformidade Œ nos termos do artigo 220 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996) Œ relativa às questões listadas a seguir:",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Sobrestamento do exame de mérito (em petição)",
+        "codigo": "227",
+        "descricao": "Sobrestado o exame de mérito da petição em referência até a decisão definitiva do(s) pedido(s), registro(s) ou petição(ões) anterior(es) listado(s) a seguir:",
+        "orientacao": "O processo foi pausado até que outras questões sejam resolvidas."
+    },
+    {
+        "titulo": "Notificação de novo impedimento legal em grau de recurso",
+        "codigo": "236",
+        "descricao": "Notifica-se o prazo de 60 (sessenta) dias para manifestação sobre os novos impedimentos legais ao deferimento de pedido de registro de marca identificados durante a fase de instrução técnica do recurso Œ nos termos da orientação estabelecida por meio do parecer normativo n.º 2/2008, publicado na Revista da Propriedade Industrial (RPI) n.º 1971, de 14/10/2008.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Exigência de mérito (em petição)",
+        "codigo": "267",
+        "descricao": "Como etapa do exame de mérito da petição em referência, formula-se exigência de mérito Œ nos termos do artigo 220 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996) Œ relativa às questões listadas a seguir:",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Deferimento da petição",
+        "codigo": "270",
+        "descricao": "Concluído o exame de mérito, defere-se a petição em referência.",
+        "orientacao": "O pedido foi aceito e segue para as próximas etapas."
+    },
+    {
+        "titulo": "Indeferimento da petição",
+        "codigo": "271",
+        "descricao": "Concluído o exame de mérito, indefere-se a petição em referência, com base nos seguintes motivos:",
+        "orientacao": "O pedido foi negado. Se desejar, você pode recorrer da decisão."
+    },
+    {
+        "titulo": "Indeferimento da petição por falta de legítimo interesse",
+        "codigo": "337",
+        "descricao": "Concluído o exame de mérito, indefere-se a petição de caducidade em referência por falta de legítimo interesse do requerente, nos termos do artigo 143 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996): Art. 143 - Caducará o registro, a requerimento de qualquer pessoa com legítimo interesse se, decorridos 5 (cinco) anos da sua concessão, na data do requerimento: I - o uso da marca não tiver sido iniciado no Brasil; ou II - o uso da marca tiver sido interrompido por mais de 5 (cinco) anos consecutivos, ou se, no mesmo prazo, a marca tiver sido usada com modificação que implique alteração de seu caráter distintivo original, tal como constante do certificado de registro.",
+        "orientacao": "O pedido foi negado. Se desejar, você pode recorrer da decisão."
+    },
+    {
+        "titulo": "Notificação de caducidade",
+        "codigo": "338",
+        "descricao": "Em vista da apresentação da petição de caducidade referida acima, inicia-se o prazo de 60 (sessenta) dias para manifestação por parte do titular do registro de marca em referência, nos termos do parágrafo 2º do artigo 143 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 143 Œ Caducará o registro, a requerimento de qualquer pessoa com legítimo interesse se, decorridos 5 (cinco) anos da sua concessão, na data do requerimento: I Œ o uso da marca não tiver sido iniciado no Brasil; ou II Œ o uso da marca tiver sido interrompido por mais de 5 (cinco) anos consecutivos, ou se, no mesmo prazo, a marca tiver sido usada com modificação que implique alteração de seu caráter distintivo original, tal como conste do certificado de registro. – Parágrafo 2º Œ O titular será intimado para se manifestar no prazo de 60 (sessenta) dias, cabendo-lhe o ônus de provar o uso da marca ou justificar seu desuso por razões legítimas.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Deferimento parcial da petição",
+        "codigo": "349",
+        "descricao": "Concluído o exame de mérito, defere-se parcialmente a petição em referência nos termos descritos a seguir:",
+        "orientacao": "O pedido foi aceito e segue para as próximas etapas."
+    },
+    {
+        "titulo": "Notificação de recurso",
+        "codigo": "360",
+        "descricao": "Em vista de ter sido apresentado recurso contra a decisão no processo em referência, notifica-se o prazo de 60 (sessenta) dias, contados da publicação deste ato na Revista da Propriedade Industrial (RPI), para que os interessados apresentem manifestação, nos termos do artigo 213 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 213. Os interessados serão intimados para, no prazo de 60 (sessenta) dias, oferecerem contra-razões ao recurso.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Exigência sobre alto renome",
+        "codigo": "362",
+        "descricao": "Como etapa do exame de mérito da petição em referência, formula-se exigência de mérito Œ nos termos do artigo 220 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996) Œ relativa às questões de alto renome listadas a seguir:",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Notificação de instauração de processo de nulidade a requerimento",
+        "codigo": "400",
+        "descricao": "Notificação de processo administrativo de nulidade (PAN) instaurado mediante requerimento. A partir da publicação deste ato na Revista da Propriedade Industrial (RPI), inicia-se o prazo de 60 (sessenta) dias para que o titular do registro se manifeste, nos termos do artigo 170 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 170 - O titular será intimado para se manifestar no prazo de 60 (sessenta) dias.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Anulação de despacho (em petição)",
+        "codigo": "403",
+        "descricao": "Anulados o(s) despacho(s) listado(s) a seguir:",
+        "orientacao": "Uma decisão anterior foi cancelada e pode ser revista."
+    },
+    {
+        "titulo": "Decisão de não conhecer da petição",
+        "codigo": "428",
+        "descricao": "Não conhecida a petição em referência com base nos seguintes fundamentos legais:",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Notificação de instauração de processo de nulidade de ofício",
+        "codigo": "437",
+        "descricao": "Notificação de processo administrativo de nulidade (PAN) instaurado de ofício. A partir da publicação deste ato na Revista da Propriedade Industrial (RPI), inicia-se o prazo de 60 (sessenta) dias para que o titular do registro se manifeste, nos termos do artigo 170 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 170 - O titular será intimado para se manifestar no prazo de 60 (sessenta) dias.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Sobrestamento da instrução técnica",
+        "codigo": "499",
+        "descricao": "Sobrestada a instrução técnica da petição em referência até a decisão definitiva dos pedidos, registros ou petições anteriores listados a seguir:",
+        "orientacao": "O processo foi pausado até que outras questões sejam resolvidas."
+    },
+    {
+        "titulo": "Recurso provido parcialmente (outros)",
+        "codigo": "536",
+        "descricao": "",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Petição de retificação atendida",
+        "codigo": "566",
+        "descricao": "Examinada a petição em referência; atendida a solicitação conforme texto abaixo:",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Petição de retificação não atendida",
+        "codigo": "567",
+        "descricao": "Examinada a petição em referência; não atendida a solicitação conforme texto abaixo:",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Deferimento da petição de caducidade",
+        "codigo": "669",
+        "descricao": "Concluído o exame de mérito, defere-se a petição em referência.",
+        "orientacao": "O pedido foi aceito e segue para as próximas etapas."
+    },
+    {
+        "titulo": "Ato de prejudicar petição",
+        "codigo": "699",
+        "descricao": "Prejudicado o exame da petição em referência pelos motivos expostos abaixo:  Tabela de Códigos de Despachos - Marcas Despachos em Serviços Avulsos (petições que não estão vinculadas a nenhum processo)",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Emissão do Parecer da Comissão de Classificação de Elementos Figurativos",
+        "codigo": "572",
+        "descricao": "Tabela de Códigos de Despachos - Marcas Despachos de emissão de documentos",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Emissão de segunda via de certificado de registro em designação",
+        "codigo": "971",
+        "descricao": "Tabela de Códigos de Despachos - Marcas Despachos em processos designados ao Brasil pela via do Protocolo de Madri",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Notificação de obrigatoriedade de apresentação de documentos de marca coletiva ou de certificação",
+        "codigo": "753",
+        "descricao": "Notificação de obrigatoriedade de apresentação de documentação, relativa ao pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri, elaborada nos termos dos artigos 147 e 148 da Lei da Propriedade Industrial (lei n.º 9.279, de 14/05/1996). Art. 147 - O pedido de registro de marca coletiva conterá regulamento de utilização, dispondo sobre condições e proibições de uso da marca. Parágrafo único. O regulamento de utilização, quando não acompanhar o pedido, deverá ser protocolizado no prazo de 60 dias do depósito, sob pena de arquivamento definitivo do pedido. Art. 148 - O pedido de registro da marca de certificação conterá: I - as características do produto ou serviço objeto de certificação; e II - as medidas de controle que serão adotadas pelo titular. Parágrafo único. A documentação prevista nos incisos I e II deste artigo, quando não acompanhar o pedido, deverá ser protocolizada no prazo de 60 dias, sob pena de arquivamento definitivo do pedido.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Arquivamento definitivo de designação por falta de docs. de marca coletiva ou de certificação",
+        "codigo": "755",
+        "descricao": "Arquivado definitivamente o processo designado ao Brasil pela via do Protocolo de Madri pela ausência da documentação obrigatória para marcas coletivas ou de certificação, nos termos dos parágrafos únicos dos artigos 147 e 148 da Lei da Propriedade Industrial (Lei n.º 9.279, de 14/05/1996). Art. 147 - O pedido de registro de marca coletiva conterá regulamento de utilização, (...). Parágrafo único - O regulamento de utilização, (...), deverá ser protocolizado no prazo de 60 dias do depósito, sob pena de arquivamento definitivo do pedido. Art. 148 - O pedido de registro da marca de certificação conterá: I - as características do produto ou serviço objeto de certificação; e II - as medidas de controle que serão adotadas pelo titular. Parágrafo único - A documentação prevista nos incisos I e II deste artigo, (...), deverá ser protocolizada no prazo de 60 dias, sob pena de arquivamento definitivo do pedido.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Publicação de pedido de registro para oposição (exame formal de Designação concluído)",
+        "codigo": "756",
+        "descricao": "Publicado o pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri para a apresentação de oposição, nos termos do artigo 158 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996). Art. 158 - Protocolizado, o pedido será publicado para apresentação de oposição no prazo de 60 (sessenta) dias.",
+        "orientacao": "O pedido foi publicado para que outras pessoas possam se manifestar sobre ele."
+    },
+    {
+        "titulo": "Republicação de designação",
+        "codigo": "757",
+        "descricao": "Republicado o pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri para a apresentação de oposição, nos termos do artigo 158 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996), em vista dos motivos indicados a seguir. Art. 158 - Protocolizado, o pedido será publicado para apresentação de oposição no prazo de 60 (sessenta) dias.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Deferimento de designação",
+        "codigo": "768",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados. Concluído o exame e verificada a registrabilidade da marca, defere-se o pedido de registro.",
+        "orientacao": "O pedido foi aceito e segue para as próximas etapas."
+    },
+    {
+        "titulo": "Concessão de registro em designação",
+        "codigo": "770",
+        "descricao": "Concedido o registro de marca relativo a processo designado ao Brasil pela via do Protocolo de Madri, em vista do pagamento tempestivo da retribuição relativa a concessão de registro, nos termos do disposto nos artigos 161 e 163 da Lei da Propriedade Industrial (Lei n.º 9.279, de 14/05/1996). Art. 161 Œ O certificado de registro será concedido depois de deferido o pedido e comprovado o pagamento das retribuições correspondentes.  Art. 163 Œ Reputa-se concedido o certificado de registro na data da publicação do respectivo ato. O prazo de vigência do registro de marca é de 10 (dez) anos contados da data de registro da inscrição internacional no Cadastro Internacional da OMPI, nos termos do artigo 6 (1) do Protocolo de Madri. Artigo 6 Œ Duração da validade da inscrição internacional; dependência e independência da inscrição internacional (1) A inscrição de uma marca na Secretaria Internacional tem validade de 10 anos, com possibilidade de prorrogação nas condições fixadas no artigo 7.",
+        "orientacao": "O registro foi concedido e está válido pelo período determinado."
+    },
+    {
+        "titulo": "Sobrestamento do exame de mérito de designação",
+        "codigo": "771",
+        "descricao": "Sobrestado o exame de mérito do pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri até a decisão definitiva do(s) pedido(s), registro(s) ou petição(ões) anterior(es) listado(s) a seguir:",
+        "orientacao": "O processo foi pausado até que outras questões sejam resolvidas."
+    },
+    {
+        "titulo": "Exigência de mérito em designação",
+        "codigo": "772",
+        "descricao": "Como etapa do exame de mérito do pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri Œ nos termos do artigo 159 da Lei da Propriedade Industrial (LPI, lei n.º 9.279, de 14 de maio de 1996) Œ formula-se exigência de mérito relativa às questões listadas a seguir:",
+        "orientacao": "Você precisa corrigir ou complementar as informações dentro do prazo informado."
+    },
+    {
+        "titulo": "Arquivamento definitivo de designação por falta de cumprimento de exigência de mérito",
+        "codigo": "773",
+        "descricao": "Arquivado definitivamente o pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri em vista do não cumprimento da exigência formulada, encerrando-se a instância administrativa nos termos do parágrafo 1º do artigo 159 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996). Art. 159 - Decorrido o prazo de oposição ou, se interposta esta, findo o prazo de manifestação, será feito o exame, durante o qual poderão ser formuladas exigências, que deverão ser respondidas no prazo de 60 (sessenta) dias. Parágrafo 1º - Não respondida a exigência, o pedido será definitivamente arquivado.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Indeferimento de designação",
+        "codigo": "774",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados. Concluído o exame, indefere-se o pedido de registro com base nos seguintes fundamentos legais:",
+        "orientacao": "O pedido foi negado. Se desejar, você pode recorrer da decisão."
+    },
+    {
+        "titulo": "Indeferimento de designação (em retificação)",
+        "codigo": "775",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados. Concluído o exame, indefere-se o pedido de registro com base nos seguintes fundamentos legais:",
+        "orientacao": "O pedido foi negado. Se desejar, você pode recorrer da decisão."
+    },
+    {
+        "titulo": "Arquivamento definitivo de designação por falta de pagamento da segunda parte da retribuição",
+        "codigo": "780",
+        "descricao": "Arquivado definitivamente o pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri em vista da ausência de pagamento da retribuição relativa à expedição de certificado de registro e à proteção do primeiro decênio de sua vigência, nos termos do parágrafo único do artigo 22 da Resolução INPI/PR nº 247/2019. Art. 22 - Quando for enviada à Secretaria Internacional uma declaração de concessão da proteção ou uma declaração de concessão posterior a uma recusa provisória, o INPI enviará uma notificação para pagamento da segunda parte da retribuição individual relativa à designação do Brasil, devendo o mesmo ser realizado no prazo de 60 (sessenta) dias contados da publicação do deferimento no meio de comunicação oficial do INPI. Parágrafo único - Não realizado o pagamento no prazo previsto no caput, a designação do Brasil será definitivamente arquivada, ressalvada a hipótese de processamento continuado, nos termos do Regulamento Comum.",
+        "orientacao": "O processo foi encerrado e arquivado sem possibilidade de retomada."
+    },
+    {
+        "titulo": "Deferimento parcial de designação",
+        "codigo": "781",
+        "descricao": "Como parte do exame de mérito do pedido de registro de marca designado ao Brasil pela via do Protocolo de Madri, foram analisadas a liceidade, a distintividade, a veracidade e a disponibilidade do sinal requerido como marca, inclusive por meio de buscas de anterioridade e do exame de eventuais oposições, manifestação do requerente e demais documentos apresentados.  Concluído o exame, defere-se parcialmente o pedido de registro, tendo sido identificado impedimento em relação a parte do escopo de proteção da marca, com base nos seguintes fundamentos legais:",
+        "orientacao": "O pedido foi aceito e segue para as próximas etapas."
+    },
+    {
+        "titulo": "Notificação de prazo para pagamento da segunda parte da retribuição relativa a designação",
+        "codigo": "782",
+        "descricao": "Inicia-se, na data de publicação da presente notificação, face a não interposição de recurso contra o deferimento parcial de designação, o prazo para o pagamento da retribuição relativa a concessão de registro e expedição de certificado junto à Secretaria Internacional da OMPI. O prazo para pagamento da retribuição relativa à concessão do registro é de 60 (sessenta) dias (prazo ordinário), contados da publicação desta notificação na Revista da Propriedade Industrial (RPI). A este prazo se aplica a hipótese de processamento continuado prevista na Regra 5bis do Regulamento do Protocolo de Madri.  Tabela de Códigos de Despachos - Marcas Despachos em petições referentes a serviços do Protocolo de Madri",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Decisão de considerar Pedido Internacional inexistente por não cumprir requisitos de certificação",
+        "codigo": "790",
+        "descricao": "O pedido internacional foi considerado inexistente nos termos do parágrafo único do Art. 5º da Resolução INPI/PR Nº 247/2019. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base. Parágrafo único. Durante a certificação, serão notificadas inconsistências a serem corrigidas pelo depositante em 60 (sessenta) dias, sob pena de ser o pedido considerado inexistente.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Notificação de inconsistência em Pedido Internacional",
+        "codigo": "791",
+        "descricao": "Como etapa do exame de certificação do pedido internacional  Œ nos termos do parágrafo único do Art. 5º da Resolução INPI/PR nº 247/2019 Œ notificam-se as inconsistências relativas às questões indicadas. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base. Parágrafo único. Durante a certificação, serão notificadas inconsistências a serem corrigidas pelo depositante em 60 (sessenta) dias, sob pena de ser o pedido considerado inexistente.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Decisão de considerar Pedido Internacional inexistente pela não resposta à notif. de inconsistência",
+        "codigo": "794",
+        "descricao": "O pedido internacional foi considerado inexistente nos termos do parágrafo único do Art. 5º da Resolução INPI/PR Nº 247/2019. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base. Parágrafo único. Durante a certificação, serão notificadas inconsistências a serem corrigidas pelo depositante em 60 (sessenta) dias, sob pena de ser o pedido considerado inexistente.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Pedido Internacional certificado e enviado à Secretaria Internacional",
+        "codigo": "797",
+        "descricao": "O pedido internacional foi certificado e encaminhados à Secretaria Internacional nos termos do Art. 5º da Resolução INPI/PR Nº 247/2019. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Comunicação ao usuário de irregularidade notificada pela SI",
+        "codigo": "815",
+        "descricao": "Como etapa do exame do pedido internacional Œ nos termos do Art. 7º da Resolução INPI/PR Nº 247/2019 Œ notificam-se as irregularidades comunicadas pela Secretaria Internacional. Art.7º Havendo notificação encaminhada pela Secretaria Internacional acerca da existência de irregularidades no pedido internacional, o depositante poderá ser comunicado para que promova as correções devidas junto à Autarquia: §1º Na ausência de manifestação do depositante à comunicação de que trata o caput no prazo de 30 (trinta) dias, o INPI responderá à Secretaria Internacional com as informações disponíveis.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Irregularidade respondida à Secretaria Internacional",
+        "codigo": "820",
+        "descricao": "As irregularidades notificadas pela Secretaria Internacional referentes ao pedido internacional foram respondidas nos termos do parágrafo 2º do Art. 7º da Resolução INPI/PR Nº 247/2019. Art.7º Havendo notificação encaminhada pela Secretaria Internacional acerca da existência de irregularidades no pedido internacional que devem ser corrigidas pelo INPI, o depositante poderá ser comunicado para que promova as correções devidas junto à Autarquia. §2º O INPI comunicará o depositante acerca das correções realizadas pelo INPI e encaminhadas à Secretaria  Internacional.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Decisão de considerar Pedido Internacional inexistente por falta de pagamento",
+        "codigo": "831",
+        "descricao": "O pedido internacional foi considerado inexistente nos termos do parágrafo único do Art. 5º da Resolução INPI/PR Nº 247/2019. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base. Parágrafo único. Durante a certificação, serão notificadas inconsistências a serem corrigidas pelo depositante em 60 (sessenta) dias, sob pena de ser o pedido considerado inexistente.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Notificação de inconsistência em Pedido Internacional relativa a pagamento",
+        "codigo": "834",
+        "descricao": "Como etapa do exame de certificação do pedido internacional  Œ nos termos do parágrafo único do Art. 5º da Resolução INPI/PR nº 247/2019 Œ notificam-se as inconsistências relativas às questões indicadas. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base. Parágrafo único. Durante a certificação, serão notificadas inconsistências a serem corrigidas pelo depositante em 60 (sessenta) dias, sob pena de ser o pedido considerado inexistente.",
+        "orientacao": "Você foi informado sobre uma situação importante do seu pedido."
+    },
+    {
+        "titulo": "Decisão de considerar Pedido Internacional inexistente por inconsistência de pagamento não sanada",
+        "codigo": "837",
+        "descricao": "O pedido internacional foi considerado inexistente nos termos do parágrafo único do Art. 5º da Resolução INPI/PR Nº 247/2019. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base. Parágrafo único. Durante a certificação, serão notificadas inconsistências a serem corrigidas pelo depositante em 60 (sessenta) dias, sob pena de ser o pedido considerado inexistente.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Decisão de considerar Pedido Internacional inexistente por inconsistência de pag. não respondida",
+        "codigo": "838",
+        "descricao": "O pedido internacional foi considerado inexistente nos termos do parágrafo único do Art. 5º da Resolução INPI/PR Nº 247/2019. Art. 5º Atendido o disposto no art. 4º, o INPI certificará, para fins de encaminhamento à Secretaria Internacional: I Œ a data em que o pedido internacional foi recebido pelo INPI; e II Œ a correspondência entre as informações nele indicadas e as constantes do pedido ou registro de base. Parágrafo único. Durante a certificação, serão notificadas inconsistências a serem corrigidas pelo depositante em 60 (sessenta) dias, sob pena de ser o pedido considerado inexistente.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Petição de correção de dados em Pedido Internacional não atendida",
+        "codigo": "846",
+        "descricao": "Examinada a petição em referência; não atendida a solicitação conforme texto abaixo:",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Petição de correção de dados em Pedido Internacional atendida",
+        "codigo": "847",
+        "descricao": "Examinada a petição em referência; atendida a solicitação conforme texto abaixo:",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Anulação de despacho (em Pedido Internacional)",
+        "codigo": "849",
+        "descricao": "Anulados o(s) despacho(s) listado(s) a seguir:  Tabela de Códigos de Despachos - Marcas Despachos específicos para comunicações que afetam os processos designados ao Brasil pela via do Protocolo de Madri",
+        "orientacao": "Uma decisão anterior foi cancelada e pode ser revista."
+    },
+    {
+        "titulo": "Anotação de alteração de nome e/ou endereço em designação",
+        "codigo": "900",
+        "descricao": "Conforme comunicação recebida da Secretaria Internacional da OMPI, notifica-se a anotação de alteração de nome e/ou endereço de titular(es) da inscrição internacional designada ao Brasil.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Anotação de transferência de titularidade em designação",
+        "codigo": "901",
+        "descricao": "Conforme comunicação recebida da Secretaria Internacional da OMPI, notifica-se a anotação de transferência de titularidade da inscrição internacional designada ao Brasil.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Anotação de cancelamento parcial de especificação em designação",
+        "codigo": "902",
+        "descricao": "Conforme comunicação recebida da Secretaria Internacional da OMPI, notifica-se a anotação de cancelamento parcial da especificação de produtos e/ou serviços da inscrição internacional designada ao Brasil.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Retificação de dados em designação",
+        "codigo": "903",
+        "descricao": "Conforme comunicação recebida da Secretaria Internacional da OMPI, notifica-se a retificação de dados da inscrição internacional designada ao Brasil.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Anotação de restrição de especificação em designação",
+        "codigo": "905",
+        "descricao": "Conforme comunicação recebida da Secretaria Internacional da OMPI, notifica-se a anotação de restrição da especificação de produtos e/ou serviços da inscrição internacional designada ao Brasil.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Indeferimento de anotação de restrição de especificação em designação",
+        "codigo": "906",
+        "descricao": "Concluído o exame de mérito, indefere-se a anotação de restrição da especificação de produtos e/ou serviços da inscrição internacional designada ao Brasil, com base nos seguintes motivos:",
+        "orientacao": "O pedido foi negado. Se desejar, você pode recorrer da decisão."
+    },
+    {
+        "titulo": "Anotação de transferência parcial de titularidade em designação",
+        "codigo": "907",
+        "descricao": "Conforme comunicação recebida da Secretaria Internacional da OMPI, notifica-se a anotação de transferência parcial de titularidade da inscrição internacional designada ao Brasil.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Sobrestamento de anotação de transferência de titularidade em designação",
+        "codigo": "908",
+        "descricao": "Sobrestado o exame da anotação de transferência de titularidade em designação, até a decisão definitiva do(s) pedido(s), registro(s) ou petição(ões) anterior(es) listado(s) a seguir:",
+        "orientacao": "O processo foi pausado até que outras questões sejam resolvidas."
+    },
+    {
+        "titulo": "Renúncia total a registro de marca em razão de cancelamento da Inscrição Internacional",
+        "codigo": "963",
+        "descricao": "Anotado o cancelamento da inscrição internacional conforme inciso V do art. 28 da Resolução INPI/PR Nº 247/2019. Em consequência, extingue-se o registro, nos termos do inciso II do artigo 142 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996).  Art. 142 - O registro da marca extingue-se: ... II - pela renúncia, que poderá ser total ou parcial em relação aos produtos ou serviços assinalados pela marca.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Desistência total de designação em razão de cancelamento da Inscrição Internacional",
+        "codigo": "964",
+        "descricao": "Anotado o cancelamento da inscrição internacional conforme inciso V do art. 28 da Resolução INPI/PR Nº 247/2019. Em consequência, arquiva-se definitivamente a designação.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Renúncia total a registro de marca em razão de renúncia à Inscrição Internacional que afeta o Brasil",
+        "codigo": "965",
+        "descricao": "Anotada a renúncia total à designação conforme inciso IV do art. 28 da Resolução INPI/PR Nº 247/2019. Em consequência, extingue-se o registro, nos termos do inciso II do artigo 142 da Lei da Propriedade Industrial Œ LPI (Lei n.º 9.279, de 14 de maio de 1996).   Art. 142 - O registro da marca extingue-se: ... II - pela renúncia, que poderá ser total ou parcial em relação aos produtos ou serviços assinalados pela marca.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Desistência total de designação em razão de renúncia à Inscrição Internacional que afeta o Brasil",
+        "codigo": "966",
+        "descricao": "Anotada a renúncia total à designação conforme inciso IV do art. 28 da Resolução INPI/PR Nº 247/2019. Em consequência, arquiva-se definitivamente a designação.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    },
+    {
+        "titulo": "Anulação de despacho (em comunicação de Madri)",
+        "codigo": "972",
+        "descricao": "Anulados o(s) despacho(s) listado(s) a seguir:",
+        "orientacao": "Uma decisão anterior foi cancelada e pode ser revista."
+    },
+    {
+        "titulo": "Ato de prejudicar comunicação de Madri",
+        "codigo": "973",
+        "descricao": "Prejudicado o exame da comunicação de Madri.",
+        "orientacao": "Revise o status do seu pedido e veja se alguma ação é necessária."
+    }
+]
