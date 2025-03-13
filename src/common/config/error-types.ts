@@ -65,6 +65,7 @@ export const errorTypes = {
         admin_una: '500:ADMIN_UNAUTHENTICATED',
         listing_admin_data: '500:LISTING_ADMIN_DATA',
         list_trademark_registration_leads: '500:LIST_TRADEMARK_REGISTRATION_LEADS',
-        update_lead: '500:UPDATE_LEAD_ERROR'
+        update_lead: '500:UPDATE_LEAD_ERROR',
+        temperature_analysis_by_message: '500:TEMPERATURE_ANALYSIS_BY_MESSAGE_ERROR'
     }
 }

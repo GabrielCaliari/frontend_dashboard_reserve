@@ -28,6 +28,7 @@ import { formatDateTimeToBRL } from "@/src/common/utils"
 import useCompleteScreening from "@/src/common/hooks/use-complete-screening"
 import { useRouter } from "next/navigation"
 import { ETemperature } from "@/src/interfaces/lead-qualification.interface"
+import useTemperatureAnalysisByMessageId from "@/src/common/hooks/use-temperature-analysis-by-message-id"
 
 interface KanbanCardProps {
   card: CardType
@@ -37,12 +38,16 @@ interface KanbanCardProps {
 export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
   const { refresh } = useRouter()
   const { execCompleteScreening } = useCompleteScreening()
+  const { execTemperatureAnalysisByMessageId } = useTemperatureAnalysisByMessageId();
 
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [isCloseScreeningOpen, setIsCloseScreeningOpen] = useState(false)
+  const [isTemperatureAnalysisOpen, setIsTemperatureAnalysisOpen] = useState(false);
+
   const [cardDetails, setCardDetails] = useState(card)
 
   const [isLoadingCloseScreening, setIsLoadingCloseScreening] = useState(false);
+  const [isLoadingTemperatureAnalysis, setIsLoadingTemperatureAnalysis] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id,
@@ -63,13 +68,27 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
     setIsCloseScreeningOpen(true)
   }
 
+  const onTemperatureAnalysisModalOpen = () => {
+    setIsDetailsOpen(false)
+    setIsTemperatureAnalysisOpen(true)
+  }
+
   const completeScreening = async () => {
     setIsLoadingCloseScreening(true);
     const id = card.id.split('-')[0];
     await execCompleteScreening(id)
     setIsLoadingCloseScreening(false);
     setIsCloseScreeningOpen(false);
-    refresh();
+    window.location.reload();
+  }
+
+  const temperatureAnalysis = async () => {
+    const id = card.id.split('-')[0];
+    setIsLoadingTemperatureAnalysis(true);
+    await execTemperatureAnalysisByMessageId(id);
+    setIsTemperatureAnalysisOpen(false);
+    setIsLoadingTemperatureAnalysis(false);
+    window.location.reload();
   }
 
   return (
@@ -143,11 +162,31 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
         </ModalContent>
       </Modal>
 
+      <Modal isOpen={isTemperatureAnalysisOpen} onOpenChange={setIsTemperatureAnalysisOpen}>
+        <ModalContent className="sm:max-w-1xl overflow-auto hide-scrollbar py-4">
+          <ModalHeader className="flex items-center justify-between">
+            <h2>Nível de interesse do lead</h2>
+          </ModalHeader>
+          <ModalBody>
+            <p>Você tem certeza que deseja realizar a análise de interesse do lead: <b>{card.title}</b></p>
+          </ModalBody>
+          <ModalFooter>
+            <div className="flex items-center gap-2 w-full">
+              <Button isDisabled={isLoadingTemperatureAnalysis} className="w-full bg-red-600 text-white" onClick={temperatureAnalysis}>Confirmar</Button>
+              <Button className="w-full" onClick={() => setIsCloseScreeningOpen(false)}>Cancelar</Button>
+            </div>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <Modal isOpen={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <ModalContent className="sm:max-w-2xl max-h-[500px] overflow-auto hide-scrollbar">
           <ModalHeader className="flex items-center justify-between px-8">
             <h2>Detalhes da conversa</h2>
-            <Button isDisabled={card.details[0].screening_complete} className="bg-red-600 text-white" variant="solid" onClick={onCompleteScreeningModalOpen}>Concluir triagem</Button>
+            <div className="flex gap-2">
+              <Button isDisabled={isLoadingTemperatureAnalysis} className="bg-orange-600 text-white" variant="solid" onClick={onTemperatureAnalysisModalOpen}>Analisar temperatura</Button>
+              <Button isDisabled={card.details[0].screening_complete} className="bg-red-600 text-white" variant="solid" onClick={onCompleteScreeningModalOpen}>Concluir triagem</Button>
+            </div>
           </ModalHeader>
           <ModalBody>
             {
