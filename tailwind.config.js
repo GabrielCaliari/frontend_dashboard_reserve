@@ -10,12 +10,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)"],
+        sans: ["var(--font-space-grotesk)", "var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
     },
   },
-  darkMode: "class",
   darkMode: "class",
   plugins: [nextui()],
 };

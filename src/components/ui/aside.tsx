@@ -36,6 +36,12 @@ export function Sidebar({ activeTab }: SidebarProps) {
       path: "/dashboard"
     },
     {
+      id: 'leads',
+      label: 'Leads',
+      icon: HiOutlineDatabase,
+      path: '/dashboard/leads'
+    },
+    {
       id: 'lead-qualification',
       label: 'Leads da triagem',
       icon: Users,

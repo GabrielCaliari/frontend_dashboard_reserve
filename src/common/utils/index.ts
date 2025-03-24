@@ -1,4 +1,5 @@
 export const removeSpecialCharacters = (value: string) => value.replace(/[^\d]/g, "");
+import { EOriginLead } from "@/types/@lead";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -136,3 +137,22 @@ export function formatDateTimeToBRL(date: Date): string {
         year: 'numeric'
     });
 }
+
+export function displayOrigin(origin: number) {
+    switch (origin) {
+        case EOriginLead.seo_tool:
+            return 'Ferramenta SEO';
+        case EOriginLead.seo_archive:
+            return 'Arquivo SEO';
+        case EOriginLead.email:
+            return 'Email';
+        case EOriginLead.facebook_ads:
+            return 'Facebook Ads';
+        case EOriginLead.google_ads:
+            return 'Google Ads';
+        case EOriginLead.page:
+            return 'Página';
+        default:
+            return 'Outro';
+    }
+}   

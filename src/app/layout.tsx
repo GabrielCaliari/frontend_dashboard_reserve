@@ -4,14 +4,19 @@ import "@/styles/globals.css";
 
 import clsx from "clsx";
 
-import { fontSans } from "@/config/fonts";
-
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
 import { Header } from "../components/ui/header";
+import { Space_Grotesk } from "next/font/google"
 
 import NextTopLoader from "nextjs-toploader";
-import { PiBotChat } from "../components/ui/pi-bot";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "PPPI | Ecossistema inteligente",
@@ -24,13 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-br" suppressHydrationWarning>
+    <html lang="pt-br" className={spaceGrotesk.variable} suppressHydrationWarning>
       <head />
       <body
-        className={clsx(
-          "bg-[#e2e9ff] font-sans antialiased min-h-screen",
-          fontSans.variable
-        )}
+        className="bg-[#e2e9ff] antialiased min-h-screen font-sans"
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <Header />
