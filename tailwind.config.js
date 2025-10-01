@@ -10,7 +10,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-space-grotesk)", "var(--font-sans)"],
+        nunito: ["var(--font-nunito)", "sans-serif"],
+        sans: ["var(--font-nunito)", "var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
     },

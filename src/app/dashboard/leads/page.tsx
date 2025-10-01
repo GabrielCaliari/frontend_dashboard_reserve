@@ -28,11 +28,10 @@ export default function LeadsPage() {
     const loadLeads = (page: number) => {
         setIsLoading(true);
         execListLeads(page).then(result => {
-            console.log(result);
-            setLeads(result.raws);
-            setTotalPages(result.total_pages);
-            setCurrentPage(result.current_page);
-            setTotalResults(result.total_leads);
+            setLeads(result.leads);
+            setTotalPages(result.page.count_pages);
+            setCurrentPage(result.page.current_page);
+            setTotalResults(result.page.count);
             setShowing({ 
                 start: 1, 
                 end: 10 

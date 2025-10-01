@@ -1,0 +1,356 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog"
+import { Button } from "../ui/button"
+import { Textarea } from "../ui/textarea"
+import { Label } from "../ui/label"
+import { Input } from "../ui/input"
+import { Eye, Settings, Save } from "lucide-react"
+import { IEmail } from "@/src/common/@types/@email"
+import { ICreatePrimaryCopy } from "@/src/common/@types/@email-builder"
+import EmailSettingsModal, { EmailSettings } from "../email-builder/email-settings-modal"
+import listEmailByCampaignBatchIdService from "@/src/common/services/campaign-batch/list-email-by-campaign-batch-id-service"
+import updateCampaignBatchEmailService from "@/src/common/services/campaign-batch/update-campaign-batch-email-service"
+import toast from "react-hot-toast"
+
+interface SimpleCampaignBatchEditorDialogProps {
+  isOpen: boolean
+  onClose: () => void
+  campaignBatchId: string
+}
+
+export function SimpleCampaignBatchEditorDialog({
+  isOpen,
+  onClose,
+  campaignBatchId
+}: SimpleCampaignBatchEditorDialogProps) {
+  const [htmlContent, setHtmlContent] = useState("")
+  const [emailMetadata, setEmailMetadata] = useState({
+    name: "",
+    subject: "",
+    preHeader: "",
+    fromName: ""
+  })
+  const [primaryCopy, setPrimaryCopy] = useState<IEmail | null>(null)
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [emailSettings, setEmailSettings] = useState<EmailSettings>({
+    defaultPadding: "10px",
+    useHeader: false,
+    blockSpacing: "0px",
+    headerHtml: "",
+    headerConfig: {
+      backgroundColor: "#f5f5f5",
+      alignment: "center",
+      padding: "20px",
+    },
+    useFooter: false,
+    footerHtml: "",
+    footerConfig: {
+      backgroundColor: "#f5f5f5",
+      alignment: "center",
+      padding: "20px",
+    },
+  })
+
+  // Carregar email do campaign batch ao abrir o modal
+  useEffect(() => {
+    const fetchEmailData = async () => {
+      if (isOpen && campaignBatchId) {
+        setIsLoading(true)
+        try {
+          const response = await listEmailByCampaignBatchIdService(campaignBatchId)
+          
+          if (response && !response.error) {
+            setPrimaryCopy(response)
+            setHtmlContent(response.html_content || "")
+            setEmailMetadata({
+              name: response.name || "",
+              subject: response.subject || "",
+              preHeader: response.pre_header || "",
+              fromName: response.from_name || ""
+            })
+          } else {
+            toast.error("Erro ao carregar dados do email")
+          }
+        } catch (error) {
+          toast.error("Erro ao carregar dados do email")
+        } finally {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    fetchEmailData()
+  }, [isOpen, campaignBatchId])
+
+  // Limpar dados ao fechar o modal
+  useEffect(() => {
+    if (!isOpen) {
+      setHtmlContent("")
+      setEmailMetadata({
+        name: "",
+        subject: "",
+        preHeader: "",
+        fromName: ""
+      })
+      setPrimaryCopy(null)
+      setIsSaving(false)
+      setIsLoading(false)
+    }
+  }, [isOpen])
+
+  const generateFinalHtml = (): string => {
+    let finalHtml = htmlContent
+
+    // Adicionar header se habilitado
+    if (emailSettings.useHeader && emailSettings.headerHtml) {
+      finalHtml = emailSettings.headerHtml + finalHtml
+    }
+
+    // Adicionar footer se habilitado
+    if (emailSettings.useFooter && emailSettings.footerHtml) {
+      finalHtml = finalHtml + emailSettings.footerHtml
+    }
+
+    // Envolver em estrutura básica de email se necessário
+    if (!finalHtml.includes('<!DOCTYPE html>')) {
+      finalHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${emailMetadata.subject}</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: Arial, sans-serif;">
+          <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+            <tr>
+              <td>
+                ${finalHtml}
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `
+    }
+
+    return finalHtml
+  }
+
+  const handleSave = async () => {
+    if (!htmlContent.trim()) {
+      toast.error("O conteúdo HTML não pode estar vazio")
+      return
+    }
+
+    if (!emailMetadata.subject.trim()) {
+      toast.error("O assunto do email é obrigatório")
+      return
+    }
+
+    if (!emailMetadata.fromName.trim()) {
+      toast.error("O nome do remetente é obrigatório")
+      return
+    }
+
+    setIsSaving(true)
+
+    try {
+      const data: ICreatePrimaryCopy = {
+        html: generateFinalHtml(),
+        md: "", // Pode ser gerado a partir do HTML se necessário
+        subject: emailMetadata.subject,
+        pre_header: emailMetadata.preHeader,
+        from_name: emailMetadata.fromName,
+        use_header: emailSettings.useHeader,
+        use_footer: emailSettings.useFooter,
+      }
+
+      const response = await updateCampaignBatchEmailService(campaignBatchId, data)
+      
+      if (response.error) {
+        toast.error(response.message || "Erro ao salvar o email")
+      } else {
+        toast.success("Email do disparo atualizado com sucesso!")
+        onClose()
+        window.location.reload()
+      }
+
+    } catch (error) {
+      toast.error("Erro ao salvar o email")
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handlePreview = () => {
+    setPreviewOpen(true)
+  }
+
+  if (isLoading) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Carregando...</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  return (
+    <>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-[90%] max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>
+              Editar Email do Disparo
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden">
+            {/* Coluna Principal - Editor */}
+            <div className="lg:col-span-2 flex flex-col">
+              <div className="space-y-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="email-name">Nome do Email</Label>
+                    <Input
+                      id="email-name"
+                      value={emailMetadata.name}
+                      onChange={(e) => setEmailMetadata({...emailMetadata, name: e.target.value})}
+                      placeholder="Nome para identificação interna"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="from-name">Nome do Remetente</Label>
+                    <Input
+                      id="from-name"
+                      value={emailMetadata.fromName}
+                      onChange={(e) => setEmailMetadata({...emailMetadata, fromName: e.target.value})}
+                      placeholder="Nome que aparecerá no email"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="subject">Assunto *</Label>
+                  <Input
+                    id="subject"
+                    value={emailMetadata.subject}
+                    onChange={(e) => setEmailMetadata({...emailMetadata, subject: e.target.value})}
+                    placeholder="Assunto do email"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="preheader">Pré-cabeçalho</Label>
+                  <Input
+                    id="preheader"
+                    value={emailMetadata.preHeader}
+                    onChange={(e) => setEmailMetadata({...emailMetadata, preHeader: e.target.value})}
+                    placeholder="Texto de preview que aparece após o assunto"
+                  />
+                </div>
+              </div>
+
+              <div className="flex-1 flex flex-col">
+                <div className="flex justify-between items-center mb-2">
+                  <Label htmlFor="html-content">Conteúdo HTML *</Label>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSettingsOpen(true)}
+                      className="flex items-center gap-1"
+                    >
+                      <Settings size={16} />
+                      Configurações
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreview}
+                      className="flex items-center gap-1"
+                    >
+                      <Eye size={16} />
+                      Visualizar
+                    </Button>
+                  </div>
+                </div>
+                
+                <Textarea
+                  id="html-content"
+                  value={htmlContent}
+                  onChange={(e) => setHtmlContent(e.target.value)}
+                  placeholder="Cole aqui o código HTML do seu email..."
+                  className="flex-1 min-h-[400px] font-mono text-sm"
+                  style={{ resize: 'none' }}
+                />
+              </div>
+            </div>
+
+            {/* Coluna Lateral - Preview */}
+            <div className="hidden lg:flex flex-col">
+              <Label className="mb-2">Preview</Label>
+              <div className="flex-1 border rounded-md overflow-hidden bg-white">
+                <iframe
+                  srcDoc={generateFinalHtml()}
+                  title="Email Preview"
+                  className="w-full h-full border-0"
+                  sandbox="allow-same-origin"
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="flex justify-between">
+            <Button variant="outline" onClick={onClose} disabled={isSaving}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving} className="flex items-center gap-1">
+              <Save size={16} />
+              {isSaving ? "Salvando..." : "Salvar Email"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Preview para telas menores */}
+      <Dialog open={previewOpen} onOpenChange={(open) => !open && setPreviewOpen(false)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Visualização do Email</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 border rounded-md overflow-hidden bg-white" style={{ minHeight: '500px' }}>
+            <iframe
+              srcDoc={generateFinalHtml()}
+              title="Email Preview"
+              className="w-full h-full border-0"
+              style={{ minHeight: '500px' }}
+              sandbox="allow-same-origin"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Configurações */}
+      <EmailSettingsModal
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        settings={emailSettings}
+        onSaveSettings={setEmailSettings}
+      />
+    </>
+  )
+}

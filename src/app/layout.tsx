@@ -7,14 +7,14 @@ import clsx from "clsx";
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
 import { Header } from "../components/ui/header";
-import { Space_Grotesk } from "next/font/google"
+import { Nunito } from "next/font/google"
 
 import NextTopLoader from "nextjs-toploader";
 
-const spaceGrotesk = Space_Grotesk({
+const nunito = Nunito({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-space-grotesk",
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-nunito",
   display: "swap",
 })
 
@@ -29,10 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-br" className={spaceGrotesk.variable} suppressHydrationWarning>
+    <html lang="pt-br" className={nunito.variable} suppressHydrationWarning>
       <head />
       <body
-        className="bg-[#e2e9ff] antialiased min-h-screen font-sans"
+        className="bg-[#e2e9ff] antialiased min-h-screen font-nunito !pointer-events-auto"
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <Header />

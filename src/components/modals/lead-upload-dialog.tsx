@@ -1,0 +1,205 @@
+"use client"
+
+import type React from "react"
+
+import { useState, useRef } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/src/components/ui/dialog"
+import { Button } from "@/src/components/ui/button" 
+import { Alert, AlertDescription } from "@/src/components/ui/alert"
+import { useRouter } from "next/navigation"
+import { Upload, AlertCircle, CheckCircle, FileText } from "lucide-react"
+import { uploadLeads } from "@/src/common/actions/email-campaign/upload-leads"
+
+interface LeadUploadDialogProps {
+  isOpen: boolean
+  onClose: () => void
+  campaignId: string
+}
+
+export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDialogProps) {
+  const router = useRouter()
+  const [file, setFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0]
+    if (selectedFile) {
+      // Verificar se é um arquivo CSV
+      if (!selectedFile.name.endsWith(".csv")) {
+        setError("O arquivo deve estar no formato CSV")
+        setFile(null)
+        return
+      }
+
+      setFile(selectedFile)
+      setError(null)
+      setSuccess(false)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const droppedFile = e.dataTransfer.files?.[0]
+
+    if (droppedFile) {
+      // Verificar se é um arquivo CSV
+      if (!droppedFile.name.endsWith(".csv")) {
+        setError("O arquivo deve estar no formato CSV")
+        setFile(null)
+        return
+      }
+
+      setFile(droppedFile)
+      setError(null)
+      setSuccess(false)
+    }
+  }
+
+  const handleUpload = async () => {
+    if (!file) {
+      setError("Selecione um arquivo CSV para fazer upload")
+      return
+    }
+
+    setIsUploading(true)
+    setError(null)
+
+    try {
+      // Chamar a server action para upload dos leads
+      const result = await uploadLeads(campaignId, file)
+
+      if (result?.error) {
+        setError(result.message || "Erro ao fazer upload dos leads.")
+        setIsUploading(false)
+        return
+      }
+
+      setSuccess(true)
+      setIsUploading(false)
+
+      setTimeout(() => {
+        router.refresh()
+        onClose()
+      }, 2000)
+    } catch (err) {
+      console.error("Erro ao processar o arquivo:", err)
+      setError("Ocorreu um erro ao processar o arquivo. Verifique o formato e tente novamente.")
+      setIsUploading(false)
+    }
+  }
+
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+    setFile(null)
+    setError(null)
+    setSuccess(false)
+  }
+
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose()
+        if (!isUploading) resetFileInput()
+      }}
+    >
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Upload className="h-5 w-5" />
+            Upload de Leads
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="py-4">
+          <div
+            className={`
+              border-2 border-dashed rounded-lg p-6 text-center cursor-pointer
+              ${error ? "border-red-300 bg-red-50" : "border-gray-300 hover:border-emerald-300 hover:bg-emerald-50"}
+              ${isUploading ? "opacity-50 cursor-not-allowed" : ""}
+              transition-colors
+            `}
+            onClick={() => !isUploading && fileInputRef.current?.click()}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            {!file && !success && (
+              <>
+                <FileText className="h-10 w-10 mx-auto text-gray-400" />
+                <p className="mt-2 text-sm font-medium text-gray-600">
+                  Clique para selecionar ou arraste um arquivo CSV
+                </p>
+                <p className="text-xs text-gray-500 mt-1">O arquivo deve conter apenas uma coluna chamada "email"</p>
+              </>
+            )}
+
+            {file && !success && (
+              <div className="text-sm">
+                <FileText className="h-8 w-8 mx-auto text-emerald-500 mb-2" />
+                <p className="font-medium text-gray-700">{file.name}</p>
+                <p className="text-gray-500 text-xs mt-1">{(file.size / 1024).toFixed(2)} KB</p>
+              </div>
+            )}
+
+            {success && (
+              <div className="text-sm">
+                <CheckCircle className="h-8 w-8 mx-auto text-emerald-500 mb-2" />
+                <p className="font-medium text-emerald-700">Upload concluído com sucesso!</p>
+              </div>
+            )}
+
+            <input
+              type="file"
+              accept=".csv"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              disabled={isUploading}
+            />
+          </div>
+
+          {error && (
+            <Alert variant="destructive" className="mt-3">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {file && !error && !success && (
+            <p className="text-xs text-gray-500 mt-2">Clique em "Fazer Upload" para importar os leads</p>
+          )}
+        </div>
+
+        <DialogFooter className="sm:justify-between">
+          <Button type="button" variant="outline" onClick={onClose} disabled={isUploading}>
+            Cancelar
+          </Button>
+
+          <div className="flex gap-2">
+            {file && !success && (
+              <Button type="button" variant="ghost" onClick={resetFileInput} disabled={isUploading}>
+                Limpar
+              </Button>
+            )}
+
+            <Button type="button" onClick={handleUpload} disabled={!file || isUploading || success}>
+              {isUploading ? "Processando..." : "Fazer Upload"}
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}

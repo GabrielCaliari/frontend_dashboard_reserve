@@ -11,7 +11,7 @@ export const listLeadsService = async ({
     page?: number
 }) => {
     try {
-        const response = await api.get('admin/lead/list', {
+        const response = await api.get('v2/lead', {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'session-id': session,

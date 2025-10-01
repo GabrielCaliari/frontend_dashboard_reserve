@@ -7,7 +7,7 @@ export default function useListLeads() {
 
         return promise
             .then(async result => {
-                if (result && result.raws) {
+                if (result && result.leads) {
                     return result;
                 }
 

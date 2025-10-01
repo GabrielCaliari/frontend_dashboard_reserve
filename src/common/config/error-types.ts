@@ -8,7 +8,8 @@ export const errorTypes = {
         has_no_moni_plan: '400:USER_HAS_NO_MONITORING_PLANS',
         plan_not_found: '400:PLAN_NOT_FOUND',
         user_mh_plan: '400:USER_MUST_HAVE_A_PLAN',
-        export_not_ready: '400:EXPORT_NOT_READY'
+        smtp_server_not_found: '400:SMTP_SERVER_NOT_FOUND',
+        export_not_ready: '400:EXPORT_NOT_READY',
     },
     _403: {
         search_limit_reached: '403:SEARCH_LIMIT_REACHED',
@@ -22,6 +23,8 @@ export const errorTypes = {
         additional_token_pack_nf: '404:ADDITIONAL_TOKEN_PACK_NOT_FOUND',
         file_not_found: '404:FILE_NOT_FOUND',
         admin_nf: '404:ADMIN_NOT_FOUND',
+        email_campaign_not_found: '404:EMAIL_CAMPAIGN_NOT_FOUND',
+        primary_copy_variant_not_found: '404:PRIMARY_COPY_VARIANT_NOT_FOUND'
     },
     _401: {
         user_email_nf: '401:USER_EMAIL_NOT_FOUND',
@@ -67,6 +70,10 @@ export const errorTypes = {
         list_trademark_registration_leads: '500:LIST_TRADEMARK_REGISTRATION_LEADS',
         update_lead: '500:UPDATE_LEAD_ERROR',
         temperature_analysis_by_message: '500:TEMPERATURE_ANALYSIS_BY_MESSAGE_ERROR',
-        list_leads: '500:LIST_LEADS_ERROR'
+        list_leads: '500:LIST_LEADS_ERROR',
+        create_email_campaign: '500:CREATE_EMAIL_CAMPAIGN',
+        get_all_email_campaign: '500:GET_ALL_EMAIL_CAMPAIGN',
+        get_smtp_servers: '500:GET_SMTP_SERVERS',
+        create_primary_copy_variant: '500:CREATE_PRIMARY_COPY_VARIANT'
     }
 }
