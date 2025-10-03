@@ -36,8 +36,9 @@ export default function CampaignActions({ primaryCopy, smtpServer, smtpServers, 
             </Button>
 
             {/* Atualizar métricas - only when campaign is active */}
+            {/* TODO: Adicionar validação para status da campanha */}
             <Button
-                disabled={config?.status !== EEmailCampaignStatus.active || isUpdatingMetrics}
+                disabled={isUpdatingMetrics}
                 variant="outline"
                 onClick={async () => {
                     try {
