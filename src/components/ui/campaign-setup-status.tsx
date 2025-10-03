@@ -16,6 +16,8 @@ import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from ".
 import { IEmail } from "@/src/common/@types/@email"
 import { Button } from "./button"
 import { CampaignSetupStatusDialog } from "../modals/campaign-setup-status-dialog"
+import { EEmailCampaignStatus } from "@/src/enums/email-campaign"
+import { StartCampaignConfirmDialog } from "../modals/start-campaign-confirm-dialog"
 import { BatchTable } from "../tables/batch-table"
 import { CampaignBatch } from "@/src/common/@types/@campaign-batch"
 import { closeSetupService } from "@/src/common/services/email-campaign/close-setup-service"
@@ -38,6 +40,7 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
   const [isBatchSizeConfigOpen, setIsBatchSizeConfigOpen] = useState(false)
   const [isCopyCreatedOpen, setIsCopyCreatedOpen] = useState(false)
   const [isCampaignSetupStatusOpen, setIsCampaignSetupStatusOpen] = useState(false)
+  const [isStartConfirmOpen, setIsStartConfirmOpen] = useState(false)
 
   const setupSteps = [
     {
@@ -180,7 +183,7 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
           </div>
         </CardContent>
 
-        <CardFooter className="flex justify-start">
+        <CardFooter className="flex justify-start items-center gap-3">
           <Button disabled={
             !config.main_email_id ||
             !config.total_leads ||

@@ -1,0 +1,70 @@
+'use client'
+
+import { useState } from "react"
+import { IEmail } from "../common/@types/@email"
+import { ISmtpServer } from "../common/@types/@smtp-server"
+import { EEmailCampaignStatus } from "../enums/email-campaign"
+import { Button } from "./ui/button"
+import { StartCampaignConfirmDialog } from "./modals/start-campaign-confirm-dialog"
+import { updateMetricsService } from "@/src/common/services/email-campaign/update-metrics-service"
+import { toast } from "sonner"
+
+interface CampaignActionsProps {
+    config: any
+    campaignId: string
+    totalLeads: number
+    batchSize?: number
+    smtpServer: ISmtpServer
+    smtpServers: ISmtpServer[]
+    primaryCopy: IEmail
+}
+
+export default function CampaignActions({ primaryCopy, smtpServer, smtpServers, config, campaignId, totalLeads, batchSize = 300 }: CampaignActionsProps) {
+    const [isStartConfirmOpen, setIsStartConfirmOpen] = useState(false)
+    const [isUpdatingMetrics, setIsUpdatingMetrics] = useState(false)
+
+
+    return (
+        <div className="flex flex-row gap-2">
+            {/* Show start campaign button only when campaign status is 'pending' */}
+            <Button
+                disabled={config?.status !== EEmailCampaignStatus.pending}
+                variant="default"
+                onClick={() => setIsStartConfirmOpen(true)}
+            >
+                Iniciar campanha
+            </Button>
+
+            {/* Atualizar métricas - only when campaign is active */}
+            <Button
+                disabled={config?.status !== EEmailCampaignStatus.active || isUpdatingMetrics}
+                variant="outline"
+                onClick={async () => {
+                    try {
+                        setIsUpdatingMetrics(true)
+                        const res = await updateMetricsService(campaignId)
+                        if (res?.error) {
+                            toast.error(res.message || 'Erro ao atualizar métricas')
+                        } else {
+                            toast.success('Métricas atualizadas com sucesso')
+                            // optional: reload to reflect new metrics
+                            setTimeout(() => window.location.reload(), 300)
+                        }
+                    } catch (err: any) {
+                        toast.error(err?.message || 'Erro ao atualizar métricas')
+                    } finally {
+                        setIsUpdatingMetrics(false)
+                    }
+                }}
+            >
+                {isUpdatingMetrics ? 'Atualizando...' : 'Atualizar métricas'}
+            </Button>
+
+            <StartCampaignConfirmDialog
+                isOpen={isStartConfirmOpen}
+                onClose={() => setIsStartConfirmOpen(false)}
+                campaignId={campaignId}
+            />
+        </div>
+    )
+}

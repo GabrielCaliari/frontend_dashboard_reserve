@@ -1,3 +1,4 @@
+
 import listEmailCampaignByIdService from "@/src/common/services/email-campaign/list-email-campaign-by-id-service";
 import { EEmailCampaignStatus } from "@/src/enums/email-campaign";
 import { AlertTriangle, CheckCircle, Eye, Filter, Mail, MousePointer, XCircle, Zap } from "lucide-react";
@@ -10,6 +11,8 @@ import { ISmtpServer } from "@/src/common/@types/@smtp-server";
 import listPrimaryCopyByEmailCampaignService from "@/src/common/services/email-campaign/list-primary-copy-by-email-campaign-service";
 import listBatchesByEmailCampaignService from "@/src/common/services/email-campaign/list-batches-by-email-campaign-service";
 import { BatchTable } from "@/src/components/tables/batch-table";
+import { StartCampaignConfirmDialog } from "@/src/components/modals/start-campaign-confirm-dialog";
+import CampaignActions from "@/src/components/campaign-actions";
 
 export default async function EmailCampaignPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -201,7 +204,10 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                             )}
                         </CardContent>
                     </Card>
+
                 </div>
+
+                <CampaignActions primaryCopy={primaryCopy} smtpServers={smtpServers} smtpServer={defaultSMTP} config={campaign} campaignId={campaign.id} totalLeads={campaign.total_leads} />
 
                 <div className="mt-10">
                     <h2 className="text-xl font-bold mb-4">Disparos</h2>
