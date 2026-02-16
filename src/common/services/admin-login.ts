@@ -4,8 +4,8 @@ import { errorTypes } from "../config/error-types";
 
 export async function adminLoginService({ email, password }: LoginCredentials) {
     try {
-        // Novo endpoint: /auth/admin/authenticate
-        const response = await api.post<AuthResponse>(`/auth/admin/authenticate`, {
+        // Endpoint: /admin/authenticate
+        const response = await api.post<AuthResponse>(`/admin/authenticate`, {
             email,
             password
         });

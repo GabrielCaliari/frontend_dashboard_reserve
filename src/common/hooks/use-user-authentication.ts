@@ -30,7 +30,10 @@ export default function useAdminAuthentication() {
             }
 
             return false;
-        } catch (error) {
+        } catch (error: any) {
+            if (error?.message === 'NEXT_REDIRECT' || error?.digest?.startsWith('NEXT_REDIRECT')) {
+                throw error;
+            }
             toast.error('Ops... Deu erro.');
             return false;
         }

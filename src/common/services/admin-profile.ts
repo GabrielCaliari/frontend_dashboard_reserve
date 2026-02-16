@@ -4,7 +4,7 @@ import { errorTypes } from "../config/error-types";
 
 export async function getAdminProfileService(): Promise<AdminProfile | string> {
     try {
-        const response = await api.get<AdminProfile>(`/auth/admin/me`);
+        const response = await api.get<AdminProfile>(`/admin/me`);
         return response.data;
     } catch (error: any) {
         if (error?.response?.data?.code) {
