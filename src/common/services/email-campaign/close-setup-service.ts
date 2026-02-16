@@ -1,8 +1,8 @@
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 
 export const closeSetupService = async (campaignId: string) => {
     try {
-        const response = await apiEmail.post(`/email-campaign/close-setup/${campaignId}`);
+        const response = await api.post(`/mailer/campaigns/${campaignId}/close-setup`);
         
         return {
             id: response.data.id,

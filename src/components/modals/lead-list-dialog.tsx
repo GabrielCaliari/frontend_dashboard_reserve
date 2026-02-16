@@ -8,6 +8,7 @@ import { Eye, MousePointer } from "lucide-react"
 import { IDelivery } from "@/src/common/@types/@delivery"
 import listDeliveriesByCampaignBatchIdService from "@/src/common/services/campaign-batch/list-deliveries-by-campaign-batch-id-service"
 import { EDeliveryStatus } from "@/src/common/@types/@delivery"
+import { useTranslations } from "next-intl"
 
 interface LeadListDialogProps {
   isOpen: boolean
@@ -16,10 +17,11 @@ interface LeadListDialogProps {
 }
 
 function StatusBadge({ status }: { status: string }) {
+  const t = useTranslations("leadList")
   const statusConfig = {
-    pending: { label: "Pendente", color: "bg-yellow-100 text-yellow-800" },
-    sent: { label: "Enviada", color: "bg-purple-100 text-purple-800" },
-    failed: { label: "Falha", color: "bg-red-100 text-red-800" },
+    pending: { label: t("statusPending"), color: "bg-yellow-100 text-yellow-800" },
+    sent: { label: t("statusSent"), color: "bg-purple-100 text-purple-800" },
+    failed: { label: t("statusFailed"), color: "bg-red-100 text-red-800" },
   }
 
   const config = statusConfig[status] || statusConfig.pending
@@ -35,6 +37,7 @@ function StatusBadge({ status }: { status: string }) {
 export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [deliveries, setDeliveries] = useState<IDelivery[]>([])
+  const t = useTranslations()
 
   useEffect(() => {
     listDeliveriesByCampaignBatchIdService(batchId)
@@ -51,11 +54,11 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
     }}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle>Lista de Leads - Disparo #{batchId}</DialogTitle>
+          <DialogTitle>{t("leadList.title")}{batchId}</DialogTitle>
         </DialogHeader>
         <div className="mb-4">
           <Input
-            placeholder="Buscar por nome ou email..."
+            placeholder={t("leads.searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-sm"
@@ -66,9 +69,9 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
             <TableHeader>
               <TableRow>
                 {/* <TableHead>Nome</TableHead> */}
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Métricas</TableHead>
+                <TableHead>{t("common.email")}</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
+                <TableHead>{t("leadList.metrics")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -83,16 +86,16 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {lead.opened && (
-                          <div className="flex items-center text-emerald-600" title="Email aberto">
+                          <div className="flex items-center text-emerald-600" title={t("leadList.emailOpened")}>
                             <Eye className="h-4 w-4 mr-1" />
                           </div>
                         )}
                         {lead.clicked && (
-                          <div className="flex items-center text-blue-600" title="Link clicado">
+                          <div className="flex items-center text-blue-600" title={t("leadList.linkClicked")}>
                             <MousePointer className="h-4 w-4 mr-1" />
                           </div>
                         )}
-                        {!lead.opened && !lead.clicked && <span className="text-gray-400">Não abriu</span>}
+                        {!lead.opened && !lead.clicked && <span className="text-gray-400">{t("leadList.notOpened")}</span>}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -100,7 +103,7 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
               ) : (
                 <TableRow>
                   <TableCell colSpan={3} className="text-center py-4 text-gray-500">
-                    Nenhum lead encontrado.
+                    {t("leadList.noLeadsFound")}
                   </TableCell>
                 </TableRow>
               )}

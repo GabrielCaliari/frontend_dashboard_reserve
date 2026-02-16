@@ -14,7 +14,9 @@ export const errorTypes = {
     _403: {
         search_limit_reached: '403:SEARCH_LIMIT_REACHED',
         analysis_limit_reached: '403:ANALYSIS_LIMIT_REACHED',
-        unauthorized_access: '403:UNAUTHORIZED_ACCESS'
+        unauthorized_access: '403:UNAUTHORIZED_ACCESS',
+        admin_account_deactivated: '403:ADMIN_ACCOUNT_DEACTIVATED',
+        insufficient_permissions: '403:INSUFFICIENT_PERMISSIONS',
     },
     _404: {
         brand_nf_user: '404:BRAND_NOT_FOUND_FOR_THIS_USER',
@@ -24,7 +26,8 @@ export const errorTypes = {
         file_not_found: '404:FILE_NOT_FOUND',
         admin_nf: '404:ADMIN_NOT_FOUND',
         email_campaign_not_found: '404:EMAIL_CAMPAIGN_NOT_FOUND',
-        primary_copy_variant_not_found: '404:PRIMARY_COPY_VARIANT_NOT_FOUND'
+        primary_copy_variant_not_found: '404:PRIMARY_COPY_VARIANT_NOT_FOUND',
+        tenant_not_found: '404:TENANT_NOT_FOUND',
     },
     _401: {
         user_email_nf: '401:USER_EMAIL_NOT_FOUND',

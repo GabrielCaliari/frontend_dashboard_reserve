@@ -1,11 +1,13 @@
 import * as Yup from "yup";
 
-export const BrandAnalysSchema = Yup.object({
-  brandName: Yup.string().required("O nome da marca é obrigatório"),
+type TranslateFn = (key: string, values?: Record<string, unknown>) => string
+
+export const BrandAnalysSchema = (t: TranslateFn) => Yup.object({
+  brandName: Yup.string().required(t("validation.brandNameRequired")),
   brandNiche: Yup.string()
-    .required("O nicho da marca é obrigatório")
-    .min(3, "O nicho deve ter pelo menos 3 caracteres"),
+    .required(t("validation.brandNicheRequired"))
+    .min(3, t("validation.brandNicheMinLength", { min: 3 })),
   brandDescription: Yup.string()
-    .min(10, "A descrição deve ter pelo menos 10 caracteres")
-    .required("A descrição da marca é obrigatória"),
+    .min(10, t("validation.brandDescriptionMinLength", { min: 10 }))
+    .required(t("validation.brandDescriptionRequired")),
 });

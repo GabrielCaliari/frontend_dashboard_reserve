@@ -1,8 +1,8 @@
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 
 export default async function listBatchesByEmailCampaignService(emailCampaignId: string) {
     try {
-        const response = await apiEmail.get(`/email-campaign/batches/${emailCampaignId}`);
+        const response = await api.get(`/mailer/campaigns/${emailCampaignId}/batches`);
         return response.data;
     } catch (err: any) {
         // TODO: Adicionar mensagem de erro para tratamento

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MoreHorizontal, Check, X, Clock, Send, MessageSquare } from "lucide-react";
 import { AbandonedCartModal } from "../modals/abandoned-cart-modal";
+import { useTranslations } from "next-intl";
 
 // Tipos para os dados
 interface AbandonedCart {
@@ -134,6 +135,7 @@ const SmsStatus = ({ status }: { status: 'sent' | 'pending' | 'failed' }) => {
 export function AbandonedCartsTable() {
   const [selectedCart, setSelectedCart] = useState<AbandonedCart | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const t = useTranslations();
 
   const handleOptionsClick = (cart: AbandonedCart) => {
     setSelectedCart(cart);
@@ -150,22 +152,22 @@ export function AbandonedCartsTable() {
                 #
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nome
+                {t("common.name")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                País
+                {t("abandonedCart.country")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Gateway
+                {t("abandonedCart.gateway")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status Email
+                {t("abandonedCart.emailStatus")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status SMS
+                {t("abandonedCart.smsStatus")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Opções
+                {t("abandonedCart.options")}
               </th>
             </tr>
           </thead>

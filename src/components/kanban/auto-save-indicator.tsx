@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Check, Save } from "lucide-react"
 import { cn } from "@/src/common/utils"
+import { useTranslations } from "next-intl"
 
 interface AutoSaveIndicatorProps {
   saving: boolean
@@ -11,6 +12,7 @@ interface AutoSaveIndicatorProps {
 }
 
 export default function AutoSaveIndicator({ saving, saved, className }: AutoSaveIndicatorProps) {
+  const t = useTranslations("kanban")
   const [showSaved, setShowSaved] = useState(false)
 
   useEffect(() => {
@@ -29,14 +31,14 @@ export default function AutoSaveIndicator({ saving, saved, className }: AutoSave
       {saving && (
         <>
           <Save className="h-3.5 w-3.5 animate-pulse" />
-          <span>Salvando...</span>
+          <span>{t("saving")}</span>
         </>
       )}
 
       {showSaved && !saving && (
         <>
           <Check className="h-3.5 w-3.5 text-green-500" />
-          <span className="text-green-500">Salvo</span>
+          <span className="text-green-500">{t("saved")}</span>
         </>
       )}
     </div>

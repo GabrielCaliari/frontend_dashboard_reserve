@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import ComponentSidebar from "./component-sidebar"
@@ -23,6 +24,7 @@ import listDeliveriesByCampaignBatchIdService from "@/src/common/services/campai
 import updateCopyEmailByCampaignBatchIdService from "@/src/common/services/campaign-batch/update-copy-email-by-campaign-batch-id-service"
 
 export default function EmailBuilder({ email, campaignBatchId, campaign, primaryCopy, isPrimaryCopy = true }: { email: string, campaignBatchId?: string, campaign?: IEmailCampaign, primaryCopy: IEmail, isPrimaryCopy?: boolean }) {
+  const t = useTranslations()
   const [emailComponents, setEmailComponents] = useState<IEmailComponent[]>([])
   const [selectedComponent, setSelectedComponent] = useState<IEmailComponent | null>(null)
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -49,7 +51,7 @@ export default function EmailBuilder({ email, campaignBatchId, campaign, primary
         height: "60px",
       },
       title: {
-        text: "Minha Empresa",
+        text: t("emailBuilder.defaultCompany"),
         color: "#333333",
         fontSize: "24px",
         fontFamily: "Arial, sans-serif",
@@ -62,7 +64,7 @@ export default function EmailBuilder({ email, campaignBatchId, campaign, primary
       alignment: "center",
       padding: "20px",
       copyright: {
-        text: `© ${new Date().getFullYear()} Minha Empresa. Todos os direitos reservados.`,
+        text: t("emailBuilder.defaultCopyright", { year: new Date().getFullYear() }),
         color: "#666666",
         fontSize: "14px",
       },
@@ -586,13 +588,13 @@ export default function EmailBuilder({ email, campaignBatchId, campaign, primary
     <DndProvider backend={HTML5Backend}>
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="w-full lg:w-64 bg-white rounded-lg shadow-sm p-4">
-          <h2 className="text-lg font-medium mb-4">Componentes</h2>
+          <h2 className="text-lg font-medium mb-4">{t("emailBuilder.components")}</h2>
           <ComponentSidebar onAddComponent={addComponent} />
         </div>
 
         <div className="flex-1 bg-white rounded-lg shadow-sm p-4">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium">Área de Construção</h2>
+            <h2 className="text-lg font-medium">{t("emailBuilder.buildArea")}</h2>
             <div className="flex gap-2">
               {/* {emailComponents.length > 0 && (
                 <Button variant="outline" onClick={toggleSelectAll} className="text-xs">
@@ -601,22 +603,22 @@ export default function EmailBuilder({ email, campaignBatchId, campaign, primary
               )} */}
               <Button variant="outline" onClick={() => setSettingsOpen(true)} className="flex items-center gap-1">
                 <Settings size={16} />
-                <span>Configurações</span>
+                <span>{t("common.settings")}</span>
               </Button>
               <Button variant="outline" onClick={() => setPreviewOpen(true)}>
-                Visualizar
+                {t("common.preview")}
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="flex items-center gap-1">
                     <Download size={16} />
-                    <span>Exportar</span>
+                    <span>{t("emailBuilder.export")}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => exportEmail("html")}>Exportar como HTML</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportEmail("markdown")}>Exportar como Markdown</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportEmail("html")}>{t("emailBuilder.exportHtml")}</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportEmail("markdown")}>{t("emailBuilder.exportMarkdown")}</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -627,7 +629,7 @@ export default function EmailBuilder({ email, campaignBatchId, campaign, primary
                 className="flex items-center gap-1"
               >
                 <Save size={16} />
-                <span>Salvar</span>
+                <span>{t("common.save")}</span>
               </Button>
             </div>
           </div>
@@ -644,7 +646,7 @@ export default function EmailBuilder({ email, campaignBatchId, campaign, primary
 
         {selectedComponent && (
           <div className="w-full lg:w-72 bg-white rounded-lg shadow-sm p-4">
-            <h2 className="text-lg font-medium mb-4">Propriedades</h2>
+            <h2 className="text-lg font-medium mb-4">{t("emailBuilder.properties")}</h2>
             <PropertiesPanel component={selectedComponent} onUpdateComponent={updateComponent} />
           </div>
         )}

@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
+import { useTranslations } from "next-intl"
 import type { IEmailComponent } from "@/src/common/@types/@email-builder"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
@@ -20,6 +21,7 @@ interface PropertiesPanelProps {
 }
 
 export default function PropertiesPanel({ component, onUpdateComponent }: PropertiesPanelProps) {
+  const t = useTranslations("emailBuilder")
   const [localComponent, setLocalComponent] = useState<IEmailComponent>(component)
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false)
   const [selectedText, setSelectedText] = useState("")
@@ -125,8 +127,8 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
   ]
 
   const fontWeights = [
-    { value: "normal", label: "Normal" },
-    { value: "bold", label: "Negrito" },
+    { value: "normal", label: t("normal") },
+    { value: "bold", label: t("bold") },
     { value: "100", label: "100" },
     { value: "200", label: "200" },
     { value: "300", label: "300" },
@@ -139,10 +141,10 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
   ]
 
   const textAligns = [
-    { value: "left", label: "Esquerda" },
-    { value: "center", label: "Centro" },
-    { value: "right", label: "Direita" },
-    { value: "justify", label: "Justificado" },
+    { value: "left", label: t("left") },
+    { value: "center", label: t("center") },
+    { value: "right", label: t("right") },
+    { value: "justify", label: t("justified") },
   ]
 
   const paddings = [
@@ -157,10 +159,10 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
   ]
 
   const textDecorations = [
-    { value: "none", label: "Nenhum" },
-    { value: "underline", label: "Sublinhado" },
-    { value: "overline", label: "Linha superior" },
-    { value: "line-through", label: "Tachado" },
+    { value: "none", label: t("none") },
+    { value: "underline", label: t("underline") },
+    { value: "overline", label: t("overline") },
+    { value: "line-through", label: t("strikethrough") },
   ]
 
   const renderContentProperties = () => {
@@ -170,7 +172,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
           <>
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
-                <Label htmlFor="content">Conteúdo</Label>
+                <Label htmlFor="content">{t("content")}</Label>
                 <Button variant="outline" size="sm" onClick={handleTextSelection} className="flex items-center gap-1">
                   <LinkIcon size={14} />
                   <span>Link</span>
@@ -192,7 +194,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
                 }}
               />
               <p className="text-xs text-gray-500 mt-1">
-                Você pode usar tags HTML básicas como &lt;p&gt;, &lt;h1&gt;, &lt;strong&gt;, etc.
+                {t("htmlTags")}
               </p>
             </div>
           </>
@@ -201,15 +203,15 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         return (
           <>
             <div className="mb-4">
-              <Label htmlFor="src">URL da Imagem</Label>
+              <Label htmlFor="src">{t("imageUrl")}</Label>
               <Input id="src" name="src" value={localComponent.src} onChange={handleChange} />
             </div>
             <div className="mb-4">
-              <Label htmlFor="alt">Texto Alternativo</Label>
+              <Label htmlFor="alt">{t("altText")}</Label>
               <Input id="alt" name="alt" value={localComponent.alt} onChange={handleChange} />
             </div>
             <div className="mb-4">
-              <Label htmlFor="width">Largura</Label>
+              <Label htmlFor="width">{t("width")}</Label>
               <Input
                 id="width"
                 name="width"
@@ -219,7 +221,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
               />
             </div>
             <div className="mb-4">
-              <Label htmlFor="height">Altura</Label>
+              <Label htmlFor="height">{t("height")}</Label>
               <Input
                 id="height"
                 name="height"
@@ -234,7 +236,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         return (
           <>
             <div className="mb-4">
-              <Label htmlFor="label">Texto do Botão</Label>
+              <Label htmlFor="label">{t("buttonText")}</Label>
               <Input id="label" name="label" value={localComponent.label} onChange={handleChange} />
             </div>
             <div className="mb-4">
@@ -247,7 +249,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         return (
           <>
             <div className="mb-4">
-              <Label htmlFor="linkText">Texto do Link</Label>
+              <Label htmlFor="linkText">{t("linkText")}</Label>
               <Input id="linkText" name="linkText" value={localComponent.linkText} onChange={handleChange} />
             </div>
             <div className="mb-4">
@@ -255,13 +257,13 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
               <Input id="url" name="url" value={localComponent.url} onChange={handleChange} />
             </div>
             <div className="mb-4">
-              <Label htmlFor="textDecoration">Decoração do Texto</Label>
+              <Label htmlFor="textDecoration">{t("textDecoration")}</Label>
               <Select
                 value={localComponent.textDecoration || "underline"}
                 onValueChange={(value) => handleSelectChange("textDecoration", value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma decoração" />
+                  <SelectValue placeholder={t("selectDecoration")} />
                 </SelectTrigger>
                 <SelectContent>
                   {textDecorations.map((decoration) => (
@@ -278,7 +280,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         return (
           <>
             <div className="mb-4">
-              <Label htmlFor="thickness">Espessura</Label>
+              <Label htmlFor="thickness">{t("thickness")}</Label>
               <Input
                 id="thickness"
                 name="thickness"
@@ -287,7 +289,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
               />
             </div>
             <div className="mb-4">
-              <Label htmlFor="width">Largura</Label>
+              <Label htmlFor="width">{t("width")}</Label>
               <Input id="width" name="width" value={localComponent.width || "100%"} onChange={handleChange} />
             </div>
           </>
@@ -305,13 +307,13 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         {(component.type === "text" || component.type === "button" || component.type === "link") && (
           <>
             <div className="mb-4">
-              <Label htmlFor="fontFamily">Família da Fonte</Label>
+              <Label htmlFor="fontFamily">{t("fontFamily")}</Label>
               <Select
                 value={localComponent.fontFamily || "Arial, sans-serif"}
                 onValueChange={(value) => handleSelectChange("fontFamily", value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma fonte" />
+                  <SelectValue placeholder={t("selectFont")} />
                 </SelectTrigger>
                 <SelectContent>
                   {fontFamilies.map((font) => (
@@ -324,13 +326,13 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
             </div>
 
             <div className="mb-4">
-              <Label htmlFor="fontSize">Tamanho da Fonte</Label>
+              <Label htmlFor="fontSize">{t("fontSize")}</Label>
               <Select
                 value={localComponent.fontSize || "16px"}
                 onValueChange={(value) => handleSelectChange("fontSize", value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione um tamanho" />
+                  <SelectValue placeholder={t("selectSize")} />
                 </SelectTrigger>
                 <SelectContent>
                   {fontSizes.map((size) => (
@@ -343,13 +345,13 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
             </div>
 
             <div className="mb-4">
-              <Label htmlFor="fontWeight">Peso da Fonte</Label>
+              <Label htmlFor="fontWeight">{t("fontWeight")}</Label>
               <Select
                 value={localComponent.fontWeight || "normal"}
                 onValueChange={(value) => handleSelectChange("fontWeight", value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione um peso" />
+                  <SelectValue placeholder={t("selectWeight")} />
                 </SelectTrigger>
                 <SelectContent>
                   {fontWeights.map((weight) => (
@@ -366,13 +368,13 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         {(component.type === "text" || component.type === "link") && (
           <>
             <div className="mb-4">
-              <Label htmlFor="textAlign">Alinhamento</Label>
+              <Label htmlFor="textAlign">{t("alignment")}</Label>
               <Select
                 value={localComponent.textAlign || "left"}
                 onValueChange={(value) => handleSelectChange("textAlign", value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione um alinhamento" />
+                  <SelectValue placeholder={t("selectAlignment")} />
                 </SelectTrigger>
                 <SelectContent>
                   {textAligns.map((align) => (
@@ -385,7 +387,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
             </div>
 
             <div className="mb-4">
-              <Label>Cor do Texto</Label>
+              <Label>{t("textColor")}</Label>
               <ColorPicker
                 color={localComponent.textColor || "#000000"}
                 onChange={(color) => handleColorChange("textColor", color)}
@@ -397,21 +399,21 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         {component.type === "button" && (
           <>
             <div className="mb-4">
-              <Label>Cor de Fundo</Label>
+              <Label>{t("backgroundColor")}</Label>
               <ColorPicker
                 color={localComponent.backgroundColor || "#007bff"}
                 onChange={(color) => handleColorChange("backgroundColor", color)}
               />
             </div>
             <div className="mb-4">
-              <Label>Cor do Texto</Label>
+              <Label>{t("textColor")}</Label>
               <ColorPicker
                 color={localComponent.color || "#ffffff"}
                 onChange={(color) => handleColorChange("color", color)}
               />
             </div>
             <div className="mb-4">
-              <Label htmlFor="borderRadius">Raio da Borda</Label>
+              <Label htmlFor="borderRadius">{t("borderRadius")}</Label>
               <Input
                 id="borderRadius"
                 name="borderRadius"
@@ -425,7 +427,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
 
         {component.type === "image" && (
           <div className="mb-4">
-            <Label htmlFor="borderRadius">Raio da Borda</Label>
+            <Label htmlFor="borderRadius">{t("borderRadius")}</Label>
             <Input
               id="borderRadius"
               name="borderRadius"
@@ -438,7 +440,7 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
 
         {component.type === "divider" && (
           <div className="mb-4">
-            <Label>Cor</Label>
+            <Label>{t("color")}</Label>
             <ColorPicker
               color={localComponent.color || "#e0e0e0"}
               onChange={(color) => handleColorChange("color", color)}
@@ -447,13 +449,13 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
         )}
 
         <div className="mb-4">
-          <Label htmlFor="padding">Espaçamento (Padding)</Label>
+          <Label htmlFor="padding">{t("padding")}</Label>
           <Select
             value={localComponent.padding || "10px"}
             onValueChange={(value) => handleSelectChange("padding", value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione um espaçamento" />
+              <SelectValue placeholder={t("selectPadding")} />
             </SelectTrigger>
             <SelectContent>
               {paddings.map((padding) => (
@@ -472,8 +474,8 @@ export default function PropertiesPanel({ component, onUpdateComponent }: Proper
     <div className="space-y-4">
       <Tabs defaultValue="content">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="content">Conteúdo</TabsTrigger>
-          <TabsTrigger value="style">Estilo</TabsTrigger>
+          <TabsTrigger value="content">{t("content")}</TabsTrigger>
+          <TabsTrigger value="style">{t("style")}</TabsTrigger>
         </TabsList>
         <TabsContent value="content" className="pt-4">
           {renderContentProperties()}

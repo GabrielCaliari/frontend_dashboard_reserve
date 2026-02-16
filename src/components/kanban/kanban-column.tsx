@@ -19,6 +19,7 @@ import {
 import type { ColumnType } from "./kanban-board"
 import KanbanCard from "./kanban-card"
 import { CardType } from "./kanban-board-with-autosave"
+import { useTranslations } from "next-intl"
 
 interface KanbanColumnProps {
   column: ColumnType
@@ -29,6 +30,7 @@ interface KanbanColumnProps {
 }
 
 export default function KanbanColumn({ column, cards, onAddCard, onRemoveCard, onRemoveColumn }: KanbanColumnProps) {
+  const t = useTranslations("kanban")
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column.id,
     data: {
@@ -62,7 +64,7 @@ export default function KanbanColumn({ column, cards, onAddCard, onRemoveCard, o
             <DropdownItem key={1} onClick={() => onRemoveColumn(column.id)} className="text-destructive">
               <div className="flex items-center gap-2 font-semibold">
                 <Trash2 className="mr-2 h-4 w-4" />
-                Excluir Coluna
+                {t("deleteColumn")}
               </div>
             </DropdownItem>
           </DropdownMenu>

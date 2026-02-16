@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/components/ui/dialog"
 import type { IEmailComponent, IEmailTemplate } from "@/src/common/@types/@email-builder"
 import type { EmailSettings } from "./email-settings-modal"
@@ -34,6 +35,7 @@ export default function EmailPreviewModal({
     },
   },
 }: EmailPreviewModalProps) {
+  const t = useTranslations("emailBuilder")
   const [htmlContent, setHtmlContent] = useState("")
 
   useEffect(() => {
@@ -214,7 +216,7 @@ export default function EmailPreviewModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-auto">
         <DialogHeader>
-          <DialogTitle>Visualização do Email</DialogTitle>
+          <DialogTitle>{t("emailPreviewTitle")}</DialogTitle>
         </DialogHeader>
         <div className="mt-4 border rounded-md p-4 bg-white">
           <iframe

@@ -1,4 +1,7 @@
+"use client";
+
 import React from 'react';
+import { useTranslations } from "next-intl";
 import { useSlate } from 'slate-react';
 import { Editor, Transforms, Text } from 'slate';
 import { CustomEditor, CustomText } from './types';
@@ -36,6 +39,7 @@ const toggleMark = (editor: CustomEditor, format: keyof Omit<CustomText, 'text'>
 };
 
 export const Toolbar = () => {
+  const t = useTranslations("toolbar");
   const editor = useSlate() as CustomEditor;
 
   return (
@@ -65,10 +69,10 @@ export const Toolbar = () => {
           Editor.addMark(editor, 'fontSize', size);
         }}
       >
-        <option value="normal">Normal</option>
-        <option value="text-lg">Grande</option>
-        <option value="text-xl">Muito Grande</option>
-        <option value="text-2xl">Extra Grande</option>
+        <option value="normal">{t("normal")}</option>
+        <option value="text-lg">{t("large")}</option>
+        <option value="text-xl">{t("veryLarge")}</option>
+        <option value="text-2xl">{t("extraLarge")}</option>
       </select>
 
       <div className="w-px h-6 bg-gray-200 mx-2" />
@@ -76,7 +80,7 @@ export const Toolbar = () => {
       <ToolbarButton
         icon={<span>🔗</span>}
         onClick={() => {
-          const url = window.prompt('Digite a URL:');
+          const url = window.prompt(t("enterUrl"));
           if (url) {
             const { selection } = editor;
             if (selection) {
@@ -93,7 +97,7 @@ export const Toolbar = () => {
       <ToolbarButton
         icon={<span>🖼️</span>}
         onClick={() => {
-          const url = window.prompt('Digite a URL da imagem:');
+          const url = window.prompt(t("enterImageUrl"));
           if (url) {
             Transforms.insertNodes(editor, {
               type: 'image',
@@ -113,10 +117,10 @@ export const Toolbar = () => {
           Editor.addMark(editor, 'color', color);
         }}
       >
-        <option value="black">Preto</option>
-        <option value="red">Vermelho</option>
-        <option value="blue">Azul</option>
-        <option value="green">Verde</option>
+        <option value="black">{t("black")}</option>
+        <option value="red">{t("red")}</option>
+        <option value="blue">{t("blue")}</option>
+        <option value="green">{t("green")}</option>
       </select>
 
       <div className="w-px h-6 bg-gray-200 mx-2" />

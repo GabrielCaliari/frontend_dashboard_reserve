@@ -1,9 +1,9 @@
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export async function updateCampaignBatchSizeService(campaignId: string, batchSize: number) {
     try {
-        const response = await apiEmail.put(`/email-campaign/update/campaign-batch-size/${campaignId}`, { campaign_batch_size: batchSize })
+        const response = await api.put(`/mailer/campaigns/${campaignId}/batch-size`, { campaign_batch_size: batchSize })
         return response.data
     } catch (err: any) {
         if (err.response && err.response.data.code) {

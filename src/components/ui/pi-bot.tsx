@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SendHorizontal, X } from "lucide-react";
 import { getCookie } from "cookies-next";
 import api from "@/src/common/config/api";
+import { useTranslations } from "next-intl";
 
 import Markdown from "react-markdown";
 
@@ -24,16 +25,17 @@ const LoadingDots = () => {
 };
 
 export function PiBotChat() {
+  const t = useTranslations("piBot");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showBubble, setShowBubble] = useState<boolean>(true);
   const [messages, setMessages] = useState<Message[]>([
-    { text: "É um prazer ter você aqui", type: "received" },
+    { text: t("welcomeMessage"), type: "received" },
     {
-      text: "Me chamo Roberto e irei guiar você nesse primeiro momento. 😊",
+      text: t("introMessage"),
       type: "received",
     },
     //@ts-ignore
-    { text: "Poderia me dizer qual sua dúvida?", type: "recedived" },
+    { text: t("questionPrompt"), type: "recedived" },
   ]);
 
   const [input, setInput] = useState<string>("");
@@ -126,9 +128,9 @@ export function PiBotChat() {
                 />
                 <div>
                   <p className="text-sm font-semibold">
-                    Roberto | Especialista Marcas
+                    {t("name")}
                   </p>
-                  <p className="text-xs">Online agora</p>
+                  <p className="text-xs">{t("onlineNow")}</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-white">
@@ -154,7 +156,7 @@ export function PiBotChat() {
             <div className="p-3 border-t flex items-center">
               <input
                 type="text"
-                placeholder="Digite aqui sua dúvida..."
+                placeholder={t("placeholder")}
                 className="flex-1 text-sm p-2 border rounded-lg"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -189,7 +191,7 @@ export function PiBotChat() {
 
         {/* Balão de conversa no lado esquerdo */}
         <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-4 w-60 bg-gray-800 text-white p-2 rounded-lg shadow-lg">
-          <p className="text-sm">Olá, estou online para te ajudar!</p>
+          <p className="text-sm">{t("greeting")}</p>
         </div>
       </motion.div>
     </div>

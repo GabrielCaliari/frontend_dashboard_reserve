@@ -3,9 +3,11 @@
 import { EyeIcon, MoreHorizontalIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 export default function EmailCampaignTableDropdownMenu({ id }: { id: string }) {
     const router = useRouter()
+    const t = useTranslations("campaignDropdown")
 
     const handleRowClick = (e: React.MouseEvent<any>, id: string) => {
         e.stopPropagation()
@@ -21,7 +23,7 @@ export default function EmailCampaignTableDropdownMenu({ id }: { id: string }) {
             <DropdownMenuContent align="end" className="bg-white">
                 <DropdownMenuItem onClick={(e) => handleRowClick(e, id)} className="hover:bg-gray-100 cursor-pointer">
                     <EyeIcon className="h-4 w-4 mr-2" />
-                    Visualizar
+                    {t("view")}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
@@ -41,6 +42,7 @@ interface FooterBuilderProps {
 }
 
 export default function FooterBuilder({ config, onChange }: FooterBuilderProps) {
+  const t = useTranslations("emailBuilder")
   const [showCopyright, setShowCopyright] = useState(!!config.copyright)
   const [showLinks, setShowLinks] = useState(!!config.links)
   const [showSocialLinks, setShowSocialLinks] = useState(!!config.socialLinks)
@@ -147,7 +149,7 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
       // Add default copyright
       updateConfig({
         copyright: {
-          text: `© ${new Date().getFullYear()} Minha Empresa. Todos os direitos reservados.`,
+          text: t("defaultCopyright", { year: new Date().getFullYear() }),
           color: "#666666",
           fontSize: "14px",
         },
@@ -265,7 +267,7 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
                 margin: "0",
               }}
             >
-              {config.copyright.text || `© ${new Date().getFullYear()} Minha Empresa. Todos os direitos reservados.`}
+              {config.copyright.text || t("defaultCopyright", { year: new Date().getFullYear() })}
             </p>
           )}
 
@@ -332,7 +334,7 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
               ) : (
                 <>
                   <Plus size={14} />
-                  <span>Adicionar</span>
+                  <span>{t("add")}</span>
                 </>
               )}
             </Button>
@@ -346,24 +348,24 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
                   id="copyright-text"
                   value={config.copyright?.text || ""}
                   onChange={(e) => handleCopyrightChange({ text: e.target.value })}
-                  placeholder={`© ${new Date().getFullYear()} Minha Empresa. Todos os direitos reservados.`}
+                  placeholder={t("defaultCopyright", { year: new Date().getFullYear() })}
                 />
               </div>
               <div>
-                <Label>Cor do Texto</Label>
+                <Label>{t("textColor")}</Label>
                 <ColorPicker
                   color={config.copyright?.color || "#666666"}
                   onChange={(color) => handleCopyrightChange({ color })}
                 />
               </div>
               <div>
-                <Label htmlFor="copyright-font-size">Tamanho da Fonte</Label>
+                <Label htmlFor="copyright-font-size">{t("fontSize")}</Label>
                 <Select
                   value={config.copyright?.fontSize || "14px"}
                   onValueChange={(value) => handleCopyrightChange({ fontSize: value })}
                 >
                   <SelectTrigger id="copyright-font-size">
-                    <SelectValue placeholder="Selecione um tamanho" />
+                    <SelectValue placeholder={t("selectSize")} />
                   </SelectTrigger>
                   <SelectContent>
                     {fontSizes.map((size) => (
@@ -388,7 +390,7 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
               ) : (
                 <>
                   <Plus size={14} />
-                  <span>Adicionar</span>
+                  <span>{t("add")}</span>
                 </>
               )}
             </Button>
@@ -397,7 +399,7 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
           {showLinks && (
             <div className="space-y-3 pl-4 border-l-2 border-gray-200">
               <div>
-                <Label>Cor dos Links</Label>
+                <Label>{t("linkColor")}</Label>
                 <ColorPicker
                   color={config.links?.color || "#007bff"}
                   onChange={(color) => handleLinksChange({ color })}
@@ -406,10 +408,10 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label>Links de Rodapé</Label>
+                  <Label>{t("footerLinks")}</Label>
                   <Button variant="outline" size="sm" onClick={addLink} className="flex items-center gap-1">
                     <Plus size={14} />
-                    <span>Adicionar Link</span>
+                    <span>{t("addLink")}</span>
                   </Button>
                 </div>
 
@@ -419,12 +421,12 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
                       <Input
                         value={link.text}
                         onChange={(e) => updateLink(index, "text", e.target.value)}
-                        placeholder="Texto do Link"
+                        placeholder={t("linkTextPlaceholder")}
                       />
                       <Input
                         value={link.url}
                         onChange={(e) => updateLink(index, "url", e.target.value)}
-                        placeholder="URL"
+                        placeholder={t("urlPlaceholder")}
                       />
                     </div>
                     <Button
@@ -442,7 +444,7 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
           )}
 
           <div className="flex items-center justify-between mt-4">
-            <Label>Redes Sociais</Label>
+            <Label>{t("socialMedia")}</Label>
             <Button variant="outline" size="sm" onClick={toggleSocialLinks} className="flex items-center gap-1">
               {showSocialLinks ? (
                 <>
@@ -452,7 +454,7 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
               ) : (
                 <>
                   <Plus size={14} />
-                  <span>Adicionar</span>
+                  <span>{t("add")}</span>
                 </>
               )}
             </Button>
@@ -461,13 +463,13 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
           {showSocialLinks && (
             <div className="space-y-3 pl-4 border-l-2 border-gray-200">
               <div>
-                <Label htmlFor="social-size">Tamanho dos Ícones</Label>
+                <Label htmlFor="social-size">{t("iconSize")}</Label>
                 <Select
                   value={config.socialLinks?.size || "24px"}
                   onValueChange={(value) => handleSocialLinksChange({ size: value })}
                 >
                   <SelectTrigger id="social-size">
-                    <SelectValue placeholder="Selecione um tamanho" />
+                    <SelectValue placeholder={t("selectSize")} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="20px">Pequeno (20px)</SelectItem>
@@ -479,10 +481,10 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label>Ícones de Redes Sociais</Label>
+                  <Label>{t("socialIcons")}</Label>
                   <Button variant="outline" size="sm" onClick={addSocialLink} className="flex items-center gap-1">
                     <Plus size={14} />
-                    <span>Adicionar Rede</span>
+                    <span>{t("addNetwork")}</span>
                   </Button>
                 </div>
 
@@ -492,16 +494,16 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
                       <Input
                         value={socialLink.name}
                         onChange={(e) => updateSocialLink(index, "name", e.target.value)}
-                        placeholder="Nome"
+                        placeholder={t("namePlaceholder")}
                       />
                       <Input
                         value={socialLink.url}
                         onChange={(e) => updateSocialLink(index, "url", e.target.value)}
-                        placeholder="URL"
+                        placeholder={t("urlPlaceholder")}
                       />
                       <Select value={socialLink.icon} onValueChange={(value) => updateSocialLink(index, "icon", value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Ícone" />
+                          <SelectValue placeholder={t("iconPlaceholder")} />
                         </SelectTrigger>
                         <SelectContent>
                           {socialIcons.map((icon) => (
@@ -529,33 +531,33 @@ export default function FooterBuilder({ config, onChange }: FooterBuilderProps) 
 
         <TabsContent value="style" className="space-y-4 pt-4">
           <div>
-            <Label>Cor de Fundo</Label>
+            <Label>{t("backgroundColor")}</Label>
             <ColorPicker
               color={config.backgroundColor || "#f5f5f5"}
               onChange={(color) => updateConfig({ backgroundColor: color })}
             />
           </div>
           <div>
-            <Label htmlFor="footer-alignment">Alinhamento</Label>
+            <Label htmlFor="footer-alignment">{t("alignment")}</Label>
             <Select
               value={config.alignment || "center"}
               onValueChange={(value: "left" | "center" | "right") => updateConfig({ alignment: value })}
             >
               <SelectTrigger id="footer-alignment">
-                <SelectValue placeholder="Selecione um alinhamento" />
+                <SelectValue placeholder={t("selectAlignment")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="left">Esquerda</SelectItem>
-                <SelectItem value="center">Centro</SelectItem>
-                <SelectItem value="right">Direita</SelectItem>
+                <SelectItem value="left">{t("left")}</SelectItem>
+                <SelectItem value="center">{t("center")}</SelectItem>
+                <SelectItem value="right">{t("right")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor="footer-padding">Espaçamento (Padding)</Label>
+            <Label htmlFor="footer-padding">{t("padding")}</Label>
             <Select value={config.padding || "20px"} onValueChange={(value) => updateConfig({ padding: value })}>
               <SelectTrigger id="footer-padding">
-                <SelectValue placeholder="Selecione um espaçamento" />
+                <SelectValue placeholder={t("selectPadding")} />
               </SelectTrigger>
               <SelectContent>
                 {paddings.map((padding) => (

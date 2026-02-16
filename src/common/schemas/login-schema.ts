@@ -1,10 +1,12 @@
 import * as Yup from "yup";
 
-export const loginSchema = Yup.object({
+type TranslateFn = (key: string, values?: Record<string, unknown>) => string
+
+export const loginSchema = (t: TranslateFn) => Yup.object({
     email: Yup.string()
-        .email('E-mail inválido')
-        .required('O e-mail é obrigatório'),
+        .email(t('validation.invalidEmail'))
+        .required(t('validation.emailRequired')),
     password: Yup.string()
-        .min(6, 'A senha deve ter no mínimo 6 caracteres')
-        .required('A senha é obrigatória'),
+        .min(6, t('validation.passwordMinLength', { min: 6 }))
+        .required(t('validation.passwordRequired')),
 });

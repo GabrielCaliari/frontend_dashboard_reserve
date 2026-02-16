@@ -6,9 +6,11 @@ import { LeadDetailModal, Lead } from "@/src/components/modals/LeadDetailModal";
 import { LeadsTable } from "@/src/components/tables/LeadsTable";
 import { Pagination } from "@/src/components/tables/Pagination";
 import useListLeads from "@/src/common/hooks/use-list-leads";
+import { useTranslations } from "next-intl";
 
 export default function LeadsPage() {
     const { execListLeads } = useListLeads();
+    const t = useTranslations();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -55,13 +57,13 @@ export default function LeadsPage() {
         <>
             <LayoutScopeRoot routeActive="leads">
                 <div className="p-4">
-                    <h1 className="text-2xl font-bold mb-6">Leads</h1>
-                    <div className="bg-white rounded-lg shadow p-6">
+                    <h1 className="text-2xl font-bold mb-6 text-gray-100">{t("dashboard.leadsTitle")}</h1>
+                    <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
                         <div className="grid gap-4">
                             {isLoading ? (
                                 <div className="flex justify-center items-center py-20">
-                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-                                    <span className="ml-3 text-gray-600">Carregando dados...</span>
+                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                                    <span className="ml-3 text-gray-400">{t("common.loadingData")}</span>
                                 </div>
                             ) : (
                                 <>

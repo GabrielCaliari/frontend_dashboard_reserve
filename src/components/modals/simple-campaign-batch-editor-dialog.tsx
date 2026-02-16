@@ -13,6 +13,7 @@ import EmailSettingsModal, { EmailSettings } from "../email-builder/email-settin
 import listEmailByCampaignBatchIdService from "@/src/common/services/campaign-batch/list-email-by-campaign-batch-id-service"
 import updateCampaignBatchEmailService from "@/src/common/services/campaign-batch/update-campaign-batch-email-service"
 import toast from "react-hot-toast"
+import { useTranslations } from "next-intl"
 
 interface SimpleCampaignBatchEditorDialogProps {
   isOpen: boolean
@@ -25,6 +26,7 @@ export function SimpleCampaignBatchEditorDialog({
   onClose,
   campaignBatchId
 }: SimpleCampaignBatchEditorDialogProps) {
+  const t = useTranslations()
   const [htmlContent, setHtmlContent] = useState("")
   const [emailMetadata, setEmailMetadata] = useState({
     name: "",
@@ -74,10 +76,10 @@ export function SimpleCampaignBatchEditorDialog({
               fromName: response.from_name || ""
             })
           } else {
-            toast.error("Erro ao carregar dados do email")
+            toast.error(t("emailEditor.loadError"))
           }
         } catch (error) {
-          toast.error("Erro ao carregar dados do email")
+          toast.error(t("emailEditor.loadError"))
         } finally {
           setIsLoading(false)
         }
@@ -144,17 +146,17 @@ export function SimpleCampaignBatchEditorDialog({
 
   const handleSave = async () => {
     if (!htmlContent.trim()) {
-      toast.error("O conteúdo HTML não pode estar vazio")
+      toast.error(t("emailEditor.emptyHtmlError"))
       return
     }
 
     if (!emailMetadata.subject.trim()) {
-      toast.error("O assunto do email é obrigatório")
+      toast.error(t("emailEditor.subjectRequiredError"))
       return
     }
 
     if (!emailMetadata.fromName.trim()) {
-      toast.error("O nome do remetente é obrigatório")
+      toast.error(t("emailEditor.senderNameRequired"))
       return
     }
 
@@ -174,15 +176,15 @@ export function SimpleCampaignBatchEditorDialog({
       const response = await updateCampaignBatchEmailService(campaignBatchId, data)
       
       if (response.error) {
-        toast.error(response.message || "Erro ao salvar o email")
+        toast.error(response.message || t("emailEditor.saveError"))
       } else {
-        toast.success("Email do disparo atualizado com sucesso!")
+        toast.success(t("emailEditor.batchUpdateSuccess"))
         onClose()
         window.location.reload()
       }
 
     } catch (error) {
-      toast.error("Erro ao salvar o email")
+      toast.error(t("emailEditor.saveError"))
     } finally {
       setIsSaving(false)
     }
@@ -197,7 +199,7 @@ export function SimpleCampaignBatchEditorDialog({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle>Carregando...</DialogTitle>
+            <DialogTitle>{t("common.loading")}</DialogTitle>
           </DialogHeader>
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -213,7 +215,7 @@ export function SimpleCampaignBatchEditorDialog({
         <DialogContent className="sm:max-w-[90%] max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>
-              Editar Email do Disparo
+              {t("emailEditor.editBatchEmail")}
             </DialogTitle>
           </DialogHeader>
 
@@ -223,50 +225,50 @@ export function SimpleCampaignBatchEditorDialog({
               <div className="space-y-4 mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="email-name">Nome do Email</Label>
+                    <Label htmlFor="email-name">{t("emailEditor.emailName")}</Label>
                     <Input
                       id="email-name"
                       value={emailMetadata.name}
                       onChange={(e) => setEmailMetadata({...emailMetadata, name: e.target.value})}
-                      placeholder="Nome para identificação interna"
+                      placeholder={t("emailEditor.emailNamePlaceholder")}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="from-name">Nome do Remetente</Label>
+                    <Label htmlFor="from-name">{t("emailEditor.senderName")}</Label>
                     <Input
                       id="from-name"
                       value={emailMetadata.fromName}
                       onChange={(e) => setEmailMetadata({...emailMetadata, fromName: e.target.value})}
-                      placeholder="Nome que aparecerá no email"
+                      placeholder={t("emailEditor.senderNamePlaceholder")}
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="subject">Assunto *</Label>
+                  <Label htmlFor="subject">{t("emailEditor.subjectRequired")}</Label>
                   <Input
                     id="subject"
                     value={emailMetadata.subject}
                     onChange={(e) => setEmailMetadata({...emailMetadata, subject: e.target.value})}
-                    placeholder="Assunto do email"
+                    placeholder={t("emailEditor.subjectPlaceholder")}
                     required
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="preheader">Pré-cabeçalho</Label>
+                  <Label htmlFor="preheader">{t("emailEditor.preHeaderLabel")}</Label>
                   <Input
                     id="preheader"
                     value={emailMetadata.preHeader}
                     onChange={(e) => setEmailMetadata({...emailMetadata, preHeader: e.target.value})}
-                    placeholder="Texto de preview que aparece após o assunto"
+                    placeholder={t("emailEditor.preHeaderPlaceholder")}
                   />
                 </div>
               </div>
 
               <div className="flex-1 flex flex-col">
                 <div className="flex justify-between items-center mb-2">
-                  <Label htmlFor="html-content">Conteúdo HTML *</Label>
+                  <Label htmlFor="html-content">{t("emailEditor.htmlContentRequired")}</Label>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -275,7 +277,7 @@ export function SimpleCampaignBatchEditorDialog({
                       className="flex items-center gap-1"
                     >
                       <Settings size={16} />
-                      Configurações
+                      {t("common.settings")}
                     </Button>
                     <Button
                       variant="outline"
@@ -284,7 +286,7 @@ export function SimpleCampaignBatchEditorDialog({
                       className="flex items-center gap-1"
                     >
                       <Eye size={16} />
-                      Visualizar
+                      {t("common.preview")}
                     </Button>
                   </div>
                 </div>
@@ -293,7 +295,7 @@ export function SimpleCampaignBatchEditorDialog({
                   id="html-content"
                   value={htmlContent}
                   onChange={(e) => setHtmlContent(e.target.value)}
-                  placeholder="Cole aqui o código HTML do seu email..."
+                  placeholder={t("emailEditor.pasteHtml")}
                   className="flex-1 min-h-[400px] font-mono text-sm"
                   style={{ resize: 'none' }}
                 />
@@ -302,7 +304,7 @@ export function SimpleCampaignBatchEditorDialog({
 
             {/* Coluna Lateral - Preview */}
             <div className="hidden lg:flex flex-col">
-              <Label className="mb-2">Preview</Label>
+              <Label className="mb-2">{t("common.preview")}</Label>
               <div className="flex-1 border rounded-md overflow-hidden bg-white">
                 <iframe
                   srcDoc={generateFinalHtml()}
@@ -316,11 +318,11 @@ export function SimpleCampaignBatchEditorDialog({
 
           <DialogFooter className="flex justify-between">
             <Button variant="outline" onClick={onClose} disabled={isSaving}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button onClick={handleSave} disabled={isSaving} className="flex items-center gap-1">
               <Save size={16} />
-              {isSaving ? "Salvando..." : "Salvar Email"}
+              {isSaving ? t("common.saving") : t("emailEditor.saveEmail")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -330,7 +332,7 @@ export function SimpleCampaignBatchEditorDialog({
       <Dialog open={previewOpen} onOpenChange={(open) => !open && setPreviewOpen(false)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
           <DialogHeader>
-            <DialogTitle>Visualização do Email</DialogTitle>
+            <DialogTitle>{t("emailEditor.emailPreview")}</DialogTitle>
           </DialogHeader>
           <div className="mt-4 border rounded-md overflow-hidden bg-white" style={{ minHeight: '500px' }}>
             <iframe

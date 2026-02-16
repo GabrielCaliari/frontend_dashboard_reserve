@@ -8,6 +8,7 @@ import { Label } from "@/src/components/ui/label"
 import { Filter, Zap, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { FunnelBuilder } from "./funnel-builder"
+import { useTranslations } from "next-intl"
 
 interface FunnelConfigDialogProps {
   isOpen: boolean
@@ -16,6 +17,7 @@ interface FunnelConfigDialogProps {
 }
 
 export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfigDialogProps) {
+  const t = useTranslations()
   const router = useRouter()
   const [funnelType, setFunnelType] = useState<"single" | "funnel" | null>(null)
   const [showFunnelBuilder, setShowFunnelBuilder] = useState(false)
@@ -101,7 +103,7 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Filter className="h-5 w-5" />
-                Configuração de Funil
+                {t("funnelConfig.title")}
               </DialogTitle>
             </DialogHeader>
 
@@ -109,7 +111,7 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
               {!success ? (
                 <div className="space-y-4">
                   <p className="text-sm text-gray-600">
-                    Escolha como você deseja configurar os disparos da sua campanha:
+                    {t("funnelConfig.description")}
                   </p>
 
                   <RadioGroup
@@ -122,9 +124,9 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
                       <div className="space-y-1.5 flex-1">
                         <Label htmlFor="single" className="flex items-center cursor-pointer">
                           <Zap className="h-4 w-4 mr-2 text-amber-500" />
-                          Disparo Único
+                          {t("funnelConfig.singleBatch")}
                         </Label>
-                        <p className="text-xs text-gray-500">Envie um único email para todos os leads da campanha.</p>
+                        <p className="text-xs text-gray-500">{t("funnelConfig.singleBatchDesc")}</p>
                       </div>
                     </div>
 
@@ -133,10 +135,10 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
                       <div className="space-y-1.5 flex-1">
                         <Label htmlFor="funnel" className="flex items-center cursor-pointer">
                           <Filter className="h-4 w-4 mr-2 text-purple-600" />
-                          Criar um Funil
+                          {t("funnelConfig.createFunnel")}
                         </Label>
                         <p className="text-xs text-gray-500">
-                          Configure uma sequência de emails baseada em condições como abertura e clique.
+                          {t("funnelConfig.createFunnelDesc")}
                         </p>
                       </div>
                     </div>
@@ -145,11 +147,11 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
               ) : (
                 <div className="text-center py-4">
                   <CheckCircle className="h-12 w-12 mx-auto text-emerald-500 mb-3" />
-                  <h3 className="text-lg font-medium text-emerald-700">Configuração salva!</h3>
+                  <h3 className="text-lg font-medium text-emerald-700">{t("funnelConfig.savedSuccess")}</h3>
                   <p className="text-sm text-gray-600 mt-1">
                     {funnelType === "single"
-                      ? "A campanha será enviada como um disparo único."
-                      : "O funil foi configurado com sucesso."}
+                      ? t("funnelConfig.singleBatchSaved")
+                      : t("funnelConfig.funnelSaved")}
                   </p>
                 </div>
               )}
@@ -159,15 +161,15 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
               {!success ? (
                 <>
                   <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
-                    Cancelar
+                    {t("common.cancel")}
                   </Button>
                   <Button type="button" onClick={handleSubmit} disabled={!funnelType || isSubmitting}>
-                    {isSubmitting ? "Salvando..." : funnelType === "funnel" ? "Criar Funil" : "Salvar"}
+                    {isSubmitting ? t("common.saving") : funnelType === "funnel" ? t("funnelConfig.createFunnel") : t("common.save")}
                   </Button>
                 </>
               ) : (
                 <Button type="button" onClick={onClose} className="mx-auto">
-                  Fechar
+                  {t("common.close")}
                 </Button>
               )}
             </DialogFooter>

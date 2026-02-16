@@ -6,6 +6,7 @@ interface PaginationProps {
     totalResults: number;
     onPageChange?: (page: number) => void;
 }
+import { useTranslations } from "next-intl";
 
 // Componente de Paginação
 export function Pagination({ 
@@ -15,6 +16,7 @@ export function Pagination({
     totalResults,
     onPageChange 
 }: PaginationProps) {
+    const t = useTranslations("pagination");
     const handlePageChange = (page: number) => {
         if (onPageChange && page >= 1 && page <= totalPages) {
             onPageChange(page);
@@ -42,7 +44,7 @@ export function Pagination({
         <div className="flex justify-between items-center mt-4">
             <div>
                 <span className="text-sm text-gray-700">
-                    Mostrando <span className="font-medium">{showing.start}</span> a <span className="font-medium">{showing.end}</span> de <span className="font-medium">{totalResults}</span> resultados
+                    {t("showing", { start: showing.start, end: showing.end, total: totalResults })}
                 </span>
             </div>
 
@@ -52,7 +54,7 @@ export function Pagination({
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                 >
-                    Anterior
+                    {t("previous")}
                 </button>
                 
                 {getPageNumbers().map(page => (
@@ -72,7 +74,7 @@ export function Pagination({
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                 >
-                    Próximo
+                    {t("next")}
                 </button>
             </div>
         </div>

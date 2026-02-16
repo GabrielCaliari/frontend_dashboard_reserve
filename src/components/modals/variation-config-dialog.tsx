@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation"
 import { updateEmailCampaignCopyVariant } from "@/src/common/actions/email-campaign/update-email-campaign-copy-variant"
 import { ECopyVariationType } from "@/src/common/@types/@email-campaign"
 import toast from "react-hot-toast"
+import { useTranslations } from "next-intl"
 
 interface VariationConfigDialogProps {
   isOpen: boolean
@@ -19,6 +20,7 @@ interface VariationConfigDialogProps {
 }
 
 export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariationType }: VariationConfigDialogProps) {
+  const t = useTranslations()
   const router = useRouter()
   const [variationType, setVariationType] = useState<ECopyVariationType | null>(copyVariationType)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -73,7 +75,7 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Cpu className="h-5 w-5" />
-            Configuração de Variação
+            {t("variation.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -81,7 +83,7 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
           {!success ? (
             <div className="space-y-4">
               <p className="text-sm text-gray-600">
-                Escolha como você deseja criar variações para o conteúdo do seu email:
+                {t("variation.description")}
               </p>
 
               <RadioGroup
@@ -95,10 +97,10 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
                     <Label htmlFor="ai" className="space-y-1.5 cursor-pointer">
                       <div className="flex items-center">
                         <Cpu className="h-4 w-4 mr-2 text-emerald-600" />
-                        Usar IA para gerar variações
+                        {t("variation.aiVariation")}
                       </div>
                       <p className="text-xs text-gray-500">
-                        Nossa IA criará automaticamente variações do seu conteúdo para melhorar as taxas de conversão.
+                        {t("variation.aiVariationDesc")}
                       </p>
                     </Label>
                   </div>
@@ -110,10 +112,10 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
                     <Label htmlFor="manual" className="space-y-1.5 cursor-pointer">
                       <span className="flex items-center">
                         <Edit className="h-4 w-4 mr-2 text-blue-600" />
-                        Escrever variações manualmente
+                        {t("variation.manualVariation")}
                       </span>
                       <p className="text-xs text-gray-500">
-                        Você criará suas próprias variações de conteúdo para testar diferentes abordagens.
+                        {t("variation.manualVariationDesc")}
                       </p>
                     </Label>
                   </div>
@@ -123,11 +125,11 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
           ) : (
             <div className="text-center py-4">
               <CheckCircle className="h-12 w-12 mx-auto text-emerald-500 mb-3" />
-              <h3 className="text-lg font-medium text-emerald-700">Configuração salva!</h3>
+              <h3 className="text-lg font-medium text-emerald-700">{t("variation.savedSuccess")}</h3>
               <p className="text-sm text-gray-600 mt-1">
                 {variationType === ECopyVariationType.ai
-                  ? "A IA será usada para gerar variações do seu conteúdo."
-                  : "Você poderá criar variações manualmente."}
+                  ? t("variation.aiSaved")
+                  : t("variation.manualSaved")}
               </p>
             </div>
           )}
@@ -137,15 +139,15 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
           {!success ? (
             <>
               <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
-                Cancelar
+                {t("common.cancel")}
               </Button>
               <Button type="button" onClick={handleSubmit} disabled={!variationType || isSubmitting}>
-                {isSubmitting ? "Salvando..." : "Salvar configuração"}
+                {isSubmitting ? t("common.saving") : t("variation.saveConfig")}
               </Button>
             </>
           ) : (
             <Button type="button" onClick={onClose} className="mx-auto">
-              Fechar
+              {t("common.close")}
             </Button>
           )}
         </DialogFooter>

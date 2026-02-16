@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Button } from "@/src/components/ui/button"
 import { ScrollArea } from "@/src/components/ui/scroll-area"
 import type { IEmailComponent, IStylePreset } from "@/src/common/@types/@email-builder"
@@ -10,11 +11,13 @@ interface StylePresetsProps {
 }
 
 export default function StylePresets({ componentType, onApplyPreset }: StylePresetsProps) {
+  const t = useTranslations("emailBuilder")
+
   // Estilos predefinidos para texto
   const textPresets: IStylePreset[] = [
     {
       id: "text-heading",
-      name: "Título Principal",
+      name: t("presetMainTitle"),
       properties: {
         fontFamily: "'Helvetica', sans-serif",
         fontSize: "24px",
@@ -26,7 +29,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "text-subheading",
-      name: "Subtítulo",
+      name: t("presetSubtitle"),
       properties: {
         fontFamily: "'Helvetica', sans-serif",
         fontSize: "18px",
@@ -38,7 +41,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "text-paragraph",
-      name: "Parágrafo",
+      name: t("presetParagraph"),
       properties: {
         fontFamily: "'Arial', sans-serif",
         fontSize: "16px",
@@ -50,7 +53,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "text-quote",
-      name: "Citação",
+      name: t("presetQuote"),
       properties: {
         fontFamily: "'Georgia', serif",
         fontSize: "16px",
@@ -67,7 +70,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
   const buttonPresets: IStylePreset[] = [
     {
       id: "button-primary",
-      name: "Primário",
+      name: t("presetPrimary"),
       properties: {
         backgroundColor: "#007bff",
         color: "#ffffff",
@@ -79,7 +82,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "button-success",
-      name: "Sucesso",
+      name: t("presetSuccess"),
       properties: {
         backgroundColor: "#28a745",
         color: "#ffffff",
@@ -91,7 +94,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "button-danger",
-      name: "Perigo",
+      name: t("presetDanger"),
       properties: {
         backgroundColor: "#dc3545",
         color: "#ffffff",
@@ -103,7 +106,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "button-outline",
-      name: "Contorno",
+      name: t("presetOutline"),
       properties: {
         backgroundColor: "transparent",
         color: "#007bff",
@@ -116,7 +119,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "button-rounded",
-      name: "Arredondado",
+      name: t("presetRounded"),
       properties: {
         backgroundColor: "#6c757d",
         color: "#ffffff",
@@ -132,7 +135,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
   const imagePresets: IStylePreset[] = [
     {
       id: "image-full",
-      name: "Largura Total",
+      name: t("presetFullWidth"),
       properties: {
         width: "100%",
         height: "auto",
@@ -142,7 +145,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "image-rounded",
-      name: "Cantos Arredondados",
+      name: t("presetRoundedCorners"),
       properties: {
         width: "auto",
         height: "auto",
@@ -152,7 +155,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "image-circle",
-      name: "Circular",
+      name: t("presetCircular"),
       properties: {
         width: "150px",
         height: "150px",
@@ -163,7 +166,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "image-shadow",
-      name: "Com Sombra",
+      name: t("presetWithShadow"),
       properties: {
         width: "auto",
         height: "auto",
@@ -178,7 +181,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
   const linkPresets: IStylePreset[] = [
     {
       id: "link-standard",
-      name: "Padrão",
+      name: t("presetDefault"),
       properties: {
         textColor: "#0066cc",
         fontFamily: "'Arial', sans-serif",
@@ -189,7 +192,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "link-bold",
-      name: "Negrito",
+      name: t("presetBold"),
       properties: {
         textColor: "#0066cc",
         fontFamily: "'Arial', sans-serif",
@@ -201,7 +204,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "link-subtle",
-      name: "Discreto",
+      name: t("presetDiscreet"),
       properties: {
         textColor: "#666666",
         fontFamily: "'Arial', sans-serif",
@@ -212,7 +215,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "link-highlight",
-      name: "Destacado",
+      name: t("presetHighlighted"),
       properties: {
         textColor: "#ff6600",
         fontFamily: "'Arial', sans-serif",
@@ -228,7 +231,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
   const dividerPresets: IStylePreset[] = [
     {
       id: "divider-thin",
-      name: "Fino",
+      name: t("presetThin"),
       properties: {
         color: "#e0e0e0",
         thickness: "1px",
@@ -238,7 +241,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "divider-thick",
-      name: "Grosso",
+      name: t("presetThick"),
       properties: {
         color: "#cccccc",
         thickness: "3px",
@@ -248,7 +251,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "divider-dashed",
-      name: "Tracejado",
+      name: t("presetDashed"),
       properties: {
         color: "#dddddd",
         thickness: "1px",
@@ -259,7 +262,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
     },
     {
       id: "divider-gradient",
-      name: "Gradiente",
+      name: t("presetGradient"),
       properties: {
         thickness: "2px",
         width: "80%",
@@ -300,7 +303,7 @@ export default function StylePresets({ componentType, onApplyPreset }: StylePres
 
   return (
     <div className="mb-4">
-      <h3 className="text-sm font-medium mb-2">Estilos Predefinidos</h3>
+      <h3 className="text-sm font-medium mb-2">{t("presets")}</h3>
       <ScrollArea className="h-[120px]">
         <div className="grid grid-cols-2 gap-2">
           {presets.map((preset) => (

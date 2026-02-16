@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Code, Send, Clock, CheckCircle, XCircle, Eye, RefreshCw, Calendar, Mail, MousePointer, ExternalLink } from "lucide-react";
 import { EmailTemplateModal } from './email-template-modal';
+import { useTranslations } from 'next-intl';
 
 interface Product {
   id: string;
@@ -41,6 +42,7 @@ interface AbandonedCartModalProps {
 }
 
 export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModalProps) {
+  const t = useTranslations()
   const [activeTab, setActiveTab] = useState('info');
   const [showProductsJson, setShowProductsJson] = useState(false);
   const [showOriginJson, setShowOriginJson] = useState(false);
@@ -106,11 +108,11 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
   const totalPrice = mockCartData.products.reduce((sum, product) => sum + product.price, 0);
 
   const tabs = [
-    { id: 'info', label: 'Informações do Lead' },
-    { id: 'emails', label: 'Emails' },
-    { id: 'sms', label: 'SMS' },
-    { id: 'actions', label: 'Ações' },
-    { id: 'history', label: 'Histórico' }
+    { id: 'info', label: t('abandonedCart.leadInfo') },
+    { id: 'emails', label: t('abandonedCart.emails') },
+    { id: 'sms', label: t('abandonedCart.sms') },
+    { id: 'actions', label: t('abandonedCart.actionsTab') },
+    { id: 'history', label: t('abandonedCart.history') }
   ];
 
   const handleEditTemplate = (
@@ -133,7 +135,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
   };
 
   const handleSendSms = () => {
-    if (window.confirm('Você tem certeza que deseja enviar este SMS?')) {
+    if (window.confirm(t('abandonedCart.confirmSms'))) {
       console.log('SMS enviado:', smsMessage);
       setIsSmsModalOpen(false);
     }
@@ -143,22 +145,22 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
     <div className="space-y-6">
       {/* Informações Pessoais */}
       <div>
-        <h4 className="font-semibold text-gray-900 mb-3">Informações Pessoais</h4>
+        <h4 className="font-semibold text-gray-900 mb-3">{t('abandonedCart.personalInfo')}</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Nome</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">{t('common.name')}</label>
             <p className="text-gray-900">{mockCartData.name}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">{t('common.email')}</label>
             <p className="text-gray-900">{mockCartData.email}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Telefone</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">{t('common.phone')}</label>
             <p className="text-gray-900">{mockCartData.phone}</p>
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-600 mb-1">Endereço</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">{t('abandonedCart.address')}</label>
             <p className="text-gray-900">{mockCartData.address}</p>
           </div>
         </div>
@@ -167,13 +169,13 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
       {/* Produtos */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-semibold text-gray-900">Produtos</h4>
+          <h4 className="font-semibold text-gray-900">{t('abandonedCart.products')}</h4>
           <button
             onClick={() => setShowProductsJson(!showProductsJson)}
             className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition-colors"
           >
             <Code className="w-4 h-4" />
-            {showProductsJson ? 'Ocultar JSON' : 'Ver JSON'}
+            {showProductsJson ? t('abandonedCart.hideJson') : t('abandonedCart.viewJson')}
           </button>
         </div>
         
@@ -195,7 +197,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
               </div>
             ))}
             <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-              <span className="font-semibold text-gray-900">Total:</span>
+              <span className="font-semibold text-gray-900">{t('abandonedCart.total')}</span>
               <span className="font-bold text-lg text-gray-900">
                 R$ {totalPrice.toFixed(2).replace('.', ',')}
               </span>
@@ -208,13 +210,13 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
       {mockCartData.accessOrigin && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-900">Origem de Acesso</h4>
+            <h4 className="font-semibold text-gray-900">{t('abandonedCart.accessOrigin')}</h4>
             <button
               onClick={() => setShowOriginJson(!showOriginJson)}
               className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition-colors"
             >
               <Code className="w-4 h-4" />
-              {showOriginJson ? 'Ocultar JSON' : 'Ver JSON'}
+              {showOriginJson ? t('abandonedCart.hideJson') : t('abandonedCart.viewJson')}
             </button>
           </div>
           
@@ -249,7 +251,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
     const emailSequences = [
       {
         id: 1,
-        title: "Email 1 - Lembrete Inicial",
+        title: t('abandonedCart.email1'),
         status: mockCartData.emailSequence.step1,
         sentAt: mockCartData.emailSequence.step1 === 'sent' ? "2024-01-15 14:30" : null,
         subject: "Você esqueceu alguns itens no seu carrinho!",
@@ -277,7 +279,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
       },
       {
         id: 2,
-        title: "Email 2 - Desconto Especial",
+        title: t('abandonedCart.email2'),
         status: mockCartData.emailSequence.step2,
         sentAt: mockCartData.emailSequence.step2 === 'sent' ? "2024-01-16 10:15" : null,
         subject: "🎁 Oferta especial: 10% de desconto nos seus produtos!",
@@ -296,7 +298,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
       },
       {
         id: 3,
-        title: "Email 3 - Última Chance",
+        title: t('abandonedCart.email3'),
         status: mockCartData.emailSequence.step3,
         sentAt: mockCartData.emailSequence.step3 === 'sent' ? "2024-01-17 16:45" : null,
         subject: "⏰ Última chance! Seus produtos estão quase esgotando",
@@ -329,11 +331,11 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
     const getStatusText = (status: 'sent' | 'pending' | 'failed') => {
       switch (status) {
         case 'sent':
-          return 'Enviado';
+          return t('abandonedCart.sent');
         case 'pending':
-          return 'Pendente';
+          return t('abandonedCart.pending');
         case 'failed':
-          return 'Falhou';
+          return t('abandonedCart.failed');
       }
     };
 
@@ -351,9 +353,9 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-gray-900">Sequência de Emails</h4>
+          <h4 className="font-semibold text-gray-900">{t('abandonedCart.emailSequence')}</h4>
           <div className="text-sm text-gray-600">
-            Total de emails: {emailSequences.length}
+            {t('abandonedCart.totalEmails')} {emailSequences.length}
           </div>
         </div>
 
@@ -376,37 +378,37 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
               <div className="space-y-4 mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Enviado em</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">{t('abandonedCart.sentAt')}</label>
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-gray-500" />
                       <span className="text-sm text-gray-900">{email.sentAt}</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Status de Abertura</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">{t('abandonedCart.openStatus')}</label>
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4 text-gray-500" />
                       {email.opened ? (
                         <div>
-                          <span className="text-sm font-semibold text-green-600">Aberto</span>
+                          <span className="text-sm font-semibold text-green-600">{t('abandonedCart.opened')}</span>
                           <p className="text-xs text-gray-500">{email.openedAt}</p>
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-500">Não aberto</span>
+                        <span className="text-sm text-gray-500">{t('abandonedCart.notOpened')}</span>
                       )}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Status de Clique</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">{t('abandonedCart.clickStatus')}</label>
                     <div className="flex items-center gap-2">
                       <MousePointer className="w-4 h-4 text-gray-500" />
                       {email.clicked ? (
                         <div>
-                          <span className="text-sm font-semibold text-blue-600">Clicou</span>
+                          <span className="text-sm font-semibold text-blue-600">{t('abandonedCart.clicked')}</span>
                           <p className="text-xs text-gray-500">{email.clickedAt}</p>
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-500">Não clicou</span>
+                        <span className="text-sm text-gray-500">{t('abandonedCart.notClicked')}</span>
                       )}
                     </div>
                   </div>
@@ -416,12 +418,12 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
                 {email.clicked && email.clickedLinks.length > 0 && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <div className="flex items-center justify-between mb-3">
-                      <h6 className="font-medium text-blue-900">Links Clicados</h6>
+                      <h6 className="font-medium text-blue-900">{t('abandonedCart.clickedLinks')}</h6>
                       <button
                         onClick={() => setShowClickedLinks(showClickedLinks === email.id ? null : email.id)}
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
-                        {showClickedLinks === email.id ? 'Ocultar' : 'Ver Detalhes'}
+                        {showClickedLinks === email.id ? t('abandonedCart.hide') : t('abandonedCart.viewDetails')}
                       </button>
                     </div>
                     
@@ -449,7 +451,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
             {email.status === 'failed' && (
               <div className="p-4 bg-red-50 rounded-lg mb-4">
                 <p className="text-sm text-red-700">
-                  <strong>Erro:</strong> {email.providerResponse.error || "Falha no envio - Email inválido ou servidor indisponível"}
+                  <strong>{t('abandonedCart.errorLabel')}</strong> {email.providerResponse.error || t('abandonedCart.sendFailure')}
                 </p>
               </div>
             )}
@@ -457,7 +459,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
             {/* JSON do Provedor */}
             {showEmailJson === email.id && (
               <div className="mb-4">
-                <h6 className="font-medium text-gray-900 mb-2">Resposta do Provedor de Email</h6>
+                <h6 className="font-medium text-gray-900 mb-2">{t('abandonedCart.providerResponse')}</h6>
                 <div className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto">
                   <pre>{JSON.stringify(email.providerResponse, null, 2)}</pre>
                 </div>
@@ -479,7 +481,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
                 className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
               >
                 <Eye className="w-4 h-4" />
-                {email.status === 'sent' ? 'Visualizar Template' : 'Configurar Email'}
+                {email.status === 'sent' ? t('abandonedCart.viewTemplate') : t('emailTemplate.configureEmail')}
               </button>
 
               {email.status === 'sent' && (
@@ -488,7 +490,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
                   className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  Reenviar
+                  {t('abandonedCart.resend')}
                 </button>
               )}
 
@@ -498,7 +500,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
                   className="flex items-center gap-2 px-3 py-2 text-sm text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors"
                 >
                   <Send className="w-4 h-4" />
-                  {email.status === 'pending' ? 'Enviar Agora' : 'Tentar Novamente'}
+                  {email.status === 'pending' ? t('abandonedCart.sendNow') : t('abandonedCart.tryAgain')}
                 </button>
               )}
 
@@ -507,18 +509,18 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
                 className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
               >
                 <Code className="w-4 h-4" />
-                {showEmailJson === email.id ? 'Ocultar JSON' : 'Ver JSON do Provedor'}
+                {showEmailJson === email.id ? t('abandonedCart.hideJson') : t('abandonedCart.viewProviderJson')}
               </button>
             </div>
           </div>
         ))}
 
         <div className="p-4 bg-blue-50 rounded-lg">
-          <h6 className="font-medium text-blue-900 mb-2">Configurações da Sequência</h6>
+          <h6 className="font-medium text-blue-900 mb-2">{t('abandonedCart.sequenceConfig')}</h6>
           <div className="text-sm text-blue-700 space-y-1">
-            <p>• Email 1: Enviado imediatamente após abandono</p>
-            <p>• Email 2: Enviado 24h após o primeiro email</p>
-            <p>• Email 3: Enviado 48h após o segundo email</p>
+            <p>• {t('abandonedCart.email1Desc')}</p>
+            <p>• {t('abandonedCart.email2Desc')}</p>
+            <p>• {t('abandonedCart.email3Desc')}</p>
           </div>
         </div>
       </div>
@@ -528,9 +530,9 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
   const renderSmsTab = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h4 className="font-semibold text-gray-900">Sequência de SMS</h4>
+        <h4 className="font-semibold text-gray-900">{t('abandonedCart.smsSequence')}</h4>
         <div className="text-sm text-gray-600">
-          Total de SMS: {mockCartData.smsStatus === 'sent' ? 1 : 0}
+          {t('abandonedCart.totalSms')} {mockCartData.smsStatus === 'sent' ? 1 : 0}
         </div>
       </div>
 
@@ -542,20 +544,20 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
                 Status
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Mensagem
+                {t('abandonedCart.message')}
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Enviado em
+                {t('abandonedCart.sentAt')}
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             <tr>
               <td className="px-6 py-4 whitespace-nowrap">
-                {mockCartData.smsStatus === 'sent' ? 'Enviado' : 'Pendente'}
+                {mockCartData.smsStatus === 'sent' ? t('abandonedCart.sent') : t('abandonedCart.pending')}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                Lembrete de carrinho abandonado
+                {t('abandonedCart.cartReminder')}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {mockCartData.smsStatus === 'sent' ? '2024-01-15 14:30' : '---'}
@@ -570,7 +572,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
             className="flex items-center gap-2 px-3 py-2 text-sm text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors"
           >
             <Send className="w-4 h-4" />
-            Disparar SMS Avulso
+            {t('abandonedCart.triggerSms')}
           </button>
         </div>
       </div>
@@ -579,7 +581,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
             <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">Enviar SMS Avulso</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('abandonedCart.sendSingleSms')}</h3>
               <button
                 onClick={() => setIsSmsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -591,14 +593,14 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
               <textarea
                 value={smsMessage}
                 onChange={(e) => setSmsMessage(e.target.value)}
-                placeholder="Digite sua mensagem aqui..."
+                placeholder={t('abandonedCart.typeMessagePlaceholder')}
                 className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />
               <button
                 onClick={handleSendSms}
                 className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
               >
-                Enviar SMS
+                {t('abandonedCart.sendSms')}
               </button>
             </div>
           </div>
@@ -616,9 +618,9 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
       case 'sms':
         return renderSmsTab();
       case 'actions':
-        return <div className="p-8 text-center text-gray-500">Aba de ações em desenvolvimento...</div>;
+        return <div className="p-8 text-center text-gray-500">{t('abandonedCart.actionsInDev')}</div>;
       case 'history':
-        return <div className="p-8 text-center text-gray-500">Aba de histórico em desenvolvimento...</div>;
+        return <div className="p-8 text-center text-gray-500">{t('abandonedCart.historyInDev')}</div>;
       default:
         return renderInfoTab();
     }
@@ -671,7 +673,7 @@ export function AbandonedCartModal({ isOpen, onClose, cart }: AbandonedCartModal
               onClick={onClose}
               className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
             >
-              Fechar
+              {t('common.close')}
             </button>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { Button } from "./ui/button"
 import { StartCampaignConfirmDialog } from "./modals/start-campaign-confirm-dialog"
 import { updateMetricsService } from "@/src/common/services/email-campaign/update-metrics-service"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 
 interface CampaignActionsProps {
     config: any
@@ -22,6 +23,7 @@ interface CampaignActionsProps {
 export default function CampaignActions({ primaryCopy, smtpServer, smtpServers, config, campaignId, totalLeads, batchSize = 300 }: CampaignActionsProps) {
     const [isStartConfirmOpen, setIsStartConfirmOpen] = useState(false)
     const [isUpdatingMetrics, setIsUpdatingMetrics] = useState(false)
+    const t = useTranslations("campaign")
 
 
     return (
@@ -32,7 +34,7 @@ export default function CampaignActions({ primaryCopy, smtpServer, smtpServers, 
                 variant="default"
                 onClick={() => setIsStartConfirmOpen(true)}
             >
-                Iniciar campanha
+                {t("startCampaign")}
             </Button>
 
             {/* Atualizar métricas - only when campaign is active */}
@@ -45,20 +47,20 @@ export default function CampaignActions({ primaryCopy, smtpServer, smtpServers, 
                         setIsUpdatingMetrics(true)
                         const res = await updateMetricsService(campaignId)
                         if (res?.error) {
-                            toast.error(res.message || 'Erro ao atualizar métricas')
+                            toast.error(res.message || t("metricsUpdateError"))
                         } else {
-                            toast.success('Métricas atualizadas com sucesso')
+                            toast.success(t("metricsUpdated"))
                             // optional: reload to reflect new metrics
                             setTimeout(() => window.location.reload(), 300)
                         }
                     } catch (err: any) {
-                        toast.error(err?.message || 'Erro ao atualizar métricas')
+                        toast.error(err?.message || t("metricsUpdateError"))
                     } finally {
                         setIsUpdatingMetrics(false)
                     }
                 }}
             >
-                {isUpdatingMetrics ? 'Atualizando...' : 'Atualizar métricas'}
+                {isUpdatingMetrics ? t("updatingMetrics") : t("updateMetrics")}
             </Button>
 
             <StartCampaignConfirmDialog

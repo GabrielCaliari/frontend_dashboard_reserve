@@ -1,18 +1,10 @@
 'use server'
 
-import { cookies } from 'next/headers';
 import { listLeadQualificationService } from '../services/list-lead-qualification-service';
 import { ILeadQualificationMessage } from '@/src/interfaces/lead-qualification.interface';
 
 export async function listLeadQualification() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('token');
-    const session = cookieStore.get('session-code');
-
-    const result = await listLeadQualificationService({
-        token: token?.value || '',
-        session: session?.value || ''
-    })
+    const result = await listLeadQualificationService();
 
     const keys = Object.keys(result);
 

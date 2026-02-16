@@ -1,10 +1,10 @@
 import { ICreateEmailCampaign } from "../../@types/@email-campaign";
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export const createEmailCampaignService = async (data: ICreateEmailCampaign) => {
     try {
-        const response = await apiEmail.post("/email-campaign", data);
+        const response = await api.post("/mailer/campaigns", data);
         
         return {
             id: response.data.id,

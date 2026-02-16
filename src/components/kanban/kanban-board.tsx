@@ -25,6 +25,7 @@ import {
 
 import { Input } from "@nextui-org/react"
 import { useToast } from "@/src/common/hooks/use-toast"
+import { useTranslations } from "next-intl"
 
 import KanbanCard from "./kanban-card"
 import KanbanColumn from "./kanban-column"
@@ -47,6 +48,7 @@ const initialColumns: ColumnType[] = [
 ]
 
 export default function KanbanBoard() {
+  const t = useTranslations("kanban")
   const [columns, setColumns] = useState<ColumnType[]>(initialColumns)
   const [cards, setCards] = useState<CardType[]>([])
   const [activeCard, setActiveCard] = useState<CardType | null>(null)
@@ -90,11 +92,11 @@ export default function KanbanBoard() {
       localStorage.setItem("kanban-columns", JSON.stringify(columns))
       localStorage.setItem("kanban-cards", JSON.stringify(cards))
 
-      toast.success('Seu quadro Kanban foi salvo com sucesso.')
+      toast.success(t("boardSaved"))
     } catch (error) {
       console.error("Erro ao salvar quadro:", error)
 
-      toast.error('Não foi possível salvar seu quadro Kanban.')
+      toast.error(t("boardSaveError"))
     }
   }
 
@@ -235,7 +237,7 @@ export default function KanbanBoard() {
       <div className="flex justify-end mb-4">
         <Button onClick={saveBoard} className="flex items-center gap-2">
           <Save className="h-4 w-4" />
-          Salvar Quadro
+          {t("saveBoard")}
         </Button>
       </div>
 
@@ -260,7 +262,7 @@ export default function KanbanBoard() {
             onClick={() => setIsAddColumnOpen(true)}
           >
             <PlusCircle className="h-5 w-5" />
-            <span>Adicionar Coluna</span>
+            <span>{t("addColumn")}</span>
           </Button>
         </div>
 
@@ -271,21 +273,21 @@ export default function KanbanBoard() {
       <Modal isOpen={isAddColumnOpen} onOpenChange={setIsAddColumnOpen}>
         <ModalContent>
           <ModalHeader>
-            <h2>Adicionar Nova Coluna</h2>
-            <p>Crie uma nova coluna para organizar suas tarefas.</p>
+            <h2>{t("addNewColumn")}</h2>
+            <p>{t("columnDescription")}</p>
           </ModalHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label htmlFor="column-title">Título da Coluna</label>
+              <label htmlFor="column-title">{t("columnTitle")}</label>
               <Input
                 id="column-title"
-                placeholder="Ex: Em Revisão"
+                placeholder={t("columnPlaceholder")}
                 value={newColumnTitle}
                 onChange={(e) => setNewColumnTitle(e.target.value)}
               />
             </div>
             <Button onClick={handleAddColumn} className="w-full">
-              Adicionar Coluna
+              {t("addColumn")}
             </Button>
           </div>
         </ModalContent>
@@ -295,30 +297,30 @@ export default function KanbanBoard() {
       <Modal isOpen={isAddCardOpen} onOpenChange={setIsAddCardOpen}>
         <ModalContent>
           <ModalHeader>
-            <h2>Adicionar Novo Cartão</h2>
-            <p>Crie um novo cartão para adicionar à sua coluna.</p>
+            <h2>{t("addNewCard")}</h2>
+            <p>{t("cardDescription")}</p>
           </ModalHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label htmlFor="card-title">Título do Cartão</label>
+              <label htmlFor="card-title">{t("cardTitle")}</label>
               <Input
                 id="card-title"
-                placeholder="Ex: Implementar feature X"
+                placeholder={t("cardPlaceholder")}
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="card-description">Descrição</label>
+              <label htmlFor="card-description">{t("description")}</label>
               <Input
                 id="card-description"
-                placeholder="Descreva a tarefa..."
+                placeholder={t("descriptionPlaceholder")}
                 value={newCardDescription}
                 onChange={(e) => setNewCardDescription(e.target.value)}
               />
             </div>
             <Button onClick={handleAddCard} className="w-full">
-              Adicionar Cartão
+              {t("addCard")}
             </Button>
           </div>
         </ModalContent>

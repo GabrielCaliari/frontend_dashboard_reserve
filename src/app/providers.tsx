@@ -26,10 +26,10 @@ declare module "@react-types/shared" {
   }
 }
 
+const queryClient = new QueryClient();
+
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
-
-  const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

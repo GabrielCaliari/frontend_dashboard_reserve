@@ -1,6 +1,7 @@
 "use client"
 
 import { useDrag } from "react-dnd"
+import { useTranslations } from "next-intl"
 import { Card, CardContent } from "@/src/components/ui/card"
 import type { IEmailComponent } from "@/src/common/@types/@email-builder"
 import { Type, ImageIcon, BoxIcon as ButtonIcon, SeparatorHorizontal, LinkIcon } from "lucide-react"
@@ -51,13 +52,15 @@ interface ComponentSidebarProps {
 }
 
 export default function ComponentSidebar({ onAddComponent }: ComponentSidebarProps) {
+  const t = useTranslations("emailBuilder")
+
   // Atualize o array componentTemplates para incluir mais detalhes
   const componentTemplates: IEmailComponent[] = [
     {
       id: "text-template",
       type: "text",
-      name: "Texto",
-      content: "<p>Insira seu texto aqui</p>",
+      name: t("text"),
+      content: t("defaultTextContent"),
       fontFamily: "Arial, sans-serif",
       fontSize: "16px",
       textColor: "#333333",
@@ -67,8 +70,8 @@ export default function ComponentSidebar({ onAddComponent }: ComponentSidebarPro
     {
       id: "heading-template",
       type: "text",
-      name: "Título",
-      content: "<h2>Título do Email</h2>",
+      name: t("title"),
+      content: t("defaultTitleContent"),
       fontFamily: "Helvetica, sans-serif",
       fontSize: "24px",
       fontWeight: "bold",
@@ -79,9 +82,9 @@ export default function ComponentSidebar({ onAddComponent }: ComponentSidebarPro
     {
       id: "image-template",
       type: "image",
-      name: "Imagem",
+      name: t("image"),
       src: "/placeholder.svg?key=52e23",
-      alt: "Imagem de exemplo",
+      alt: t("defaultImageAlt"),
       width: "100%",
       height: "auto",
       padding: "10px",
@@ -89,8 +92,8 @@ export default function ComponentSidebar({ onAddComponent }: ComponentSidebarPro
     {
       id: "button-template",
       type: "button",
-      name: "Botão",
-      label: "Clique Aqui",
+      name: t("button"),
+      label: t("defaultButtonText"),
       href: "#",
       backgroundColor: "#007bff",
       color: "#ffffff",
@@ -102,8 +105,8 @@ export default function ComponentSidebar({ onAddComponent }: ComponentSidebarPro
     {
       id: "link-template",
       type: "link",
-      name: "Link",
-      linkText: "Clique aqui para visitar",
+      name: t("link"),
+      linkText: t("defaultLinkText"),
       url: "https://exemplo.com",
       textColor: "#0066cc",
       fontFamily: "Arial, sans-serif",
@@ -114,7 +117,7 @@ export default function ComponentSidebar({ onAddComponent }: ComponentSidebarPro
     {
       id: "divider-template",
       type: "divider",
-      name: "Divisor",
+      name: t("divider"),
       color: "#e0e0e0",
       thickness: "1px",
       width: "100%",

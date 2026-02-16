@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/src/components/ui/label"
 import { Filter, Mail, Eye, MousePointer, Clock, X, AlertCircle } from "lucide-react"
 import { IFunnel, IFunnelStep } from "@/src/common/@types/@email-campaign"
+import { useTranslations } from "next-intl"
 
 interface FunnelBuilderProps {
   onComplete: (funnel: IFunnel) => void
@@ -16,15 +17,16 @@ interface FunnelBuilderProps {
 }
 
 export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuilderProps) {
+  const t = useTranslations()
   // Estado para armazenar os passos do funil
   const [steps, setSteps] = useState<IFunnelStep[]>([
     {
       id: "initial-email",
-      name: "Email Inicial",
+      name: t("funnel.initialEmail"),
       type: "email",
       content: {
-        subject: "Será definido na etapa de criação de copy",
-        body: "O conteúdo será definido na etapa de criação de copy",
+        subject: t("funnel.willBeDefinedCopy"),
+        body: t("funnel.contentWillBeDefined"),
       },
       children: [],
     },
@@ -44,18 +46,18 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
       id: newStepId,
       name:
         type === "email"
-          ? `Email ${steps.length + 1}`
+          ? `${t("funnel.emailStep")} ${steps.length + 1}`
           : type === "condition"
-            ? `Condição ${steps.length + 1}`
-            : `Atraso ${steps.length + 1}`,
+            ? `${t("funnel.conditionStep")} ${steps.length + 1}`
+            : `${t("funnel.delayStep")} ${steps.length + 1}`,
       type,
       children: [],
     }
 
     if (type === "email") {
       newStep.content = {
-        subject: "Será definido na etapa de criação de copy",
-        body: "O conteúdo será definido na etapa de criação de copy",
+        subject: t("funnel.willBeDefinedCopy"),
+        body: t("funnel.contentWillBeDefined"),
       }
     } else if (type === "condition") {
       newStep.condition = {
@@ -176,7 +178,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
               <div className="text-xs text-gray-600">
                 <p className="flex items-center">
                   <AlertCircle className="h-3 w-3 mr-1 text-amber-500" />
-                  Conteúdo será definido na etapa de criação de copy
+                  {t("funnel.contentWillBeDefined")}
                 </p>
               </div>
             )}
@@ -184,12 +186,12 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
             {step.type === "condition" && step.condition && (
               <div className="text-xs text-gray-600">
                 <p>
-                  <strong>Condição:</strong> {step.condition.type === "opened" ? "Abriu o email" : "Clicou no link"}
+                  <strong>{t("funnel.condition")}</strong> {step.condition.type === "opened" ? t("funnel.openedEmail") : t("funnel.clickedLink")}
                 </p>
                 {step.condition.target && (
                   <p>
-                    <strong>Email alvo:</strong>{" "}
-                    {steps.find((s) => s.id === step.condition?.target)?.name || "Não definido"}
+                    <strong>{t("funnel.targetEmail")}</strong>{" "}
+                    {steps.find((s) => s.id === step.condition?.target)?.name || t("funnel.notDefined")}
                   </p>
                 )}
               </div>
@@ -198,7 +200,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
             {step.type === "delay" && step.delay && (
               <div className="text-xs text-gray-600">
                 <p>
-                  <strong>Atraso:</strong> {step.delay.days} dias e {step.delay.hours} horas
+                  <strong>{t("funnel.delay")}</strong> {step.delay.days} {t("funnel.daysAnd")} {step.delay.hours} {t("funnel.hours")}
                 </p>
               </div>
             )}
@@ -212,7 +214,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
                 className="h-7 text-xs"
                 onClick={() => setEditingStepId(step.id)}
               >
-                Editar
+                {t("common.edit")}
               </Button>
 
               {/* Botões para adicionar novos passos */}
@@ -224,7 +226,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
                 onClick={() => addStep(step.id, "email")}
               >
                 <Mail className="h-3 w-3 mr-1" />
-                Email
+                {t("funnel.emailStep")}
               </Button>
 
               {step.type === "email" && (
@@ -237,7 +239,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
                     onClick={() => addStep(step.id, "condition")}
                   >
                     <Eye className="h-3 w-3 mr-1" />
-                    Condição
+                    {t("funnel.conditionStep")}
                   </Button>
 
                   <Button
@@ -248,7 +250,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
                     onClick={() => addStep(step.id, "delay")}
                   >
                     <Clock className="h-3 w-3 mr-1" />
-                    Atraso
+                    {t("funnel.delayStep")}
                   </Button>
                 </>
               )}
@@ -281,12 +283,12 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
     return (
       <div className="border-l border-gray-200 p-4 h-full overflow-y-auto">
         <h3 className="text-sm font-medium mb-3">
-          Editar {step.type === "email" ? "Email" : step.type === "condition" ? "Condição" : "Atraso"}
+          Editar {step.type === "email" ? t("funnel.emailStep") : step.type === "condition" ? t("funnel.conditionStep") : t("funnel.delayStep")}
         </h3>
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="step-name">Nome</Label>
+            <Label htmlFor="step-name">{t("funnel.nameLabel")}</Label>
             <Input
               id="step-name"
               value={step.name}
@@ -300,9 +302,9 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
               <div className="flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5" />
                 <div>
-                  <p className="text-xs font-medium text-amber-800">Conteúdo do email</p>
+                  <p className="text-xs font-medium text-amber-800">{t("funnel.emailContentLabel")}</p>
                   <p className="text-xs text-amber-700 mt-1">
-                    O assunto e o conteúdo do email serão definidos na etapa de "Criação da Copy Principal".
+                    {t("funnel.copyWillBeDefinedInStep")}
                   </p>
                 </div>
               </div>
@@ -312,7 +314,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
           {step.type === "condition" && step.condition && (
             <>
               <div>
-                <Label htmlFor="condition-type">Tipo de Condição</Label>
+                <Label htmlFor="condition-type">{t("funnel.conditionType")}</Label>
                 <Select
                   value={step.condition.type}
                   onValueChange={(value) =>
@@ -320,22 +322,22 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
                   }
                 >
                   <SelectTrigger id="condition-type" className="mt-1">
-                    <SelectValue placeholder="Selecione o tipo" />
+                    <SelectValue placeholder={t("funnel.selectType")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="opened">Abriu o email</SelectItem>
-                    <SelectItem value="clicked">Clicou no link</SelectItem>
+                    <SelectItem value="opened">{t("funnel.openedEmail")}</SelectItem>
+                    <SelectItem value="clicked">{t("funnel.clickedLink")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="condition-target">Email Alvo</Label>
+                <Label htmlFor="condition-target">{t("funnel.targetEmailLabel")}</Label>
                 <Select
                   value={step.condition.target || ""}
                   onValueChange={(value) => updateStep(step.id, { condition: { ...step.condition, target: value } })}
                 >
                   <SelectTrigger id="condition-target" className="mt-1">
-                    <SelectValue placeholder="Selecione o email" />
+                    <SelectValue placeholder={t("funnel.selectEmail")} />
                   </SelectTrigger>
                   <SelectContent>
                     {steps
@@ -354,7 +356,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
           {step.type === "delay" && step.delay && (
             <>
               <div>
-                <Label htmlFor="delay-days">Dias</Label>
+                <Label htmlFor="delay-days">{t("funnel.days")}</Label>
                 <Input
                   id="delay-days"
                   type="number"
@@ -367,7 +369,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
                 />
               </div>
               <div>
-                <Label htmlFor="delay-hours">Horas</Label>
+                <Label htmlFor="delay-hours">{t("funnel.hours")}</Label>
                 <Input
                   id="delay-hours"
                   type="number"
@@ -392,10 +394,10 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
       <DialogHeader className="flex-shrink-0">
         <DialogTitle className="flex items-center gap-2">
           <Filter className="h-5 w-5" />
-          Construtor de Funil de Email
+          {t("funnel.title")}
         </DialogTitle>
         <p className="text-sm text-gray-500 mt-1">
-          Crie um fluxo personalizado de emails baseado em condições como abertura e clique
+          {t("funnel.description")}
         </p>
       </DialogHeader>
 
@@ -418,13 +420,13 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
               <path d="M12 16v-4"></path>
               <path d="M12 8h.01"></path>
             </svg>
-            Como criar seu funil
+            {t("funnel.howToCreate")}
           </h4>
           <ul className="text-xs text-blue-600 mt-1 ml-5 list-disc">
-            <li>Comece com o email inicial e adicione novas etapas</li>
-            <li>Use condições para criar caminhos baseados em abertura ou clique</li>
-            <li>Adicione atrasos para definir o tempo entre emails</li>
-            <li>Clique em "Editar" para configurar cada etapa</li>
+            <li>{t("funnel.tip1")}</li>
+            <li>{t("funnel.tip2")}</li>
+            <li>{t("funnel.tip3")}</li>
+            <li>{t("funnel.tip4")}</li>
           </ul>
         </div>
 
@@ -436,10 +438,10 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
 
       <DialogFooter className="flex-shrink-0 mt-4">
         <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
-          Cancelar
+          {t("common.cancel")}
         </Button>
         <Button type="button" onClick={saveFunnel} disabled={isSubmitting}>
-          {isSubmitting ? "Salvando..." : "Salvar Funil"}
+          {isSubmitting ? t("common.saving") : t("funnel.saveFunnel")}
         </Button>
       </DialogFooter>
     </div>

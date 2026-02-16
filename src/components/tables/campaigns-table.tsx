@@ -5,15 +5,17 @@ import EmailCampaignTableDropdownMenu from "../dropdow-menu/email-campaign-table
 import CampaignsTableRow from "./campaigns-table-row"
 import { formatDate, getEnumLabel } from "@/src/lib/utils";
 import { EEmailCampaignStatus } from "@/src/enums/email-campaign";
+import { getTranslations } from "next-intl/server";
 
 export async function CampaignsTable() {
   const listResponse = await listEmailCampaignService();
+  const t = await getTranslations("campaign");
 
   // Verificar se a resposta é válida e é um array
   if (!listResponse || !Array.isArray(listResponse)) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">Erro ao carregar campanhas ou nenhuma campanha encontrada.</p>
+        <p className="text-gray-500">{t("errorLoadingCampaigns")}</p>
       </div>
     );
   }
@@ -41,18 +43,18 @@ export async function CampaignsTable() {
         <thead>
           <tr className="border-b border-gray-200">
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Nome da Campanha
+              {t("campaignName")}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("statusPending").split(' ')[0] === t("statusPending") ? "Status" : "Status"}</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leads</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Taxa de Abertura
+              {t("openRate")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Taxa de Clique
+              {t("clickRate")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Data de Criação
+              {t("createdAt")}
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
           </tr>
@@ -99,13 +101,14 @@ export async function CampaignsTable() {
   )
 }
 
-function StatusBadge({ status }: { status: string }) {
+async function StatusBadge({ status }: { status: string }) {
+  const t = await getTranslations("campaign");
   const statusConfig = {
-    pending: { label: "Pendente", color: "bg-yellow-100 text-yellow-800" },
-    draft: { label: "Rascunho", color: "bg-gray-100 text-gray-800" },
-    scheduled: { label: "Agendada", color: "bg-blue-100 text-blue-800" },
-    sent: { label: "Enviada", color: "bg-purple-100 text-purple-800" },
-    active: { label: "Ativa", color: "bg-green-100 text-green-800" },
+    pending: { label: t("statusPending"), color: "bg-yellow-100 text-yellow-800" },
+    draft: { label: t("statusDraft"), color: "bg-gray-100 text-gray-800" },
+    scheduled: { label: t("statusScheduled"), color: "bg-blue-100 text-blue-800" },
+    sent: { label: t("statusSent"), color: "bg-purple-100 text-purple-800" },
+    active: { label: t("statusActive"), color: "bg-green-100 text-green-800" },
   }
 
   const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft

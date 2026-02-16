@@ -13,11 +13,13 @@ import listBatchesByEmailCampaignService from "@/src/common/services/email-campa
 import { BatchTable } from "@/src/components/tables/batch-table";
 import { StartCampaignConfirmDialog } from "@/src/components/modals/start-campaign-confirm-dialog";
 import CampaignActions from "@/src/components/campaign-actions";
+import { getTranslations } from "next-intl/server";
 
 export default async function EmailCampaignPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const campaign = await listEmailCampaignByIdService(id);
     const smtpServers = await listSmtpServers();
+    const t = await getTranslations("campaign");
 
     const batches = await listBatchesByEmailCampaignService(id);
 
@@ -45,14 +47,14 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                         {isPending && (
                             <span className="bg-yellow-100 text-yellow-800 px-2 p-1 rounded-full text-xs font-medium flex items-center">
                                 <AlertTriangle className="h-3 w-3 mr-1" />
-                                Pendente de configuração
+                                {t("pendingConfig")}
                             </span>
                         )}
                     </div>
 
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-500 block text-nowrap">
-                            Criado em {formatDate(campaign.created_at)}
+                            {t("createdAt")} {formatDate(campaign.created_at)}
                         </span>
                     </div>
                 </div>
@@ -69,7 +71,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                     {/* Card de Leads */}
                     <Card className="bg-white">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm text-gray-500 font-normal">Total de Leads</CardTitle>
+                            <CardTitle className="text-sm text-gray-500 font-normal">{t("totalLeads")}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center">
@@ -79,7 +81,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                             {isPending && !campaign.total_leads && (
                                 <div className="text-xs text-yellow-600 mt-1 flex items-center">
                                     <AlertTriangle className="h-3 w-3 mr-1" />
-                                    Nenhum lead carregado
+                                    {t("noLeadsLoaded")}
                                 </div>
                             )}
                         </CardContent>
@@ -88,7 +90,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                     {/* Card de Disparos */}
                     <Card className="bg-white">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm text-gray-500 font-normal">Disparos</CardTitle>
+                            <CardTitle className="text-sm text-gray-500 font-normal">{t("batches")}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center">
@@ -96,12 +98,12 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                                 <span className="text-2xl font-bold">{0}</span>
                             </div>
                             <div className="text-sm text-gray-500 mt-1">
-                                {0 > 0 ? `${0} leads por disparo` : "Não configurado"}
+                                {0 > 0 ? `${0} ${t("leadsPerBatch")}` : t("batchSizeNotConfirmed")}
                             </div>
                             {isPending && !campaign.campaign_batch_size && (
                                 <div className="text-xs text-yellow-600 mt-1 flex items-center">
                                     <AlertTriangle className="h-3 w-3 mr-1" />
-                                    Tamanho do disparo não confirmado
+                                    {t("batchSizeNotConfirmed")}
                                 </div>
                             )}
                         </CardContent>
@@ -110,28 +112,28 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                     {/* Card de Funil */}
                     <Card className="bg-white">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm text-gray-500 font-normal">Tipo de Campanha</CardTitle>
+                            <CardTitle className="text-sm text-gray-500 font-normal">{t("campaignType")}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center">
                                 <Filter className="h-5 w-5 text-purple-600 mr-2" />
                                 <span className="text-2xl font-bold">
                                     {isPending && !campaign.config?.funnelConfigured
-                                        ? "Não configurado"
+                                        ? t("campaignTypeNotDefined")
                                         : funnelType === "funnel"
-                                            ? "Funil"
-                                            : "Disparo Único"}
+                                            ? t("funnel")
+                                            : t("singleBatch")}
                                 </span>
                             </div>
                             {funnelType === "funnel" && campaign.config?.funnel && (
                                 <div className="text-sm text-gray-500 mt-1">
-                                    {campaign.config.funnel.steps.length} etapas configuradas
+                                    {campaign.config.funnel.steps.length} {t("stepsConfigured")}
                                 </div>
                             )}
                             {isPending && !campaign.config?.funnelConfigured && (
                                 <div className="text-xs text-yellow-600 mt-1 flex items-center">
                                     <AlertTriangle className="h-3 w-3 mr-1" />
-                                    Tipo de campanha não definido
+                                    {t("campaignTypeNotDefined")}
                                 </div>
                             )}
                         </CardContent>
@@ -140,7 +142,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                     {/* Card de Taxa de Abertura */}
                     <Card className="bg-white">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm text-gray-500 font-normal">Taxa de Abertura</CardTitle>
+                            <CardTitle className="text-sm text-gray-500 font-normal">{t("openRate")}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center">
@@ -156,7 +158,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                     {/* Card de Taxa de Clique */}
                     <Card className="bg-white">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm text-gray-500 font-normal">Taxa de Clique</CardTitle>
+                            <CardTitle className="text-sm text-gray-500 font-normal">{t("clickRate")}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center">
@@ -172,7 +174,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                     {/* Card de Envios com Sucesso */}
                     <Card className="bg-white">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm text-gray-500 font-normal">Envios com Sucesso</CardTitle>
+                            <CardTitle className="text-sm text-gray-500 font-normal">{t("successfulSends")}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center">
@@ -181,7 +183,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                             </div>
                             {campaign.successfulSends && campaign.totalLeads > 0 && (
                                 <span className="text-sm text-gray-500 mt-1">
-                                    {((campaign.successfulSends / campaign.totalLeads) * 100).toFixed(1)}% do total
+                                    {((campaign.successfulSends / campaign.totalLeads) * 100).toFixed(1)}{t("percentOfTotal")}
                                 </span>
                             )}
                         </CardContent>
@@ -190,7 +192,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                     {/* Card de Envios com Erro */}
                     <Card className="bg-white">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm text-gray-500 font-normal">Envios com Erro</CardTitle>
+                            <CardTitle className="text-sm text-gray-500 font-normal">{t("failedSends")}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center">
@@ -199,7 +201,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                             </div>
                             {campaign.failedSends && campaign.totalLeads > 0 && (
                                 <span className="text-sm text-gray-500 mt-1">
-                                    {((campaign.failedSends / campaign.totalLeads) * 100).toFixed(1)}% do total
+                                    {((campaign.failedSends / campaign.totalLeads) * 100).toFixed(1)}{t("percentOfTotal")}
                                 </span>
                             )}
                         </CardContent>
@@ -210,7 +212,7 @@ export default async function EmailCampaignPage({ params }: { params: Promise<{ 
                 <CampaignActions primaryCopy={primaryCopy} smtpServers={smtpServers} smtpServer={defaultSMTP} config={campaign} campaignId={campaign.id} totalLeads={campaign.total_leads} />
 
                 <div className="mt-10">
-                    <h2 className="text-xl font-bold mb-4">Disparos</h2>
+                    <h2 className="text-xl font-bold mb-4">{t("batches")}</h2>
                     <div className="bg-white rounded-lg shadow overflow-hidden">
                         <BatchTable batches={batches || []} campaignId={Number(campaign.id)} />
                     </div>

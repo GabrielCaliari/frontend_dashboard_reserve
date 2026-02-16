@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
@@ -25,15 +26,16 @@ interface EmailSaveModalProps {
   primaryCopy: IEmail
 }
 
-const emailSaveSchema = z.object({
-  subject: z.string().min(1, "O assunto é obrigatório"),
-  preheader: z.string().max(100, "O pré-header deve ter no máximo 100 caracteres"),
-  fromName: z.string().min(1, "O remetente é obrigatório"),
+const createEmailSaveSchema = (t: (key: string, values?: Record<string, unknown>) => string) => z.object({
+  subject: z.string().min(1, t("validation.subjectRequired")),
+  preheader: z.string().max(100, t("validation.preHeaderMaxLength", { max: 100 })),
+  fromName: z.string().min(1, t("validation.senderRequired")),
 })
 
-type EmailSaveFormData = z.infer<typeof emailSaveSchema>
+type EmailSaveFormData = z.infer<ReturnType<typeof createEmailSaveSchema>>
 
 export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, email }: EmailSaveModalProps) {
+  const t = useTranslations()
   const {
     register,
     handleSubmit,
@@ -41,7 +43,7 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
     reset,
     watch
   } = useForm<EmailSaveFormData>({
-    resolver: zodResolver(emailSaveSchema),
+    resolver: zodResolver(createEmailSaveSchema(t)),
     defaultValues: {
       subject: primaryCopy ? primaryCopy.subject : '',
       preheader: primaryCopy ? primaryCopy.pre_header : '',
@@ -65,18 +67,18 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Salvar Email</DialogTitle>
+          <DialogTitle>{t("emailBuilder.saveEmailTitle")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="subject" className="text-right">
-              Assunto do Email <span className="text-red-500">*</span>
+              {t("emailBuilder.emailSubject")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="subject"
               {...register("subject")}
-              placeholder="Digite o assunto do email"
+              placeholder={t("emailBuilder.subjectPlaceholder")}
               className="col-span-3"
             />
             {errors.subject && (
@@ -90,7 +92,7 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
           <div className="space-y-2">
             <div className="flex justify-between">
               <Label htmlFor="preheader" className="text-right">
-                Pré-header
+                {t("emailBuilder.preHeader")}
               </Label>
               <span className={`text-xs ${preheader.length > MAX_PREHEADER_LENGTH ? "text-red-500" : "text-gray-500"}`}>
                 {preheader.length}/{MAX_PREHEADER_LENGTH}
@@ -99,7 +101,7 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
             <Input
               id="preheader"
               {...register("preheader")}
-              placeholder="Breve descrição que aparece após o assunto em alguns clientes de email"
+              placeholder={t("emailBuilder.preHeaderPlaceholder")}
               className="col-span-3"
               maxLength={MAX_PREHEADER_LENGTH}
             />
@@ -110,19 +112,18 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
               </p>
             )}
             <p className="text-xs text-gray-500">
-              O pré-header é um texto curto que aparece após o assunto em muitos clientes de email. Use-o para
-              complementar o assunto e incentivar a abertura do email.
+              {t("emailBuilder.preHeaderHelp")}
             </p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="fromName" className="text-right">
-              Remetente <span className="text-red-500">*</span>
+              {t("emailBuilder.senderLabel")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="fromName"
               {...register("fromName")}
-              placeholder="Nome do remetente"
+              placeholder={t("emailBuilder.senderPlaceholder")}
               className="col-span-3"
             />
             {errors.fromName && (
@@ -135,7 +136,7 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
 
           <div className="flex flex-col gap-3">
             <Label htmlFor="fromEmail">
-              E-mail do Remetente <span className="text-red-500">*</span>
+              {t("emailBuilder.senderEmail")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="fromEmail"
@@ -147,10 +148,10 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
 
           <DialogFooter>
             <Button variant="outline" type="button" onClick={() => { onClose(); reset(); }}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button type="submit">
-              Continuar
+              {t("emailBuilder.continue")}
             </Button>
           </DialogFooter>
         </form>

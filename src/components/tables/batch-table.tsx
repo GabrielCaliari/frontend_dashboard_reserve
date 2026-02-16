@@ -7,6 +7,7 @@ import { LeadListDialog } from "@/src/components/modals/lead-list-dialog"
 import { EmailPreviewDialog } from "@/src/components/modals/email-preview-dialog"
 import { formatDate } from "@/src/lib/utils"
 import { CopyDeliveryDialog } from "../modals/copy-delivery-dialog"
+import { useTranslations } from "next-intl"
 
 interface BatchTableProps {
   batches: CampaignBatch[]
@@ -14,12 +15,13 @@ interface BatchTableProps {
 }
 
 export function BatchTable({ batches, campaignId }: BatchTableProps) {
+  const t = useTranslations("batchTable")
   const [selectedBatch, setSelectedBatch] = useState<CampaignBatch | null>(null)
   const [isLeadListOpen, setIsLeadListOpen] = useState(false)
   const [isCopyDeliveryOpen, setIsCopyDeliveryOpen] = useState(false)
 
   if (!batches || batches.length === 0) {
-    return <div className="text-center py-8 text-gray-500">Nenhum disparo realizado para esta campanha.</div>
+    return <div className="text-center py-8 text-gray-500">{t("noBatches")}</div>
   }
 
   const handleViewLeads = (batch: CampaignBatch) => {
@@ -38,19 +40,19 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200">
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nº</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("number")}</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leads</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Sucesso
+                {t("success")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Erro</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("error")}</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Abertura
+                {t("opening")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clique</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("click")}</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Data de Envio
+                {t("sendDate")}
               </th>
               <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
             </tr>
@@ -106,11 +108,11 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => handleViewLeads(batch)} className="cursor-pointer">
                         <UsersIcon className="h-4 w-4 mr-2" />
-                        Ver Lista de Leads
+                        {t("viewLeadList")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleViewEmail(batch)} className="cursor-pointer">
                         <MailIcon className="h-4 w-4 mr-2" />
-                        Visualizar Email
+                        {t("viewEmail")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

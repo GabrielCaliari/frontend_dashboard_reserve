@@ -1,12 +1,14 @@
 import { z } from "zod"
 
-const createCampaignSchema = z.object({
+type TranslateFn = (key: string, values?: Record<string, unknown>) => string
+
+const createCampaignSchema = (t: TranslateFn) => z.object({
     name: z.string()
-        .min(3, "O nome deve ter pelo menos 3 caracteres")
-        .max(50, "O nome deve ter no máximo 50 caracteres")
-        .nonempty("O nome da campanha é obrigatório")
+        .min(3, t("validation.nameMinLength", { min: 3 }))
+        .max(50, t("validation.nameMaxLength", { max: 50 }))
+        .nonempty(t("validation.campaignNameRequired"))
 })
 
-export type CreateCampaignFormData = z.infer<typeof createCampaignSchema>
+export type CreateCampaignFormData = z.infer<ReturnType<typeof createCampaignSchema>>
 
 export { createCampaignSchema }

@@ -22,6 +22,7 @@ import { BatchTable } from "../tables/batch-table"
 import { CampaignBatch } from "@/src/common/@types/@campaign-batch"
 import { closeSetupService } from "@/src/common/services/email-campaign/close-setup-service"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 
 interface CampaignSetupStatusProps {
   config: any
@@ -34,6 +35,7 @@ interface CampaignSetupStatusProps {
 }
 
 export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, config, campaignId, totalLeads, batchSize = 300 }: CampaignSetupStatusProps) {
+  const t = useTranslations()
   const [isLeadUploadOpen, setIsLeadUploadOpen] = useState(false)
   const [isVariationConfigOpen, setIsVariationConfigOpen] = useState(false)
   const [isFunnelConfigOpen, setIsFunnelConfigOpen] = useState(false)
@@ -45,8 +47,8 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
   const setupSteps = [
     {
       id: "leadsUploaded",
-      label: "Upload de Leads (CSV)",
-      description: "Faça upload da lista de leads para a campanha",
+      label: t("setupStatus.uploadLeads"),
+      description: t("setupStatus.uploadLeadsDesc"),
       completed: config.total_leads > 0,
       icon: Upload,
       can_update: true,
@@ -54,8 +56,8 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
     },
     {
       id: "copyCreated",
-      label: "Criação da Copy Principal",
-      description: "Crie o conteúdo HTML que será enviado no email",
+      label: t("setupStatus.createCopy"),
+      description: t("setupStatus.createCopyDesc"),
       completed: config.main_email_id,
       icon: FileText,
       can_update: true,
@@ -63,8 +65,8 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
     },
     {
       id: "aiVariationConfigured",
-      label: "Configuração de Variação",
-      description: "Configure se a copy será variada por IA ou manual",
+      label: t("setupStatus.variationConfig"),
+      description: t("setupStatus.variationConfigDesc"),
       completed: config.copy_variation_type,
       icon: Cpu,
       can_update: true,
@@ -72,8 +74,8 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
     },
     {
       id: "funnelConfigured",
-      label: "Configuração de Funil",
-      description: "Especifique se a campanha usará um funil ou disparo único",
+      label: t("setupStatus.funnelConfig"),
+      description: t("setupStatus.funnelConfigDesc"),
       completed: config.funnelConfigured,
       disabled: true,
       icon: Filter,
@@ -82,8 +84,8 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
     },
     {
       id: "batchSizeConfirmed",
-      label: "Tamanho dos Disparos",
-      description: "Confirme o tamanho dos conjuntos de disparos (padrão: 300)",
+      label: t("setupStatus.batchSize"),
+      description: t("setupStatus.batchSizeDesc"),
       completed: config.campaign_batch_size,
       icon: Settings,
       can_update: true,
@@ -102,7 +104,7 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
       if (response?.error) {
         toast.error(response.message);
       } else {
-        toast.success('Configuração finalizada com sucesso.');
+        toast.success(t("setupStatus.configFinished"));
       }
     } catch (err: any) {
       console.log(err);
@@ -113,7 +115,7 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
     <>
       <Card className="bg-white">
         <CardHeader>
-          <CardTitle className="text-lg font-medium">Configuração da Campanha</CardTitle>
+          <CardTitle className="text-lg font-medium">{t("setupStatus.campaignConfig")}</CardTitle>
         </CardHeader>
 
         <CardContent>
@@ -139,7 +141,7 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
                       onClick={step.action}
                       disabled={step.disabled}
                     >
-                      Configurar agora
+                      {t("setupStatus.configureNow")}
                     </button>
                   )}
                   {(step.completed && step.can_update) && (
@@ -148,26 +150,26 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
                       onClick={step.action}
                       disabled={step.disabled}
                     >
-                      Atualizar agora
+                      {t("setupStatus.updateNow")}
                     </button>
                   )}
                 </div>
               </div>
             ))}
 
-            <h2 className="text-lg font-medium mt-4">Configuração do Servidor SMTP</h2>
+            <h2 className="text-lg font-medium mt-4">{t("setupStatus.smtpConfig")}</h2>
 
             <div className="flex items-center gap-4">
               <div>
-                <Label htmlFor="smtp-server">E-mail</Label>
+                <Label htmlFor="smtp-server">{t("setupStatus.emailLabel")}</Label>
                 <Input className="w-[200px]" type="text" value={smtpServer?.email} disabled />
               </div>
 
               <div>
-                <Label htmlFor="smtp-server">Servidor SMTP</Label>
+                <Label htmlFor="smtp-server">{t("setupStatus.smtpServer")}</Label>
                 <Select defaultValue={smtpServer?.id.toString()}>
                   <SelectTrigger className="w-[200px] capitalize">
-                    <SelectValue placeholder="Selecione o servidor SMTP" />
+                    <SelectValue placeholder={t("setupStatus.selectSmtp")} />
                   </SelectTrigger>
 
                   <SelectContent onChange={(v) => handleUpdateSmtpServer(String(v.currentTarget.value))}>
@@ -191,7 +193,7 @@ export function CampaignSetupStatus({  primaryCopy, smtpServer, smtpServers, con
             !config.campaign_batch_size
           }
             onClick={() => setIsCampaignSetupStatusOpen(true)}>
-            Finalizar configuração
+            {t("setupStatus.finishConfig")}
           </Button>
         </CardFooter>
       </Card>

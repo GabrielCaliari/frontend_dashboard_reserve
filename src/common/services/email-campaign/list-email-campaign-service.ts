@@ -1,9 +1,9 @@
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export default async function listEmailCampaignService() {
     try {
-        const response = await apiEmail.get("/email-campaign");
+        const response = await api.get("/mailer/campaigns");
         return response.data;
     } catch (err: any) {
         if (err.response && err.response.data.code) {

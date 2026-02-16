@@ -16,7 +16,7 @@ export function LayoutScopeRoot({ children, routeActive }: RootLayoutProps) {
         <Sidebar activeTab={routeActive} />
 
         <div
-          className="flex-1 overflow-y-auto lg:p-12 p-5 pt-0"
+          className="flex-1 overflow-y-auto lg:p-12 p-5 pt-0 bg-[#0a0a0f]"
           style={{ paddingBottom: "150px" }}
         >
           <main className="mt-12">{children}</main>

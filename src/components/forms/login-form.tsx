@@ -2,19 +2,17 @@
 
 import { loginSchema } from "@/src/common/schemas/login-schema";
 import { Button, Input, Spinner } from "@nextui-org/react";
-import { setCookie } from "cookies-next";
 import { useFormik } from "formik";
 import { useRouter } from 'nextjs-toploader/app';
 import { useState } from "react";
-
-import api from "@/src/common/config/api";
-
 import toast from "react-hot-toast";
 import Link from "next/link";
 import useAdminAuthentication from "@/src/common/hooks/use-user-authentication";
+import { useTranslations } from "next-intl";
 
 export function LoginForm() {
   const { execAdminAuthentication } = useAdminAuthentication();
+  const t = useTranslations();
   
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +23,7 @@ export function LoginForm() {
       email: "",
       password: "",
     },
-    validationSchema: loginSchema,
+    validationSchema: loginSchema(t),
     onSubmit: async (values) => {
       const result = await execAdminAuthentication({
         email: values.email,
@@ -47,8 +45,8 @@ export function LoginForm() {
       >
         <div className="flex flex-col w-full">
           <Input
-            label="Email"
-            placeholder="email@provedor.com.br"
+            label={t("auth.emailLabel")}
+            placeholder={t("auth.emailPlaceholder")}
             type="text"
             size="lg"
             className="rounded-xl"
@@ -64,8 +62,8 @@ export function LoginForm() {
         </div>
         <div className="flex flex-col w-full">
           <Input
-            label="Senha"
-            placeholder="Sua senha"
+            label={t("auth.password")}
+            placeholder={t("auth.yourPassword")}
             type="password"
             size="lg"
             className="rounded-xl"
@@ -93,7 +91,7 @@ export function LoginForm() {
             type="submit"
             isDisabled={loading}
           >
-            {!loading && 'Entrar'}
+            {!loading && t('auth.login')}
             {loading && <Spinner color="white"  size="md"/>}
           </Button>
         </div>

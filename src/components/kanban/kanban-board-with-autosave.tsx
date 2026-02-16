@@ -34,6 +34,7 @@ import { listLeadQualification } from "@/src/common/actions/list-lead-qualificat
 import { date } from "yup"
 import { ILeadQualificationMessage } from "@/src/interfaces/lead-qualification.interface"
 import useUpdateLeadQualification from "@/src/common/hooks/use-update-lead-qualification"
+import { useTranslations } from "next-intl"
 
 // Tipos para nossos dados
 export type CardType = {
@@ -60,6 +61,7 @@ const initialColumns: ColumnType[] = [
 ]
 
 export default function KanbanBoardWithAutosave() {
+  const t = useTranslations("kanban")
   const { execUpdateLeadQualification } = useUpdateLeadQualification();
 
   const [columns, setColumns] = useState<ColumnType[]>(initialColumns)
@@ -305,7 +307,7 @@ export default function KanbanBoardWithAutosave() {
             onClick={() => setIsAddColumnOpen(true)}
           >
             <PlusCircle className="h-5 w-5" />
-            <span>Adicionar Coluna</span>
+            <span>{t("addColumn")}</span>
           </Button>
         </div>
 
@@ -316,14 +318,14 @@ export default function KanbanBoardWithAutosave() {
       <Modal isOpen={isAddColumnOpen} onOpenChange={setIsAddColumnOpen}>
         <ModalContent>
           <ModalHeader>
-            <h2>Adicionar Nova Coluna</h2>
+            <h2>{t("addNewColumn")}</h2>
           </ModalHeader>
           <ModalBody>
             <div className="space-y-2">
-              <label htmlFor="column-title">Título da Coluna</label>
+              <label htmlFor="column-title">{t("columnTitle")}</label>
               <Input
                 id="column-title"
-                placeholder="Ex: Em Revisão"
+                placeholder={t("columnPlaceholder")}
                 value={newColumnTitle}
                 onChange={(e: any) => setNewColumnTitle(e.target.value)}
               />
@@ -331,7 +333,7 @@ export default function KanbanBoardWithAutosave() {
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={handleAddColumn} className="w-full">
-              Adicionar Coluna
+              {t("addColumn")}
             </Button>
           </ModalFooter>
         </ModalContent>

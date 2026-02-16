@@ -1,4 +1,4 @@
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export const uploadLeadsService = async (campaignId: string, file: File) => {
@@ -7,7 +7,7 @@ export const uploadLeadsService = async (campaignId: string, file: File) => {
         formData.append("file", file);
         formData.append("campaignId", campaignId);
 
-        const response = await apiEmail.post(`/email-campaign/upload-leads/${campaignId}`, formData, {
+        const response = await api.post(`/mailer/campaigns/${campaignId}/leads`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },

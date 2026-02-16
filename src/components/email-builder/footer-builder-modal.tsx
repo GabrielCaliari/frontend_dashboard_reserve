@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import FooterBuilder, { type FooterConfig } from "./footer-builder"
@@ -13,6 +14,7 @@ interface FooterBuilderModalProps {
 }
 
 export default function FooterBuilderModal({ isOpen, onClose, config, onSave }: FooterBuilderModalProps) {
+  const t = useTranslations()
   const [localConfig, setLocalConfig] = useState<FooterConfig>({ ...config })
 
   const handleSave = () => {
@@ -24,7 +26,7 @@ export default function FooterBuilderModal({ isOpen, onClose, config, onSave }: 
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Construtor de Rodapé</DialogTitle>
+          <DialogTitle>{t("emailBuilder.footerBuilder")}</DialogTitle>
         </DialogHeader>
 
         <div className="py-4">
@@ -33,9 +35,9 @@ export default function FooterBuilderModal({ isOpen, onClose, config, onSave }: 
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancelar
+            {t("common.cancel")}
           </Button>
-          <Button onClick={handleSave}>Salvar</Button>
+          <Button onClick={handleSave}>{t("common.save")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,11 +1,11 @@
 import { ECopyVariationType } from "../../@types/@email-campaign";
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 
 export const updateEmailCampaignCopyVariantService = async (campaignId: string, copyVariant: ECopyVariationType) => {
     try {
-        const response = await apiEmail.put(`/email-campaign/update/copy-variant/${campaignId}`, {
+        const response = await api.put(`/mailer/campaigns/${campaignId}/copy-variant`, {
             copy_variation_type: +copyVariant
         });
         

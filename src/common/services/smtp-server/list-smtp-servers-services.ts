@@ -1,9 +1,9 @@
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export default async function listSmtpServersServices() {
     try {
-        const response = await apiEmail.get("/smtp-server");
+        const response = await api.get("/mailer/smtp-servers");
         return response.data;
     } catch(err: any) {
         if (err.response && err.response.data.code) {

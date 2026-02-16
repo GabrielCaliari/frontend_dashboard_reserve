@@ -1,6 +1,7 @@
 "use client"
 
 import { useDrop } from "react-dnd"
+import { useTranslations } from "next-intl"
 import type { IEmailComponent } from "@/src/common/@types/@email-builder"
 import EmailComponentItem from "./email-component-item"
 
@@ -25,6 +26,8 @@ export default function EmailCanvas({
   onToggleBlockSelection,
   spacing = "p-2", // Valor padrão para manter a compatibilidade
 }: EmailCanvasProps) {
+  const t = useTranslations("emailBuilder")
+
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ["EMAIL_COMPONENT", "COMPONENT_ITEM", "MULTI_COMPONENTS"],
     drop: (item: any, monitor) => {
@@ -55,8 +58,8 @@ export default function EmailCanvas({
     >
       {components.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-[400px] text-gray-400">
-          <p>Arraste e solte componentes aqui</p>
-          <p className="text-sm mt-2">ou clique em um componente na barra lateral</p>
+          <p>{t("dragAndDrop")}</p>
+          <p className="text-sm mt-2">{t("orClickComponent")}</p>
         </div>
       ) : (
         <div className="space-y-4">

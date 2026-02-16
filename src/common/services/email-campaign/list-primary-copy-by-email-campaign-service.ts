@@ -1,9 +1,9 @@
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export default async function listPrimaryCopyByEmailCampaignService(id: string) {
     try {
-        const response = await apiEmail.get(`/email-campaign/primary-copy-variant/${id}`);
+        const response = await api.get(`/mailer/campaigns/${id}/primary-copy`);
         return response.data;
     } catch (error: any) {
         if (error.response && error.response.data.code) {

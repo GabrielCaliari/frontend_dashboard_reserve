@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import type { IEmailComponent, IEmailTemplate } from "@/src/common/@types/@email-builder"
@@ -28,6 +29,7 @@ export default function EmailPreviewSimulation({
   metadata,
   email,
 }: EmailPreviewSimulationProps) {
+  const t = useTranslations("emailBuilder")
   const { subject, preheader } = metadata
 
   // Gerar o HTML do email para a visualização
@@ -204,7 +206,7 @@ export default function EmailPreviewSimulation({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
         <DialogHeader>
-          <DialogTitle>Visualização Final do Email</DialogTitle>
+          <DialogTitle>{t("finalPreview")}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
@@ -235,15 +237,15 @@ export default function EmailPreviewSimulation({
           </div>
 
           <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-            <h3 className="text-sm font-medium text-yellow-800 mb-2">Informações do Email</h3>
+            <h3 className="text-sm font-medium text-yellow-800 mb-2">{t("emailInfo")}</h3>
             <div className="space-y-2">
               <div>
-                <span className="text-sm font-medium">Assunto:</span>
+                <span className="text-sm font-medium">{t("subject")}</span>
                 <span className="text-sm ml-2">{subject}</span>
               </div>
               <div>
-                <span className="text-sm font-medium">Pré-header:</span>
-                <span className="text-sm ml-2">{preheader || "(Nenhum pré-header definido)"}</span>
+                <span className="text-sm font-medium">{t("preHeaderLabel")}</span>
+                <span className="text-sm ml-2">{preheader || t("noPreHeader")}</span>
               </div>
             </div>
           </div>
@@ -252,11 +254,11 @@ export default function EmailPreviewSimulation({
         <DialogFooter className="flex justify-between">
           <Button variant="outline" onClick={onBack} className="flex items-center gap-1">
             <ArrowLeft size={16} />
-            <span>Voltar para Edição</span>
+            <span>{t("backToEdit")}</span>
           </Button>
           <Button onClick={onComplete} className="flex items-center gap-1">
             <Check size={16} />
-            <span>Concluir</span>
+            <span>{t("complete")}</span>
           </Button>
         </DialogFooter>
       </DialogContent>

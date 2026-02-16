@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
@@ -38,6 +39,7 @@ interface EmailSettingsModalProps {
 }
 
 export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSettings }: EmailSettingsModalProps) {
+  const t = useTranslations()
   const [localSettings, setLocalSettings] = useState<EmailSettings>(settings)
   const [headerBuilderOpen, setHeaderBuilderOpen] = useState(false)
   const [footerBuilderOpen, setFooterBuilderOpen] = useState(false)
@@ -117,27 +119,27 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
         <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Configurações do Email</DialogTitle>
+            <DialogTitle>{t("emailBuilder.emailSettings")}</DialogTitle>
           </DialogHeader>
 
           <Tabs defaultValue="general" className="mt-4">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="general">Geral</TabsTrigger>
-              <TabsTrigger value="header">Cabeçalho</TabsTrigger>
-              <TabsTrigger value="footer">Rodapé</TabsTrigger>
+              <TabsTrigger value="general">{t("emailBuilder.general")}</TabsTrigger>
+              <TabsTrigger value="header">{t("emailBuilder.headerTab")}</TabsTrigger>
+              <TabsTrigger value="footer">{t("emailBuilder.footerTab")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="general" className="space-y-4 mt-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="default-padding" className="text-right">
-                  Padding Padrão
+                  {t("emailBuilder.defaultPadding")}
                 </Label>
                 <Input
                   id="default-padding"
                   value={localSettings.defaultPadding}
                   onChange={(e) => setLocalSettings({ ...localSettings, defaultPadding: e.target.value })}
                   className="col-span-3"
-                  placeholder="10px ou 10px 15px"
+                  placeholder={t("emailBuilder.paddingPlaceholder")}
                 />
               </div>
             </TabsContent>
@@ -145,7 +147,7 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
             <TabsContent value="header" className="space-y-4 mt-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="use-header" className="cursor-pointer">
-                  Usar Cabeçalho Padrão
+                  {t("emailBuilder.useDefaultHeader")}
                 </Label>
                 <Switch
                   id="use-header"
@@ -196,13 +198,13 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
                             margin: "0",
                           }}
                         >
-                          {localSettings.headerConfig.title.text || "Minha Empresa"}
+                          {localSettings.headerConfig.title.text || t("emailBuilder.defaultCompany")}
                         </h1>
                       )}
                     </div>
                   </div>
                   <p className="text-sm text-gray-500 mt-2">
-                    Clique no ícone de edição para personalizar o cabeçalho no construtor visual.
+                    {t("emailBuilder.editHeaderInfo")}
                   </p>
                 </div>
               )}
@@ -211,7 +213,7 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
             <TabsContent value="footer" className="space-y-4 mt-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="use-footer" className="cursor-pointer">
-                  Usar Rodapé Padrão
+                  {t("emailBuilder.useDefaultFooter")}
                 </Label>
                 <Switch
                   id="use-footer"
@@ -252,7 +254,7 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
                           }}
                         >
                           {localSettings.footerConfig.copyright.text ||
-                            `© ${new Date().getFullYear()} Minha Empresa. Todos os direitos reservados.`}
+                            t("emailBuilder.defaultCopyright", { year: new Date().getFullYear() })}
                         </p>
                       )}
 
@@ -299,7 +301,7 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
                     </div>
                   </div>
                   <p className="text-sm text-gray-500 mt-2">
-                    Clique no ícone de edição para personalizar o rodapé no construtor visual.
+                    {t("emailBuilder.editFooterInfo")}
                   </p>
                 </div>
               )}
@@ -308,9 +310,9 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
 
           <DialogFooter className="mt-6">
             <Button variant="outline" onClick={onClose}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
-            <Button onClick={handleSave}>Salvar</Button>
+            <Button onClick={handleSave}>{t("common.save")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -1,4 +1,7 @@
+"use client";
+
 import React from 'react';
+import { useTranslations } from "next-intl";
 import { createEditor } from 'slate';
 import { Slate, Editable, withReact, RenderLeafProps, RenderElementProps } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -9,13 +12,6 @@ interface EmailEditorProps {
   initialValue?: CustomElement[];
   onChange?: (value: CustomElement[]) => void;
 }
-
-const initialValue: CustomElement[] = [
-  {
-    type: 'paragraph',
-    children: [{ text: 'Digite seu email aqui...' }],
-  },
-];
 
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   const customLeaf = leaf as CustomText;
@@ -61,7 +57,15 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
 };
 
 export const EmailEditor: React.FC<EmailEditorProps> = ({ onChange }) => {
+  const t = useTranslations("toolbar");
   const editor = React.useMemo(() => withHistory(withReact(createEditor())), []);
+
+  const initialValue: CustomElement[] = [
+    {
+      type: 'paragraph',
+      children: [{ text: t("typeEmail") }],
+    },
+  ];
 
   const renderLeaf = React.useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
@@ -85,7 +89,7 @@ export const EmailEditor: React.FC<EmailEditorProps> = ({ onChange }) => {
         </div>
         <Editable
           className="p-4 min-h-[400px]"
-          placeholder="Digite seu email aqui..."
+          placeholder={t("typeEmail")}
           renderLeaf={renderLeaf}
           renderElement={renderElement}
         />

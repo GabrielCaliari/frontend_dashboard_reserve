@@ -1,4 +1,4 @@
-import apiEmail from "@/src/common/config/api-email"
+import api from "@/src/common/config/api"
 
 interface IUpdateMetricsResponse {
   error?: boolean
@@ -8,8 +8,8 @@ interface IUpdateMetricsResponse {
 
 export async function updateMetricsService(campaignId: string): Promise<IUpdateMetricsResponse> {
   try {
-    const url = `/email-campaign/update-metrics/${campaignId}`
-    const resp = await apiEmail.put(url)
+    const url = `/mailer/campaigns/${campaignId}/metrics`
+    const resp = await api.put(url)
     return resp.data
   } catch (err: any) {
     const message = err?.response?.data?.message || err?.message || 'Erro ao atualizar métricas'

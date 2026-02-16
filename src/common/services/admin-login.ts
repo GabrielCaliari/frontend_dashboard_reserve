@@ -1,17 +1,18 @@
-import { IAuthenticateAdmin } from "@/src/interfaces/admin.interface";
+import { LoginCredentials, AuthResponse } from "@/src/common/@types/@auth";
 import api from "../config/api";
 import { errorTypes } from "../config/error-types";
 
-export async function adminLoginService({ email, password }: IAuthenticateAdmin) {
+export async function adminLoginService({ email, password }: LoginCredentials) {
     try {
-        const response = await api.post(`/admin/authenticate`, {
+        // Novo endpoint: /auth/admin/authenticate
+        const response = await api.post<AuthResponse>(`/auth/admin/authenticate`, {
             email,
             password
         });
 
         return response.data;
     } catch (error: any) {
-        if (error.response.data.code) {
+        if (error?.response?.data?.code) {
             return error.response.data.code;
         }
 

@@ -1,35 +1,37 @@
 import * as Yup from "yup";
 
-export const formRegisterSchema = [
+type TranslateFn = (key: string, values?: Record<string, unknown>) => string
+
+export const formRegisterSchema = (t: TranslateFn) => [
   Yup.object({
     name: Yup.string()
-      .required("Nome é obrigatório.")
+      .required(t("validation.nameRequired"))
       .matches(
         /^[A-Za-zÀ-ÖØ-öø-ÿÁ-úçÇ]{2,}(?: [A-Za-zÀ-ÖØ-öø-ÿÁ-úçÇ]{2,})*$/,
-        "Nome deve ter pelo menos duas letras por palavra e pode conter acentos."
+        t("validation.namePattern")
       ),
     email: Yup.string()
-      .email("E-mail inválido.")
-      .required("E-mail é obrigatório."),
+      .email(t("validation.invalidEmail"))
+      .required(t("validation.emailRequired")),
     cpf: Yup.string()
-      .required("CPF é obrigatório.")
+      .required(t("validation.cpfRequired"))
       .matches(
         /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-        "Formato de CPF inválido (000.000.000-00)."
+        t("validation.cpfInvalid")
       ),
   }),
   Yup.object({
     phone: Yup.string()
-      .required("Telefone é obrigatório.")
+      .required(t("validation.phoneRequired"))
       .matches(
         /^\(\d{2}\) \d{4,5}-\d{4}$/,
-        "Formato de telefone inválido. Exemplo: (XX) XXXXX-XXXX."
+        t("validation.phoneInvalid")
       ),
     password: Yup.string()
-      .required("Senha é obrigatória.")
-      .min(6, "Senha deve ter pelo menos 6 caracteres."),
+      .required(t("validation.passwordRequired"))
+      .min(6, t("validation.passwordMinLength", { min: 6 })),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "As senhas não conferem.")
-      .required("Confirmação de senha é obrigatória."),
+      .oneOf([Yup.ref("password")], t("validation.passwordsMismatch"))
+      .required(t("validation.confirmPasswordRequired")),
   }),
 ];

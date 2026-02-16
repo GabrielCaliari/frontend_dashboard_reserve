@@ -1,17 +1,9 @@
 import api from "../config/api";
 import { errorTypes } from "../config/error-types";
 
-export const listLeadQualificationService = async ({
-    session,
-    token
-}: { session: string, token: string }) => {
+export const listLeadQualificationService = async () => {
     try {
-        const response = await api.get(`admin/lead/list/trademark-registration`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'session-id': session,
-            }
-        });
+        const response = await api.get(`/auth/leads/qualification`);
 
         return response.data;
     } catch (error: any) {

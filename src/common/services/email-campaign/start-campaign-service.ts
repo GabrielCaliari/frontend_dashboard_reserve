@@ -1,4 +1,4 @@
-import apiEmail from "@/src/common/config/api-email"
+import api from "@/src/common/config/api"
 
 interface IStartCampaignResponse {
   error?: boolean
@@ -8,8 +8,8 @@ interface IStartCampaignResponse {
 
 export async function startCampaignService(campaignId: string): Promise<IStartCampaignResponse> {
   try {
-    const url = `/email-campaign/start-campaign/${campaignId}`
-    const resp = await apiEmail.post(url)
+    const url = `/mailer/campaigns/${campaignId}/start`
+    const resp = await api.post(url)
     return resp.data
   } catch (err: any) {
     // Try to extract message from axios error

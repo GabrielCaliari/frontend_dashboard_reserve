@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/src/components/ui/alert"
 import { useRouter } from "next/navigation"
 import { Upload, AlertCircle, CheckCircle, FileText } from "lucide-react"
 import { uploadLeads } from "@/src/common/actions/email-campaign/upload-leads"
+import { useTranslations } from "next-intl"
 
 interface LeadUploadDialogProps {
   isOpen: boolean
@@ -18,6 +19,8 @@ interface LeadUploadDialogProps {
 
 export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDialogProps) {
   const router = useRouter()
+  const t = useTranslations("leadUpload")
+  const tc = useTranslations("common")
   const [file, setFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -29,7 +32,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
     if (selectedFile) {
       // Verificar se é um arquivo CSV
       if (!selectedFile.name.endsWith(".csv")) {
-        setError("O arquivo deve estar no formato CSV")
+        setError(t("csvFormatError"))
         setFile(null)
         return
       }
@@ -54,7 +57,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
     if (droppedFile) {
       // Verificar se é um arquivo CSV
       if (!droppedFile.name.endsWith(".csv")) {
-        setError("O arquivo deve estar no formato CSV")
+        setError(t("csvFormatError"))
         setFile(null)
         return
       }
@@ -67,7 +70,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
 
   const handleUpload = async () => {
     if (!file) {
-      setError("Selecione um arquivo CSV para fazer upload")
+      setError(t("selectCsvFile"))
       return
     }
 
@@ -79,7 +82,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
       const result = await uploadLeads(campaignId, file)
 
       if (result?.error) {
-        setError(result.message || "Erro ao fazer upload dos leads.")
+        setError(result.message || t("uploadError"))
         setIsUploading(false)
         return
       }
@@ -92,8 +95,8 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
         onClose()
       }, 2000)
     } catch (err) {
-      console.error("Erro ao processar o arquivo:", err)
-      setError("Ocorreu um erro ao processar o arquivo. Verifique o formato e tente novamente.")
+      console.error(t("processError"), err)
+      setError(t("processErrorDetail"))
       setIsUploading(false)
     }
   }
@@ -119,7 +122,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
-            Upload de Leads
+            {t("title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -139,9 +142,9 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
               <>
                 <FileText className="h-10 w-10 mx-auto text-gray-400" />
                 <p className="mt-2 text-sm font-medium text-gray-600">
-                  Clique para selecionar ou arraste um arquivo CSV
+                  {t("clickToSelect")}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">O arquivo deve conter apenas uma coluna chamada "email"</p>
+                <p className="text-xs text-gray-500 mt-1">{t("emailColumnOnly")}</p>
               </>
             )}
 
@@ -156,7 +159,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
             {success && (
               <div className="text-sm">
                 <CheckCircle className="h-8 w-8 mx-auto text-emerald-500 mb-2" />
-                <p className="font-medium text-emerald-700">Upload concluído com sucesso!</p>
+                <p className="font-medium text-emerald-700">{t("uploadSuccess")}</p>
               </div>
             )}
 
@@ -178,24 +181,24 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
           )}
 
           {file && !error && !success && (
-            <p className="text-xs text-gray-500 mt-2">Clique em "Fazer Upload" para importar os leads</p>
+            <p className="text-xs text-gray-500 mt-2">{t("clickUpload")}</p>
           )}
         </div>
 
         <DialogFooter className="sm:justify-between">
           <Button type="button" variant="outline" onClick={onClose} disabled={isUploading}>
-            Cancelar
+            {tc("cancel")}
           </Button>
 
           <div className="flex gap-2">
             {file && !success && (
               <Button type="button" variant="ghost" onClick={resetFileInput} disabled={isUploading}>
-                Limpar
+                {t("clear")}
               </Button>
             )}
 
             <Button type="button" onClick={handleUpload} disabled={!file || isUploading || success}>
-              {isUploading ? "Processando..." : "Fazer Upload"}
+              {isUploading ? t("processing") : t("upload")}
             </Button>
           </div>
         </DialogFooter>

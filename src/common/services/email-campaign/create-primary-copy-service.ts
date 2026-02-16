@@ -1,10 +1,10 @@
 import { ICreatePrimaryCopy } from "../../@types/@email-builder";
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export default async function createPrimaryCopyService(id: string, data: ICreatePrimaryCopy) {
     try {
-        const response = await apiEmail.post(`/email-campaign/primary-copy-variant/create/${id}`, data);
+        const response = await api.post(`/mailer/campaigns/${id}/primary-copy`, data);
 
         return response.data;
     } catch (error: any) {

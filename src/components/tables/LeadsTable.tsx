@@ -7,9 +7,11 @@ import {
 import { MoreVertical, Eye, Edit, Trash } from "lucide-react";
 import { Lead } from "../modals/LeadDetailModal";
 import { displayOrigin } from "@/src/common/utils";
+import { useTranslations } from "next-intl";
 
 // Componente de Menu de Ações
 function ActionsMenu({ lead, onView }: { lead: Lead; onView: (lead: Lead) => void }) {
+    const t = useTranslations("leadsTable");
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -23,15 +25,15 @@ function ActionsMenu({ lead, onView }: { lead: Lead; onView: (lead: Lead) => voi
                     className="text-blue-600 cursor-pointer flex items-center"
                 >
                     <Eye className="mr-2 h-4 w-4" />
-                    <span>Ver</span>
+                    <span>{t("view")}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-indigo-600 cursor-pointer flex items-center">
                     <Edit className="mr-2 h-4 w-4" />
-                    <span>Editar</span>
+                    <span>{t("edit")}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-red-600 cursor-pointer flex items-center">
                     <Trash className="mr-2 h-4 w-4" />
-                    <span>Excluir</span>
+                    <span>{t("delete")}</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
@@ -63,11 +65,12 @@ interface LeadsTableProps {
 
 // Componente de Tabela
 export function LeadsTable({ leads, onViewLead }: LeadsTableProps) {
+    const t = useTranslations();
     if (!leads || leads.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-lg">
-                <p className="text-gray-500 text-lg mb-2">Nenhum lead encontrado</p>
-                <p className="text-gray-400 text-sm">Não há dados para exibir neste momento.</p>
+                <p className="text-gray-500 text-lg mb-2">{t("leads.noLeadsFound")}</p>
+                <p className="text-gray-400 text-sm">{t("leads.noDataToShow")}</p>
             </div>
         );
     }
@@ -78,12 +81,12 @@ export function LeadsTable({ leads, onViewLead }: LeadsTableProps) {
                 <thead className="bg-gray-50">
                     <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">ID</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Nome</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Telefone</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Marca</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Origem</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Data de Criação</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Ações</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">{t("common.name")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">{t("common.phone")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">{t("leads.brand")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">{t("leads.origin")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">{t("common.createdAt")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">{t("common.actions")}</th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">

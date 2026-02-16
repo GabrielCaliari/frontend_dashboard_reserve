@@ -1,19 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #f0f0f0 !important;
+  background-color: #0a0a0f !important;
   box-sizing: border-box !important;
-  font-size: "Montserrat", sans-serif !important;
-  overflow-y: hidden!important;
+  font-family: "Montserrat", sans-serif !important;
+  overflow-y: hidden !important;
+  color: #e5e7eb;
 }
 
 .radio-large {
   transform: scale(1.3);
-  color: #667085;
+  color: #9ca3af;
 }
 
 ::-webkit-scrollbar {
@@ -21,16 +20,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #1a1a2e;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: gray;
+  background: #4b5563;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0929e2;
+  background: #3b82f6;
 }
 
 .loader {
@@ -203,7 +202,7 @@ select {
 }
 
 .markdown-container h1 {
-  @apply text-lg font-semibold text-gray-800;
+  @apply text-lg font-semibold text-gray-200;
 }
 
 .markdown-container h1 {
@@ -211,27 +210,27 @@ select {
 }
 
 .markdown-container h2 {
-  @apply text-base mb-2 font-semibold text-gray-800;
+  @apply text-base mb-2 font-semibold text-gray-200;
 }
 
 .markdown-container h3 {
-  @apply text-base mb-2 font-semibold text-gray-800;
+  @apply text-base mb-2 font-semibold text-gray-200;
 }
 
 .markdown-container p {
-  @apply text-base mb-3 text-gray-600;
+  @apply text-base mb-3 text-gray-400;
 }
 
 .markdown-container table {
-  @apply text-sm mb-5 text-gray-800 border-collapse rounded-2xl w-full;
+  @apply text-sm mb-5 text-gray-200 border-collapse rounded-2xl w-full;
 }
 
 .markdown-container th {
-  @apply text-sm mb-1 text-gray-800 p-3 border-2 border-solid border-[#ddd];
+  @apply text-sm mb-1 text-gray-200 p-3 border-2 border-solid border-gray-700;
 }
 
 .markdown-container li {
-  @apply text-sm text-gray-800 p-1 list-disc ml-3;
+  @apply text-sm text-gray-200 p-1 list-disc ml-3;
 }
 
 .markdown-container th:nth-child(1) {
@@ -252,7 +251,7 @@ select {
 }
 
 .markdown-container td {
-  @apply text-sm mb-1 text-gray-600 p-3 border-2 border-solid border-[#ddd];
+  @apply text-sm mb-1 text-gray-400 p-3 border-2 border-solid border-gray-700;
 }
 
 .hide-scrollbar {

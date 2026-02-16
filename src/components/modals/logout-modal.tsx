@@ -8,6 +8,7 @@ import {
 
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "nextjs-toploader/app";
+import { useTranslations } from "next-intl";
 
 interface LogoutModalProps {
   isOpen: boolean;
@@ -17,6 +18,8 @@ interface LogoutModalProps {
 
 export function LogoutModal({ isOpen, onOpenChange, onClose }: LogoutModalProps) {
   const { replace } = useRouter();
+  const t = useTranslations("logout");
+  const tc = useTranslations("common");
 
   const handleLogout = () => {
     deleteCookie("session");
@@ -34,18 +37,18 @@ export function LogoutModal({ isOpen, onOpenChange, onClose }: LogoutModalProps)
             <>
               <ModalBody>
                 <div className="p-3 py-6">
-                  <h1 className="text-2xl font-bold mb-1">Encerrar sessão</h1>
-                  <span className=" text-base text-gray-500 mt-12">
-                    Você realmente deseja fazer isso?
+                  <h1 className="text-2xl font-bold mb-1 text-gray-100">{t("title")}</h1>
+                  <span className="text-base text-gray-400 mt-12">
+                    {t("confirm")}
                   </span>
                 </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Cancelar
+                  {tc("cancel")}
                 </Button>
                 <Button color="primary" onPress={() => handleLogout()}>
-                  Encerrar
+                  {t("end")}
                 </Button>
               </ModalFooter>
             </>

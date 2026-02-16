@@ -2,20 +2,12 @@ import api from "../config/api";
 import { errorTypes } from "../config/error-types";
 
 export const listLeadsService = async ({ 
-    token, 
-    session, 
     page = 1 
 }: { 
-    token: string, 
-    session: string,
     page?: number
 }) => {
     try {
-        const response = await api.get('v2/lead', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'session-id': session,
-            },
+        const response = await api.get('/auth/leads', {
             params: {
                 page
             }

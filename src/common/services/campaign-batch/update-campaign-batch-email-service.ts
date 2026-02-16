@@ -1,10 +1,10 @@
 import { ICreatePrimaryCopy } from "../../@types/@email-builder";
-import apiEmail from "../../config/api-email";
+import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 
 export default async function updateCampaignBatchEmailService(campaignBatchId: string, data: ICreatePrimaryCopy) {
     try {
-        const response = await apiEmail.put(`/campaign-batch/email/${campaignBatchId}`, data);
+        const response = await api.put(`/mailer/batches/${campaignBatchId}/email`, data);
 
         return response.data;
     } catch (error: any) {

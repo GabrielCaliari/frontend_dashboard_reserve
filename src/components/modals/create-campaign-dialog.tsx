@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { CreateCampaignFormData, createCampaignSchema } from "@/src/common/schemas/create-campaign-dialog"
 import { createEmailCampaign } from "@/src/common/actions/email-campaign/create-email-campaign"
 import toast from "react-hot-toast"
+import { useTranslations } from "next-intl"
 
 interface CreateCampaignDialogProps {
   isOpen: boolean
@@ -20,6 +21,7 @@ interface CreateCampaignDialogProps {
 
 export function CreateCampaignDialog({ isOpen, onClose }: CreateCampaignDialogProps) {
   const router = useRouter()
+  const t = useTranslations()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -29,7 +31,7 @@ export function CreateCampaignDialog({ isOpen, onClose }: CreateCampaignDialogPr
     formState: { errors },
     reset
   } = useForm<CreateCampaignFormData>({
-    resolver: zodResolver(createCampaignSchema)
+    resolver: zodResolver(createCampaignSchema(t))
   })
 
   const onSubmit = async (data: CreateCampaignFormData) => {
@@ -39,7 +41,7 @@ export function CreateCampaignDialog({ isOpen, onClose }: CreateCampaignDialogPr
       const response = await createEmailCampaign(data.name)
 
       if (response?.id) {
-        toast.success('Campanha criada com sucesso.')
+        toast.success(t("createCampaign.created"))
         router.refresh()
         onClose()
         reset()
@@ -49,13 +51,13 @@ export function CreateCampaignDialog({ isOpen, onClose }: CreateCampaignDialogPr
       if (response?.error) {
         toast.error(response.message)
       } else {
-        toast.error('Não foi possível criar a campanha.')
+        toast.error(t("createCampaign.createError"))
       }
 
       onClose()
       reset()
     } catch (err) {
-      console.error("Erro ao criar campanha:", err)
+      console.error(t("createCampaign.createErrorLog"), err)
     } finally {
       setIsSubmitting(false)
     }
@@ -65,14 +67,14 @@ export function CreateCampaignDialog({ isOpen, onClose }: CreateCampaignDialogPr
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nova Campanha</DialogTitle>
+          <DialogTitle>{t("createCampaign.title")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nome da Campanha</Label>
+            <Label htmlFor="name">{t("createCampaign.nameLabel")}</Label>
             <Input
               id="name"
-              placeholder="Digite o nome da campanha"
+              placeholder={t("createCampaign.namePlaceholder")}
               {...register("name")}
               disabled={isSubmitting}
               autoFocus
@@ -91,10 +93,10 @@ export function CreateCampaignDialog({ isOpen, onClose }: CreateCampaignDialogPr
               }}
               disabled={isSubmitting}
             >
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Criando..." : "Criar Campanha"}
+              {isSubmitting ? t("createCampaign.creating") : t("createCampaign.create")}
             </Button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
@@ -14,6 +15,7 @@ interface LinkEditorModalProps {
 }
 
 export default function LinkEditorModal({ isOpen, onClose, onApply, initialText = "" }: LinkEditorModalProps) {
+  const t = useTranslations()
   const [url, setUrl] = useState("https://")
   const [text, setText] = useState(initialText)
 
@@ -28,7 +30,7 @@ export default function LinkEditorModal({ isOpen, onClose, onApply, initialText 
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Criar Link</DialogTitle>
+          <DialogTitle>{t("emailBuilder.createLink")}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -46,9 +48,9 @@ export default function LinkEditorModal({ isOpen, onClose, onApply, initialText 
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancelar
+            {t("common.cancel")}
           </Button>
-          <Button onClick={handleApply}>Aplicar</Button>
+          <Button onClick={handleApply}>{t("common.confirm")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

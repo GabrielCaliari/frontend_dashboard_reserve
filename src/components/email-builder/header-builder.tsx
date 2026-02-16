@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
@@ -32,6 +33,7 @@ interface HeaderBuilderProps {
 }
 
 export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) {
+  const t = useTranslations("emailBuilder")
   const [showLogo, setShowLogo] = useState(!!config.logo)
   const [showTitle, setShowTitle] = useState(!!config.title)
 
@@ -81,7 +83,7 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
       // Add default title
       updateConfig({
         title: {
-          text: "Minha Empresa",
+          text: t("defaultCompany"),
           color: "#333333",
           fontSize: "24px",
           fontFamily: "Arial, sans-serif",
@@ -148,7 +150,7 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
                 margin: "0",
               }}
             >
-              {config.title.text || "Minha Empresa"}
+              {config.title.text || t("defaultCompany")}
             </h1>
           )}
         </div>
@@ -172,7 +174,7 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
               ) : (
                 <>
                   <Plus size={14} />
-                  <span>Adicionar</span>
+                  <span>{t("add")}</span>
                 </>
               )}
             </Button>
@@ -181,7 +183,7 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
           {showLogo && (
             <div className="space-y-3 pl-4 border-l-2 border-gray-200">
               <div>
-                <Label htmlFor="logo-src">URL da Imagem</Label>
+                <Label htmlFor="logo-src">{t("imageUrl")}</Label>
                 <Input
                   id="logo-src"
                   value={config.logo?.src || ""}
@@ -190,16 +192,16 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
                 />
               </div>
               <div>
-                <Label htmlFor="logo-alt">Texto Alternativo</Label>
+                <Label htmlFor="logo-alt">{t("altText")}</Label>
                 <Input
                   id="logo-alt"
                   value={config.logo?.alt || ""}
                   onChange={(e) => handleLogoChange({ alt: e.target.value })}
-                  placeholder="Logo da Empresa"
+                  placeholder={t("companyLogo")}
                 />
               </div>
               <div>
-                <Label htmlFor="logo-height">Altura</Label>
+                <Label htmlFor="logo-height">{t("height")}</Label>
                 <Input
                   id="logo-height"
                   value={config.logo?.height || ""}
@@ -221,7 +223,7 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
               ) : (
                 <>
                   <Plus size={14} />
-                  <span>Adicionar</span>
+                  <span>{t("add")}</span>
                 </>
               )}
             </Button>
@@ -235,24 +237,24 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
                   id="title-text"
                   value={config.title?.text || ""}
                   onChange={(e) => handleTitleChange({ text: e.target.value })}
-                  placeholder="Minha Empresa"
+                  placeholder={t("defaultCompany")}
                 />
               </div>
               <div>
-                <Label>Cor do Texto</Label>
+                <Label>{t("textColor")}</Label>
                 <ColorPicker
                   color={config.title?.color || "#333333"}
                   onChange={(color) => handleTitleChange({ color })}
                 />
               </div>
               <div>
-                <Label htmlFor="title-font-size">Tamanho da Fonte</Label>
+                <Label htmlFor="title-font-size">{t("fontSize")}</Label>
                 <Select
                   value={config.title?.fontSize || "24px"}
                   onValueChange={(value) => handleTitleChange({ fontSize: value })}
                 >
                   <SelectTrigger id="title-font-size">
-                    <SelectValue placeholder="Selecione um tamanho" />
+                    <SelectValue placeholder={t("selectSize")} />
                   </SelectTrigger>
                   <SelectContent>
                     {fontSizes.map((size) => (
@@ -264,13 +266,13 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
                 </Select>
               </div>
               <div>
-                <Label htmlFor="title-font-family">Família da Fonte</Label>
+                <Label htmlFor="title-font-family">{t("fontFamily")}</Label>
                 <Select
                   value={config.title?.fontFamily || "Arial, sans-serif"}
                   onValueChange={(value) => handleTitleChange({ fontFamily: value })}
                 >
                   <SelectTrigger id="title-font-family">
-                    <SelectValue placeholder="Selecione uma fonte" />
+                    <SelectValue placeholder={t("selectFont")} />
                   </SelectTrigger>
                   <SelectContent>
                     {fontFamilies.map((font) => (
@@ -287,33 +289,33 @@ export default function HeaderBuilder({ config, onChange }: HeaderBuilderProps) 
 
         <TabsContent value="style" className="space-y-4 pt-4">
           <div>
-            <Label>Cor de Fundo</Label>
+            <Label>{t("backgroundColor")}</Label>
             <ColorPicker
               color={config.backgroundColor || "#f5f5f5"}
               onChange={(color) => updateConfig({ backgroundColor: color })}
             />
           </div>
           <div>
-            <Label htmlFor="header-alignment">Alinhamento</Label>
+            <Label htmlFor="header-alignment">{t("alignment")}</Label>
             <Select
               value={config.alignment || "center"}
               onValueChange={(value: "left" | "center" | "right") => updateConfig({ alignment: value })}
             >
               <SelectTrigger id="header-alignment">
-                <SelectValue placeholder="Selecione um alinhamento" />
+                <SelectValue placeholder={t("selectAlignment")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="left">Esquerda</SelectItem>
-                <SelectItem value="center">Centro</SelectItem>
-                <SelectItem value="right">Direita</SelectItem>
+                <SelectItem value="left">{t("left")}</SelectItem>
+                <SelectItem value="center">{t("center")}</SelectItem>
+                <SelectItem value="right">{t("right")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor="header-padding">Espaçamento (Padding)</Label>
+            <Label htmlFor="header-padding">{t("padding")}</Label>
             <Select value={config.padding || "20px"} onValueChange={(value) => updateConfig({ padding: value })}>
               <SelectTrigger id="header-padding">
-                <SelectValue placeholder="Selecione um espaçamento" />
+                <SelectValue placeholder={t("selectPadding")} />
               </SelectTrigger>
               <SelectContent>
                 {paddings.map((padding) => (

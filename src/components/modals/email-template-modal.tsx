@@ -1,8 +1,11 @@
+"use client"
+
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Reader, TReaderDocument } from '@usewaypoint/email-builder';
 import { z } from 'zod';
-import { getTimeZones } from '@vvo/tzdb';
+import type { TimeZone } from '@vvo/tzdb';
+import { useTranslations } from 'next-intl';
 
 interface EmailTemplateModalProps {
   isOpen: boolean;
@@ -20,18 +23,26 @@ interface EmailTemplateModalProps {
   };
 }
 
-const emailSchema = z.object({
-  subject: z.string().min(1, 'O assunto é obrigatório'),
-  preheader: z.string().min(1, 'O pré-header é obrigatório'),
-  sender: z.string().email('O remetente deve ser um email válido'),
-  provider: z.string().min(1, 'O provedor é obrigatório'),
-  sendAfterHours: z.number().min(0, 'O tempo de envio deve ser maior que 0'),
-  content: z.string().min(1, 'O conteúdo do email é obrigatório'),
-  timeZone: z.string().min(1, 'O fuso horário é obrigatório'),
-  time: z.string().min(1, 'O horário é obrigatório')
+const createEmailSchema = (t: (key: string) => string) => z.object({
+  subject: z.string().min(1, t('validation.subjectRequired')),
+  preheader: z.string().min(1, t('validation.preHeaderRequired')),
+  sender: z.string().email(t('validation.senderInvalidEmail')),
+  provider: z.string().min(1, t('validation.providerRequired')),
+  sendAfterHours: z.number().min(0, t('validation.sendTimeMin')),
+  content: z.string().min(1, t('validation.contentRequired')),
+  timeZone: z.string().min(1, t('validation.timezoneRequired')),
+  time: z.string().min(1, t('validation.timeRequired'))
 });
 
-const timeZones = getTimeZones();
+let _timeZonesCache: TimeZone[] | null = null;
+function getTimeZonesLazy(): TimeZone[] {
+  if (!_timeZonesCache) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getTimeZones } = require('@vvo/tzdb') as typeof import('@vvo/tzdb');
+    _timeZonesCache = getTimeZones();
+  }
+  return _timeZonesCache;
+}
 
 export function EmailTemplateModal({
   isOpen,
@@ -41,6 +52,7 @@ export function EmailTemplateModal({
   emailStatus,
   initialData
 }: EmailTemplateModalProps) {
+  const t = useTranslations()
   const [subject, setSubject] = useState(initialData?.subject || '');
   const [preheader, setPreheader] = useState(initialData?.preheader || '');
   const [sender, setSender] = useState(initialData?.sender || '');
@@ -87,7 +99,7 @@ export function EmailTemplateModal({
       time
     };
 
-    const result = emailSchema.safeParse(formData);
+    const result = createEmailSchema(t).safeParse(formData);
     if (!result.success) {
       const newErrors = Object.fromEntries(
         Object.entries(result.error.format()).map(([key, value]) => [key, value && '_errors' in value ? value._errors[0] : undefined])
@@ -122,9 +134,9 @@ export function EmailTemplateModal({
 
   // Ajuste no padrão de disparo dos emails
   const emailDispatchOptions = [
-    { label: 'Imediato', value: 0 },
-    { label: '24 horas', value: 24 },
-    { label: '48 horas', value: 48 }
+    { label: t('emailTemplate.immediate'), value: 0 },
+    { label: t('emailTemplate.24hours'), value: 24 },
+    { label: t('emailTemplate.48hours'), value: 48 }
   ];
 
   return (
@@ -134,11 +146,11 @@ export function EmailTemplateModal({
         <div className="flex items-center justify-between p-6 border-b">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">
-              {emailStatus === 'sent' ? 'Visualizar Email' : 'Configurar Email'}: {templateName}
+              {emailStatus === 'sent' ? t('emailTemplate.viewEmail') : t('emailTemplate.configureEmail')}: {templateName}
             </h3>
             {emailStatus !== 'sent' && (
               <p className="text-sm text-gray-600 mt-1">
-                Configure o conteúdo e as opções de envio deste email
+                {t('emailTemplate.configureContent')}
               </p>
             )}
           </div>
@@ -156,13 +168,13 @@ export function EmailTemplateModal({
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Assunto do Email
+                  {t('emailTemplate.subject')}
                 </label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Ex: Não perca os itens do seu carrinho!"
+                  placeholder={t('emailTemplate.subjectPlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
                 {errors.subject && (
@@ -172,13 +184,13 @@ export function EmailTemplateModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Pré-header
+                  {t('emailTemplate.preHeader')}
                 </label>
                 <input
                   type="text"
                   value={preheader}
                   onChange={(e) => setPreheader(e.target.value)}
-                  placeholder="Ex: Veja o que você deixou para trás..."
+                  placeholder={t('emailTemplate.preHeaderPlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
                 {errors.preheader && (
@@ -188,13 +200,13 @@ export function EmailTemplateModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Remetente
+                  {t('emailTemplate.sender')}
                 </label>
                 <input
                   type="text"
                   value={sender}
                   onChange={(e) => setSender(e.target.value)}
-                  placeholder="Ex: loja@exemplo.com"
+                  placeholder={t('emailTemplate.senderPlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
                 {errors.sender && (
@@ -204,14 +216,14 @@ export function EmailTemplateModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Provedor de Email
+                  {t('emailTemplate.emailProvider')}
                 </label>
                 <select
                   value={provider}
                   onChange={(e) => setProvider(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="">Selecione um provedor</option>
+                  <option value="">{t('emailTemplate.selectProvider')}</option>
                   <option value="sendgrid">SendGrid</option>
                   <option value="mailchimp">Mailchimp</option>
                   <option value="aws-ses">AWS SES</option>
@@ -224,7 +236,7 @@ export function EmailTemplateModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Enviar Após (horas)
+                  {t('emailTemplate.sendAfter')}
                 </label>
                 <select
                   value={sendAfterHours}
@@ -242,14 +254,14 @@ export function EmailTemplateModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Fuso Horário
+                  {t('emailTemplate.timezone')}
                 </label>
                 <select
                   value={timeZone}
                   onChange={(e) => setTimeZone(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 >
-                  {timeZones.map((tz: { name: string }) => (
+                  {getTimeZonesLazy().map((tz: { name: string }) => (
                     <option key={tz.name} value={tz.name}>{tz.name}</option>
                   ))}
                 </select>
@@ -260,7 +272,7 @@ export function EmailTemplateModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Horário
+                  {t('emailTemplate.time')}
                 </label>
                 <input
                   type="time"
@@ -277,12 +289,12 @@ export function EmailTemplateModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Conteúdo do Email
+              {t('emailTemplate.emailContent')}
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Insira o HTML do email aqui..."
+              placeholder={t('emailTemplate.htmlPlaceholder')}
               className="w-full h-64 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.content && (
@@ -301,14 +313,14 @@ export function EmailTemplateModal({
             onClick={onClose}
             className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
           >
-            {emailStatus === 'sent' ? 'Fechar' : 'Cancelar'}
+            {emailStatus === 'sent' ? t('common.close') : t('common.cancel')}
           </button>
           {emailStatus !== 'sent' && (
             <button
               onClick={handleSave}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
             >
-              Salvar e Agendar
+              {t('emailTemplate.saveAndSchedule')}
             </button>
           )}
         </div>

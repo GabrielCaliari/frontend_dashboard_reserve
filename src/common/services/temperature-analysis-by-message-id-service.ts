@@ -2,17 +2,10 @@ import api from "../config/api";
 import { errorTypes } from "../config/error-types";
 
 export const temperatureAnalysisByMessageIdService = async ({
-    session,
-    token,
     message_id
-}: { session: string, token: string, message_id: string }) => {
+}: { message_id: string }) => {
     try {
-        const response = await api.post(`/admin/lead/temperature-analysis/lead-qualification/${message_id}`, null, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'session-id': session,
-            }
-        });
+        const response = await api.post(`/auth/leads/temperature-analysis/${message_id}`);
 
         if (response.status !== 200) {
             throw response.data;

@@ -29,6 +29,7 @@ import useCompleteScreening from "@/src/common/hooks/use-complete-screening"
 import { useRouter } from "next/navigation"
 import { ETemperature } from "@/src/interfaces/lead-qualification.interface"
 import useTemperatureAnalysisByMessageId from "@/src/common/hooks/use-temperature-analysis-by-message-id"
+import { useTranslations } from "next-intl"
 
 interface KanbanCardProps {
   card: CardType
@@ -36,6 +37,8 @@ interface KanbanCardProps {
 }
 
 export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
+  const t = useTranslations("kanban")
+  const tCommon = useTranslations("common")
   const { refresh } = useRouter()
   const { execCompleteScreening } = useCompleteScreening()
   const { execTemperatureAnalysisByMessageId } = useTemperatureAnalysisByMessageId();
@@ -137,26 +140,26 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
               card.details[0].temperature == ETemperature.hot ? 'bg-red-700' :
                 'bg-gray-400'}
         `}
-          title={`
-            ${card.details[0].temperature == ETemperature.cold ? 'Lead frio' :
-              card.details[0].temperature == ETemperature.warm ? 'Lead morno' :
-                card.details[0].temperature == ETemperature.hot ? 'Lead quente' :
-                  'Temperatura do lead indefinido'}
-                  `}
+          title={
+            card.details[0].temperature == ETemperature.cold ? t("coldLead") :
+              card.details[0].temperature == ETemperature.warm ? t("warmLead") :
+                card.details[0].temperature == ETemperature.hot ? t("hotLead") :
+                  t("undefinedTemperature")
+          }
         />
       </div>
       <Modal isOpen={isCloseScreeningOpen} onOpenChange={setIsDetailsOpen}>
         <ModalContent className="sm:max-w-1xl overflow-auto hide-scrollbar py-4">
           <ModalHeader className="flex items-center justify-between">
-            <h2>Concluir triagem</h2>
+            <h2>{t("completeScreening")}</h2>
           </ModalHeader>
           <ModalBody>
-            <p>Você tem certeza que deseja fechar o processo de triagem do lead: <b>{card.title}</b></p>
+            <p>{t("confirmCloseScreening")} <b>{card.title}</b></p>
           </ModalBody>
           <ModalFooter>
             <div className="flex items-center gap-2 w-full">
-              <Button isDisabled={isLoadingCloseScreening} className="w-full bg-red-600 text-white" onClick={completeScreening}>Confirmar</Button>
-              <Button className="w-full" onClick={() => setIsCloseScreeningOpen(false)}>Cancelar</Button>
+              <Button isDisabled={isLoadingCloseScreening} className="w-full bg-red-600 text-white" onClick={completeScreening}>{tCommon("confirm")}</Button>
+              <Button className="w-full" onClick={() => setIsCloseScreeningOpen(false)}>{tCommon("cancel")}</Button>
             </div>
           </ModalFooter>
         </ModalContent>
@@ -165,15 +168,15 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
       <Modal isOpen={isTemperatureAnalysisOpen} onOpenChange={setIsTemperatureAnalysisOpen}>
         <ModalContent className="sm:max-w-1xl overflow-auto hide-scrollbar py-4">
           <ModalHeader className="flex items-center justify-between">
-            <h2>Nível de interesse do lead</h2>
+            <h2>{t("leadInterestLevel")}</h2>
           </ModalHeader>
           <ModalBody>
-            <p>Você tem certeza que deseja realizar a análise de interesse do lead: <b>{card.title}</b></p>
+            <p>{t("confirmInterestAnalysis")} <b>{card.title}</b></p>
           </ModalBody>
           <ModalFooter>
             <div className="flex items-center gap-2 w-full">
-              <Button isDisabled={isLoadingTemperatureAnalysis} className="w-full bg-red-600 text-white" onClick={temperatureAnalysis}>Confirmar</Button>
-              <Button className="w-full" onClick={() => setIsCloseScreeningOpen(false)}>Cancelar</Button>
+              <Button isDisabled={isLoadingTemperatureAnalysis} className="w-full bg-red-600 text-white" onClick={temperatureAnalysis}>{tCommon("confirm")}</Button>
+              <Button className="w-full" onClick={() => setIsCloseScreeningOpen(false)}>{tCommon("cancel")}</Button>
             </div>
           </ModalFooter>
         </ModalContent>
@@ -182,10 +185,10 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
       <Modal isOpen={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <ModalContent className="sm:max-w-2xl max-h-[500px] overflow-auto hide-scrollbar">
           <ModalHeader className="flex items-center justify-between px-8">
-            <h2>Detalhes da conversa</h2>
+            <h2>{t("conversationDetails")}</h2>
             <div className="flex gap-2">
-              <Button isDisabled={isLoadingTemperatureAnalysis} className="bg-orange-600 text-white" variant="solid" onClick={onTemperatureAnalysisModalOpen}>Analisar temperatura</Button>
-              <Button isDisabled={card.details[0].screening_complete} className="bg-red-600 text-white" variant="solid" onClick={onCompleteScreeningModalOpen}>Concluir triagem</Button>
+              <Button isDisabled={isLoadingTemperatureAnalysis} className="bg-orange-600 text-white" variant="solid" onClick={onTemperatureAnalysisModalOpen}>{t("analyzeTemperature")}</Button>
+              <Button isDisabled={card.details[0].screening_complete} className="bg-red-600 text-white" variant="solid" onClick={onCompleteScreeningModalOpen}>{t("completeScreening")}</Button>
             </div>
           </ModalHeader>
           <ModalBody>
