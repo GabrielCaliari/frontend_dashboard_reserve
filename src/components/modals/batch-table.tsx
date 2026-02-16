@@ -1,104 +1,151 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { Batch } from "@/lib/data"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { LeadListDialog } from "./lead-list-dialog"
-import { EmailPreviewDialog } from "./email-preview-dialog"
+import { useState } from "react";
+import type { Batch } from "@/lib/data";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LeadListDialog } from "./lead-list-dialog";
+import { EmailPreviewDialog } from "./email-preview-dialog";
 
 interface BatchTableProps {
-  batches: Batch[]
-  campaignId: string
+  batches: Batch[];
+  campaignId: string;
 }
 
 export function BatchTable({ batches, campaignId }: BatchTableProps) {
-  const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null)
-  const [isLeadListOpen, setIsLeadListOpen] = useState(false)
-  const [isEmailPreviewOpen, setIsEmailPreviewOpen] = useState(false)
+  const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null);
+  const [isLeadListOpen, setIsLeadListOpen] = useState(false);
+  const [isEmailPreviewOpen, setIsEmailPreviewOpen] = useState(false);
 
   if (!batches || batches.length === 0) {
-    return <div className="text-center py-8 text-gray-500">Nenhum disparo realizado para esta campanha.</div>
+    return (
+      <div className="text-center py-8 text-gray-500">
+        Nenhum disparo realizado para esta campanha.
+      </div>
+    );
   }
 
   const handleViewLeads = (batch: Batch) => {
-    setSelectedBatch(batch)
-    setIsLeadListOpen(true)
-  }
+    setSelectedBatch(batch);
+    setIsLeadListOpen(true);
+  };
 
   const handleViewEmail = (batch: Batch) => {
-    setSelectedBatch(batch)
-    setIsEmailPreviewOpen(true)
-  }
+    setSelectedBatch(batch);
+    setIsEmailPreviewOpen(true);
+  };
 
   return (
     <>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-200">
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nº</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leads</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <tr className="border-b border-gray-700">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                N
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                ID
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Leads
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Sucesso
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Erro</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Erro
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Abertura
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clique</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Clique
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Data de Envio
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Acoes
+              </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-[#12121f] divide-y divide-gray-800">
             {batches.map((batch) => (
-              <tr key={batch.id} className="hover:bg-gray-50">
-                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{batch.batchNumber}</td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{batch.id}</td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{batch.leadsCount}</td>
+              <tr
+                key={batch.id}
+                className="hover:bg-[#1e1e3a] transition-colors"
+              >
+                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
+                  {batch.batchNumber}
+                </td>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                  {batch.id}
+                </td>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                  {batch.leadsCount}
+                </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-900">{batch.successCount}</span>
-                    <span className="ml-2 text-xs text-green-600">
-                      ({((batch.successCount / batch.leadsCount) * 100).toFixed(1)}%)
+                    <span className="text-sm text-gray-200">
+                      {batch.successCount}
+                    </span>
+                    <span className="ml-2 text-xs text-green-400">
+                      (
+                      {((batch.successCount / batch.leadsCount) * 100).toFixed(
+                        1,
+                      )}
+                      %)
                     </span>
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-900">{batch.errorCount}</span>
-                    <span className="ml-2 text-xs text-red-600">
-                      ({((batch.errorCount / batch.leadsCount) * 100).toFixed(1)}%)
+                    <span className="text-sm text-gray-200">
+                      {batch.errorCount}
+                    </span>
+                    <span className="ml-2 text-xs text-red-400">
+                      (
+                      {((batch.errorCount / batch.leadsCount) * 100).toFixed(1)}
+                      %)
                     </span>
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-900">{batch.openCount}</span>
-                    <span className="ml-2 text-xs text-emerald-600">
-                      ({((batch.openCount / batch.leadsCount) * 100).toFixed(1)}%)
+                    <span className="text-sm text-gray-200">
+                      {batch.openCount}
+                    </span>
+                    <span className="ml-2 text-xs text-emerald-400">
+                      ({((batch.openCount / batch.leadsCount) * 100).toFixed(1)}
+                      %)
                     </span>
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-900">{batch.clickCount}</span>
-                    <span className="ml-2 text-xs text-blue-600">
-                      ({((batch.clickCount / batch.leadsCount) * 100).toFixed(1)}%)
+                    <span className="text-sm text-gray-200">
+                      {batch.clickCount}
+                    </span>
+                    <span className="ml-2 text-xs text-blue-400">
+                      (
+                      {((batch.clickCount / batch.leadsCount) * 100).toFixed(1)}
+                      %)
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
                   {new Date(batch.sentAt).toLocaleString("pt-BR")}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="p-2 rounded-full hover:bg-gray-100">
-                        <MoreHorizontalIcon className="h-5 w-5 text-gray-500" />
+                      <button className="p-2 rounded-full hover:bg-[#1a1a2e] transition-colors">
+                        <MoreHorizontalIcon className="h-5 w-5 text-gray-400" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -137,7 +184,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
         />
       )}
     </>
-  )
+  );
 }
 
 function MoreHorizontalIcon(props) {
@@ -158,7 +205,7 @@ function MoreHorizontalIcon(props) {
       <circle cx="19" cy="12" r="1" />
       <circle cx="5" cy="12" r="1" />
     </svg>
-  )
+  );
 }
 
 function UsersIcon(props) {
@@ -180,7 +227,7 @@ function UsersIcon(props) {
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
-  )
+  );
 }
 
 function MailIcon(props) {
@@ -200,5 +247,5 @@ function MailIcon(props) {
       <rect width="20" height="16" x="2" y="4" rx="2" />
       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
-  )
+  );
 }

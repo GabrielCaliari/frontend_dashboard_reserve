@@ -247,7 +247,7 @@ select {
 
 .markdown-container td:nth-child(1),
 .markdown-container td:nth-child(2) {
-  text-align: center
+  text-align: center;
 }
 
 .markdown-container td {
@@ -255,10 +255,10 @@ select {
 }
 
 .hide-scrollbar {
-  scrollbar-width: none; 
+  scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }

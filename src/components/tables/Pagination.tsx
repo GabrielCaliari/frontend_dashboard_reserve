@@ -1,82 +1,88 @@
 // Interface para as props de paginação
 interface PaginationProps {
-    currentPage?: number;
-    totalPages?: number;
-    showing: { start: number; end: number };
-    totalResults: number;
-    onPageChange?: (page: number) => void;
+  currentPage?: number;
+  totalPages?: number;
+  showing: { start: number; end: number };
+  totalResults: number;
+  onPageChange?: (page: number) => void;
 }
 import { useTranslations } from "next-intl";
 
 // Componente de Paginação
-export function Pagination({ 
-    currentPage = 1, 
-    totalPages = 10, 
-    showing, 
-    totalResults,
-    onPageChange 
+export function Pagination({
+  currentPage = 1,
+  totalPages = 10,
+  showing,
+  totalResults,
+  onPageChange,
 }: PaginationProps) {
-    const t = useTranslations("pagination");
-    const handlePageChange = (page: number) => {
-        if (onPageChange && page >= 1 && page <= totalPages) {
-            onPageChange(page);
-        }
-    };
+  const t = useTranslations("pagination");
+  const handlePageChange = (page: number) => {
+    if (onPageChange && page >= 1 && page <= totalPages) {
+      onPageChange(page);
+    }
+  };
 
-    // Gera os números de página para exibição (máximo de 5)
-    const getPageNumbers = () => {
-        const pages = [];
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, startPage + 4);
-        
-        if (endPage - startPage < 4) {
-            startPage = Math.max(1, endPage - 4);
-        }
+  // Gera os números de página para exibição (máximo de 5)
+  const getPageNumbers = () => {
+    const pages = [];
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
 
-        for (let i = startPage; i <= endPage; i++) {
-            pages.push(i);
-        }
-        
-        return pages;
-    };
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
+    }
 
-    return (
-        <div className="flex justify-between items-center mt-4">
-            <div>
-                <span className="text-sm text-gray-700">
-                    {t("showing", { start: showing.start, end: showing.end, total: totalResults })}
-                </span>
-            </div>
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
 
-            <div className="flex space-x-2">
-                <button 
-                    className="px-3 py-1 border rounded text-sm hover:bg-gray-100"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                >
-                    {t("previous")}
-                </button>
-                
-                {getPageNumbers().map(page => (
-                    <button 
-                        key={page}
-                        className={`px-3 py-1 border rounded text-sm ${
-                            currentPage === page ? 'bg-indigo-600 text-white' : 'hover:bg-gray-100'
-                        }`}
-                        onClick={() => handlePageChange(page)}
-                    >
-                        {page}
-                    </button>
-                ))}
-                
-                <button 
-                    className="px-3 py-1 border rounded text-sm hover:bg-gray-100"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                >
-                    {t("next")}
-                </button>
-            </div>
-        </div>
-    );
-} 
+    return pages;
+  };
+
+  return (
+    <div className="flex justify-between items-center mt-4">
+      <div>
+        <span className="text-sm text-gray-400">
+          {t("showing", {
+            start: showing.start,
+            end: showing.end,
+            total: totalResults,
+          })}
+        </span>
+      </div>
+
+      <div className="flex space-x-2">
+        <button
+          className="px-3 py-1 border border-gray-700 rounded text-sm text-gray-300 hover:bg-[#1a1a2e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          {t("previous")}
+        </button>
+
+        {getPageNumbers().map((page) => (
+          <button
+            key={page}
+            className={`px-3 py-1 border rounded text-sm transition-colors ${
+              currentPage === page
+                ? "bg-blue-600 text-white border-blue-600"
+                : "border-gray-700 text-gray-300 hover:bg-[#1a1a2e]"
+            }`}
+            onClick={() => handlePageChange(page)}
+          >
+            {page}
+          </button>
+        ))}
+
+        <button
+          className="px-3 py-1 border border-gray-700 rounded text-sm text-gray-300 hover:bg-[#1a1a2e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          {t("next")}
+        </button>
+      </div>
+    </div>
+  );
+}
