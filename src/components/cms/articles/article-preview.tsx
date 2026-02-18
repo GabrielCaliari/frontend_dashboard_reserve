@@ -127,11 +127,11 @@ export default function ArticlePreview({ article }: ArticlePreviewProps) {
           <div
             className="prose prose-invert prose-lg max-w-none
               prose-headings:text-foreground
-              prose-p:text-foreground/80
+              prose-p:text-muted-foreground
               prose-strong:text-foreground
               prose-a:text-primary
               prose-blockquote:border-l-primary/40
-              prose-blockquote:text-foreground/70
+              prose-blockquote:text-muted-foreground
               prose-code:bg-muted
               prose-code:text-foreground"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
@@ -184,7 +184,7 @@ export default function ArticlePreview({ article }: ArticlePreviewProps) {
       </Card>
 
       {/* Preview notes */}
-      <Card className="mt-4 bg-primary/5 border border-primary/20">
+      <Card className="mt-4 bg-primary/5 border border-border">
         <CardBody className="p-4">
           <div className="flex items-start gap-3">
             <Info size={16} className="text-primary mt-0.5 shrink-0" />

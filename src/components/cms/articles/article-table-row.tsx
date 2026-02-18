@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
-import { MoreVertical, Edit, Trash2, Eye, Archive, Send } from 'lucide-react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { GripVertical } from 'lucide-react';
-import type { Article } from '@/src/common/@types/@cms-article';
-import ArticleStatusBadge from './article-status-badge';
+import {
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@nextui-org/react";
+import { MoreVertical, Edit, Trash2, Eye, Archive, Send } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
+import type { Article } from "@/src/common/@types/@cms-article";
+import ArticleStatusBadge from "./article-status-badge";
 
 interface ArticleTableRowProps {
   article: Article;
@@ -20,21 +26,21 @@ interface ArticleTableRowProps {
 
 /**
  * ArticleTableRow Component
- * 
+ *
  * Displays a single article in a table row with contextual actions.
- * 
+ *
  * Features:
  * - Article title, slug, and status badge
  * - Publication date and last updated timestamp
  * - Contextual action buttons based on article status
  * - Drag handle for reordering (using @dnd-kit)
  * - Dropdown menu for additional actions
- * 
+ *
  * Action visibility by status:
  * - Draft: Edit, Delete, Publish, Preview
  * - Published: Edit, Archive, Preview
  * - Archived: Edit, Delete, Preview
- * 
+ *
  * **Validates: Requirements 17.1, 17.6, 17.7**
  */
 export default function ArticleTableRow({
@@ -46,13 +52,8 @@ export default function ArticleTableRow({
   onPreview,
   isDragging = false,
 }: ArticleTableRowProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: article.id });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: article.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -62,27 +63,27 @@ export default function ArticleTableRow({
 
   // Format dates
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
   // Determine available actions based on status
-  const canPublish = article.status === 'draft';
-  const canArchive = article.status === 'published';
-  const canDelete = article.status === 'draft' || article.status === 'archived';
+  const canPublish = article.status === "draft";
+  const canArchive = article.status === "published";
+  const canDelete = article.status === "draft" || article.status === "archived";
 
   return (
     <tr
       ref={setNodeRef}
       style={style}
-      className="group hover:bg-default-50 transition-all duration-200"
+      className="group hover:bg-accent transition-all duration-200"
     >
       {/* Drag Handle */}
-      <td className="px-6 py-4 w-12">
+      <td className="px-3 py-4">
         <button
           {...attributes}
           {...listeners}
@@ -94,36 +95,38 @@ export default function ArticleTableRow({
       </td>
 
       {/* Title */}
-      <td className="px-6 py-4">
-        <div className="flex flex-col gap-1.5">
-          <span className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+      <td className="px-4 py-4">
+        <div className="flex flex-col gap-1 min-w-0">
+          <span className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
             {article.title}
           </span>
-          <span className="text-xs text-default-400 font-mono">/{article.slug}</span>
+          <span className="text-xs text-default-400 font-mono truncate">
+            /{article.slug}
+          </span>
         </div>
       </td>
 
       {/* Status */}
-      <td className="px-6 py-4">
+      <td className="px-4 py-4">
         <ArticleStatusBadge status={article.status} />
       </td>
 
       {/* Published Date */}
-      <td className="px-6 py-4">
-        <span className="text-sm text-default-600">
+      <td className="px-4 py-4">
+        <span className="text-sm text-default-600 whitespace-nowrap">
           {formatDate(article.published_at)}
         </span>
       </td>
 
       {/* Last Updated */}
-      <td className="px-6 py-4">
-        <span className="text-sm text-default-600">
+      <td className="px-4 py-4">
+        <span className="text-sm text-default-600 whitespace-nowrap">
           {formatDate(article.updated_at)}
         </span>
       </td>
 
       {/* Actions */}
-      <td className="px-6 py-4">
+      <td className="px-4 py-4">
         <div className="flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
           {/* Quick Actions */}
           <Button
@@ -132,7 +135,7 @@ export default function ArticleTableRow({
             variant="flat"
             onPress={onEdit}
             aria-label="Edit article"
-            className="hover:bg-primary hover:text-white"
+            className="hover:bg-accent hover:text-accent-foreground"
           >
             <Edit size={16} />
           </Button>
@@ -144,7 +147,7 @@ export default function ArticleTableRow({
               variant="flat"
               onPress={onPreview}
               aria-label="Preview article"
-              className="hover:bg-default-200"
+              className="hover:bg-accent hover:text-accent-foreground"
             >
               <Eye size={16} />
             </Button>
@@ -158,12 +161,12 @@ export default function ArticleTableRow({
                 size="sm"
                 variant="flat"
                 aria-label="More actions"
-                className="hover:bg-default-200"
+                className="hover:bg-accent hover:text-accent-foreground"
               >
                 <MoreVertical size={16} />
               </Button>
             </DropdownTrigger>
-            <DropdownMenu 
+            <DropdownMenu
               aria-label="Article actions"
               classNames={{
                 base: "min-w-[160px]",
@@ -180,7 +183,7 @@ export default function ArticleTableRow({
                   Publish Article
                 </DropdownItem>
               )}
-              
+
               {canArchive && (
                 <DropdownItem
                   key="archive"

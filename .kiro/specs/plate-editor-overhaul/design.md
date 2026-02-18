@@ -1,72 +1,165 @@
-# Design Document
+# Design Document: Plate Editor Overhaul for Markdown
 
-## Overview
+## 1. Overview
 
-The Plate Editor Overhaul enhances the existing CMS article editor with improved visual consistency, a markdown view mode toggle, and better user experience while maintaining all current functionality. The design leverages NextUI components, Plate.js infrastructure, and React 19 features to create a polished, accessible editing experience.
+### 1.1 Purpose
+This design document outlines the technical architecture and implementation approach for overhauling the Plate editor to provide a seamless markdown editing experience with dual view modes (Formatted and Markdown source), visual consistency, and reliable content persistence.
 
-### Key Design Goals
+### 1.2 Design Goals
+- **Markdown-First**: Store and work with markdown natively, not HTML
+- **Visual Consistency**: Match NextUI theme and dashboard design patterns
+- **Dual View Modes**: Seamless switching between formatted and markdown source views
+- **Zero Data Loss**: Reliable serialization/deserialization between Slate and markdown
+- **Performance**: Responsive editing even with large documents (10,000+ words)
+- **Accessibility**: WCAG AA compliant with full keyboard navigation
 
-1. **Visual Consistency**: Align editor appearance with NextUI theme system and dashboard design patterns
-2. **Dual View Modes**: Support both WYSIWYG and raw HTML viewing with smooth transitions
-3. **Backward Compatibility**: Preserve all existing features (chapter navigation, floating toolbar, image insertion)
-4. **Accessibility**: Ensure keyboard navigation, screen reader support, and WCAG AA compliance
-5. **Performance**: Maintain fast rendering and smooth interactions even with large documents
+### 1.3 Key Design Decisions
 
-## Architecture
+| Decision | Rationale |
+|----------|-----------|
+| Use `remark` ecosystem for markdown | Industry standard, extensible, supports GFM |
+| Store markdown in database | Portability, version control friendly, human-readable |
+| Keep Plate.js for formatted view | Proven rich text editing, existing integration |
+| Use `react-syntax-highlighter` for markdown view | Lightweight, theme support, good performance |
+| Implement custom Slate ↔ Markdown serializers | Full control over conversion, handles edge cases |
 
-### Component Structure
+## 2. Architecture
 
-```
-PlateEditor (Enhanced)
-├── ViewModeToggle (NEW)
-│   └── NextUI Switch component
-├── ChapterNavigation (Existing)
-│   ├── Collapsible sidebar
-│   └── Chapter list with hierarchy
-├── EditorToolbar (Enhanced)
-│   ├── Undo/Redo buttons
-│   ├── Insert Image button
-│   └── ViewModeToggle integration
-├── FloatingToolbar (Existing)
-│   └── Text formatting controls
-├── ContentArea (Enhanced)
-│   ├── WYSIWYGView (Existing PlateContent)
-│   └── RawHTMLView (NEW)
-│       └── SyntaxHighlightedCode
-└── ImageInsertDialog (Existing)
-```
-
-### State Management
-
-The editor will manage the following state:
-
-- `viewMode`: 'wysiwyg' | 'raw' - Current view mode
-- `content`: Slate Value - Editor content in Slate format
-- `rawHtml`: string - Serialized HTML for raw view
-- `isTransitioning`: boolean - Flag for mode transition animation
-- All existing state (chapters, activeChapter, sidebarCollapsed, etc.)
-
-### Data Flow
+### 2.1 High-Level Architecture
 
 ```
-User Action → State Update → View Re-render
-     ↓
-Mode Toggle → Serialize/Deserialize → Update Display
-     ↓
-Content Change → Analyze → Update Stats → Notify Parent
+┌─────────────────────────────────────────────────────────┐
+│                    PlateEditor Component                 │
+├─────────────────────────────────────────────────────────┤
+│                                                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │ View Mode    │  │   Editor     │  │   Chapter    │  │
+│  │   Toggle     │  │   Toolbar    │  │  Navigation  │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  │
+│                                                           │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │           Content Area (Switchable)                │  │
+│  │  ┌─────────────────┐  ┌──────────────────────┐   │  │
+│  │  │ Formatted View  │  │  Markdown Source     │   │  │
+│  │  │  (Plate.js)     │  │  (Syntax Highlight)  │   │  │
+│  │  └─────────────────┘  └──────────────────────┘   │  │
+│  └───────────────────────────────────────────────────┘  │
+│                                                           │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │         Markdown Conversion Layer                  │  │
+│  │  ┌──────────────┐         ┌──────────────┐        │  │
+│  │  │ Slate → MD   │  ←→     │  MD → Slate  │        │  │
+│  │  │ Serializer   │         │ Deserializer │        │  │
+│  │  └──────────────┘         └──────────────┘        │  │
+│  └───────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## Components and Interfaces
+### 2.2 Component Structure
 
-### 1. ViewModeToggle Component
+```
+src/components/cms/editor/
+├── plate-editor.tsx              # Main editor component
+├── markdown-view.tsx             # NEW: Markdown source view
+├── view-mode-toggle.tsx          # NEW: Toggle component
+├── markdown-serializer.ts        # NEW: Slate → Markdown
+├── markdown-deserializer.ts      # NEW: Markdown → Slate
+└── types.ts                      # Shared types
+```
 
-**Purpose**: Provides UI control for switching between WYSIWYG and raw HTML view modes.
+
+## 3. Data Flow
+
+### 3.1 Content Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      User Interaction                        │
+└────────────┬────────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Current View Mode?                        │
+├──────────────────────────┬──────────────────────────────────┤
+│   Formatted View         │      Markdown View               │
+└────────────┬─────────────┴──────────────┬──────────────────┘
+             │                             │
+             ▼                             ▼
+┌────────────────────────┐    ┌───────────────────────────────┐
+│  Plate.js Editor       │    │  Markdown Textarea            │
+│  (Slate Value)         │    │  (Raw Markdown String)        │
+└────────────┬───────────┘    └───────────┬───────────────────┘
+             │                             │
+             │ onChange                    │ onChange
+             ▼                             ▼
+┌────────────────────────┐    ┌───────────────────────────────┐
+│  Slate → Markdown      │    │  Markdown → Slate             │
+│  Serializer            │    │  Deserializer                 │
+└────────────┬───────────┘    └───────────┬───────────────────┘
+             │                             │
+             └──────────────┬──────────────┘
+                            ▼
+                ┌───────────────────────┐
+                │  Unified Markdown     │
+                │  State                │
+                └───────────┬───────────┘
+                            │
+                            ▼
+                ┌───────────────────────┐
+                │  Content Analysis     │
+                │  (Stats, Chapters)    │
+                └───────────┬───────────┘
+                            │
+                            ▼
+                ┌───────────────────────┐
+                │  Parent Component     │
+                │  (onContentChange)    │
+                └───────────────────────┘
+```
+
+### 3.2 View Mode Switching Flow
+
+```
+User clicks toggle
+       │
+       ▼
+┌──────────────────┐
+│ Current mode?    │
+├──────────────────┤
+│ Formatted → MD   │  or  │ MD → Formatted │
+└────────┬─────────┘      └────────┬───────┘
+         │                          │
+         ▼                          ▼
+┌────────────────────┐    ┌────────────────────┐
+│ Serialize Slate    │    │ Parse Markdown     │
+│ to Markdown        │    │ to Slate           │
+└────────┬───────────┘    └────────┬───────────┘
+         │                          │
+         ▼                          ▼
+┌────────────────────┐    ┌────────────────────┐
+│ Validate Markdown  │    │ Validate Slate     │
+└────────┬───────────┘    └────────┬───────────┘
+         │                          │
+         │ Valid?                   │ Valid?
+         ▼                          ▼
+┌────────────────────┐    ┌────────────────────┐
+│ Switch to MD View  │    │ Switch to Format   │
+│ Show in textarea   │    │ Render in Plate    │
+└────────────────────┘    └────────────────────┘
+```
+
+
+## 4. Component Specifications
+
+### 4.1 ViewModeToggle Component
+
+**Purpose**: Provides UI control for switching between Formatted and Markdown view modes.
 
 **Interface**:
 ```typescript
 interface ViewModeToggleProps {
-  mode: 'wysiwyg' | 'raw';
-  onModeChange: (mode: 'wysiwyg' | 'raw') => void;
+  mode: 'formatted' | 'markdown';
+  onModeChange: (mode: 'formatted' | 'markdown') => void;
   disabled?: boolean;
   className?: string;
 }
@@ -74,33 +167,68 @@ interface ViewModeToggleProps {
 
 **Implementation Details**:
 - Uses NextUI `Switch` component for consistent styling
-- Displays icons: Eye (WYSIWYG) and Code (Raw)
+- Displays icons: Eye (Formatted) and FileCode (Markdown)
 - Shows tooltip with keyboard shortcut (Ctrl+Shift+M)
 - Provides ARIA labels for accessibility
 - Disabled during save operations
+- Smooth transition animation when toggling
 
-### 2. RawHTMLView Component
+**Visual Design**:
+```
+┌─────────────────────────────────────┐
+│  [Eye Icon] Formatted  ○━━━━  Markdown [FileCode Icon]  │
+└─────────────────────────────────────┘
+```
 
-**Purpose**: Displays HTML source code with syntax highlighting in read-only mode.
+### 4.2 MarkdownView Component
+
+**Purpose**: Displays and edits markdown source code with syntax highlighting.
 
 **Interface**:
 ```typescript
-interface RawHTMLViewProps {
-  html: string;
+interface MarkdownViewProps {
+  markdown: string;
+  onChange: (markdown: string) => void;
+  readOnly?: boolean;
   className?: string;
   onCopy?: () => void;
 }
 ```
 
 **Implementation Details**:
-- Uses `<pre>` and `<code>` tags for monospace display
-- Implements basic syntax highlighting using regex patterns
-- Highlights: tags, attributes, strings, comments
-- Provides copy-to-clipboard button
-- Scrollable with line numbers (optional)
-- Uses theme colors for syntax highlighting
+- Uses `react-syntax-highlighter` for syntax highlighting
+- Editable textarea with monospace font
+- Line numbers displayed on the left
+- Copy-to-clipboard button in top-right corner
+- Scrollable with proper overflow handling
+- Tab key inserts 2 spaces (not focus change)
+- Syntax highlighting for:
+  - Headers (#, ##, ###)
+  - Bold (**text**)
+  - Italic (*text*)
+  - Links ([text](url))
+  - Code blocks (```language)
+  - Lists (-, *, 1.)
+  - Blockquotes (>)
 
-### 3. Enhanced PlateEditor Component
+**Visual Design**:
+```
+┌─────────────────────────────────────────────────┐
+│  Markdown Source                    [Copy] [✓]  │
+├─────────────────────────────────────────────────┤
+│ 1  │ # Article Title                            │
+│ 2  │                                             │
+│ 3  │ This is a **bold** paragraph with *italic*.│
+│ 4  │                                             │
+│ 5  │ ## Section Heading                         │
+│ 6  │                                             │
+│ 7  │ - List item 1                              │
+│ 8  │ - List item 2                              │
+└─────────────────────────────────────────────────┘
+```
+
+
+### 4.3 Enhanced PlateEditor Component
 
 **Updated Interface**:
 ```typescript
@@ -111,26 +239,60 @@ interface PlateEditorProps {
   initialContent?: string;
   blogId?: number;
   articleId?: number;
-  initialViewMode?: 'wysiwyg' | 'raw'; // NEW
-  onViewModeChange?: (mode: 'wysiwyg' | 'raw') => void; // NEW
+  initialViewMode?: 'formatted' | 'markdown'; // NEW
+  onViewModeChange?: (mode: 'formatted' | 'markdown') => void; // NEW
 }
 ```
 
 **New State**:
 ```typescript
-const [viewMode, setViewMode] = useState<'wysiwyg' | 'raw'>('wysiwyg');
+const [viewMode, setViewMode] = useState<'formatted' | 'markdown'>('formatted');
 const [isTransitioning, setIsTransitioning] = useState(false);
-const [rawHtml, setRawHtml] = useState('');
+const [markdownContent, setMarkdownContent] = useState('');
 ```
 
-### 4. Enhanced EditorToolbar Component
+**Key Methods**:
+```typescript
+// Serialize Slate to Markdown
+const serializeToMarkdown = (slateValue: Value): string => {
+  // Use remark/unified to convert Slate to markdown
+};
+
+// Deserialize Markdown to Slate
+const deserializeFromMarkdown = (markdown: string): Value => {
+  // Use remark/unified to convert markdown to Slate
+};
+
+// Handle view mode change
+const handleViewModeChange = (newMode: 'formatted' | 'markdown') => {
+  setIsTransitioning(true);
+  
+  if (newMode === 'markdown') {
+    // Serialize current Slate value to markdown
+    const markdown = serializeToMarkdown(editor.children);
+    setMarkdownContent(markdown);
+  } else {
+    // Deserialize markdown to Slate value
+    const slateValue = deserializeFromMarkdown(markdownContent);
+    editor.children = slateValue;
+  }
+  
+  setViewMode(newMode);
+  setIsTransitioning(false);
+  
+  // Save preference to localStorage
+  localStorage.setItem('plate-editor-view-mode', newMode);
+};
+```
+
+### 4.4 Enhanced EditorToolbar Component
 
 **Updated Interface**:
 ```typescript
 interface EditorToolbarProps {
   onInsertImage: () => void;
-  viewMode: 'wysiwyg' | 'raw'; // NEW
-  onViewModeChange: (mode: 'wysiwyg' | 'raw') => void; // NEW
+  viewMode: 'formatted' | 'markdown'; // NEW
+  onViewModeChange: (mode: 'formatted' | 'markdown') => void; // NEW
   disabled?: boolean; // NEW
 }
 ```
@@ -138,17 +300,19 @@ interface EditorToolbarProps {
 **Layout Changes**:
 - Add ViewModeToggle to the right side of toolbar
 - Maintain existing undo/redo and insert image buttons
-- Disable insert image button in raw mode
+- Disable insert image button in markdown mode
+- Show markdown-specific help in markdown mode
 
-## Data Models
 
-### ViewMode Type
+## 5. Data Models
+
+### 5.1 ViewMode Type
 
 ```typescript
-type ViewMode = 'wysiwyg' | 'raw';
+type ViewMode = 'formatted' | 'markdown';
 ```
 
-### ViewModePreference (localStorage)
+### 5.2 ViewModePreference (localStorage)
 
 ```typescript
 interface ViewModePreference {
@@ -160,629 +324,397 @@ interface ViewModePreference {
 
 **Storage Key**: `plate-editor-view-mode`
 
-### SyntaxHighlightToken
-
-```typescript
-interface SyntaxHighlightToken {
-  type: 'tag' | 'attribute' | 'string' | 'comment' | 'text';
-  value: string;
-  startIndex: number;
-  endIndex: number;
-}
-```
-
-### Enhanced ContentStats
+### 5.3 Enhanced ContentStats
 
 The existing `ContentStats` interface remains unchanged, but the analysis function will be called after mode transitions to ensure stats are up-to-date.
 
-## 
-
-### Theme Integration
-
-**NextUI Theme Colors**:
 ```typescript
-// Background colors
-bg-content1: Main editor background
-bg-content2: Toolbar and sidebar backgrounds
-bg-default: Raw mode background
-
-// Text colors
-text-foreground: Primary text
-text-foreground/70: Secondary text
-text-muted-foreground: Placeholder and hints
-
-// Accent colors
-border-border: Borders and dividers
-bg-accent: Hover states
-text-accent-foreground: Accent text
-
-// Syntax highlighting (Raw mode)
-text-primary: HTML tags
-text-secondary: Attributes
-text-success: String values
-text-warning: Comments
-```
-
-### Mode Transition Flow
-
-```
-User clicks toggle
-    ↓
-Set isTransitioning = true
-    ↓
-If switching to Raw:
-    - Serialize Slate value to HTML
-    - Store in rawHtml state
-    - Fade out WYSIWYG view
-    - Fade in Raw view
-    ↓
-If switching to WYSIWYG:
-    - Parse rawHtml to Slate value
-    - Update editor value
-    - Fade out Raw view
-    - Fade in WYSIWYG view
-    ↓
-Set isTransitioning = false
-    ↓
-Save preference to localStorage
-    ↓
-Trigger content analysis
-```
-
-## Styling and Visual Design
-
-### Color Scheme Implementation
-
-**Editor Container**:
-```css
-.plate-editor-container {
-  background: hsl(var(--nextui-content1));
-  border: 1px solid hsl(var(--nextui-border));
-  border-radius: var(--nextui-radius-large);
+interface ContentStats {
+  wordCount: number;
+  headings: Array<{ type: string; text: string }>;
+  hasImages: boolean;
+  hasExternalLinks: boolean;
+  hasInternalLinks: boolean;
+  keywordCount: number;
+  keywordDensity: number;
+  keywordInFirstTenPercent: boolean;
+  keywordInSubheadings: boolean;
+  keywordInImageAlt: boolean;
+  shortParagraphs: boolean;
+  plainText: string;
+  metaDescription: string;
+  content: string; // Markdown content
 }
 ```
 
-**Content Area (WYSIWYG)**:
-```css
-.editor-content-wysiwyg {
-  background: hsl(var(--nextui-content1));
-  color: hsl(var(--nextui-foreground));
-  font-family: var(--font-nunito);
-  line-height: 1.75;
-  padding: 3rem 2rem;
-}
-```
+## 6. Markdown Conversion
 
-**Content Area (Raw)**:
-```css
-.editor-content-raw {
-  background: hsl(var(--nextui-default-100));
-  color: hsl(var(--nextui-foreground));
-  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-  line-height: 1.6;
-  padding: 1.5rem;
-  overflow-x: auto;
-}
-```
+### 6.1 Slate to Markdown Serialization
 
-### Typography Scale
+**Library**: `remark` + `remark-gfm`
+
+**Conversion Rules**:
+
+| Slate Node Type | Markdown Output |
+|----------------|-----------------|
+| `h1` | `# Heading` |
+| `h2` | `## Heading` |
+| `h3` | `### Heading` |
+| `p` | Plain paragraph |
+| `blockquote` | `> Quote` |
+| `ul` | `- Item` or `* Item` |
+| `ol` | `1. Item` |
+| `img` | `![alt](url)` |
+| `a` | `[text](url)` |
+| `code` (inline) | `` `code` `` |
+| `code_block` | ` ```language\ncode\n``` ` |
+
+**Text Marks**:
+
+| Mark | Markdown |
+|------|----------|
+| `bold` | `**text**` |
+| `italic` | `*text*` |
+| `underline` | `<u>text</u>` (HTML fallback) |
+| `strikethrough` | `~~text~~` (GFM) |
+| `code` | `` `text` `` |
+
+
+### 6.2 Markdown to Slate Deserialization
+
+**Library**: `remark-parse` + `mdast-util-to-hast` + custom transformer
+
+**Conversion Rules**:
+
+| Markdown Syntax | Slate Node Type |
+|----------------|-----------------|
+| `# Heading` | `{ type: 'h1', children: [...] }` |
+| `## Heading` | `{ type: 'h2', children: [...] }` |
+| `### Heading` | `{ type: 'h3', children: [...] }` |
+| Plain paragraph | `{ type: 'p', children: [...] }` |
+| `> Quote` | `{ type: 'blockquote', children: [...] }` |
+| `- Item` or `* Item` | `{ type: 'ul', children: [{ type: 'li', ... }] }` |
+| `1. Item` | `{ type: 'ol', children: [{ type: 'li', ... }] }` |
+| `![alt](url)` | `{ type: 'img', url, alt, children: [{ text: '' }] }` |
+| `[text](url)` | `{ type: 'a', url, children: [...] }` |
+| `` `code` `` | `{ text: 'code', code: true }` |
+| ` ```language\ncode\n``` ` | `{ type: 'code_block', language, children: [...] }` |
+
+**Text Marks**:
+
+| Markdown | Slate Mark |
+|----------|-----------|
+| `**text**` | `{ text: 'text', bold: true }` |
+| `*text*` | `{ text: 'text', italic: true }` |
+| `<u>text</u>` | `{ text: 'text', underline: true }` |
+| `~~text~~` | `{ text: 'text', strikethrough: true }` |
+| `` `text` `` | `{ text: 'text', code: true }` |
+
+### 6.3 Serialization Implementation
 
 ```typescript
-const typographyScale = {
-  h1: 'text-4xl font-bold leading-tight',
-  h2: 'text-3xl font-semibold leading-snug',
-  h3: 'text-2xl font-medium leading-normal',
-  paragraph: 'text-base leading-relaxed',
-  code: 'text-sm font-mono',
-};
-```
+// src/components/cms/editor/markdown-serializer.ts
+import { Value } from 'platejs';
 
-### Spacing System
-
-```typescript
-const spacing = {
-  headingTop: 'mt-8 first:mt-0',
-  headingBottom: 'mb-4',
-  paragraphVertical: 'my-4',
-  blockquoteVertical: 'my-6',
-  imageVertical: 'my-8',
-  toolbarPadding: 'p-2',
-  contentPadding: 'px-8 py-12',
-};
-```
-
-### Transition Animations
-
-```css
-.mode-transition-enter {
-  opacity: 0;
-  transform: translateY(10px);
+export function serializeToMarkdown(nodes: Value): string {
+  return nodes.map(node => serializeNode(node)).join('\n\n');
 }
 
-.mode-transition-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 250ms ease-out, transform 250ms ease-out;
-}
-
-.mode-transition-exit {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.mode-transition-exit-active {
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 200ms ease-in, transform 200ms ease-in;
-}
-```
-
-## Syntax Highlighting Implementation
-
-### Tokenization Strategy
-
-The raw HTML view will use a simple regex-based tokenizer for syntax highlighting:
-
-```typescript
-function tokenizeHtml(html: string): SyntaxHighlightToken[] {
-  const tokens: SyntaxHighlightToken[] = [];
-  
-  // Patterns for different token types
-  const patterns = {
-    comment: /<!--[\s\S]*?-->/g,
-    tag: /<\/?[\w-]+/g,
-    attribute: /[\w-]+=(?:"[^"]*"|'[^']*')/g,
-    string: /"[^"]*"|'[^']*'/g,
-  };
-  
-  // Process HTML and extract tokens
-  // Implementation details in code
-  
-  return tokens;
-}
-```
-
-### Syntax Color Mapping
-
-```typescript
-const syntaxColors = {
-  tag: 'text-primary',           // Blue for tags
-  attribute: 'text-secondary',   // Purple for attributes
-  string: 'text-success',        // Green for strings
-  comment: 'text-warning',       // Orange for comments
-  text: 'text-foreground',       // Default for text content
-};
-```
-
-### Rendering Strategy
-
-```typescript
-function renderHighlightedHtml(html: string): React.ReactNode {
-  const tokens = tokenizeHtml(html);
-  
-  return tokens.map((token, index) => (
-    <span key={index} className={syntaxColors[token.type]}>
-      {token.value}
-    </span>
-  ));
-}
-```
-
-## Accessibility Features
-
-### Keyboard Shortcuts
-
-| Shortcut | Action | Context |
-|----------|--------|---------|
-| Ctrl+Shift+M | Toggle view mode | Global |
-| Ctrl+B | Bold text | WYSIWYG mode, text selected |
-| Ctrl+I | Italic text | WYSIWYG mode, text selected |
-| Ctrl+U | Underline text | WYSIWYG mode, text selected |
-| Ctrl+Z | Undo | WYSIWYG mode |
-| Ctrl+Shift+Z | Redo | WYSIWYG mode |
-| Ctrl+Shift+I | Insert image | WYSIWYG mode |
-| Tab | Navigate toolbar | Toolbar focused |
-| Escape | Close dialogs | Dialog open |
-
-### ARIA Labels
-
-```typescript
-const ariaLabels = {
-  viewModeToggle: 'Toggle between formatted and raw HTML view',
-  wysiwygMode: 'WYSIWYG editing mode active',
-  rawMode: 'Raw HTML view mode active',
-  editorContent: 'Article content editor',
-  chapterNavigation: 'Document chapter navigation',
-  floatingToolbar: 'Text formatting toolbar',
-};
-```
-
-### Screen Reader Announcements
-
-```typescript
-// Announce mode changes
-function announceViewModeChange(mode: ViewMode) {
-  const message = mode === 'wysiwyg' 
-    ? 'Switched to formatted editing view'
-    : 'Switched to raw HTML view';
-  
-  // Use aria-live region
-  announceToScreenReader(message);
-}
-```
-
-### Focus Management
-
-```typescript
-// Preserve focus when switching modes
-function handleModeSwitch(newMode: ViewMode) {
-  const currentFocus = document.activeElement;
-  
-  // Switch mode
-  setViewMode(newMode);
-  
-  // Restore focus to appropriate element
-  if (newMode === 'raw') {
-    // Focus on raw view container
-    rawViewRef.current?.focus();
-  } else {
-    // Focus on editor content
-    editorRef.current?.focus();
+function serializeNode(node: any): string {
+  // Handle block nodes
+  if (node.type === 'h1') {
+    return `# ${serializeChildren(node.children)}`;
   }
-}
-```
-
-## Responsive Design Strategy
-
-### Breakpoints
-
-```typescript
-const breakpoints = {
-  mobile: '0px',      // < 640px
-  tablet: '768px',    // 768px - 1023px
-  desktop: '1024px',  // >= 1024px
-};
-```
-
-### Layout Adaptations
-
-**Mobile (< 768px)**:
-- Chapter navigation hidden by default
-- Toolbar buttons show icons only
-- View mode toggle remains visible
-- Reduced padding in content area
-
-**Tablet (768px - 1023px)**:
-- Chapter navigation collapsible
-- Toolbar shows icons with some labels
-- Full view mode toggle with labels
-- Standard padding
-
-**Desktop (>= 1024px)**:
-- Full chapter navigation sidebar
-- Complete toolbar with all labels
-- Full view mode toggle with descriptions
-- Maximum padding for readability
-
-### Touch Targets
-
-All interactive elements will meet minimum touch target size:
-- Buttons: 44x44px minimum
-- Toggle switches: 48x28px minimum
-- Toolbar icons: 40x40px minimum
-
-## Performance Considerations
-
-### Optimization Strategies
-
-1. **Lazy Syntax Highlighting**: Only highlight visible portions of large HTML documents
-2. **Debounced Analysis**: Delay content analysis by 300ms after changes
-3. **Memoized Serialization**: Cache HTML serialization results
-4. **Virtual Scrolling**: For very long documents in raw mode (future enhancement)
-5. **Transition Throttling**: Prevent rapid mode switching
-
-### Performance Metrics
-
-- Mode switch transition: < 300ms
-- Syntax highlighting: < 100ms for typical documents
-- Content serialization: < 50ms
-- Initial render: < 500ms
-
-## Error Handling
-
-### Error Scenarios
-
-1. **Serialization Failure**: Invalid Slate structure
-2. **Deserialization Failure**: Malformed HTML
-3. **localStorage Failure**: Quota exceeded or disabled
-4. **Image Upload Failure**: Network error or invalid file
-
-### Error Recovery
-
-```typescript
-function handleSerializationError(error: Error) {
-  console.error('Serialization failed:', error);
-  
-  // Show user-friendly message
-  toast.error('Unable to switch to raw view', {
-    description: 'The content structure may be invalid.',
-  });
-  
-  // Revert to WYSIWYG mode
-  setViewMode('wysiwyg');
-}
-
-function handleDeserializationError(error: Error) {
-  console.error('Deserialization failed:', error);
-  
-  // Show user-friendly message
-  toast.error('Unable to parse HTML', {
-    description: 'The HTML may contain invalid syntax.',
-  });
-  
-  // Keep in raw mode, don't corrupt content
-  // User can fix HTML manually
-}
-```
-
-## Testing Strategy
-
-### Unit Testing
-
-**Components to Test**:
-- ViewModeToggle: rendering, interaction, accessibility
-- RawHTMLView: syntax highlighting, rendering, copy functionality
-- Enhanced PlateEditor: mode switching, state management
-- Serialization functions: HTML generation, parsing
-
-**Test Cases**:
-- Toggle switches between modes correctly
-- Content is preserved during mode switches
-- Syntax highlighting applies correct colors
-- localStorage saves and restores preferences
-- Keyboard shortcuts work as expected
-- ARIA labels are present and correct
-
-### Integration Testing
-
-**Scenarios to Test**:
-- Full mode switch workflow (WYSIWYG → Raw → WYSIWYG)
-- Content editing in WYSIWYG mode, verify in raw mode
-- Image insertion and display in both modes
-- Chapter navigation updates after content changes
-- Content analysis runs after mode switches
-- Theme colors apply correctly in both modes
-
-### Property-Based Testing
-
-Property-based tests will be defined in the Correctness Properties section below.
-
-### Manual Testing Checklist
-
-- [ ] Visual consistency with dashboard theme
-- [ ] Smooth transitions between modes
-- [ ] All existing features work (chapter nav, floating toolbar, images)
-- [ ] Keyboard navigation works throughout
-- [ ] Screen reader announces mode changes
-- [ ] Responsive layout works on mobile, tablet, desktop
-- [ ] Dark mode displays correctly
-- [ ] Performance is acceptable with large documents
-
-## 
-Correctness Properties
-
-A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.
-
-### Property 1: Mode Switching Completeness
-
-*For any* editor state and any mode (WYSIWYG or Raw), activating the View_Mode_Toggle should successfully switch to the target mode and update all UI indicators accordingly.
-
-**Validates: Requirements 2.1, 2.8**
-
-### Property 2: Content Preservation Round-Trip
-
-*For any* valid article content, switching from WYSIWYG mode to Raw mode and back to WYSIWYG mode should preserve the content structure and text without data loss.
-
-**Validates: Requirements 2.3**
-
-### Property 3: Theme Color Consistency
-
-*For any* UI element in the editor (toolbar, content area, sidebar, dialogs), the element should use color tokens from the NextUI theme system rather than hardcoded color values.
-
-**Validates: Requirements 1.2, 1.4**
-
-### Property 4: Syntax Highlighting Completeness
-
-*For any* HTML content displayed in Raw mode, all syntax elements (tags, attributes, string values) should be highlighted with distinct colors from the theme system.
-
-**Validates: Requirements 8.1, 8.2, 8.3, 8.5**
-
-### Property 5: Scroll Position Preservation
-
-*For any* scroll position in the editor content area, switching between WYSIWYG and Raw modes should maintain the scroll position within a reasonable tolerance (±50px).
-
-**Validates: Requirements 4.2**
-
-### Property 6: Focus Management Consistency
-
-*For any* focused interactive element in the editor, switching view modes should maintain focus on a logically equivalent element in the new mode (e.g., toggle button remains focused).
-
-**Validates: Requirements 6.4**
-
-### Property 7: Mode Preference Persistence Round-Trip
-
-*For any* view mode selection (WYSIWYG or Raw), saving the preference to localStorage and then reloading the editor should restore the same view mode.
-
-**Validates: Requirements 9.1, 9.2**
-
-### Property 8: Existing Functionality Preservation
-
-*For any* existing editor feature (chapter navigation, floating toolbar, image insertion, text formatting, undo/redo), the feature should continue to work identically after the overhaul implementation.
-
-**Validates: Requirements 5.1-5.10**
-
-## Error Handling
-
-### Serialization Error Handling
-
-```typescript
-try {
-  const html = serializeNodesToHtml(editor.children);
-  setRawHtml(html);
-  setViewMode('raw');
-} catch (error) {
-  console.error('Serialization failed:', error);
-  toast.error('Unable to switch to raw view', {
-    description: 'The content structure may be invalid.',
-  });
-  // Stay in WYSIWYG mode
-}
-```
-
-### Deserialization Error Handling
-
-```typescript
-try {
-  const slateValue = parseHtmlToSlate(rawHtml);
-  editor.children = slateValue;
-  setViewMode('wysiwyg');
-} catch (error) {
-  console.error('Deserialization failed:', error);
-  toast.error('Unable to parse HTML', {
-    description: 'The HTML may contain invalid syntax. Please check the markup.',
-  });
-  // Stay in raw mode, preserve user's HTML
-}
-```
-
-### localStorage Error Handling
-
-```typescript
-function saveViewModePreference(mode: ViewMode) {
-  try {
-    const preference: ViewModePreference = {
-      mode,
-      timestamp: Date.now(),
-    };
-    localStorage.setItem('plate-editor-view-mode', JSON.stringify(preference));
-  } catch (error) {
-    console.warn('Failed to save view mode preference:', error);
-    // Continue without persistence - not critical
+  if (node.type === 'h2') {
+    return `## ${serializeChildren(node.children)}`;
   }
+  if (node.type === 'h3') {
+    return `### ${serializeChildren(node.children)}`;
+  }
+  if (node.type === 'blockquote') {
+    return `> ${serializeChildren(node.children)}`;
+  }
+  if (node.type === 'img') {
+    return `![${node.alt || ''}](${node.url})`;
+  }
+  if (node.type === 'p') {
+    return serializeChildren(node.children);
+  }
+  
+  // Default paragraph
+  return serializeChildren(node.children);
 }
 
-function loadViewModePreference(): ViewMode {
-  try {
-    const stored = localStorage.getItem('plate-editor-view-mode');
-    if (stored) {
-      const preference: ViewModePreference = JSON.parse(stored);
-      return preference.mode;
+function serializeChildren(children: any[]): string {
+  return children.map(child => {
+    if (child.text !== undefined) {
+      let text = child.text;
+      if (child.bold) text = `**${text}**`;
+      if (child.italic) text = `*${text}*`;
+      if (child.strikethrough) text = `~~${text}~~`;
+      if (child.code) text = `\`${text}\``;
+      return text;
     }
-  } catch (error) {
-    console.warn('Failed to load view mode preference:', error);
-  }
-  return 'wysiwyg'; // Default fallback
+    return serializeNode(child);
+  }).join('');
 }
 ```
 
-### Mode Transition Error Handling
+
+### 6.4 Deserialization Implementation
 
 ```typescript
-async function handleModeSwitch(targetMode: ViewMode) {
-  if (isTransitioning) {
-    console.warn('Mode switch already in progress');
-    return;
+// src/components/cms/editor/markdown-deserializer.ts
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import { Value } from 'platejs';
+
+export function deserializeFromMarkdown(markdown: string): Value {
+  if (!markdown || !markdown.trim()) {
+    return [{ type: 'p', children: [{ text: '' }] }];
   }
-  
-  if (isSaving) {
-    toast.warning('Please wait', {
-      description: 'Content is being saved. Try again in a moment.',
-    });
-    return;
+
+  const processor = unified()
+    .use(remarkParse)
+    .use(remarkGfm);
+
+  const tree = processor.parse(markdown);
+  const slateNodes = convertMdastToSlate(tree);
+
+  return slateNodes.length > 0 
+    ? slateNodes 
+    : [{ type: 'p', children: [{ text: '' }] }];
+}
+
+function convertMdastToSlate(node: any): any[] {
+  if (node.type === 'root') {
+    return node.children.flatMap(convertMdastToSlate);
   }
-  
-  setIsTransitioning(true);
-  
-  try {
-    if (targetMode === 'raw') {
-      const html = serializeNodesToHtml(editor.children);
-      setRawHtml(html);
-    } else {
-      const slateValue = parseHtmlToSlate(rawHtml);
-      editor.children = slateValue;
+
+  if (node.type === 'heading') {
+    return [{
+      type: `h${node.depth}`,
+      children: convertInlineNodes(node.children)
+    }];
+  }
+
+  if (node.type === 'paragraph') {
+    return [{
+      type: 'p',
+      children: convertInlineNodes(node.children)
+    }];
+  }
+
+  if (node.type === 'blockquote') {
+    return [{
+      type: 'blockquote',
+      children: node.children.flatMap(convertMdastToSlate)
+    }];
+  }
+
+  if (node.type === 'list') {
+    return [{
+      type: node.ordered ? 'ol' : 'ul',
+      children: node.children.map((item: any) => ({
+        type: 'li',
+        children: item.children.flatMap(convertMdastToSlate)
+      }))
+    }];
+  }
+
+  if (node.type === 'image') {
+    return [{
+      type: 'img',
+      url: node.url,
+      alt: node.alt || '',
+      children: [{ text: '' }]
+    }];
+  }
+
+  if (node.type === 'code') {
+    return [{
+      type: 'code_block',
+      language: node.lang || 'text',
+      children: [{ text: node.value }]
+    }];
+  }
+
+  return [];
+}
+
+function convertInlineNodes(nodes: any[]): any[] {
+  return nodes.flatMap(node => {
+    if (node.type === 'text') {
+      return [{ text: node.value }];
     }
-    
-    setViewMode(targetMode);
-    saveViewModePreference(targetMode);
-    announceViewModeChange(targetMode);
-    
-  } catch (error) {
-    handleModeTransitionError(error, targetMode);
-  } finally {
-    setIsTransitioning(false);
-  }
+
+    if (node.type === 'strong') {
+      return convertInlineNodes(node.children).map(child => ({
+        ...child,
+        bold: true
+      }));
+    }
+
+    if (node.type === 'emphasis') {
+      return convertInlineNodes(node.children).map(child => ({
+        ...child,
+        italic: true
+      }));
+    }
+
+    if (node.type === 'delete') {
+      return convertInlineNodes(node.children).map(child => ({
+        ...child,
+        strikethrough: true
+      }));
+    }
+
+    if (node.type === 'inlineCode') {
+      return [{ text: node.value, code: true }];
+    }
+
+    if (node.type === 'link') {
+      return [{
+        type: 'a',
+        url: node.url,
+        children: convertInlineNodes(node.children)
+      }];
+    }
+
+    return [{ text: '' }];
+  });
 }
 ```
 
-## Implementation Notes
 
-### Migration Strategy
+## 7. Visual Consistency
 
-1. **Phase 1**: Add ViewModeToggle component without breaking existing functionality
-2. **Phase 2**: Implement RawHTMLView component with syntax highlighting
-3. **Phase 3**: Integrate mode switching logic into PlateEditor
-4. **Phase 4**: Add localStorage persistence and preferences
-5. **Phase 5**: Polish transitions, animations, and accessibility
-6. **Phase 6**: Update theme colors and styling for consistency
+### 7.1 Color Scheme Alignment
 
-### Backward Compatibility
+**Current Issue**: The editor content area has a different background color than other Card components.
 
-- All existing props and interfaces remain unchanged
-- New props are optional with sensible defaults
-- Existing serialization/deserialization functions are reused
-- No breaking changes to parent components
+**Solution**:
+- Use `bg-content1` for the editor content area (matches NextUI Card default)
+- Use `bg-content1` for the toolbar background
+- Use `border-border` for all borders
+- Use `text-foreground` for primary text
+- Use `text-muted-foreground` for secondary text
 
-### Future Enhancements
+**Before**:
+```tsx
+<div className="bg-background"> {/* Wrong - doesn't match cards */}
+  <PlateContent />
+</div>
+```
 
-- **Editable Raw Mode**: Allow editing HTML directly in raw view
-- **Diff View**: Show differences between WYSIWYG and raw HTML
-- **Export Options**: Export to Markdown, plain text, or other formats
-- **Code Folding**: Collapse sections in raw view for large documents
-- **Line Numbers**: Add line numbers in raw view
-- **Search in Raw**: Find and replace in raw HTML view
-- **Validation**: Real-time HTML validation with error highlighting
+**After**:
+```tsx
+<div className="bg-content1"> {/* Correct - matches cards */}
+  <PlateContent />
+</div>
+```
 
-### Dependencies
+### 7.2 Component Styling Standards
 
-**New Dependencies**: None (uses existing libraries)
+All editor components must follow these styling rules:
 
-**Existing Dependencies**:
-- `@udecode/plate` - Core editor functionality
-- `slate` - Editor data model
-- `@nextui-org/react` - UI components (Switch, Tooltip, etc.)
-- `lucide-react` - Icons
-- `sonner` - Toast notifications
+```typescript
+// Editor Container
+className="flex h-full bg-content1"
 
-### Browser Compatibility
+// Toolbar
+className="sticky top-0 z-40 flex items-center gap-1.5 p-2 border-b border-border bg-content1"
 
-- Chrome/Edge: 90+
-- Firefox: 88+
-- Safari: 14+
-- Mobile browsers: iOS Safari 14+, Chrome Android 90+
+// Content Area (Formatted View)
+className="flex-1 overflow-y-auto bg-content1"
 
-### Performance Benchmarks
+// Content Area (Markdown View)
+className="flex-1 overflow-y-auto bg-content1 font-mono"
 
-Target performance metrics:
-- Initial render: < 500ms
-- Mode switch: < 300ms
-- Syntax highlighting: < 100ms for documents up to 10,000 characters
-- Content serialization: < 50ms
-- localStorage operations: < 10ms
+// Chapter Sidebar
+className="w-64 shrink-0 border-r border-border bg-content1"
 
-### Security Considerations
+// Buttons
+className="hover:bg-accent hover:text-accent-foreground"
+```
 
-- **XSS Prevention**: Raw HTML view is read-only by default
-- **Content Sanitization**: Existing HTML parsing already handles sanitization
-- **localStorage**: No sensitive data stored, only view mode preference
-- **CSP Compliance**: No inline styles or scripts in raw view
+### 7.3 Dark Mode Support
+
+All components must support dark mode using Tailwind's theme system:
+
+- Use semantic color tokens (foreground, background, muted, etc.)
+- Avoid hardcoded colors
+- Test in both light and dark modes
+- Ensure proper contrast ratios (WCAG AA)
+
+
+## 8. Implementation Strategy
+
+### 8.1 Phase 1: Foundation (Visual Consistency)
+**Goal**: Fix background colors and styling inconsistencies
+
+**Tasks**:
+1. Update PlateEditor component to use `bg-content1`
+2. Update toolbar styling to match dashboard patterns
+3. Update chapter sidebar styling
+4. Test in both light and dark modes
+5. Verify consistency across all article pages
+
+**Acceptance**: Editor visually matches other Card components in the dashboard
+
+### 8.2 Phase 2: Markdown Serialization
+**Goal**: Implement reliable Slate ↔ Markdown conversion
+
+**Tasks**:
+1. Install dependencies: `remark`, `remark-parse`, `remark-gfm`, `unified`
+2. Create `markdown-serializer.ts` with Slate → Markdown conversion
+3. Create `markdown-deserializer.ts` with Markdown → Slate conversion
+4. Write unit tests for serialization/deserialization
+5. Test with various markdown patterns (headings, lists, code, images, links)
+6. Ensure round-trip conversion preserves content
+
+**Acceptance**: Content can be converted between Slate and Markdown without data loss
+
+### 8.3 Phase 3: Markdown View Component
+**Goal**: Create markdown source view with syntax highlighting
+
+**Tasks**:
+1. Install `react-syntax-highlighter` or similar library
+2. Create `MarkdownView` component with textarea
+3. Implement syntax highlighting for markdown
+4. Add line numbers
+5. Add copy-to-clipboard functionality
+6. Handle tab key for indentation
+7. Test with large documents
+
+**Acceptance**: Users can view and edit raw markdown with syntax highlighting
+
+### 8.4 Phase 4: View Mode Toggle
+**Goal**: Enable switching between formatted and markdown views
+
+**Tasks**:
+1. Create `ViewModeToggle` component using NextUI Switch
+2. Add toggle to editor toolbar
+3. Implement view mode state management
+4. Implement view switching logic with serialization/deserialization
+5. Add keyboard shortcut (Ctrl+Shift+M)
+6. Save preference to localStorage
+7. Add transition animations
+
+**Acceptance**: Users can seamlessly switch between formatted and markdown views
+
+### 8.5 Phase 5: Integration & Testing
+**Goal**: Integrate all components and ensure reliability
+
+**Tasks**:
+1. Update parent components to handle markdown content
+2. Update API calls to send/receive markdown
+3. Update content stats analysis for markdown
+4. Test with existing articles
+5. Test edge cases (empty content, special characters, large documents)
+6. Performance testing
+7. Accessibility testing
+
+**Acceptance**: Complete editor works end-to-end with markdown storage
 

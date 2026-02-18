@@ -21,9 +21,21 @@ interface ScoreCardProps {
 }
 
 function getScoreColor(score: number) {
-  if (score >= 80) return "bg-green-500"; // success
-  if (score >= 50) return "bg-yellow-500"; // warning
-  return "bg-red-500"; // destructive
+  if (score >= 80) return "text-green-500";
+  if (score >= 50) return "text-yellow-500";
+  return "text-red-500";
+}
+
+function getScoreRingColor(score: number) {
+  if (score >= 80) return "stroke-green-500";
+  if (score >= 50) return "stroke-yellow-500";
+  return "stroke-red-500";
+}
+
+function getScoreLabel(score: number) {
+  if (score >= 80) return "Great";
+  if (score >= 50) return "Needs Work";
+  return "Poor";
 }
 
 export function ScoreCard({
@@ -37,75 +49,119 @@ export function ScoreCard({
     "desktop",
   );
 
+  const circumference = 2 * Math.PI * 28;
+  const strokeDashoffset = circumference - (score / 100) * circumference;
+
   return (
     <TooltipProvider>
-      <div className="p-4 sticky top-0 z-10">
-        {/* Header with Preview Icons */}
-        <div className="flex items-center justify-end gap-1 mb-4">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => {
-                  setPreviewMode("mobile");
-                  onPreviewMobile?.();
-                }}
-                className={cn(
-                  "p-1.5 rounded transition-colors",
-                  previewMode === "mobile"
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
-                )}
+      <div className="space-y-3">
+        {/* Score + Preview Row */}
+        <div className="flex items-center justify-between">
+          {/* Circular Score */}
+          <div className="flex items-center gap-3">
+            <div className="relative w-14 h-14">
+              <svg className="w-14 h-14 -rotate-90" viewBox="0 0 64 64">
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  fill="none"
+                  strokeWidth="4"
+                  className="stroke-border"
+                />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  fill="none"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  className={cn(
+                    "transition-all duration-500",
+                    getScoreRingColor(score),
+                  )}
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span
+                  className={cn(
+                    "text-sm font-bold tabular-nums",
+                    getScoreColor(score),
+                  )}
+                >
+                  {score}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span
+                className={cn("text-xs font-semibold", getScoreColor(score))}
               >
-                <Smartphone className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Preview Mobile Snippet</TooltipContent>
-          </Tooltip>
+                {getScoreLabel(score)}
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                SEO Score
+              </span>
+            </div>
+          </div>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => {
-                  setPreviewMode("desktop");
-                  onPreviewDesktop?.();
-                }}
-                className={cn(
-                  "p-1.5 rounded transition-colors",
-                  previewMode === "desktop"
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
-                )}
-              >
-                <Monitor className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Preview Desktop Snippet</TooltipContent>
-          </Tooltip>
+          {/* Preview Icons */}
+          <div className="flex items-center gap-0.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    setPreviewMode("mobile");
+                    onPreviewMobile?.();
+                  }}
+                  className={cn(
+                    "p-1.5 rounded transition-colors",
+                    previewMode === "mobile"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
+                  )}
+                >
+                  <Smartphone className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Preview Mobile Snippet</TooltipContent>
+            </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
-                <HelpCircle className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>SEO Analysis Help</TooltipContent>
-          </Tooltip>
-        </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    setPreviewMode("desktop");
+                    onPreviewDesktop?.();
+                  }}
+                  className={cn(
+                    "p-1.5 rounded transition-colors",
+                    previewMode === "desktop"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
+                  )}
+                >
+                  <Monitor className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Preview Desktop Snippet</TooltipContent>
+            </Tooltip>
 
-        {/* Score Badge */}
-        <div className="flex justify-center mb-5">
-          <div
-            className={cn(
-              "w-20 h-20 rounded-lg flex items-center justify-center",
-              getScoreColor(score),
-            )}
-          >
-            <span className="text-2xl font-bold text-white">{score}/100</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
+                  <HelpCircle className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>SEO Analysis Help</TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
         {/* Focus Keyword Input */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <Label
             htmlFor="focus-keyword"
             className="text-xs text-muted-foreground font-medium"
@@ -117,7 +173,7 @@ export function ScoreCard({
             value={focusKeyword}
             onChange={(e) => onKeywordChange(e.target.value)}
             placeholder="Enter focus keyword..."
-            className="bg-secondary border-input text-foreground placeholder:text-muted-foreground focus-visible:ring-ring"
+            className="h-8 text-sm bg-secondary border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-ring"
           />
         </div>
       </div>

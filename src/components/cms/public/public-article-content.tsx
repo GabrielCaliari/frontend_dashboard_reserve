@@ -56,7 +56,7 @@ const ArticleMetadata: React.FC<{
   const showUpdated = publishedAt && new Date(updatedAt) > new Date(publishedAt);
 
   return (
-    <div className="flex flex-wrap items-center gap-4 text-sm text-default-500 mb-8 pb-6 border-b border-default-200">
+    <div className="flex flex-wrap items-center gap-4 text-sm text-default-500 mb-8 pb-6 border-b border-border">
       {publicationDate && (
         <div className="flex items-center gap-2">
           <svg
@@ -171,7 +171,7 @@ export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
           prose-strong:text-default-900 prose-strong:font-semibold
           prose-code:text-primary prose-code:bg-default-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
           prose-pre:bg-default-100 prose-pre:text-default-900
-          prose-blockquote:border-l-primary prose-blockquote:text-default-600
+          prose-blockquote:border-l-border prose-blockquote:text-default-600
           prose-ul:text-default-700 prose-ol:text-default-700
           prose-li:text-default-700
           prose-table:text-default-700
@@ -183,7 +183,7 @@ export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
       <ArticleImageGallery images={article.images} articleTitle={article.title} />
 
       {/* Back to Articles Link */}
-      <div className="mt-12 pt-8 border-t border-default-200">
+      <div className="mt-12 pt-8 border-t border-border">
         <a
           href="./"
           className="inline-flex items-center gap-2 text-primary hover:underline"

@@ -158,12 +158,24 @@ function parseHtmlToSlate(html: string): Value {
       if (tag === "h1") return { type: "h1", children: blockChildren };
       if (tag === "h2") return { type: "h2", children: blockChildren };
       if (tag === "h3") return { type: "h3", children: blockChildren };
-      if (tag === "blockquote") return { type: "blockquote", children: blockChildren };
-      if (tag === "img") return { type: "img", url: el.getAttribute("src") || "", alt: el.getAttribute("alt") || "", children: [{ text: "" }] };
+      if (tag === "blockquote")
+        return { type: "blockquote", children: blockChildren };
+      if (tag === "img")
+        return {
+          type: "img",
+          url: el.getAttribute("src") || "",
+          alt: el.getAttribute("alt") || "",
+          children: [{ text: "" }],
+        };
       if (tag === "ul") return { type: "ul", children: blockChildren };
       if (tag === "ol") return { type: "ol", children: blockChildren };
       if (tag === "li") return { type: "li", children: blockChildren };
-      if (tag === "a") return { type: "a", url: el.getAttribute("href") || "", children: blockChildren };
+      if (tag === "a")
+        return {
+          type: "a",
+          url: el.getAttribute("href") || "",
+          children: blockChildren,
+        };
       if (tag === "p") return { type: "p", children: blockChildren };
       if (tag === "div") return { type: "p", children: blockChildren };
       if (tag === "br") return { text: "\n" };
@@ -618,7 +630,7 @@ function H1Element({ children, ...props }: PlateElementProps) {
       <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
         <GripVertical className="w-4 h-4 text-muted-foreground/50" />
       </div>
-      <h1 className="text-4xl font-bold text-foreground border-b border-border/60 pb-3">
+      <h1 className="text-4xl font-bold text-foreground border-b border-border pb-3">
         {children}
       </h1>
     </PlateElement>
@@ -651,7 +663,7 @@ function BlockquoteElement({ children, ...props }: PlateElementProps) {
   return (
     <PlateElement
       {...props}
-      className="relative group my-4 border-l-4 border-primary/40 pl-6 py-2 italic text-foreground/70 bg-muted/30"
+      className="relative group my-4 border-l-4 border-border pl-6 py-2 italic text-muted-foreground bg-muted/30"
     >
       <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
         <GripVertical className="w-4 h-4 text-muted-foreground/50" />
@@ -691,10 +703,14 @@ function ListElement({ children, ...props }: PlateElementProps) {
   const Tag = element.type === "ol" ? "ol" : "ul";
   return (
     <PlateElement {...props} asChild>
-      <Tag className={cn(
-        "my-4 space-y-2",
-        element.type === "ol" ? "list-decimal list-inside" : "list-disc list-inside"
-      )}>
+      <Tag
+        className={cn(
+          "my-4 space-y-2",
+          element.type === "ol"
+            ? "list-decimal list-inside"
+            : "list-disc list-inside",
+        )}
+      >
         {children}
       </Tag>
     </PlateElement>
@@ -704,9 +720,7 @@ function ListElement({ children, ...props }: PlateElementProps) {
 function ListItemElement({ children, ...props }: PlateElementProps) {
   return (
     <PlateElement {...props} asChild>
-      <li className="text-foreground/80 leading-relaxed pl-2">
-        {children}
-      </li>
+      <li className="text-muted-foreground leading-relaxed pl-2">{children}</li>
     </PlateElement>
   );
 }
@@ -901,7 +915,7 @@ export function PlateEditor({
 
   const handleInsertImage = (url: string, alt: string) => {
     if (!editor) return;
-    
+
     const imageNode = {
       type: "img",
       url,
@@ -920,7 +934,7 @@ export function PlateEditor({
     <div className="flex h-full">
       {/* Chapter Navigation Sidebar - Collapsible */}
       {!sidebarCollapsed && (
-        <div className="w-64 shrink-0 border-r border-border overflow-y-auto hidden lg:block">
+        <div className="w-56 shrink-0 border-r border-border overflow-y-auto hidden lg:block bg-content1">
           <div className="p-4 border-b border-border flex items-center justify-between">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Chapters
@@ -949,8 +963,9 @@ export function PlateEditor({
                     "bg-accent text-accent-foreground",
                   chapter.type === "h1" &&
                     "font-semibold text-foreground text-sm",
-                  chapter.type === "h2" && "pl-6 text-sm text-foreground/70",
-                  chapter.type === "h3" && "pl-10 text-xs text-foreground/60",
+                  chapter.type === "h2" && "pl-6 text-sm text-muted-foreground",
+                  chapter.type === "h3" &&
+                    "pl-10 text-xs text-muted-foreground",
                 )}
               >
                 <span
@@ -987,7 +1002,7 @@ export function PlateEditor({
       )}
 
       {/* Main Editor Area */}
-      <div className="flex-1 flex flex-col overflow-hidden h-full bg-content1">
+      <div className="flex-1 min-w-0 flex flex-col h-full bg-content1">
         <Plate editor={editor} onChange={() => triggerAnalysis()}>
           <EditorToolbar onInsertImage={() => setImageDialogOpen(true)} />
           <FloatingToolbar />
@@ -995,7 +1010,7 @@ export function PlateEditor({
           <div className="flex-1 overflow-y-auto bg-content1">
             <div
               className={cn(
-                "max-w-4xl mx-auto px-8 py-12 h-full transition-all duration-200 slate-editor bg-content1",
+                "max-w-3xl mx-auto px-6 sm:px-8 py-8 min-h-full transition-all duration-200 slate-editor bg-content1",
                 highlightedSection === "content" && "ring-2 ring-primary/30",
               )}
             >
@@ -1018,7 +1033,9 @@ export function PlateEditor({
                 renderLeaf={({ attributes, children, leaf }) => {
                   let result = children;
                   if (leaf.bold) {
-                    result = <strong className="font-semibold">{result}</strong>;
+                    result = (
+                      <strong className="font-semibold">{result}</strong>
+                    );
                   }
                   if (leaf.italic) {
                     result = <em className="italic">{result}</em>;

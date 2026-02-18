@@ -49,7 +49,7 @@ export default function BlogList({
       </div>
 
       {blogs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-default-300 rounded-lg">
+        <div className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-border rounded-lg">
           <p className="text-default-500 text-lg mb-4">No blogs yet</p>
           <Button
             color="primary"

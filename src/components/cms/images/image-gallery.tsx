@@ -192,7 +192,7 @@ function SortableImageCard({
             ) : (
               <button
                 onClick={() => setEditingAltText(true)}
-                className="text-sm text-muted-foreground hover:text-foreground/80 text-left w-full transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground text-left w-full transition-colors"
               >
                 {image.alt_text || "Click to add alt text"}
               </button>

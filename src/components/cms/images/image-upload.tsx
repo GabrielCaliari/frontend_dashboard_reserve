@@ -187,7 +187,7 @@ export default function ImageUpload({
       <CardBody className="space-y-4">
         {/* Validation Errors */}
         {validationErrors.length > 0 && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 space-y-1">
+          <div className="bg-destructive/10 border border-border rounded-lg p-3 space-y-1">
             {validationErrors.map((error, index) => (
               <div
                 key={index}
@@ -212,7 +212,7 @@ export default function ImageUpload({
           onDrop={handleDrop}
         >
           <Upload className="mx-auto mb-4 text-muted-foreground" size={48} />
-          <p className="text-sm text-foreground/80 mb-2 font-medium">
+          <p className="text-sm text-muted-foreground mb-2 font-medium">
             Drag and drop images here, or click to select
           </p>
           <input
@@ -262,7 +262,7 @@ export default function ImageUpload({
         {selectedFiles.length > 0 && !isUploading && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-foreground/80">
+              <p className="text-sm font-medium text-muted-foreground">
                 Selected files ({selectedFiles.length}/{maxFiles}):
               </p>
               <Button

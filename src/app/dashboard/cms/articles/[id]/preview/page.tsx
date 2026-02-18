@@ -78,7 +78,7 @@ export default function ArticlePreviewPage() {
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-yellow-400 mb-2">No Tenant Selected</h3>
-                <p className="text-gray-400">
+                <p className="text-muted-foreground">
                   Please select a tenant from the sidebar to preview articles.
                 </p>
               </CardContent>
@@ -98,7 +98,7 @@ export default function ArticlePreviewPage() {
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-red-400 mb-2">Blog Not Selected</h3>
-                <p className="text-gray-400 mb-4">Blog ID is missing from the URL.</p>
+                <p className="text-muted-foreground mb-4">Blog ID is missing from the URL.</p>
                 <Button onClick={() => router.push("/dashboard/cms/articles")}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Articles
@@ -130,7 +130,7 @@ export default function ArticlePreviewPage() {
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-red-400 mb-2">Article Not Found</h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-muted-foreground mb-4">
                   The article you're looking for doesn't exist.
                 </p>
                 <Button onClick={() => router.push(`/dashboard/cms/articles?blogId=${blogId}`)}>
@@ -184,7 +184,7 @@ export default function ArticlePreviewPage() {
                       ? "bg-green-500/10 text-green-400"
                       : article.status === "draft"
                         ? "bg-yellow-500/10 text-yellow-400"
-                        : "bg-gray-500/10 text-gray-400"
+                        : "bg-muted text-muted-foreground"
                   }`}
                 >
                   {article.status.charAt(0).toUpperCase() + article.status.slice(1)}

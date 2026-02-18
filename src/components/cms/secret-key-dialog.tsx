@@ -39,19 +39,19 @@ export function SecretKeyDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px] bg-[#16162a] border-gray-800">
+      <DialogContent className="sm:max-w-[550px] bg-content1 border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-gray-100 flex items-center gap-2">
+          <DialogTitle className="text-2xl text-foreground flex items-center gap-2">
             <Key className="w-6 h-6 text-purple-400" />
             Secret Key Generated
           </DialogTitle>
-          <DialogDescription className="text-gray-400">
+          <DialogDescription className="text-muted-foreground">
             Secret key for: <span className="text-blue-400 font-semibold">{blogTitle}</span>
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 mt-4">
-          <Alert className="bg-yellow-500/10 border-yellow-500/20">
+          <Alert className="bg-yellow-500/10 border-border">
             <AlertTriangle className="h-4 w-4 text-yellow-500" />
             <AlertDescription className="text-yellow-400 text-sm">
               Save this key now! For security reasons, it won't be shown again.
@@ -59,9 +59,9 @@ export function SecretKeyDialog({
           </Alert>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Secret Key</label>
+            <label className="text-sm font-medium text-foreground">Secret Key</label>
             <div className="flex gap-2">
-              <div className="flex-1 bg-[#1a1a2e] border border-gray-700 rounded-md p-3 font-mono text-sm text-gray-100 break-all">
+              <div className="flex-1 bg-content2 border border-border rounded-md p-3 font-mono text-sm text-foreground break-all">
                 {secretKey}
               </div>
               <Button
@@ -78,9 +78,9 @@ export function SecretKeyDialog({
             </div>
           </div>
 
-          <div className="bg-blue-500/10 border border-blue-500/20 rounded-md p-4 space-y-2">
+          <div className="bg-blue-500/10 border border-border rounded-md p-4 space-y-2">
             <h4 className="text-sm font-semibold text-blue-400">How to use this key:</h4>
-            <ul className="text-sm text-gray-400 space-y-1 list-disc list-inside">
+            <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
               <li>Include it in API requests as a Bearer token</li>
               <li>Keep it secure and never commit it to version control</li>
               <li>You can regenerate it anytime if compromised</li>
@@ -90,7 +90,7 @@ export function SecretKeyDialog({
           <div className="flex justify-end pt-4">
             <Button
               onClick={() => onOpenChange(false)}
-              className="bg-gray-700 hover:bg-gray-600 text-white"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground"
             >
               I've Saved the Key
             </Button>

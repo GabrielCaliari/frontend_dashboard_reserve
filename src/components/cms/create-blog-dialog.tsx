@@ -52,44 +52,44 @@ export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-[#16162a] border-gray-800">
+      <DialogContent className="sm:max-w-[500px] bg-content1 border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-gray-100">Create New Blog</DialogTitle>
-          <DialogDescription className="text-gray-400">
+          <DialogTitle className="text-2xl text-foreground">Create New Blog</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Create a new blog to publish articles. A secret key will be generated for API access.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-200">
+            <Label htmlFor="name" className="text-foreground">
               Blog Name
             </Label>
             <Input
               id="name"
               {...register("name")}
               placeholder="My Awesome Blog"
-              className="bg-[#1a1a2e] border-gray-700 text-gray-100"
+              className="bg-content2 border-border text-foreground"
               disabled={isPending}
               maxLength={150}
             />
             {errors.name && (
               <p className="text-sm text-red-400">{errors.name.message}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Maximum 150 characters. Slug will be auto-generated.
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-gray-200">
+            <Label htmlFor="description" className="text-foreground">
               Description (Optional)
             </Label>
             <Textarea
               id="description"
               {...register("description")}
               placeholder="A brief description of your blog..."
-              className="bg-[#1a1a2e] border-gray-700 text-gray-100 min-h-[100px]"
+              className="bg-content2 border-border text-foreground min-h-[100px]"
               disabled={isPending}
             />
             {errors.description && (
@@ -106,7 +106,7 @@ export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDi
                 onOpenChange(false);
               }}
               disabled={isPending}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-muted-foreground hover:text-foreground"
             >
               Cancel
             </Button>

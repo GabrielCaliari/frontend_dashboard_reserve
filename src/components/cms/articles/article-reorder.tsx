@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -9,66 +9,55 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import type { Article, ReorderArticleDto } from '@/src/common/@types/@cms-article';
+} from "@dnd-kit/sortable";
+import type {
+  Article,
+  ReorderArticleDto,
+} from "@/src/common/@types/@cms-article";
 
-interface ArticleReorderProps {
+interface ArticleDndProviderProps {
   articles: Article[];
   onReorder: (reorderedArticles: ReorderArticleDto[]) => void;
+  children: React.ReactNode;
+}
+
+interface ArticleSortableListProps {
+  articles: Article[];
   children: (article: Article, isDragging: boolean) => React.ReactNode;
 }
 
 /**
- * ArticleReorder Component
- * 
- * Provides drag-and-drop functionality for reordering articles using @dnd-kit.
- * 
- * Features:
- * - Drag-and-drop reordering with visual feedback
- * - Keyboard navigation support for accessibility
- * - Automatic display_order calculation on drop
- * - Triggers reorder mutation on completion
- * - Optimistic UI updates
- * 
- * Usage:
- * ```tsx
- * <ArticleReorder articles={articles} onReorder={handleReorder}>
- *   {(article, isDragging) => (
- *     <ArticleTableRow
- *       article={article}
- *       isDragging={isDragging}
- *       {...handlers}
- *     />
- *   )}
- * </ArticleReorder>
- * ```
- * 
+ * ArticleDndProvider Component
+ *
+ * Provides the DndContext for drag-and-drop reordering.
+ * Must wrap the entire table (outside <table>) to avoid invalid
+ * HTML nesting (DndContext renders hidden <div> elements).
+ *
  * **Validates: Requirements 17.5**
  */
-export default function ArticleReorder({
+export function ArticleDndProvider({
   articles,
   onReorder,
   children,
-}: ArticleReorderProps) {
+}: ArticleDndProviderProps) {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [items, setItems] = useState(articles);
 
-  // Configure sensors for drag interactions
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8, // Require 8px movement before drag starts
+        distance: 8,
       },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   // Update items when articles prop changes
@@ -95,17 +84,16 @@ export default function ArticleReorder({
       return;
     }
 
-    // Reorder the items array
     const reorderedItems = arrayMove(items, oldIndex, newIndex);
     setItems(reorderedItems);
 
-    // Create the reorder payload with new display_order values
-    const reorderPayload: ReorderArticleDto[] = reorderedItems.map((item, index) => ({
-      id: item.id,
-      display_order: index,
-    }));
+    const reorderPayload: ReorderArticleDto[] = reorderedItems.map(
+      (item, index) => ({
+        id: item.id,
+        display_order: index,
+      }),
+    );
 
-    // Trigger the reorder mutation
     onReorder(reorderPayload);
   };
 
@@ -121,16 +109,33 @@ export default function ArticleReorder({
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <SortableContext
-        items={items.map((item) => item.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        {items.map((article) => (
-          <div key={article.id}>
-            {children(article, activeId === article.id)}
-          </div>
-        ))}
-      </SortableContext>
+      {children}
     </DndContext>
   );
 }
+
+/**
+ * ArticleSortableList Component
+ *
+ * Renders the SortableContext inside <tbody>.
+ * SortableContext is a pure React context provider (no DOM elements),
+ * so it's safe to use inside <tbody>.
+ *
+ * **Validates: Requirements 17.5**
+ */
+export function ArticleSortableList({
+  articles,
+  children,
+}: ArticleSortableListProps) {
+  return (
+    <SortableContext
+      items={articles.map((item) => item.id)}
+      strategy={verticalListSortingStrategy}
+    >
+      {articles.map((article) => children(article, false))}
+    </SortableContext>
+  );
+}
+
+// Keep default export for backward compatibility
+export default ArticleDndProvider;

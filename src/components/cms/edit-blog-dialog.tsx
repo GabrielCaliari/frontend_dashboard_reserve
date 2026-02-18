@@ -74,24 +74,24 @@ export function EditBlogDialog({ open, onOpenChange, blog, onSuccess }: EditBlog
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-[#16162a] border-gray-800">
+      <DialogContent className="sm:max-w-[500px] bg-content1 border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-gray-100">Edit Blog</DialogTitle>
-          <DialogDescription className="text-gray-400">
+          <DialogTitle className="text-2xl text-foreground">Edit Blog</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Update blog information. Changes will be reflected immediately.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-gray-200">
+            <Label htmlFor="title" className="text-foreground">
               Title
             </Label>
             <Input
               id="title"
               {...register("title")}
               placeholder="My Awesome Blog"
-              className="bg-[#1a1a2e] border-gray-700 text-gray-100"
+              className="bg-content2 border-border text-foreground"
               disabled={isPending}
             />
             {errors.title && (
@@ -100,33 +100,33 @@ export function EditBlogDialog({ open, onOpenChange, blog, onSuccess }: EditBlog
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="slug" className="text-gray-200">
+            <Label htmlFor="slug" className="text-foreground">
               Slug
             </Label>
             <Input
               id="slug"
               {...register("slug")}
               placeholder="my-awesome-blog"
-              className="bg-[#1a1a2e] border-gray-700 text-gray-100 font-mono text-sm"
+              className="bg-content2 border-border text-foreground font-mono text-sm"
               disabled={isPending}
             />
             {errors.slug && (
               <p className="text-sm text-red-400">{errors.slug.message}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               URL-friendly identifier (lowercase, hyphens only)
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-gray-200">
+            <Label htmlFor="description" className="text-foreground">
               Description
             </Label>
             <Textarea
               id="description"
               {...register("description")}
               placeholder="A brief description of your blog..."
-              className="bg-[#1a1a2e] border-gray-700 text-gray-100 min-h-[100px]"
+              className="bg-content2 border-border text-foreground min-h-[100px]"
               disabled={isPending}
             />
             {errors.description && (
@@ -135,7 +135,7 @@ export function EditBlogDialog({ open, onOpenChange, blog, onSuccess }: EditBlog
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status" className="text-gray-200">
+            <Label htmlFor="status" className="text-foreground">
               Status
             </Label>
             <Select
@@ -143,14 +143,14 @@ export function EditBlogDialog({ open, onOpenChange, blog, onSuccess }: EditBlog
               onValueChange={(value) => setValue("status", value as "active" | "inactive")}
               disabled={isPending}
             >
-              <SelectTrigger className="bg-[#1a1a2e] border-gray-700 text-gray-100">
+              <SelectTrigger className="bg-content2 border-border text-foreground">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
-              <SelectContent className="bg-[#1a1a2e] border-gray-700">
-                <SelectItem value="active" className="text-gray-100">
+              <SelectContent className="bg-content1 border-border">
+                <SelectItem value="active" className="text-foreground">
                   Active
                 </SelectItem>
-                <SelectItem value="inactive" className="text-gray-100">
+                <SelectItem value="inactive" className="text-foreground">
                   Inactive
                 </SelectItem>
               </SelectContent>
@@ -169,7 +169,7 @@ export function EditBlogDialog({ open, onOpenChange, blog, onSuccess }: EditBlog
                 onOpenChange(false);
               }}
               disabled={isPending}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-muted-foreground hover:text-foreground"
             >
               Cancel
             </Button>

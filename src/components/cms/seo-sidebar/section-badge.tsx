@@ -9,9 +9,9 @@ interface SectionBadgeProps {
 }
 
 const variantStyles = {
-  success: "bg-green-500/15 text-green-500 border-green-500/30",
-  error: "bg-red-500/15 text-red-500 border-red-500/30",
-  warning: "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
+  success: "bg-green-500/15 text-green-500 border-border",
+  error: "bg-red-500/15 text-red-500 border-border",
+  warning: "bg-yellow-500/15 text-yellow-500 border-border",
 };
 
 export function SectionBadge({ variant, children }: SectionBadgeProps) {

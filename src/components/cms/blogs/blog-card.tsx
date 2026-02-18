@@ -88,7 +88,7 @@ export default function BlogCard({
         <BlogSecretKeyDisplay secretKey={blog.secret_key} />
       </CardBody>
 
-      <CardFooter className="flex justify-between items-center border-t border-default-200 pt-4">
+      <CardFooter className="flex justify-between items-center border-t border-border pt-4">
         <div className="text-xs text-default-400">
           Created {new Date(blog.created_at).toLocaleDateString()}
         </div>

@@ -187,7 +187,7 @@ export default function ImageCard({
           <div className="w-full flex items-start justify-between gap-2">
             <button
               onClick={() => onUpdateAltText && setEditingAltText(true)}
-              className="text-sm text-muted-foreground hover:text-foreground/80 text-left flex-1 transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground text-left flex-1 transition-colors"
               disabled={!onUpdateAltText}
             >
               {image.alt_text || (

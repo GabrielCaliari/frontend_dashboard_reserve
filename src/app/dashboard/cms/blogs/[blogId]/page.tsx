@@ -81,7 +81,7 @@ export default function BlogDetailPage() {
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-red-400 mb-2">Blog Not Found</h3>
-                <p className="text-gray-400 mb-4">The blog you're looking for doesn't exist.</p>
+                <p className="text-muted-foreground mb-4">The blog you're looking for doesn't exist.</p>
                 <Button onClick={() => router.push("/dashboard/cms/blogs")}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Blogs
@@ -113,8 +113,8 @@ export default function BlogDetailPage() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-100">{blog.title}</h1>
-              <p className="text-gray-400 mt-1">/{blog.slug}</p>
+              <h1 className="text-3xl font-bold text-foreground">{blog.title}</h1>
+              <p className="text-muted-foreground mt-1">/{blog.slug}</p>
             </div>
           </div>
 
@@ -146,23 +146,23 @@ export default function BlogDetailPage() {
         </div>
 
         {/* Blog Info */}
-        <Card className="bg-[#16162a] border-gray-800">
+        <Card className="bg-content1 border-border">
           <CardHeader>
-            <CardTitle className="text-gray-100">Blog Information</CardTitle>
+            <CardTitle className="text-foreground">Blog Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm text-gray-400">Description</label>
-              <p className="text-gray-200 mt-1">{blog.description || "No description provided"}</p>
+              <label className="text-sm text-muted-foreground">Description</label>
+              <p className="text-foreground mt-1">{blog.description || "No description provided"}</p>
             </div>
             <div>
-              <label className="text-sm text-gray-400">Status</label>
+              <label className="text-sm text-muted-foreground">Status</label>
               <div className="mt-1">
                 <span
                   className={`px-2 py-1 rounded text-xs font-medium ${
                     blog.status === "active"
                       ? "bg-green-500/10 text-green-400"
-                      : "bg-gray-500/10 text-gray-400"
+                      : "bg-muted text-muted-foreground"
                   }`}
                 >
                   {blog.status}
@@ -170,8 +170,8 @@ export default function BlogDetailPage() {
               </div>
             </div>
             <div>
-              <label className="text-sm text-gray-400">Created</label>
-              <p className="text-gray-200 mt-1">
+              <label className="text-sm text-muted-foreground">Created</label>
+              <p className="text-foreground mt-1">
                 {new Date(blog.created_at).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
@@ -183,9 +183,9 @@ export default function BlogDetailPage() {
         </Card>
 
         {/* Article Statistics */}
-        <Card className="bg-[#16162a] border-gray-800">
+        <Card className="bg-content1 border-border">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-gray-100">Article Statistics</CardTitle>
+            <CardTitle className="text-foreground">Article Statistics</CardTitle>
             <Button onClick={handleViewArticles}>
               <FileText className="w-4 h-4 mr-2" />
               View All Articles
@@ -198,21 +198,21 @@ export default function BlogDetailPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-[#1a1a2e] p-4 rounded-lg border border-gray-800">
-                  <div className="text-2xl font-bold text-gray-100">{articles.length}</div>
-                  <div className="text-sm text-gray-400 mt-1">Total Articles</div>
+                <div className="bg-content2 p-4 rounded-lg border border-border">
+                  <div className="text-2xl font-bold text-foreground">{articles.length}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Total Articles</div>
                 </div>
-                <div className="bg-[#1a1a2e] p-4 rounded-lg border border-gray-800">
+                <div className="bg-content2 p-4 rounded-lg border border-border">
                   <div className="text-2xl font-bold text-yellow-400">{draftCount}</div>
-                  <div className="text-sm text-gray-400 mt-1">Drafts</div>
+                  <div className="text-sm text-muted-foreground mt-1">Drafts</div>
                 </div>
-                <div className="bg-[#1a1a2e] p-4 rounded-lg border border-gray-800">
+                <div className="bg-content2 p-4 rounded-lg border border-border">
                   <div className="text-2xl font-bold text-green-400">{publishedCount}</div>
-                  <div className="text-sm text-gray-400 mt-1">Published</div>
+                  <div className="text-sm text-muted-foreground mt-1">Published</div>
                 </div>
-                <div className="bg-[#1a1a2e] p-4 rounded-lg border border-gray-800">
-                  <div className="text-2xl font-bold text-gray-400">{archivedCount}</div>
-                  <div className="text-sm text-gray-400 mt-1">Archived</div>
+                <div className="bg-content2 p-4 rounded-lg border border-border">
+                  <div className="text-2xl font-bold text-muted-foreground">{archivedCount}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Archived</div>
                 </div>
               </div>
             )}

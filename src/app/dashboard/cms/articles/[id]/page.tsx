@@ -254,10 +254,10 @@ export default function ArticleEditorPage() {
 
   return (
     <LayoutScopeRoot routeActive="articles">
-      <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
+      <div className="px-6 py-4 space-y-4 max-w-[1600px] mx-auto">
         {/* Page Header -- follows dashboard pattern */}
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Button
               isIconOnly
               variant="light"
@@ -267,15 +267,15 @@ export default function ArticleEditorPage() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <div className="flex flex-col gap-1">
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                  <PenLine className="w-5 h-5 text-white" />
+            <div className="flex flex-col gap-0.5">
+              <h1 className="text-2xl font-bold text-foreground flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <PenLine className="w-4 h-4 text-white" />
                 </div>
                 Edit Article
               </h1>
               <div className="flex items-center gap-2">
-                <p className="text-default-500 text-sm">{getLastSavedText()}</p>
+                <p className="text-default-500 text-xs">{getLastSavedText()}</p>
                 {hasUnsavedChanges && (
                   <Chip
                     size="sm"
@@ -319,7 +319,7 @@ export default function ArticleEditorPage() {
 
         {/* Title Input Card */}
         <Card>
-          <CardBody className="p-4">
+          <CardBody className="p-3">
             <Input
               label="Article Title"
               placeholder="Enter article title..."
@@ -328,9 +328,9 @@ export default function ArticleEditorPage() {
               isDisabled={isPending}
               maxLength={255}
               variant="bordered"
-              size="lg"
+              size="md"
               classNames={{
-                input: "text-lg font-semibold",
+                input: "text-base font-semibold",
                 inputWrapper:
                   "border-border data-[hover=true]:border-primary/50",
                 label: "text-muted-foreground",
@@ -341,10 +341,13 @@ export default function ArticleEditorPage() {
         </Card>
 
         {/* Editor + SEO Sidebar */}
-        <div className="flex gap-6 items-start h-[700px]">
+        <div
+          className="flex gap-4 items-stretch"
+          style={{ height: "calc(100vh - 240px)", minHeight: "500px" }}
+        >
           {/* Editor */}
-          <Card className="flex-1 min-w-0 overflow-hidden h-full">
-            <CardBody className="p-0 h-full">
+          <Card className="flex-1 min-w-0 overflow-hidden">
+            <CardBody className="p-0 h-full overflow-hidden">
               <PlateEditor
                 highlightedSection={highlightedSection}
                 onContentChange={(stats) => {
@@ -360,8 +363,8 @@ export default function ArticleEditorPage() {
           </Card>
 
           {/* SEO Sidebar */}
-          <Card className="w-80 flex-shrink-0">
-            <CardBody className="p-0">
+          <Card className="w-72 flex-shrink-0 overflow-hidden hidden xl:flex">
+            <CardBody className="p-0 overflow-y-auto">
               <SeoSidebar
                 contentStats={contentStats}
                 onHighlightEditorSection={setHighlightedSection}
