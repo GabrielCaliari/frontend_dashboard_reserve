@@ -78,7 +78,7 @@ export function LanguageSwitcher({ variant = 'icon' }: LanguageSwitcherProps) {
             startContent={
               <span className="text-base">{localeLabels[locale].flag}</span>
             }
-            className={currentLocale === locale ? 'text-blue-400' : ''}
+            className={currentLocale === locale ? 'text-accent-foreground bg-accent' : ''}
           >
             {localeLabels[locale].label}
           </DropdownItem>

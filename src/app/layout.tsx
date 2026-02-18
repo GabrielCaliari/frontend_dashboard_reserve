@@ -40,7 +40,7 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <Header />
-            <NextTopLoader color="#3b82f6" showSpinner={false} height={4} />
+            <NextTopLoader color="hsl(var(--foreground))" showSpinner={false} height={4} />
             {children}
             <Toaster position="top-center" reverseOrder={false} />
           </Providers>

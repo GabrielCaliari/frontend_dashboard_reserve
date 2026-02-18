@@ -9,7 +9,7 @@ const api = axios.create({
   },
 });
 
-// Request interceptor - Adiciona headers de autenticação
+// Request interceptor - Adiciona headers de autenticação e tenant
 api.interceptors.request.use(
   (config) => {
     // Recuperar token e session_id dos cookies
@@ -30,6 +30,19 @@ api.interceptors.request.use(
 
       if (sessionId) {
         config.headers['session-id'] = sessionId;
+      }
+
+      // Adicionar x-tenant-id do localStorage (Zustand persist)
+      try {
+        const tenantStorage = localStorage.getItem('tenant-storage');
+        if (tenantStorage) {
+          const { state } = JSON.parse(tenantStorage);
+          if (state?.selectedTenant?.id) {
+            config.headers['x-tenant-id'] = state.selectedTenant.id.toString();
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to read tenant from storage:', error);
       }
     }
 

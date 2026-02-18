@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import api from "../config/api";
 import { deleteCookie, getCookie } from "cookies-next";
@@ -27,7 +27,9 @@ const useAdminDetails = () => {
     }
   };
 
-  return useQuery("get-user-data", fetchUserData, {
+  return useQuery({
+    queryKey: ["get-user-data"],
+    queryFn: fetchUserData,
     enabled: !!token,
   });
 };

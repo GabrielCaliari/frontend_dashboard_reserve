@@ -9,7 +9,7 @@ import { useRouter } from 'nextjs-toploader/app';
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { Toaster } from "sonner";
 
@@ -26,7 +26,14 @@ declare module "@react-types/shared" {
   }
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();

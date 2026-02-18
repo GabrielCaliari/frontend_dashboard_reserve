@@ -2,12 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
 body {
-  background-color: #0a0a0f !important;
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
   box-sizing: border-box !important;
-  font-family: "Montserrat", sans-serif !important;
+  font-family: var(--font-nunito), sans-serif !important;
   overflow-y: hidden !important;
-  color: #e5e7eb;
 }
 
 .radio-large {
@@ -20,16 +66,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a2e;
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: hsl(var(--muted-foreground) / 0.3);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b82f6;
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
 .loader {
@@ -84,8 +130,8 @@ select {
   height: 70px;
   margin: 20px;
   border-radius: 100%;
-  background-color: #001586;
-  border: 3px solid #0038ff;
+  background-color: hsl(var(--secondary));
+  border: 3px solid hsl(var(--border));
   cursor: pointer;
   position: fixed;
   transition: all 0.3s ease;
@@ -93,6 +139,7 @@ select {
 
 .floatbutton:hover {
   transform: scale(1.1);
+  background-color: hsl(var(--accent));
 }
 
 .widget {
@@ -112,8 +159,8 @@ select {
 }
 
 .widget-header {
-  background-color: #001374;
-  color: white;
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
   padding: 10px;
   height: 80px;
   display: flex;
@@ -155,8 +202,8 @@ select {
 .widget-options button {
   flex: 1 1 calc(50% - 8px);
   padding: 8px;
-  background-color: #0062ff;
-  color: white;
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -164,7 +211,7 @@ select {
 }
 
 .widget-options button:hover {
-  background-color: #0051cc;
+  background-color: hsl(var(--accent));
 }
 
 .message-input {
@@ -179,8 +226,8 @@ select {
 .send-button {
   margin: 10px;
   padding: 10px;
-  background-color: #0062ff;
-  color: white;
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -188,7 +235,7 @@ select {
 }
 
 .send-button:hover {
-  background-color: #0051cc;
+  background-color: hsl(var(--accent));
 }
 
 @keyframes spin {
@@ -202,7 +249,7 @@ select {
 }
 
 .markdown-container h1 {
-  @apply text-lg font-semibold text-gray-200;
+  @apply text-lg font-semibold text-foreground;
 }
 
 .markdown-container h1 {
@@ -210,27 +257,27 @@ select {
 }
 
 .markdown-container h2 {
-  @apply text-base mb-2 font-semibold text-gray-200;
+  @apply text-base mb-2 font-semibold text-foreground;
 }
 
 .markdown-container h3 {
-  @apply text-base mb-2 font-semibold text-gray-200;
+  @apply text-base mb-2 font-semibold text-foreground;
 }
 
 .markdown-container p {
-  @apply text-base mb-3 text-gray-400;
+  @apply text-base mb-3 text-muted-foreground;
 }
 
 .markdown-container table {
-  @apply text-sm mb-5 text-gray-200 border-collapse rounded-2xl w-full;
+  @apply text-sm mb-5 text-foreground border-collapse rounded-2xl w-full;
 }
 
 .markdown-container th {
-  @apply text-sm mb-1 text-gray-200 p-3 border-2 border-solid border-gray-700;
+  @apply text-sm mb-1 text-foreground p-3 border-2 border-solid border-border;
 }
 
 .markdown-container li {
-  @apply text-sm text-gray-200 p-1 list-disc ml-3;
+  @apply text-sm text-foreground p-1 list-disc ml-3;
 }
 
 .markdown-container th:nth-child(1) {
@@ -251,7 +298,7 @@ select {
 }
 
 .markdown-container td {
-  @apply text-sm mb-1 text-gray-400 p-3 border-2 border-solid border-gray-700;
+  @apply text-sm mb-1 text-muted-foreground p-3 border-2 border-solid border-border;
 }
 
 .hide-scrollbar {
@@ -261,4 +308,86 @@ select {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Plate Editor Styles */
+.slate-editor {
+  @apply bg-background text-foreground;
+}
+
+.slate-editor [data-slate-editor] {
+  @apply outline-none;
+}
+
+.slate-editor [data-slate-node="element"] {
+  @apply text-foreground;
+}
+
+.slate-editor h1 {
+  @apply text-2xl font-bold text-foreground border-b border-border/60 pb-2 mt-8 mb-4;
+}
+
+.slate-editor h2 {
+  @apply text-xl font-semibold text-foreground mt-6 mb-3;
+}
+
+.slate-editor h3 {
+  @apply text-lg font-medium text-foreground/90 mt-4 mb-2;
+}
+
+.slate-editor p {
+  @apply text-foreground/80 leading-relaxed my-3;
+}
+
+.slate-editor blockquote {
+  @apply border-l-2 border-muted-foreground/40 pl-4 italic text-foreground/70 my-4;
+}
+
+.slate-editor code {
+  @apply px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm;
+}
+
+.slate-editor strong {
+  @apply font-bold text-foreground;
+}
+
+.slate-editor em {
+  @apply italic;
+}
+
+.slate-editor u {
+  @apply underline;
+}
+
+.slate-editor s {
+  @apply line-through;
+}
+
+/* Plate Toolbar Styles */
+[data-plate-toolbar] {
+  @apply bg-card border-border;
+}
+
+[data-plate-toolbar] button {
+  @apply text-foreground hover:bg-accent hover:text-accent-foreground;
+}
+
+[data-plate-toolbar] button[data-active="true"] {
+  @apply bg-accent text-accent-foreground;
+}
+
+/* Plate Floating Toolbar */
+[data-plate-floating-toolbar] {
+  @apply bg-popover border-border shadow-lg;
+}
+
+/* Remove any blue accent colors from Plate */
+.slate-editor [style*="rgb(59, 130, 246)"],
+.slate-editor [style*="#3b82f6"] {
+  color: hsl(var(--foreground)) !important;
+}
+
+.slate-editor [style*="background-color: rgb(59, 130, 246)"],
+.slate-editor [style*="background-color: #3b82f6"] {
+  background-color: hsl(var(--accent)) !important;
 }

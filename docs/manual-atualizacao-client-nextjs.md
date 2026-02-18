@@ -15,7 +15,7 @@ A API foi completamente reestruturada de uma arquitetura monolítica para uma ar
 **Arquitetura de Módulos (Bounded Contexts):**
 - `zarp-auth` - Autenticação e autorização (Admin e User)
 - `zarp-brands` - Gestão de marcas e monitoramento INPI
-- `zarp-cnpjs` - Dados de empresas brasileiras (CNPJ)
+- `zarp-cnpjs` - Dados de empresas brasileipras (CNPJ)
 - `zarp-journals` - Processamento de diários oficiais
 - `zarp-mailer` - Campanhas de email
 - `zarp-pi-bot` - Bot de propriedade intelectual

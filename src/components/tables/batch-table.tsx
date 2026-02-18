@@ -8,10 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
-import { LeadListDialog } from "@/src/components/modals/lead-list-dialog";
-import { EmailPreviewDialog } from "@/src/components/modals/email-preview-dialog";
+import { LeadListDialog } from "@/src/components/email-builder/modals/lead-list-dialog";
+import { EmailPreviewDialog } from "@/src/components/email-builder/modals/email-preview-dialog";
 import { formatDate } from "@/src/lib/utils";
-import { CopyDeliveryDialog } from "../modals/copy-delivery-dialog";
+import { CopyDeliveryDialog } from "../email-builder/modals/copy-delivery-dialog";
 import { useTranslations } from "next-intl";
 
 interface BatchTableProps {

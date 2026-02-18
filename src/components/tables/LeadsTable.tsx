@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { MoreVertical, Eye, Edit, Trash } from "lucide-react";
-import { Lead } from "../modals/LeadDetailModal";
+import { Lead } from "../email-builder/modals/LeadDetailModal";
 import { displayOrigin } from "@/src/common/utils";
 import { useTranslations } from "next-intl";
 

@@ -11,14 +11,9 @@ export function AuthTabs() {
 
   return (
     <>
-      <Tabs
-        aria-label={t("loginMethods")}
-        fullWidth
-      >
-        <Tab key="Login" title={t("login")} className="text-base font-medium">
+     
           <LoginForm />
-        </Tab>
-      </Tabs>
+     
     </>
   );
 }

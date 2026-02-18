@@ -66,8 +66,8 @@ export function Pagination({
             key={page}
             className={`px-3 py-1 border rounded text-sm transition-colors ${
               currentPage === page
-                ? "bg-blue-600 text-white border-blue-600"
-                : "border-gray-700 text-gray-300 hover:bg-[#1a1a2e]"
+                ? "bg-accent text-accent-foreground border-accent"
+                : "border-border text-muted-foreground hover:bg-accent/50"
             }`}
             onClick={() => handlePageChange(page)}
           >

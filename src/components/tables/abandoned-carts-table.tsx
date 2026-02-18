@@ -9,7 +9,7 @@ import {
   Send,
   MessageSquare,
 } from "lucide-react";
-import { AbandonedCartModal } from "../modals/abandoned-cart-modal";
+import { AbandonedCartModal } from "../email-builder/modals/abandoned-cart-modal";
 import { useTranslations } from "next-intl";
 
 // Tipos para os dados

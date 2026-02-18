@@ -13,7 +13,7 @@ import useAdminDetails from "@/src/common/hooks/useUserDatails";
 
 import { User, LogOut, UserCircle, TicketCheck } from "lucide-react";
 
-import { LogoutModal } from "../modals/logout-modal";
+import { LogoutModal } from "../email-builder/modals/logout-modal";
 import { usePathname } from "next/navigation";
 
 import Link from "next/link";
@@ -42,14 +42,18 @@ export function Header() {
         <>
           <header className="flex items-center justify-between px-5 bg-[#0f0f1a] border-b border-gray-800 h-fit py-3">
             <Link className="flex items-center gap-2" href="/">
-              <img src="/zarp-logomark-h.svg" alt="ZARP Logo" className="max-h-[36px]" />
+              <img
+                src="/zarp-logomark-h.svg"
+                alt="ZARP Logo"
+                className="max-h-[36px]"
+              />
             </Link>
             <Dropdown>
               <div className="lg:flex items-center gap-3 hidden">
                 <LanguageSwitcher variant="icon" />
                 <DropdownTrigger>
-                  <div className="cursor-pointer relative flex items-center justify-center rounded-full w-[45px] h-[45px] bg-blue-600/30">
-                    <User color="#93c5fd" size={24} />
+                  <div className="cursor-pointer relative flex items-center justify-center rounded-full w-[45px] h-[45px] bg-secondary/50">
+                    <User className="text-muted-foreground" size={24} />
                   </div>
                 </DropdownTrigger>
               </div>
