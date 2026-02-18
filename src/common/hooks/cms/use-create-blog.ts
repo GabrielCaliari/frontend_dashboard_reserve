@@ -8,9 +8,23 @@ export function useCreateBlog() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (data: BlogCreateInput) => blogService.createBlog(data),
+    mutationFn: async (data: BlogCreateInput) => {
+      console.log('Creating blog with data:', data);
+      console.log('Tenant ID:', tenantId);
+      try {
+        const result = await blogService.createBlog(data);
+        console.log('Blog created successfully:', result);
+        return result;
+      } catch (error) {
+        console.error('Error creating blog:', error);
+        throw error;
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blogs', tenantId] });
+    },
+    onError: (error) => {
+      console.error('Mutation error:', error);
     },
   });
 }

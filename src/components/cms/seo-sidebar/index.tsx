@@ -65,28 +65,26 @@ interface SeoSidebarProps {
 export function SeoSidebar({
   onHighlightEditorSection,
   contentStats,
-  focusKeyword = "Agentic Workflow",
+  focusKeyword = "",
   onFocusKeywordChange,
 }: SeoSidebarProps) {
-  const [urlSlug, setUrlSlug] = useState(
-    "agentic-workflow-complete-guide-ai-agent-automation-2024-best-practices",
-  );
-  const [seoTitle, setSeoTitle] = useState(
-    "Agentic Workflow: The Complete Guide to AI Agent Automation",
-  );
-  const [metaDesc, setMetaDesc] = useState(
-    "Learn how agentic workflows transform AI automation. This complete guide covers agent architecture, implementation best practices, and the future of intelligent workflows.",
-  );
+  const [urlSlug, setUrlSlug] = useState("");
+  const [seoTitle, setSeoTitle] = useState("");
+  const [metaDesc, setMetaDesc] = useState("");
 
-  const kw = focusKeyword.toLowerCase();
+  // Check if we have any content
+  const hasContent = (contentStats?.wordCount ?? 0) > 0;
+  const isEmpty = !hasContent && !focusKeyword;
+
+  const kw = focusKeyword.toLowerCase().trim();
   const kwSlug = kw.replace(/\s+/g, "-");
 
   // --- Derived reactive checks ---
 
   // Basic SEO checks
-  const kwInTitle = seoTitle.toLowerCase().includes(kw);
-  const kwInMeta = metaDesc.toLowerCase().includes(kw);
-  const kwInUrl = urlSlug.toLowerCase().includes(kwSlug);
+  const kwInTitle = kw ? seoTitle.toLowerCase().includes(kw) : false;
+  const kwInMeta = kw ? metaDesc.toLowerCase().includes(kw) : false;
+  const kwInUrl = kw ? urlSlug.toLowerCase().includes(kwSlug) : false;
   const kwInFirst10 = contentStats?.keywordInFirstTenPercent ?? false;
   const kwInContent = (contentStats?.keywordCount ?? 0) > 0;
   const wordCount = contentStats?.wordCount ?? 0;
@@ -202,9 +200,9 @@ export function SeoSidebar({
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="w-80 h-full bg-background border-l border-border flex flex-col overflow-hidden">
+      <div className="w-full flex flex-col overflow-hidden">
         {/* Sticky Score Header */}
-        <div className="shrink-0 p-4 border-b border-border">
+        <div className="shrink-0 p-4 border-b border-default-200">
           <ScoreCard
             score={score}
             focusKeyword={focusKeyword}
@@ -212,10 +210,31 @@ export function SeoSidebar({
           />
         </div>
 
-        {/* Scrollable Analysis Sections */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {/* Empty State */}
+        {isEmpty && (
+          <div className="flex-1 flex items-center justify-center p-8">
+            <div className="text-center space-y-3 max-w-xs">
+              <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto">
+                <BarChart3 className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold text-foreground">
+                  Start Writing
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Add a focus keyword and start writing content to see SEO
+                  analysis and recommendations.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Content State */}
+        {!isEmpty && (
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {/* Live Stats Bar */}
-          <div className="flex items-center gap-3 p-2.5 bg-secondary/50 border border-border rounded-lg">
+          <div className="flex items-center gap-3 p-2.5 bg-default-100 border border-default-200 rounded-lg">
             <BarChart3 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <div className="flex items-center gap-3 text-xs text-muted-foreground tabular-nums">
               <span>
@@ -240,7 +259,7 @@ export function SeoSidebar({
           </div>
 
           {/* SEO Title input section */}
-          <div className="p-3 bg-secondary/50 border border-border rounded-lg">
+          <div className="p-3 bg-default-100 border border-default-200 rounded-lg">
             <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
               <Type className="h-3 w-3" />
               SEO Title (H1)
@@ -249,7 +268,7 @@ export function SeoSidebar({
               type="text"
               value={seoTitle}
               onChange={(e) => setSeoTitle(e.target.value)}
-              className="w-full mt-2 px-2 py-1.5 text-sm bg-card border border-input rounded text-card-foreground outline-none focus:border-ring transition-colors font-medium"
+              className="w-full mt-2 px-2 py-1.5 text-sm bg-default-50 border border-default-200 rounded text-foreground outline-none focus:border-primary/50 transition-colors font-medium"
             />
             <p
               className={`mt-1.5 text-xs ${titleLength > 60 ? "text-yellow-500" : titleLength < 30 ? "text-yellow-500" : "text-muted-foreground"}`}
@@ -261,7 +280,7 @@ export function SeoSidebar({
           </div>
 
           {/* Meta Description */}
-          <div className="p-3 bg-secondary/50 border border-border rounded-lg">
+          <div className="p-3 bg-default-100 border border-default-200 rounded-lg">
             <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
               Meta Description
             </label>
@@ -269,7 +288,7 @@ export function SeoSidebar({
               value={metaDesc}
               onChange={(e) => setMetaDesc(e.target.value)}
               rows={3}
-              className="w-full mt-2 px-2 py-1.5 text-xs bg-card border border-input rounded text-card-foreground outline-none focus:border-ring transition-colors resize-none leading-relaxed"
+              className="w-full mt-2 px-2 py-1.5 text-xs bg-default-50 border border-default-200 rounded text-foreground outline-none focus:border-primary/50 transition-colors resize-none leading-relaxed"
             />
             <p
               className={`mt-1.5 text-xs ${metaDesc.length > 160 ? "text-yellow-500" : metaDesc.length < 120 ? "text-muted-foreground" : "text-green-500"}`}
@@ -280,7 +299,7 @@ export function SeoSidebar({
           </div>
 
           {/* URL Slug input section */}
-          <div className="p-3 bg-secondary/50 border border-border rounded-lg">
+          <div className="p-3 bg-default-100 border border-default-200 rounded-lg">
             <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
               <Link2 className="h-3 w-3" />
               URL Slug
@@ -294,7 +313,7 @@ export function SeoSidebar({
               type="text"
               value={urlSlug}
               onChange={(e) => setUrlSlug(e.target.value)}
-              className="w-full mt-1 px-2 py-1.5 text-xs bg-card border border-input rounded text-card-foreground outline-none focus:border-ring transition-colors"
+              className="w-full mt-1 px-2 py-1.5 text-xs bg-default-50 border border-default-200 rounded text-foreground outline-none focus:border-primary/50 transition-colors"
             />
             <p
               className={`mt-1.5 text-xs ${urlTooLong ? "text-red-500" : "text-muted-foreground"}`}
@@ -305,7 +324,7 @@ export function SeoSidebar({
           </div>
 
           {/* Internal Links manager section */}
-          <div className="p-3 bg-secondary/50 border border-border rounded-lg">
+          <div className="p-3 bg-default-100 border border-default-200 rounded-lg">
             <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
               <ExternalLink className="h-3 w-3" />
               Internal Links
@@ -318,20 +337,20 @@ export function SeoSidebar({
                 : "No internal links detected."}
             </p>
             <div className="mt-3 space-y-2">
-              <button className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-card border border-input text-card-foreground rounded hover:bg-accent hover:border-ring transition-colors">
+              <button className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-default-50 border border-default-200 text-foreground rounded hover:bg-default-200 hover:border-default-300 transition-colors">
                 <Plus className="h-3 w-3" />
                 Add Internal Link
               </button>
             </div>
-            <div className="mt-3 pt-3 border-t border-border">
+            <div className="mt-3 pt-3 border-t border-default-200">
               <p className="text-xs text-muted-foreground mb-2">
                 Suggested links:
               </p>
               <div className="space-y-1.5">
-                <button className="w-full text-left px-2 py-1.5 text-xs text-muted-foreground bg-card/50 rounded hover:bg-accent hover:text-accent-foreground transition-colors truncate">
+                <button className="w-full text-left px-2 py-1.5 text-xs text-muted-foreground bg-default-50 rounded hover:bg-default-200 hover:text-foreground transition-colors truncate">
                   /blog/ai-agents-explained
                 </button>
-                <button className="w-full text-left px-2 py-1.5 text-xs text-muted-foreground bg-card/50 rounded hover:bg-accent hover:text-accent-foreground transition-colors truncate">
+                <button className="w-full text-left px-2 py-1.5 text-xs text-muted-foreground bg-default-50 rounded hover:bg-default-200 hover:text-foreground transition-colors truncate">
                   /blog/automation-best-practices
                 </button>
               </div>
@@ -352,9 +371,9 @@ export function SeoSidebar({
             {/* Basic SEO Section */}
             <AccordionItem
               value="basic-seo"
-              className="border border-border rounded-lg bg-card/50 overflow-hidden"
+              className="border border-default-200 rounded-lg bg-default-100 overflow-hidden"
             >
-              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:border-b [&[data-state=open]]:border-border">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-default-200 [&[data-state=open]]:border-b [&[data-state=open]]:border-default-200">
                 <div className="flex items-center justify-between w-full pr-2">
                   <span className="text-sm font-medium text-foreground">
                     Basic SEO
@@ -454,9 +473,9 @@ export function SeoSidebar({
             {/* Additional Section */}
             <AccordionItem
               value="additional"
-              className="border border-border rounded-lg bg-card/50 overflow-hidden"
+              className="border border-default-200 rounded-lg bg-default-100 overflow-hidden"
             >
-              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:border-b [&[data-state=open]]:border-border">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-default-200 [&[data-state=open]]:border-b [&[data-state=open]]:border-default-200">
                 <div className="flex items-center justify-between w-full pr-2">
                   <span className="text-sm font-medium text-foreground">
                     Additional
@@ -571,9 +590,9 @@ export function SeoSidebar({
             {/* Title Readability Section */}
             <AccordionItem
               value="title-readability"
-              className="border border-border rounded-lg bg-card/50 overflow-hidden"
+              className="border border-default-200 rounded-lg bg-default-100 overflow-hidden"
             >
-              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:border-b [&[data-state=open]]:border-border">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-default-200 [&[data-state=open]]:border-b [&[data-state=open]]:border-default-200">
                 <div className="flex items-center justify-between w-full pr-2">
                   <span className="text-sm font-medium text-foreground">
                     Title Readability
@@ -634,9 +653,9 @@ export function SeoSidebar({
             {/* Content Readability Section */}
             <AccordionItem
               value="content-readability"
-              className="border border-border rounded-lg bg-card/50 overflow-hidden"
+              className="border border-default-200 rounded-lg bg-default-100 overflow-hidden"
             >
-              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:border-b [&[data-state=open]]:border-border">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-default-200 [&[data-state=open]]:border-b [&[data-state=open]]:border-default-200">
                 <div className="flex items-center justify-between w-full pr-2">
                   <span className="text-sm font-medium text-foreground">
                     Content Readability
@@ -673,6 +692,7 @@ export function SeoSidebar({
             </AccordionItem>
           </Accordion>
         </div>
+        )}
       </div>
     </TooltipProvider>
   );

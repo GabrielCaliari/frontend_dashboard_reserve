@@ -310,84 +310,106 @@ select {
   display: none;
 }
 
-/* Plate Editor Styles */
+/* ─── Plate Editor Base ─────────────────────────────────────────────── */
 .slate-editor {
-  @apply bg-background text-foreground;
+  @apply text-foreground;
 }
 
 .slate-editor [data-slate-editor] {
   @apply outline-none;
+  caret-color: hsl(var(--foreground)) !important;
+  color: hsl(var(--foreground)) !important;
+  background-color: transparent !important;
 }
 
-.slate-editor [data-slate-node="element"] {
-  @apply text-foreground;
+.slate-editor [data-slate-placeholder] {
+  color: hsl(var(--muted-foreground)) !important;
+  opacity: 0.5 !important;
 }
 
+.slate-editor [data-slate-node="element"],
+.slate-editor [data-slate-node="text"],
+.slate-editor [data-slate-leaf] {
+  color: inherit !important;
+}
+
+/* ─── Plate Editor Content Elements ────────────────────────────────── */
 .slate-editor h1 {
-  @apply text-2xl font-bold text-foreground border-b border-border/60 pb-2 mt-8 mb-4;
+  @apply text-2xl font-bold border-b border-border/60 pb-2 mt-8 mb-4;
+  color: hsl(var(--foreground)) !important;
 }
 
 .slate-editor h2 {
-  @apply text-xl font-semibold text-foreground mt-6 mb-3;
+  @apply text-xl font-semibold mt-6 mb-3;
+  color: hsl(var(--foreground)) !important;
 }
 
 .slate-editor h3 {
-  @apply text-lg font-medium text-foreground/90 mt-4 mb-2;
+  @apply text-lg font-medium mt-4 mb-2;
+  color: hsl(var(--foreground) / 0.9) !important;
 }
 
 .slate-editor p {
-  @apply text-foreground/80 leading-relaxed my-3;
+  @apply leading-relaxed my-3;
+  color: hsl(var(--foreground) / 0.8) !important;
 }
 
 .slate-editor blockquote {
-  @apply border-l-2 border-muted-foreground/40 pl-4 italic text-foreground/70 my-4;
+  @apply border-l-2 pl-4 italic my-4;
+  border-color: hsl(var(--muted-foreground) / 0.4);
+  color: hsl(var(--foreground) / 0.7) !important;
 }
 
 .slate-editor code {
-  @apply px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm;
+  @apply px-1.5 py-0.5 rounded font-mono text-sm;
+  color: hsl(var(--foreground)) !important;
+  background-color: hsl(var(--muted)) !important;
 }
 
 .slate-editor strong {
-  @apply font-bold text-foreground;
+  @apply font-bold;
+  color: hsl(var(--foreground)) !important;
 }
-
 .slate-editor em {
   @apply italic;
 }
-
 .slate-editor u {
   @apply underline;
 }
-
 .slate-editor s {
   @apply line-through;
 }
 
-/* Plate Toolbar Styles */
+.slate-editor ::selection {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Override Plate inline styles injected at runtime */
+.slate-editor [contenteditable],
+.slate-editor [style],
+.slate-editor div {
+  background-color: transparent !important;
+}
+
+/* ─── Plate Toolbar ────────────────────────────────────────────────── */
 [data-plate-toolbar] {
-  @apply bg-card border-border;
+  background-color: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
 }
 
 [data-plate-toolbar] button {
-  @apply text-foreground hover:bg-accent hover:text-accent-foreground;
-}
-
-[data-plate-toolbar] button[data-active="true"] {
-  @apply bg-accent text-accent-foreground;
-}
-
-/* Plate Floating Toolbar */
-[data-plate-floating-toolbar] {
-  @apply bg-popover border-border shadow-lg;
-}
-
-/* Remove any blue accent colors from Plate */
-.slate-editor [style*="rgb(59, 130, 246)"],
-.slate-editor [style*="#3b82f6"] {
   color: hsl(var(--foreground)) !important;
 }
 
-.slate-editor [style*="background-color: rgb(59, 130, 246)"],
-.slate-editor [style*="background-color: #3b82f6"] {
+[data-plate-toolbar] button[data-active="true"] {
   background-color: hsl(var(--accent)) !important;
+}
+
+/* ─── Plate Floating Toolbar & Portals ─────────────────────────────── */
+[data-plate-floating-toolbar],
+[data-plate-portal] {
+  background-color: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
 }

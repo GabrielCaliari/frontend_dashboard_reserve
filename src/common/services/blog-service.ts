@@ -9,11 +9,45 @@ import type {
 
 export const blogService = {
   // List all blogs (tenant_id via header x-tenant-id)
-  async listBlogs(page = 1, limit = 10): Promise<BlogListResponse> {
+  async listBlogs(page?: number, limit?: number): Promise<BlogListResponse> {
+    const params: Record<string, number> = {};
+    if (page !== undefined) params.page = page;
+    if (limit !== undefined) params.limit = limit;
+    
+    console.log('Fetching blogs with params:', params);
     const response = await api.get('/cms/blogs', {
-      params: { page, limit },
+      params: Object.keys(params).length > 0 ? params : undefined,
     });
-    return response.data;
+    console.log('Blogs response:', response.data);
+    
+    // Se a resposta já tem a estrutura correta, retorna direto
+    if (response.data && Array.isArray(response.data.data)) {
+      return response.data;
+    }
+    
+    // Se a resposta é um array direto, normaliza para o formato esperado
+    if (Array.isArray(response.data)) {
+      return {
+        data: response.data,
+        meta: {
+          page: page || 1,
+          limit: limit || 10,
+          total: response.data.length,
+          total_pages: 1,
+        },
+      };
+    }
+    
+    // Fallback: retorna estrutura vazia
+    return {
+      data: [],
+      meta: {
+        page: page || 1,
+        limit: limit || 10,
+        total: 0,
+        total_pages: 0,
+      },
+    };
   },
 
   // Get single blog

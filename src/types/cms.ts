@@ -12,4 +12,5 @@ export interface ContentStats {
     shortParagraphs: boolean
     plainText: string
     metaDescription: string
+    content: string
 }

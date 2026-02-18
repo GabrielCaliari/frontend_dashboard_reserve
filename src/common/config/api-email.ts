@@ -53,19 +53,14 @@ apiEmail.interceptors.request.use(
   }
 );
 
-// Response interceptor - Trata erros de autenticação
+// Response interceptor - Let errors propagate to caller
+// Auth errors (401) should be handled by the service layer or global error handler
+// This prevents premature redirects when the error might be recoverable
 apiEmail.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Limpar cookies e redirecionar para login
-      if (typeof window !== 'undefined') {
-        document.cookie = 'token=; Max-Age=0; path=/;';
-        document.cookie = 'session-code=; Max-Age=0; path=/;';
-        document.cookie = 'session-name=; Max-Age=0; path=/;';
-        window.location.href = '/auth/login';
-      }
-    }
+    // Don't auto-redirect on 401 - let the service layer handle it
+    // This allows for better error messages and prevents redirect loops
     return Promise.reject(error);
   }
 );

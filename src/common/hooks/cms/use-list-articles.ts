@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { articleService } from '@/src/common/services/article-service';
+import { fetchArticles } from '@/src/common/services/cms-article-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 
-export function useListArticles(blogId: number, page = 1, limit = 10) {
+export function useListArticles(blogId: number, _page = 1, _limit = 10) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
-    queryKey: ['articles', tenantId, blogId, page, limit],
-    queryFn: () => articleService.listArticles(blogId, page, limit),
+    queryKey: ['articles', tenantId, blogId],
+    queryFn: () => fetchArticles(blogId),
     enabled: !!blogId && !!tenantId,
   });
 }

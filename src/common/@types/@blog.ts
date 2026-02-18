@@ -1,25 +1,24 @@
 export interface Blog {
   id: number;
-  title: string;
+  name: string;
   description: string;
   slug: string;
-  status: 'active' | 'inactive';
+  active: boolean;
   secret_key?: string;
   created_at: string;
   updated_at: string;
+  tenant_id: number;
 }
 
 export interface BlogCreateInput {
-  title: string;
-  description: string;
-  slug: string;
+  name: string;
+  description?: string;
 }
 
 export interface BlogUpdateInput {
-  title?: string;
+  name?: string;
   description?: string;
-  slug?: string;
-  status?: 'active' | 'inactive';
+  active?: boolean;
 }
 
 export interface BlogListResponse {

@@ -1,25 +1,14 @@
 import { z } from 'zod';
 
 export const blogCreateSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(255, 'Title is too long'),
-  description: z.string().min(1, 'Description is required'),
-  slug: z
-    .string()
-    .min(1, 'Slug is required')
-    .max(255, 'Slug is too long')
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase with hyphens only'),
+  name: z.string().min(1, 'Name is required').max(150, 'Name must be 150 characters or less'),
+  description: z.string().optional(),
 });
 
 export const blogUpdateSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(255, 'Title is too long').optional(),
-  description: z.string().min(1, 'Description is required').optional(),
-  slug: z
-    .string()
-    .min(1, 'Slug is required')
-    .max(255, 'Slug is too long')
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase with hyphens only')
-    .optional(),
-  status: z.enum(['active', 'inactive']).optional(),
+  name: z.string().min(1, 'Name is required').max(150, 'Name must be 150 characters or less').optional(),
+  description: z.string().optional(),
+  active: z.boolean().optional(),
 });
 
 export type BlogCreateFormData = z.infer<typeof blogCreateSchema>;

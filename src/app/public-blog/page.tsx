@@ -1,155 +1,125 @@
+/**
+ * Public Blog Listing Page
+ * 
+ * Displays paginated list of published articles from a blog.
+ * Uses blog secret key from environment variable for authentication.
+ * 
+ * Requirements: 19.1, 19.2
+ * Task: 20.1
+ */
+
 "use client";
 
 import { useState } from "react";
-import { useListPublicArticles } from "@/src/common/hooks/cms/use-list-public-articles";
-import { Input } from "@/src/components/ui/input";
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent } from "@/src/components/ui/card";
-import { Loader2, Key, FileText } from "lucide-react";
-import Link from "next/link";
+import { usePublicArticles } from "@/src/common/hooks/cms/usePublicArticles";
+import PublicArticleList from "@/src/components/cms/public/public-article-list";
+
+// Blog secret key from environment variable
+// This should be configured in .env.local as NEXT_PUBLIC_BLOG_SECRET_KEY
+const BLOG_SECRET_KEY = process.env.NEXT_PUBLIC_BLOG_SECRET_KEY || "";
 
 export default function PublicBlogPage() {
-  const [secretKey, setSecretKey] = useState("");
-  const [submittedKey, setSubmittedKey] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
 
-  const { data: articlesData, isLoading, error } = useListPublicArticles(
-    submittedKey,
-    { page: 1, limit: 10 }
+  const { data, isLoading, error } = usePublicArticles(
+    BLOG_SECRET_KEY,
+    currentPage,
+    limit
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmittedKey(secretKey);
+  // Handle page navigation
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  return (
-    <div className="min-h-screen bg-[#0f0f1a] text-gray-100">
-      <div className="max-w-4xl mx-auto p-6 space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold">Public Blog Demo</h1>
-          <p className="text-gray-400">
-            Enter your blog secret key to view published articles
+  // Show error state if secret key is not configured
+  if (!BLOG_SECRET_KEY) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="max-w-md text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-full bg-danger-100 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-danger-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">
+            Configuration Required
+          </h1>
+          <p className="text-default-500">
+            Blog secret key is not configured. Please add NEXT_PUBLIC_BLOG_SECRET_KEY to your environment variables.
           </p>
         </div>
+      </div>
+    );
+  }
 
-        <Card className="bg-[#16162a] border-gray-800">
-          <CardContent className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <Key className="w-4 h-4" />
-                  Blog Secret Key
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Enter your blog secret key"
-                  value={secretKey}
-                  onChange={(e) => setSecretKey(e.target.value)}
-                  className="bg-[#0f0f1a] border-gray-700 text-gray-200"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
-                disabled={!secretKey}
-              >
-                Load Articles
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {isLoading && (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+  // Show error state if API request failed
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="max-w-md text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-full bg-danger-100 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-danger-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </div>
-        )}
+          <h1 className="text-2xl font-bold text-foreground">
+            Failed to Load Articles
+          </h1>
+          <p className="text-default-500">
+            Unable to fetch articles. Please check your blog secret key configuration or try again later.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-        {error && (
-          <Card className="bg-red-500/10 border-red-500/20">
-            <CardContent className="p-6">
-              <p className="text-red-400">
-                Failed to load articles. Please check your secret key.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Page Header */}
+        <header className="mb-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Blog
+          </h1>
+          <p className="text-lg text-default-600 max-w-2xl mx-auto">
+            Discover our latest articles, insights, and updates
+          </p>
+        </header>
 
-        {articlesData && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Published Articles</h2>
-              <span className="text-sm text-gray-400">
-                {articlesData.meta.total} articles
-              </span>
-            </div>
-
-            {articlesData.data.length === 0 ? (
-              <Card className="bg-[#16162a] border-gray-800">
-                <CardContent className="p-12 text-center">
-                  <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                    No published articles
-                  </h3>
-                  <p className="text-gray-500">
-                    This blog doesn't have any published articles yet.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {articlesData.data.map((article) => (
-                  <Card
-                    key={article.id}
-                    className="bg-[#16162a] border-gray-800 hover:border-gray-700 transition-all"
-                  >
-                    <CardContent className="p-6">
-                      <div className="space-y-3">
-                        <h3 className="text-xl font-semibold text-gray-100 hover:text-blue-400 transition-colors">
-                          {article.title}
-                        </h3>
-                        <p className="text-sm text-gray-400">
-                          Published on{" "}
-                          {new Date(article.published_at).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </p>
-                        <div
-                          className="text-gray-300 line-clamp-3"
-                          dangerouslySetInnerHTML={{
-                            __html: article.content.substring(0, 200) + "...",
-                          }}
-                        />
-                        <Link
-                          href={`/public-blog/${article.slug}?key=${submittedKey}`}
-                          className="inline-block text-blue-400 hover:text-blue-300 text-sm font-medium"
-                        >
-                          Read more →
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-
-            {articlesData.meta.total_pages > 1 && (
-              <div className="flex justify-center gap-2">
-                <Button variant="outline" size="sm" disabled>
-                  Previous
-                </Button>
-                <span className="px-4 py-2 text-sm text-gray-400">
-                  Page {articlesData.meta.page} of {articlesData.meta.total_pages}
-                </span>
-                <Button variant="outline" size="sm" disabled>
-                  Next
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
+        {/* Article List */}
+        <PublicArticleList
+          articles={data?.data || []}
+          isLoading={isLoading}
+          pagination={{
+            currentPage: data?.meta.current_page || 1,
+            totalPages: data?.meta.total_pages || 1,
+            onPageChange: handlePageChange,
+          }}
+        />
       </div>
     </div>
   );

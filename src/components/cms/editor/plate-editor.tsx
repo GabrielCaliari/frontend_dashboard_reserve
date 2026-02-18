@@ -22,6 +22,8 @@ import {
   H3Plugin,
   BlockquotePlugin,
 } from "@platejs/basic-nodes/react";
+import { ImagePlugin } from "@platejs/media/react";
+import { LinkPlugin } from "@platejs/link/react";
 import { Transforms, Editor } from "slate";
 import { cn } from "@/src/lib/utils";
 import {
@@ -37,29 +39,12 @@ import {
   Heading2,
   Heading3,
   Quote,
-  Link,
-  List,
-  ListOrdered,
   ImageIcon,
-  Video,
-  Music,
-  FileUp,
-  Sparkles,
-  Wand2,
-  MessageSquarePlus,
-  BookOpen,
-  Minimize2,
-  Maximize2,
-  Languages,
-  Table,
-  CodeSquare,
-  LayoutGrid,
-  Columns,
-  SeparatorHorizontal,
-  ExternalLink,
   History,
   Undo,
   Redo,
+  PanelLeftClose,
+  PanelLeft,
 } from "lucide-react";
 import {
   Tooltip,
@@ -71,13 +56,139 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
 } from "@/src/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/src/components/ui/dialog";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { useUploadImages } from "@/src/common/hooks/cms/useImageMutations";
 import type { ContentStats } from "@/src/types/cms";
+
+// Utility: Serialize Slate value to HTML string
+function serializeNodesToHtml(nodes: Value): string {
+  return nodes
+    .map((node: any) => {
+      const childrenHtml = (node.children || [])
+        .map((child: any) => {
+          if (child.text !== undefined) {
+            let text = child.text;
+            if (!text) return "";
+            text = text
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+            if (child.bold) text = `<strong>${text}</strong>`;
+            if (child.italic) text = `<em>${text}</em>`;
+            if (child.underline) text = `<u>${text}</u>`;
+            if (child.strikethrough) text = `<s>${text}</s>`;
+            if (child.code) text = `<code>${text}</code>`;
+            return text;
+          }
+          return serializeNodesToHtml([child]);
+        })
+        .join("");
+
+      switch (node.type) {
+        case "h1":
+          return `<h1>${childrenHtml}</h1>`;
+        case "h2":
+          return `<h2>${childrenHtml}</h2>`;
+        case "h3":
+          return `<h3>${childrenHtml}</h3>`;
+        case "blockquote":
+          return `<blockquote>${childrenHtml}</blockquote>`;
+        case "img":
+          return `<img src="${node.url}" alt="${node.alt || ""}" />`;
+        case "a":
+          return `<a href="${node.url}">${childrenHtml}</a>`;
+        case "p":
+        default:
+          return `<p>${childrenHtml}</p>`;
+      }
+    })
+    .join("\n");
+}
+
+// Utility: Parse HTML string to Slate value
+function parseHtmlToSlate(html: string): Value {
+  if (!html || !html.trim()) {
+    return [{ type: "p", children: [{ text: "" }] }];
+  }
+
+  const nodes: any[] = [];
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const body = doc.body;
+
+  function parseNode(domNode: Node): any {
+    if (domNode.nodeType === Node.TEXT_NODE) {
+      return { text: domNode.textContent || "" };
+    }
+
+    if (domNode.nodeType === Node.ELEMENT_NODE) {
+      const el = domNode as Element;
+      const tag = el.tagName.toLowerCase();
+      const children = Array.from(el.childNodes).map(parseNode).flat();
+
+      // Inline marks
+      if (tag === "strong" || tag === "b") {
+        return children.map((c: any) => ({ ...c, bold: true }));
+      }
+      if (tag === "em" || tag === "i") {
+        return children.map((c: any) => ({ ...c, italic: true }));
+      }
+      if (tag === "u") {
+        return children.map((c: any) => ({ ...c, underline: true }));
+      }
+      if (tag === "s" || tag === "del" || tag === "strike") {
+        return children.map((c: any) => ({ ...c, strikethrough: true }));
+      }
+      if (tag === "code") {
+        return children.map((c: any) => ({ ...c, code: true }));
+      }
+
+      // Block elements
+      const blockChildren = children.length > 0 ? children : [{ text: "" }];
+      if (tag === "h1") return { type: "h1", children: blockChildren };
+      if (tag === "h2") return { type: "h2", children: blockChildren };
+      if (tag === "h3") return { type: "h3", children: blockChildren };
+      if (tag === "blockquote") return { type: "blockquote", children: blockChildren };
+      if (tag === "img") return { type: "img", url: el.getAttribute("src") || "", alt: el.getAttribute("alt") || "", children: [{ text: "" }] };
+      if (tag === "ul") return { type: "ul", children: blockChildren };
+      if (tag === "ol") return { type: "ol", children: blockChildren };
+      if (tag === "li") return { type: "li", children: blockChildren };
+      if (tag === "a") return { type: "a", url: el.getAttribute("href") || "", children: blockChildren };
+      if (tag === "p") return { type: "p", children: blockChildren };
+      if (tag === "div") return { type: "p", children: blockChildren };
+      if (tag === "br") return { text: "\n" };
+
+      return children;
+    }
+
+    return { text: "" };
+  }
+
+  Array.from(body.childNodes).forEach((node) => {
+    const result = parseNode(node);
+    if (Array.isArray(result)) {
+      if (result.length > 0) {
+        nodes.push({ type: "p", children: result });
+      }
+    } else if (result && result.type) {
+      nodes.push(result);
+    } else if (result && result.text) {
+      nodes.push({ type: "p", children: [result] });
+    }
+  });
+
+  return nodes.length > 0 ? nodes : [{ type: "p", children: [{ text: "" }] }];
+}
 
 // ToolbarButton component
 interface ToolbarButtonProps {
@@ -140,6 +251,19 @@ function FloatingToolbar() {
         domSelection.rangeCount === 0 ||
         domSelection.isCollapsed
       ) {
+        setPosition(null);
+        return;
+      }
+
+      const anchorNode = domSelection.anchorNode;
+      const editorEl =
+        anchorNode instanceof Node
+          ? (anchorNode.nodeType === Node.ELEMENT_NODE
+              ? (anchorNode as Element)
+              : anchorNode.parentElement
+            )?.closest(".slate-editor")
+          : null;
+      if (!editorEl) {
         setPosition(null);
         return;
       }
@@ -215,40 +339,37 @@ function FloatingToolbar() {
           left: `${position.left}px`,
         }}
       >
-        {/* Text Formatting */}
         <div className="flex items-center gap-0.5 px-1">
           <ToolbarButton
             icon={<Bold className="w-4 h-4" />}
             label="Bold"
-            shortcut="⌘B"
+            shortcut="Ctrl+B"
             isActive={isMarkActive("bold")}
             onClick={() => toggleMark("bold")}
           />
           <ToolbarButton
             icon={<Italic className="w-4 h-4" />}
             label="Italic"
-            shortcut="⌘I"
+            shortcut="Ctrl+I"
             isActive={isMarkActive("italic")}
             onClick={() => toggleMark("italic")}
           />
           <ToolbarButton
             icon={<Underline className="w-4 h-4" />}
             label="Underline"
-            shortcut="⌘U"
+            shortcut="Ctrl+U"
             isActive={isMarkActive("underline")}
             onClick={() => toggleMark("underline")}
           />
           <ToolbarButton
             icon={<Strikethrough className="w-4 h-4" />}
             label="Strikethrough"
-            shortcut="⌘⇧S"
             isActive={isMarkActive("strikethrough")}
             onClick={() => toggleMark("strikethrough")}
           />
           <ToolbarButton
             icon={<Code className="w-4 h-4" />}
             label="Inline Code"
-            shortcut="⌘E"
             isActive={isMarkActive("code")}
             onClick={() => toggleMark("code")}
           />
@@ -256,57 +377,30 @@ function FloatingToolbar() {
 
         <div className="w-px h-5 bg-border mx-1" />
 
-        {/* Block Formatting */}
         <div className="flex items-center gap-0.5 px-1">
           <ToolbarButton
             icon={<Heading1 className="w-4 h-4" />}
             label="Heading 1"
-            shortcut="⌘⌥1"
             isActive={isBlockActive("h1")}
             onClick={() => toggleBlock("h1")}
           />
           <ToolbarButton
             icon={<Heading2 className="w-4 h-4" />}
             label="Heading 2"
-            shortcut="⌘⌥2"
             isActive={isBlockActive("h2")}
             onClick={() => toggleBlock("h2")}
           />
           <ToolbarButton
             icon={<Heading3 className="w-4 h-4" />}
             label="Heading 3"
-            shortcut="⌘⌥3"
             isActive={isBlockActive("h3")}
             onClick={() => toggleBlock("h3")}
           />
           <ToolbarButton
             icon={<Quote className="w-4 h-4" />}
             label="Blockquote"
-            shortcut="⌘⇧B"
             isActive={isBlockActive("blockquote")}
             onClick={() => toggleBlock("blockquote")}
-          />
-        </div>
-
-        <div className="w-px h-5 bg-border mx-1" />
-
-        {/* Links & Lists */}
-        <div className="flex items-center gap-0.5 px-1">
-          <ToolbarButton
-            icon={<Link className="w-4 h-4" />}
-            label="Add Link"
-            shortcut="⌘K"
-            onClick={() => {}}
-          />
-          <ToolbarButton
-            icon={<List className="w-4 h-4" />}
-            label="Bullet List"
-            onClick={() => {}}
-          />
-          <ToolbarButton
-            icon={<ListOrdered className="w-4 h-4" />}
-            label="Numbered List"
-            onClick={() => {}}
           />
         </div>
       </div>
@@ -314,202 +408,189 @@ function FloatingToolbar() {
   );
 }
 
-// StaticToolbar component
-function EditorToolbar() {
+// Image Insert Dialog
+interface ImageInsertDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onInsert: (url: string, alt: string) => void;
+  blogId?: number;
+  articleId?: number;
+}
+
+function ImageInsertDialog({
+  open,
+  onOpenChange,
+  onInsert,
+  blogId,
+  articleId,
+}: ImageInsertDialogProps) {
+  const [imageUrl, setImageUrl] = React.useState("");
+  const [altText, setAltText] = React.useState("");
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+  const [uploadMode, setUploadMode] = React.useState<"url" | "upload">("url");
+  const uploadImagesMutation = useUploadImages();
+
+  const handleInsert = async () => {
+    if (uploadMode === "url" && imageUrl) {
+      onInsert(imageUrl, altText);
+      setImageUrl("");
+      setAltText("");
+      onOpenChange(false);
+    } else if (uploadMode === "upload" && selectedFile && blogId && articleId) {
+      try {
+        const result = await uploadImagesMutation.mutateAsync({
+          blogId,
+          articleId,
+          files: [selectedFile],
+          altTexts: [altText || null],
+        });
+        if (result && result[0]) {
+          onInsert(result[0].url, altText);
+          setSelectedFile(null);
+          setAltText("");
+          onOpenChange(false);
+        }
+      } catch (error) {
+        console.error("Upload failed:", error);
+      }
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Insert Image</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="flex gap-2">
+            <Button
+              variant={uploadMode === "url" ? "default" : "outline"}
+              onClick={() => setUploadMode("url")}
+              size="sm"
+            >
+              Image URL
+            </Button>
+            {blogId && articleId && (
+              <Button
+                variant={uploadMode === "upload" ? "default" : "outline"}
+                onClick={() => setUploadMode("upload")}
+                size="sm"
+              >
+                Upload File
+              </Button>
+            )}
+          </div>
+
+          {uploadMode === "url" ? (
+            <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium">Image URL</label>
+                <Input
+                  placeholder="https://example.com/image.jpg"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Alt Text</label>
+                <Input
+                  placeholder="Describe the image"
+                  value={altText}
+                  onChange={(e) => setAltText(e.target.value)}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium">Select Image</label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Alt Text</label>
+                <Input
+                  placeholder="Describe the image"
+                  value={altText}
+                  onChange={(e) => setAltText(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleInsert}
+            disabled={
+              (uploadMode === "url" && !imageUrl) ||
+              (uploadMode === "upload" && !selectedFile) ||
+              uploadImagesMutation.isPending
+            }
+          >
+            {uploadImagesMutation.isPending ? "Uploading..." : "Insert"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// EditorToolbar component
+interface EditorToolbarProps {
+  onInsertImage: () => void;
+}
+
+function EditorToolbar({ onInsertImage }: EditorToolbarProps) {
   const editor = useEditorRef();
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className="sticky top-0 z-40 flex flex-wrap items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 overflow-x-auto">
-        {/* Undo/Redo */}
+      <div className="sticky top-0 z-40 flex flex-wrap items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 border-b border-border bg-content1 overflow-x-auto">
         <div className="flex items-center gap-0.5">
           <ToolbarButton
             icon={<Undo className="w-4 h-4" />}
             label="Undo"
-            shortcut="⌘Z"
+            shortcut="Ctrl+Z"
             onClick={() => editor?.undo()}
           />
           <ToolbarButton
             icon={<Redo className="w-4 h-4" />}
             label="Redo"
-            shortcut="⌘⇧Z"
+            shortcut="Ctrl+Shift+Z"
             onClick={() => editor?.redo()}
           />
         </div>
 
         <div className="hidden xs:block w-px h-6 bg-border mx-1 sm:mx-2" />
 
-        {/* Media Insertion */}
         <div className="flex items-center gap-0.5">
-          <DropdownMenu>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className={cn(
-                      "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 rounded-md text-sm transition-colors",
-                      "hover:bg-accent hover:text-accent-foreground",
-                    )}
-                  >
-                    <ImageIcon className="w-4 h-4" />
-                    <span className="hidden md:inline">Media</span>
-                    <ChevronDown className="w-3 h-3 opacity-50 hidden sm:block" />
-                  </button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>Insert media content</TooltipContent>
-            </Tooltip>
-            <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuItem className="gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={onInsertImage}
+                className={cn(
+                  "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 rounded-md text-sm transition-colors",
+                  "hover:bg-accent hover:text-accent-foreground",
+                )}
+              >
                 <ImageIcon className="w-4 h-4" />
-                <span>Image</span>
-                <kbd className="ml-auto text-[10px] text-muted-foreground">
-                  ⌘⇧I
-                </kbd>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <Video className="w-4 h-4" />
-                <span>Video</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <Music className="w-4 h-4" />
-                <span>Audio</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-2">
-                <FileUp className="w-4 h-4" />
-                <span>Upload file</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <ExternalLink className="w-4 h-4" />
-                <span>Embed URL</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <div className="hidden xs:block w-px h-6 bg-border mx-1 sm:mx-2" />
-
-        {/* AI Features */}
-        <div className="flex items-center gap-0.5">
-          <DropdownMenu>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className={cn(
-                      "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 rounded-md text-sm transition-colors",
-                      "bg-primary/10 text-primary hover:bg-primary/20",
-                    )}
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span className="hidden md:inline">AI Assist</span>
-                    <ChevronDown className="w-3 h-3 opacity-50 hidden sm:block" />
-                  </button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>AI writing assistance</TooltipContent>
-            </Tooltip>
-            <DropdownMenuContent align="start" className="w-56">
-              <DropdownMenuItem className="gap-2">
-                <Wand2 className="w-4 h-4" />
-                <span>Continue writing</span>
-                <kbd className="ml-auto text-[10px] text-muted-foreground">
-                  ⌘J
-                </kbd>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <MessageSquarePlus className="w-4 h-4" />
-                <span>Write with prompt...</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="gap-2">
-                  <BookOpen className="w-4 h-4" />
-                  <span>Improve writing</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="w-48">
-                  <DropdownMenuItem>Fix grammar & spelling</DropdownMenuItem>
-                  <DropdownMenuItem>Improve clarity</DropdownMenuItem>
-                  <DropdownMenuItem>Make professional</DropdownMenuItem>
-                  <DropdownMenuItem>Make casual</DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-              <DropdownMenuItem className="gap-2">
-                <Minimize2 className="w-4 h-4" />
-                <span>Make shorter</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <Maximize2 className="w-4 h-4" />
-                <span>Make longer</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-2">
-                <Languages className="w-4 h-4" />
-                <span>Translate...</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <Sparkles className="w-4 h-4" />
-                <span>Generate SEO keywords</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <div className="hidden xs:block w-px h-6 bg-border mx-1 sm:mx-2" />
-
-        {/* Specialized Blocks */}
-        <div className="flex items-center gap-0.5">
-          <DropdownMenu>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className={cn(
-                      "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 rounded-md text-sm transition-colors",
-                      "hover:bg-accent hover:text-accent-foreground",
-                    )}
-                  >
-                    <LayoutGrid className="w-4 h-4" />
-                    <span className="hidden md:inline">Insert</span>
-                    <ChevronDown className="w-3 h-3 opacity-50 hidden sm:block" />
-                  </button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>Insert blocks</TooltipContent>
-            </Tooltip>
-            <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuItem className="gap-2">
-                <Table className="w-4 h-4" />
-                <span>Table</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <CodeSquare className="w-4 h-4" />
-                <span>Code block</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <Columns className="w-4 h-4" />
-                <span>Columns</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-2">
-                <SeparatorHorizontal className="w-4 h-4" />
-                <span>Divider</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <ExternalLink className="w-4 h-4" />
-                <span>Call to action</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <span className="hidden md:inline">Insert Image</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Insert image (Ctrl+Shift+I)</TooltipContent>
+          </Tooltip>
         </div>
 
         <div className="flex-1 min-w-0" />
 
-        {/* Version History - hidden on very small screens */}
         <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -525,21 +606,19 @@ function EditorToolbar() {
           </TooltipTrigger>
           <TooltipContent>Version history</TooltipContent>
         </Tooltip>
-
-        <div className="text-xs text-muted-foreground tabular-nums px-2 sm:border-l sm:border-border sm:ml-2 sm:pl-4 whitespace-nowrap" />
       </div>
     </TooltipProvider>
   );
 }
 
-// Custom Heading Elements with chapter markers
+// Custom Element Components with proper markdown rendering
 function H1Element({ children, ...props }: PlateElementProps) {
   return (
     <PlateElement {...props} className="relative group mt-8 mb-4 first:mt-0">
-      <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <GripVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab" />
+      <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+        <GripVertical className="w-4 h-4 text-muted-foreground/50" />
       </div>
-      <h1 className="text-2xl font-bold text-foreground border-b border-border/60 pb-2">
+      <h1 className="text-4xl font-bold text-foreground border-b border-border/60 pb-3">
         {children}
       </h1>
     </PlateElement>
@@ -549,21 +628,21 @@ function H1Element({ children, ...props }: PlateElementProps) {
 function H2Element({ children, ...props }: PlateElementProps) {
   return (
     <PlateElement {...props} className="relative group mt-6 mb-3">
-      <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <GripVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab" />
+      <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+        <GripVertical className="w-4 h-4 text-muted-foreground/50" />
       </div>
-      <h2 className="text-xl font-semibold text-foreground">{children}</h2>
+      <h2 className="text-3xl font-semibold text-foreground">{children}</h2>
     </PlateElement>
   );
 }
 
 function H3Element({ children, ...props }: PlateElementProps) {
   return (
-    <PlateElement {...props} className="relative group mt-4 mb-2">
-      <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <GripVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab" />
+    <PlateElement {...props} className="relative group mt-5 mb-2">
+      <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+        <GripVertical className="w-4 h-4 text-muted-foreground/50" />
       </div>
-      <h3 className="text-lg font-medium text-foreground/90">{children}</h3>
+      <h3 className="text-2xl font-medium text-foreground/90">{children}</h3>
     </PlateElement>
   );
 }
@@ -572,37 +651,67 @@ function BlockquoteElement({ children, ...props }: PlateElementProps) {
   return (
     <PlateElement
       {...props}
-      className="my-4 border-l-2 border-primary/40 pl-4 italic text-foreground/70"
+      className="relative group my-4 border-l-4 border-primary/40 pl-6 py-2 italic text-foreground/70 bg-muted/30"
     >
+      <div className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+        <GripVertical className="w-4 h-4 text-muted-foreground/50" />
+      </div>
       {children}
     </PlateElement>
   );
 }
 
-function ParagraphElement({ children, ...props }: PlateElementProps) {
+function ImageElement({ children, ...props }: PlateElementProps) {
+  const element = props.element as any;
   return (
-    <PlateElement
-      {...props}
-      className="my-3 text-foreground/80 leading-relaxed"
-    >
+    <PlateElement {...props} className="relative group my-6">
+      <div className="absolute -left-8 top-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+        <GripVertical className="w-4 h-4 text-muted-foreground/50" />
+      </div>
+      <div className="rounded-lg overflow-hidden border border-border">
+        <img
+          src={element.url}
+          alt={element.alt || ""}
+          className="w-full h-auto"
+          contentEditable={false}
+        />
+        {element.alt && (
+          <div className="px-4 py-2 bg-muted/50 text-sm text-muted-foreground">
+            {element.alt}
+          </div>
+        )}
+      </div>
       {children}
     </PlateElement>
   );
 }
 
-// CodeElement for inline code styling
-function CodeElement({ children, leaf, ...props }: any) {
+function ListElement({ children, ...props }: PlateElementProps) {
+  const element = props.element as any;
+  const Tag = element.type === "ol" ? "ol" : "ul";
   return (
-    <code
-      {...props}
-      className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm"
-    >
-      {children}
-    </code>
+    <PlateElement {...props} asChild>
+      <Tag className={cn(
+        "my-4 space-y-2",
+        element.type === "ol" ? "list-decimal list-inside" : "list-disc list-inside"
+      )}>
+        {children}
+      </Tag>
+    </PlateElement>
   );
 }
 
-// Chapter type for organizing content
+function ListItemElement({ children, ...props }: PlateElementProps) {
+  return (
+    <PlateElement {...props} asChild>
+      <li className="text-foreground/80 leading-relaxed pl-2">
+        {children}
+      </li>
+    </PlateElement>
+  );
+}
+
+// Chapter type
 interface Chapter {
   id: string;
   title: string;
@@ -610,7 +719,6 @@ interface Chapter {
   collapsed: boolean;
 }
 
-// Extract chapters from content
 function extractChapters(value: Value): Chapter[] {
   const chapters: Chapter[] = [];
   value.forEach((node, index) => {
@@ -629,7 +737,7 @@ function extractChapters(value: Value): Chapter[] {
   return chapters;
 }
 
-// Analyze content and return stats
+// Analyze content
 function analyzeContent(value: Value, keyword: string): ContentStats {
   const keyword_lower = keyword.toLowerCase();
   let plainText = "";
@@ -661,14 +769,12 @@ function analyzeContent(value: Value, keyword: string): ContentStats {
   const keywordCount = keywordMatches ? keywordMatches.length : 0;
   const keywordDensity = wordCount > 0 ? (keywordCount / wordCount) * 100 : 0;
 
-  // Check if keyword in first 10%
   const firstTenPercent = words
     .slice(0, Math.ceil(wordCount * 0.1))
     .join(" ")
     .toLowerCase();
   const keywordInFirstTenPercent = firstTenPercent.includes(keyword_lower);
 
-  // Check paragraph lengths
   const paragraphs = value.filter((n: any) => n.type === "p");
   const shortParagraphs = paragraphs.every((p: any) => {
     const text =
@@ -676,7 +782,6 @@ function analyzeContent(value: Value, keyword: string): ContentStats {
     return text.split(/\s+/).length < 120;
   });
 
-  // Generate a meta description from first paragraph
   const firstParagraph = value.find((n: any) => n.type === "p");
   const metaDescription = firstParagraph
     ? firstParagraph.children
@@ -685,10 +790,12 @@ function analyzeContent(value: Value, keyword: string): ContentStats {
         .slice(0, 160)
     : "";
 
+  const content = serializeNodesToHtml(value);
+
   return {
     wordCount,
     headings,
-    hasImages: false,
+    hasImages: value.some((n: any) => n.type === "img"),
     hasExternalLinks:
       plainText.toLowerCase().includes("http") ||
       plainText.toLowerCase().includes("link"),
@@ -701,24 +808,48 @@ function analyzeContent(value: Value, keyword: string): ContentStats {
     shortParagraphs,
     plainText,
     metaDescription,
+    content,
   };
 }
 
+const emptyValue: Value = [
+  {
+    type: "p",
+    children: [{ text: "" }],
+  },
+];
+
+// PlateEditor Component
 interface PlateEditorProps {
   highlightedSection?: string | null;
   onContentChange?: (stats: ContentStats) => void;
   focusKeyword?: string;
+  initialContent?: string;
+  blogId?: number;
+  articleId?: number;
 }
 
 export function PlateEditor({
   highlightedSection,
   onContentChange,
-  focusKeyword = "Agentic Workflow",
+  focusKeyword = "",
+  initialContent,
+  blogId,
+  articleId,
 }: PlateEditorProps) {
+  const parsedInitial = React.useMemo(() => {
+    if (initialContent && typeof window !== "undefined") {
+      return parseHtmlToSlate(initialContent);
+    }
+    return emptyValue;
+  }, [initialContent]);
+
   const [chapters, setChapters] = React.useState<Chapter[]>(() =>
-    extractChapters(initialValue),
+    extractChapters(parsedInitial),
   );
   const [activeChapter, setActiveChapter] = React.useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+  const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
 
   const editor = usePlateEditor({
     plugins: [
@@ -731,11 +862,11 @@ export function PlateEditor({
       H2Plugin.withComponent(H2Element),
       H3Plugin.withComponent(H3Element),
       BlockquotePlugin.withComponent(BlockquoteElement),
+      ImagePlugin.withComponent(ImageElement),
     ],
-    value: initialValue,
+    value: parsedInitial,
   });
 
-  // Analyze content on mount and on changes
   const analyzeTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const triggerAnalysis = React.useCallback(() => {
@@ -752,12 +883,10 @@ export function PlateEditor({
     }, 300);
   }, [editor, onContentChange, focusKeyword]);
 
-  // Initial analysis on mount
   React.useEffect(() => {
     triggerAnalysis();
   }, [triggerAnalysis]);
 
-  // Toggle chapter collapse
   const toggleChapter = (chapterId: string) => {
     setChapters((prev) =>
       prev.map((ch) =>
@@ -766,81 +895,119 @@ export function PlateEditor({
     );
   };
 
-  // Scroll to chapter
   const scrollToChapter = (chapterId: string) => {
     setActiveChapter(chapterId);
   };
 
+  const handleInsertImage = (url: string, alt: string) => {
+    if (!editor) return;
+    
+    const imageNode = {
+      type: "img",
+      url,
+      alt,
+      children: [{ text: "" }],
+    };
+
+    Transforms.insertNodes(editor, imageNode as any);
+    Transforms.insertNodes(editor, {
+      type: "p",
+      children: [{ text: "" }],
+    } as any);
+  };
+
   return (
     <div className="flex h-full">
-      {/* Chapter Navigation Sidebar */}
-      <div className="w-64 shrink-0 border-r border-border bg-card/50 overflow-y-auto hidden lg:block">
-        <div className="p-4 border-b border-border">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Chapters
-          </h3>
-        </div>
-        <nav className="p-2">
-          {chapters.map((chapter) => (
+      {/* Chapter Navigation Sidebar - Collapsible */}
+      {!sidebarCollapsed && (
+        <div className="w-64 shrink-0 border-r border-border overflow-y-auto hidden lg:block">
+          <div className="p-4 border-b border-border flex items-center justify-between">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Chapters
+            </h3>
             <button
-              key={chapter.id}
-              onClick={() => scrollToChapter(chapter.id)}
-              className={cn(
-                "w-full flex items-center gap-2 px-3 py-2 rounded-md text-left transition-colors",
-                "hover:bg-accent/50",
-                activeChapter === chapter.id &&
-                  "bg-accent text-accent-foreground",
-                chapter.type === "h1" &&
-                  "font-semibold text-foreground text-sm",
-                chapter.type === "h2" && "pl-6 text-sm text-foreground/70",
-                chapter.type === "h3" && "pl-10 text-xs text-foreground/60",
-              )}
+              onClick={() => setSidebarCollapsed(true)}
+              className="p-1 hover:bg-accent rounded-md transition-colors"
             >
-              <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleChapter(chapter.id);
-                }}
-                className="shrink-0 cursor-pointer hover:text-foreground"
-              >
-                {chapter.collapsed ? (
-                  <ChevronRight className="w-3 h-3" />
-                ) : (
-                  <ChevronDown className="w-3 h-3" />
-                )}
-              </span>
-              <span className="truncate">{chapter.title}</span>
+              <PanelLeftClose className="w-4 h-4 text-muted-foreground" />
             </button>
-          ))}
-        </nav>
-      </div>
+          </div>
+          <nav className="p-2">
+            {chapters.length === 0 && (
+              <p className="text-xs text-muted-foreground px-3 py-4">
+                Add headings (H1, H2, H3) to your content to see chapters here.
+              </p>
+            )}
+            {chapters.map((chapter) => (
+              <button
+                key={chapter.id}
+                onClick={() => scrollToChapter(chapter.id)}
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-md text-left transition-colors",
+                  "hover:bg-accent/50",
+                  activeChapter === chapter.id &&
+                    "bg-accent text-accent-foreground",
+                  chapter.type === "h1" &&
+                    "font-semibold text-foreground text-sm",
+                  chapter.type === "h2" && "pl-6 text-sm text-foreground/70",
+                  chapter.type === "h3" && "pl-10 text-xs text-foreground/60",
+                )}
+              >
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleChapter(chapter.id);
+                  }}
+                  className="shrink-0 cursor-pointer hover:text-foreground"
+                >
+                  {chapter.collapsed ? (
+                    <ChevronRight className="w-3 h-3" />
+                  ) : (
+                    <ChevronDown className="w-3 h-3" />
+                  )}
+                </span>
+                <span className="truncate">{chapter.title}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+      )}
+
+      {/* Collapsed Sidebar Toggle */}
+      {sidebarCollapsed && (
+        <div className="hidden lg:flex items-start p-2 border-r border-border">
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="p-2 hover:bg-accent rounded-md transition-colors"
+            title="Show chapters"
+          >
+            <PanelLeft className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </div>
+      )}
 
       {/* Main Editor Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Plate context wrapper for toolbar */}
+      <div className="flex-1 flex flex-col overflow-hidden h-full bg-content1">
         <Plate editor={editor} onChange={() => triggerAnalysis()}>
-          {/* Static Toolbar */}
-          <EditorToolbar />
-
-          {/* Floating Toolbar (appears on selection) */}
+          <EditorToolbar onInsertImage={() => setImageDialogOpen(true)} />
           <FloatingToolbar />
 
-          {/* Editor Content */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto bg-content1">
             <div
               className={cn(
-                "max-w-3xl mx-auto p-8 transition-all duration-200 slate-editor",
+                "max-w-4xl mx-auto px-8 py-12 h-full transition-all duration-200 slate-editor bg-content1",
                 highlightedSection === "content" && "ring-2 ring-primary/30",
               )}
             >
               <PlateContent
-                className="outline-none"
+                className="outline-none h-full text-foreground bg-content1 [&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:opacity-50"
+                placeholder="Start writing your article content..."
                 renderElement={({ attributes, children, element }) => {
                   if (!element.type || element.type === "p") {
                     return (
                       <p
                         {...attributes}
-                        className="my-3 text-foreground/80 leading-relaxed"
+                        className="my-4 text-base text-foreground leading-relaxed"
                       >
                         {children}
                       </p>
@@ -851,20 +1018,20 @@ export function PlateEditor({
                 renderLeaf={({ attributes, children, leaf }) => {
                   let result = children;
                   if (leaf.bold) {
-                    result = <strong>{result}</strong>;
+                    result = <strong className="font-semibold">{result}</strong>;
                   }
                   if (leaf.italic) {
-                    result = <em>{result}</em>;
+                    result = <em className="italic">{result}</em>;
                   }
                   if (leaf.underline) {
-                    result = <u>{result}</u>;
+                    result = <u className="underline">{result}</u>;
                   }
                   if (leaf.strikethrough) {
-                    result = <s>{result}</s>;
+                    result = <s className="line-through">{result}</s>;
                   }
                   if (leaf.code) {
                     result = (
-                      <code className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm">
+                      <code className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm border border-border">
                         {result}
                       </code>
                     );
@@ -876,140 +1043,15 @@ export function PlateEditor({
           </div>
         </Plate>
       </div>
+
+      {/* Image Insert Dialog */}
+      <ImageInsertDialog
+        open={imageDialogOpen}
+        onOpenChange={setImageDialogOpen}
+        onInsert={handleInsertImage}
+        blogId={blogId}
+        articleId={articleId}
+      />
     </div>
   );
 }
-
-// Initial content with chapters about Agentic Workflow
-const initialValue: Value = [
-  {
-    type: "h1",
-    children: [{ text: "Introduction to Agentic Workflows" }],
-  },
-  {
-    type: "p",
-    children: [
-      { text: "An " },
-      { text: "Agentic Workflow", bold: true },
-      {
-        text: " represents a paradigm shift in how we think about automation and AI-assisted processes. Unlike traditional workflows that follow rigid, predefined paths, agentic workflows leverage autonomous AI agents that can make decisions, adapt to changing conditions, and collaborate with other agents to achieve complex goals.",
-      },
-    ],
-  },
-  {
-    type: "p",
-    children: [
-      {
-        text: "This comprehensive guide explores the foundations, implementation strategies, and best practices for building effective agentic workflows in your organization.",
-      },
-    ],
-  },
-  {
-    type: "h2",
-    children: [{ text: "What is an Agentic Workflow?" }],
-  },
-  {
-    type: "p",
-    children: [
-      { text: "At its core, an " },
-      { text: "agentic workflow", italic: true },
-      {
-        text: " combines the structured nature of traditional business processes with the adaptive intelligence of AI agents. These agents operate with a degree of autonomy, making decisions based on context, learning from outcomes, and continuously optimizing their approach.",
-      },
-    ],
-  },
-  {
-    type: "blockquote",
-    children: [
-      {
-        text: '"The future of automation lies not in rigid scripts, but in intelligent agents that understand intent and adapt to achieve outcomes."',
-      },
-    ],
-  },
-  {
-    type: "h3",
-    children: [{ text: "Key Characteristics" }],
-  },
-  {
-    type: "p",
-    children: [
-      {
-        text: "Agentic workflows are characterized by their ability to handle uncertainty, make autonomous decisions within defined boundaries, and learn from both successes and failures. They represent the next evolution in process automation.",
-      },
-    ],
-  },
-  {
-    type: "h2",
-    children: [{ text: "Core Components of Agentic Systems" }],
-  },
-  {
-    type: "p",
-    children: [
-      {
-        text: "Building effective agentic workflows requires understanding the fundamental components that power them: the agent architecture, the decision-making framework, and the feedback loops that enable continuous improvement.",
-      },
-    ],
-  },
-  {
-    type: "h3",
-    children: [{ text: "Agent Architecture" }],
-  },
-  {
-    type: "p",
-    children: [
-      {
-        text: "The architecture of an agentic system typically includes a perception layer (for understanding inputs), a reasoning engine (for making decisions), and an action layer (for executing tasks). These components work together to create intelligent, responsive workflows.",
-      },
-    ],
-  },
-  {
-    type: "h3",
-    children: [{ text: "Decision-Making Framework" }],
-  },
-  {
-    type: "p",
-    children: [
-      {
-        text: "Agents use various decision-making frameworks, from rule-based systems to sophisticated machine learning models. The choice of framework depends on the complexity of decisions and the availability of training data.",
-      },
-    ],
-  },
-  {
-    type: "h2",
-    children: [{ text: "Implementation Best Practices" }],
-  },
-  {
-    type: "p",
-    children: [
-      {
-        text: "Successfully implementing agentic workflows requires careful planning, robust testing, and ongoing monitoring. Start with well-defined use cases, establish clear success metrics, and build in safeguards for agent autonomy.",
-      },
-    ],
-  },
-  {
-    type: "h3",
-    children: [{ text: "Starting Small" }],
-  },
-  {
-    type: "p",
-    children: [
-      { text: "Begin with a limited scope " },
-      { text: "agentic workflow", bold: true },
-      {
-        text: " pilot project. This allows your team to learn the nuances of agent behavior and refine your approach before scaling to more critical processes.",
-      },
-    ],
-  },
-  {
-    type: "h2",
-    children: [{ text: "Future of Agentic Workflows" }],
-  },
-  {
-    type: "p",
-    children: [
-      {
-        text: "As AI capabilities continue to advance, agentic workflows will become increasingly sophisticated. We can expect to see more complex multi-agent collaborations, better natural language interfaces, and deeper integration with existing enterprise systems.",
-      },
-    ],
-  },
-];

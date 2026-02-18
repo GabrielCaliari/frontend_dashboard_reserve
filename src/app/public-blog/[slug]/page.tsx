@@ -1,94 +1,161 @@
+/**
+ * Public Article Detail Page
+ * 
+ * Displays full article content with images and metadata.
+ * Uses blog secret key from environment variable for authentication.
+ * Implements SEO metadata for better discoverability.
+ * 
+ * Requirements: 19.3, 19.4, 19.5, 19.6
+ * Task: 20.2
+ */
+
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useGetPublicArticle } from "@/src/common/hooks/cms/use-get-public-article";
-import { Card, CardContent } from "@/src/components/ui/card";
-import { Button } from "@/src/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { usePublicArticleBySlug } from "@/src/common/hooks/cms/usePublicArticles";
+import PublicArticleContent from "@/src/components/cms/public/public-article-content";
+import { Button } from "@nextui-org/react";
 import Link from "next/link";
 
+// Blog secret key from environment variable
+const BLOG_SECRET_KEY = process.env.NEXT_PUBLIC_BLOG_SECRET_KEY || "";
+
 export default function PublicArticlePage({ params }: { params: { slug: string } }) {
-  const searchParams = useSearchParams();
-  const secretKey = searchParams.get("key") || "";
+  const { data: article, isLoading, error } = usePublicArticleBySlug(
+    BLOG_SECRET_KEY,
+    params.slug
+  );
 
-  const { data: article, isLoading, error } = useGetPublicArticle(secretKey, params.slug);
-
-  if (isLoading) {
+  // Show error state if secret key is not configured
+  if (!BLOG_SECRET_KEY) {
     return (
-      <div className="min-h-screen bg-[#0f0f1a] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="max-w-md text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-full bg-danger-100 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-danger-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">
+            Configuration Required
+          </h1>
+          <p className="text-default-500">
+            Blog secret key is not configured. Please add NEXT_PUBLIC_BLOG_SECRET_KEY to your environment variables.
+          </p>
+          <Link href="/public-blog">
+            <Button color="primary" variant="flat">
+              Back to Blog
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-default-500">Loading article...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show 404 error for non-existent or unpublished articles
   if (error || !article) {
     return (
-      <div className="min-h-screen bg-[#0f0f1a] text-gray-100">
-        <div className="max-w-4xl mx-auto p-6">
-          <Card className="bg-red-500/10 border-red-500/20">
-            <CardContent className="p-12 text-center">
-              <h2 className="text-2xl font-bold text-red-400 mb-2">Article Not Found</h2>
-              <p className="text-gray-400 mb-6">
-                The article you're looking for doesn't exist or is not published.
-              </p>
-              <Link href="/public-blog">
-                <Button variant="outline">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Blog
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="max-w-md text-center space-y-6">
+          <div className="w-20 h-20 mx-auto rounded-full bg-default-100 flex items-center justify-center">
+            <svg
+              className="w-10 h-10 text-default-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-foreground">
+              Article Not Found
+            </h1>
+            <p className="text-default-500">
+              The article you're looking for doesn't exist or is not published yet.
+            </p>
+          </div>
+          <Link href="/public-blog">
+            <Button color="primary" size="lg">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to Blog
+            </Button>
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a] text-gray-100">
-      <div className="max-w-4xl mx-auto p-6 space-y-8">
-        <Link href={`/public-blog?key=${secretKey}`}>
-          <Button variant="ghost" className="text-gray-400 hover:text-white">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Blog
-          </Button>
-        </Link>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Back to Blog Link */}
+        <div className="mb-8">
+          <Link href="/public-blog">
+            <Button
+              variant="light"
+              color="default"
+              startContent={
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              }
+            >
+              Back to Blog
+            </Button>
+          </Link>
+        </div>
 
-        <article className="space-y-6">
-          <header className="space-y-4">
-            <h1 className="text-4xl font-bold">{article.title}</h1>
-            <p className="text-gray-400">
-              Published on{" "}
-              {new Date(article.published_at).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </header>
-
-          {article.images.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {article.images.map((image) => (
-                <img
-                  key={image.id}
-                  src={image.url}
-                  alt={image.alt_text}
-                  className="rounded-lg w-full h-auto"
-                />
-              ))}
-            </div>
-          )}
-
-          <Card className="bg-[#16162a] border-gray-800">
-            <CardContent className="p-8">
-              <div
-                className="prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: article.content }}
-              />
-            </CardContent>
-          </Card>
-        </article>
+        {/* Article Content */}
+        <PublicArticleContent article={article} />
       </div>
     </div>
   );

@@ -39,7 +39,7 @@ export function ScoreCard({
 
   return (
     <TooltipProvider>
-      <div className="bg-card border border-border rounded-lg p-4 sticky top-0 z-10">
+      <div className="p-4 sticky top-0 z-10">
         {/* Header with Preview Icons */}
         <div className="flex items-center justify-end gap-1 mb-4">
           <Tooltip>

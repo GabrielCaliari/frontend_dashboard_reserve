@@ -38,19 +38,7 @@ export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDi
     resolver: zodResolver(blogCreateSchema),
   });
 
-  const title = watch("title");
 
-  // Auto-generate slug from title
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const slug = value
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .trim();
-    setValue("slug", slug);
-  };
 
   const onSubmit = (data: BlogCreateFormData) => {
     createBlog(data, {
@@ -74,47 +62,28 @@ export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDi
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-gray-200">
-              Title
+            <Label htmlFor="name" className="text-gray-200">
+              Blog Name
             </Label>
             <Input
-              id="title"
-              {...register("title")}
-              onChange={(e) => {
-                register("title").onChange(e);
-                handleTitleChange(e);
-              }}
+              id="name"
+              {...register("name")}
               placeholder="My Awesome Blog"
               className="bg-[#1a1a2e] border-gray-700 text-gray-100"
               disabled={isPending}
+              maxLength={150}
             />
-            {errors.title && (
-              <p className="text-sm text-red-400">{errors.title.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="slug" className="text-gray-200">
-              Slug
-            </Label>
-            <Input
-              id="slug"
-              {...register("slug")}
-              placeholder="my-awesome-blog"
-              className="bg-[#1a1a2e] border-gray-700 text-gray-100 font-mono text-sm"
-              disabled={isPending}
-            />
-            {errors.slug && (
-              <p className="text-sm text-red-400">{errors.slug.message}</p>
+            {errors.name && (
+              <p className="text-sm text-red-400">{errors.name.message}</p>
             )}
             <p className="text-xs text-gray-500">
-              URL-friendly identifier (lowercase, hyphens only)
+              Maximum 150 characters. Slug will be auto-generated.
             </p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="description" className="text-gray-200">
-              Description
+              Description (Optional)
             </Label>
             <Textarea
               id="description"

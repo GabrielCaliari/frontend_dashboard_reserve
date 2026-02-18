@@ -62,6 +62,11 @@ export function Sidebar({ activeTab }: SidebarProps) {
         prev.includes("leads-menu") ? prev : [...prev, "leads-menu"],
       );
     }
+    if (activeTab === "blogs" || activeTab === "articles") {
+      setExpandedMenus((prev) =>
+        prev.includes("cms") ? prev : [...prev, "cms"],
+      );
+    }
   }, [activeTab]);
 
   const toggleMenu = (menuId: string) => {
@@ -114,6 +119,12 @@ export function Sidebar({ activeTab }: SidebarProps) {
           label: "Blogs",
           icon: FileText,
           path: "/dashboard/cms/blogs",
+        },
+        {
+          id: "articles",
+          label: "Articles",
+          icon: FileText,
+          path: "/dashboard/cms/articles",
         },
       ],
     },

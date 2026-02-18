@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleUnauthorizedError, isUnauthorizedError } from "@/src/common/utils/auth-error-handler";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -53,21 +54,18 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - Trata erros de autenticação
+// Response interceptor - Trata erros de autenticação (ONLY for api.ts)
+// This is the ONLY place where 401 errors trigger automatic redirect
+// Other API clients (cms-api-client, api-email) should let errors propagate
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Limpar cookies e redirecionar para login
-      if (typeof window !== 'undefined') {
-        document.cookie = 'token=; Max-Age=0; path=/;';
-        document.cookie = 'session-code=; Max-Age=0; path=/;';
-        document.cookie = 'session-name=; Max-Age=0; path=/;';
-        window.location.href = '/auth/login';
-      }
+    if (isUnauthorizedError(error)) {
+      handleUnauthorizedError();
     }
     return Promise.reject(error);
   }
 );
 
 export default api;
+export { api as apiClient };

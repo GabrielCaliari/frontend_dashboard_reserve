@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { articleService } from '@/src/common/services/article-service';
+import { fetchArticleById } from '@/src/common/services/cms-article-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 
 export function useGetArticle(blogId: number, articleId: number) {
@@ -7,7 +7,7 @@ export function useGetArticle(blogId: number, articleId: number) {
 
   return useQuery({
     queryKey: ['article', tenantId, blogId, articleId],
-    queryFn: () => articleService.getArticle(blogId, articleId),
+    queryFn: () => fetchArticleById(blogId, articleId),
     enabled: !!blogId && !!articleId && !!tenantId,
   });
 }
