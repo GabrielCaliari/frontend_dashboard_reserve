@@ -32,32 +32,32 @@
 - [x] Update package.json and lock file
 
 ### 2.2 Create Markdown Serializer
-- [ ] Create `src/components/cms/editor/markdown-serializer.ts`
-- [ ] Implement `serializeToMarkdown()` function
-- [ ] Implement `serializeNode()` helper for block elements
-- [ ] Implement `serializeChildren()` helper for inline elements
-- [ ] Handle headings (h1, h2, h3)
-- [ ] Handle paragraphs
-- [ ] Handle blockquotes
-- [ ] Handle lists (ul, ol, li)
-- [ ] Handle images
-- [ ] Handle links
-- [ ] Handle text marks (bold, italic, strikethrough, code)
-- [ ] Handle code blocks
+- [x] Create `src/components/cms/editor/markdown-serializer.ts`
+- [x] Implement `serializeToMarkdown()` function
+- [x] Implement `serializeNode()` helper for block elements
+- [x] Implement `serializeChildren()` helper for inline elements
+- [x] Handle headings (h1, h2, h3)
+- [x] Handle paragraphs
+- [x] Handle blockquotes
+- [x] Handle lists (ul, ol, li)
+- [x] Handle images
+- [x] Handle links
+- [x] Handle text marks (bold, italic, strikethrough, code)
+- [x] Handle code blocks
 
 ### 2.3 Create Markdown Deserializer
-- [ ] Create `src/components/cms/editor/markdown-deserializer.ts`
-- [ ] Implement `deserializeFromMarkdown()` function
-- [ ] Implement `convertMdastToSlate()` helper
-- [ ] Implement `convertInlineNodes()` helper
-- [ ] Handle headings parsing
-- [ ] Handle paragraphs parsing
-- [ ] Handle blockquotes parsing
-- [ ] Handle lists parsing
-- [ ] Handle images parsing
-- [ ] Handle links parsing
-- [ ] Handle text marks parsing
-- [ ] Handle code blocks parsing
+- [x] Create `src/components/cms/editor/markdown-deserializer.ts`
+- [x] Implement `deserializeFromMarkdown()` function
+- [x] Implement `convertMdastToSlate()` helper
+- [x] Implement `convertInlineNodes()` helper
+- [x] Handle headings parsing
+- [x] Handle paragraphs parsing
+- [x] Handle blockquotes parsing
+- [x] Handle lists parsing
+- [x] Handle images parsing
+- [x] Handle links parsing
+- [x] Handle text marks parsing
+- [x] Handle code blocks parsing
 
 ### 2.4 Test Serialization
 - [ ] Write unit tests for heading serialization
@@ -74,44 +74,44 @@
 ## Phase 3: Markdown View Component
 
 ### 3.1 Install Syntax Highlighting Library
-- [ ] Research and choose syntax highlighter (`react-syntax-highlighter` or alternative)
-- [ ] Install chosen library
-- [ ] Install markdown language support for syntax highlighter
+- [x] Research and choose syntax highlighter (`react-syntax-highlighter` or alternative)
+- [x] Install chosen library
+- [x] Install markdown language support for syntax highlighter
 
 ### 3.2 Create MarkdownView Component
-- [ ] Create `src/components/cms/editor/markdown-view.tsx`
-- [ ] Define `MarkdownViewProps` interface
-- [ ] Create component structure with textarea
-- [ ] Add monospace font styling
-- [ ] Add proper height and overflow handling
+- [x] Create `src/components/cms/editor/markdown-view.tsx`
+- [x] Define `MarkdownViewProps` interface
+- [x] Create component structure with textarea
+- [x] Add monospace font styling
+- [x] Add proper height and overflow handling
 
 ### 3.3 Implement Syntax Highlighting
-- [ ] Integrate syntax highlighter library
-- [ ] Configure markdown language support
-- [ ] Add syntax highlighting for headers (#, ##, ###)
-- [ ] Add syntax highlighting for bold (**text**)
-- [ ] Add syntax highlighting for italic (*text*)
-- [ ] Add syntax highlighting for links ([text](url))
-- [ ] Add syntax highlighting for code blocks (```)
-- [ ] Add syntax highlighting for lists (-, *, 1.)
-- [ ] Add syntax highlighting for blockquotes (>)
-- [ ] Configure theme colors for dark mode
+- [x] Integrate syntax highlighter library
+- [x] Configure markdown language support
+- [x] Add syntax highlighting for headers (#, ##, ###)
+- [x] Add syntax highlighting for bold (**text**)
+- [x] Add syntax highlighting for italic (*text*)
+- [x] Add syntax highlighting for links ([text](url))
+- [x] Add syntax highlighting for code blocks (```)
+- [x] Add syntax highlighting for lists (-, *, 1.)
+- [x] Add syntax highlighting for blockquotes (>)
+- [x] Configure theme colors for dark mode
 
 ### 3.4 Add Line Numbers
-- [ ] Implement line number display
-- [ ] Style line numbers with muted colors
-- [ ] Ensure line numbers align with content
-- [ ] Update line numbers on content change
+- [x] Implement line number display
+- [x] Style line numbers with muted colors
+- [x] Ensure line numbers align with content
+- [x] Update line numbers on content change
 
 ### 3.5 Add Copy to Clipboard
-- [ ] Add copy button to markdown view header
-- [ ] Implement clipboard copy functionality
-- [ ] Add success toast notification
-- [ ] Add icon (Copy/Check) with state transition
+- [x] Add copy button to markdown view header
+- [x] Implement clipboard copy functionality
+- [x] Add success toast notification
+- [x] Add icon (Copy/Check) with state transition
 
 ### 3.6 Handle Tab Key
-- [ ] Prevent default tab behavior (focus change)
-- [ ] Insert 2 spaces on tab key press
+- [x] Prevent default tab behavior (focus change)
+- [x] Insert 2 spaces on tab key press
 - [ ] Handle shift+tab for outdent (if applicable)
 
 ### 3.7 Test Markdown View
@@ -125,49 +125,51 @@
 ## Phase 4: View Mode Toggle
 
 ### 4.1 Create ViewModeToggle Component
-- [ ] Create `src/components/cms/editor/view-mode-toggle.tsx`
-- [ ] Define `ViewModeToggleProps` interface
-- [ ] Use NextUI Switch component
-- [ ] Add Eye icon for Formatted mode
-- [ ] Add FileCode icon for Markdown mode
-- [ ] Add labels ("Formatted" and "Markdown")
-- [ ] Style component to match toolbar
+- [x] Create `src/components/cms/editor/view-mode-toggle.tsx`
+- [x] Define `ViewModeToggleProps` interface
+- [x] Use segmented control pattern (radio group) instead of Switch for clearer UX
+- [x] Add Eye icon for Formatted mode
+- [x] Add FileCode icon for Markdown mode
+- [x] Add labels ("Formatted" and "Markdown")
+- [x] Style component to match toolbar
 
 ### 4.2 Add Tooltip and Accessibility
-- [ ] Add tooltip with keyboard shortcut (Ctrl+Shift+M)
-- [ ] Add ARIA labels for screen readers
-- [ ] Add ARIA live region for mode announcements
+- [x] Add tooltip with keyboard shortcut (Ctrl+Shift+M)
+- [x] Add ARIA labels for screen readers
+- [x] Add ARIA radiogroup role for mode selection
+- [x] Add ARIA live region for mode switch announcements
 - [ ] Test keyboard navigation
 - [ ] Test with screen reader
 
 ### 4.3 Integrate Toggle into Editor
-- [ ] Add ViewModeToggle to EditorToolbar component
-- [ ] Position toggle on right side of toolbar
-- [ ] Pass view mode state to toggle
-- [ ] Pass mode change handler to toggle
-- [ ] Disable toggle during save operations
+- [x] Add ViewModeToggle to EditorToolbar component
+- [x] Position toggle on right side of toolbar
+- [x] Pass view mode state to toggle
+- [x] Pass mode change handler to toggle
+- [x] Disable toggle during save operations
 
 ### 4.4 Implement View Mode State
-- [ ] Add `viewMode` state to PlateEditor
-- [ ] Add `isTransitioning` state for animations
-- [ ] Add `markdownContent` state for markdown view
-- [ ] Initialize view mode from localStorage
-- [ ] Update localStorage on mode change
+- [x] Add `viewMode` state to PlateEditor
+- [x] Add `isTransitioning` state for animations
+- [x] Add `markdownContent` state for markdown view
+- [x] Add `markdownWarning` state for validation
+- [x] Initialize view mode from localStorage
+- [x] Update localStorage on mode change
 
 ### 4.5 Implement View Switching Logic
-- [ ] Create `handleViewModeChange()` function
-- [ ] Serialize Slate to markdown when switching to markdown view
-- [ ] Deserialize markdown to Slate when switching to formatted view
-- [ ] Add validation before switching views
-- [ ] Show error message for invalid markdown
-- [ ] Add transition animation
-- [ ] Update content stats after view switch
+- [x] Create `handleViewModeChange()` function
+- [x] Serialize Slate to markdown when switching to markdown view
+- [x] Deserialize markdown to Slate when switching to formatted view
+- [x] Add validation before switching views
+- [x] Show warning banner for invalid markdown (with dismiss button)
+- [x] Add transition animation (fade overlay with spinner)
+- [x] Update content stats after view switch
 
 ### 4.6 Add Keyboard Shortcut
-- [ ] Add keyboard event listener for Ctrl+Shift+M
-- [ ] Handle keyboard shortcut on Windows/Linux
-- [ ] Handle keyboard shortcut on Mac (Cmd+Shift+M)
-- [ ] Prevent default browser behavior
+- [x] Add keyboard event listener for Ctrl+Shift+M
+- [x] Handle keyboard shortcut on Windows/Linux
+- [x] Handle keyboard shortcut on Mac (Cmd+Shift+M)
+- [x] Prevent default browser behavior
 - [ ] Test keyboard shortcut functionality
 
 ### 4.7 Test View Mode Toggle

@@ -3,7 +3,7 @@ import axios from 'axios';
 const CMS_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const cmsApiClient = axios.create({
-  baseURL: `${CMS_API_URL}/cms`,
+  baseURL: `${CMS_API_URL}/cms/`,
   headers: {
     'Content-Type': 'application/json',
   },

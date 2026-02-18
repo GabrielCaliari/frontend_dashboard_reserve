@@ -18,7 +18,7 @@ import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handl
 export const fetchBlogs = async (): Promise<Blog[]> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get('/blogs');
+      const response = await cmsApiClient.get('blogs');
       return response.data;
     });
   } catch (error) {
@@ -34,7 +34,7 @@ export const fetchBlogs = async (): Promise<Blog[]> => {
 export const fetchBlogById = async (blogId: number): Promise<Blog> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get(`/blogs/${blogId}`);
+      const response = await cmsApiClient.get(`blogs/${blogId}`);
       return response.data;
     });
   } catch (error) {
@@ -49,7 +49,7 @@ export const fetchBlogById = async (blogId: number): Promise<Blog> => {
  */
 export const createBlog = async (data: CreateBlogDto): Promise<Blog> => {
   try {
-    const response = await cmsApiClient.post('/blogs', data);
+    const response = await cmsApiClient.post('blogs', data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -67,7 +67,7 @@ export const updateBlog = async (
   data: UpdateBlogDto
 ): Promise<Blog> => {
   try {
-    const response = await cmsApiClient.put(`/blogs/${blogId}`, data);
+    const response = await cmsApiClient.put(`blogs/${blogId}`, data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -82,7 +82,7 @@ export const updateBlog = async (
  */
 export const deleteBlog = async (blogId: number): Promise<void> => {
   try {
-    await cmsApiClient.delete(`/blogs/${blogId}`);
+    await cmsApiClient.delete(`blogs/${blogId}`);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -96,7 +96,7 @@ export const deleteBlog = async (blogId: number): Promise<void> => {
  */
 export const regenerateBlogSecretKey = async (blogId: number): Promise<Blog> => {
   try {
-    const response = await cmsApiClient.post(`/blogs/${blogId}/regenerate-key`);
+    const response = await cmsApiClient.post(`blogs/${blogId}/regenerate-key`);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);

@@ -7,7 +7,6 @@ import {
   PlateElement,
   usePlateEditor,
   useEditorRef,
-  useEditorSelection,
   type PlateElementProps,
 } from "platejs/react";
 import type { Value } from "platejs";
@@ -23,7 +22,7 @@ import {
   BlockquotePlugin,
 } from "@platejs/basic-nodes/react";
 import { ImagePlugin } from "@platejs/media/react";
-import { LinkPlugin } from "@platejs/link/react";
+import { MarkdownPlugin } from "@platejs/markdown";
 import { Transforms, Editor } from "slate";
 import { cn } from "@/src/lib/utils";
 import {
@@ -45,7 +44,15 @@ import {
   Redo,
   PanelLeftClose,
   PanelLeft,
+  AlertTriangle,
+  Loader2,
+  X,
 } from "lucide-react";
+import { MarkdownView } from "@/src/components/cms/editor/markdown-view";
+import {
+  ViewModeToggle,
+  type ViewMode,
+} from "@/src/components/cms/editor/view-mode-toggle";
 import {
   Tooltip,
   TooltipContent,
@@ -245,181 +252,6 @@ function ToolbarButton({
   );
 }
 
-// FloatingToolbar component
-function FloatingToolbar() {
-  const editor = useEditorRef();
-  const selection = useEditorSelection();
-  const [position, setPosition] = React.useState<{
-    top: number;
-    left: number;
-  } | null>(null);
-  const toolbarRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const updatePosition = () => {
-      const domSelection = window.getSelection();
-      if (
-        !domSelection ||
-        domSelection.rangeCount === 0 ||
-        domSelection.isCollapsed
-      ) {
-        setPosition(null);
-        return;
-      }
-
-      const anchorNode = domSelection.anchorNode;
-      const editorEl =
-        anchorNode instanceof Node
-          ? (anchorNode.nodeType === Node.ELEMENT_NODE
-              ? (anchorNode as Element)
-              : anchorNode.parentElement
-            )?.closest(".slate-editor")
-          : null;
-      if (!editorEl) {
-        setPosition(null);
-        return;
-      }
-
-      const range = domSelection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-
-      if (rect.width === 0) {
-        setPosition(null);
-        return;
-      }
-
-      const toolbarWidth = toolbarRef.current?.offsetWidth || 320;
-      setPosition({
-        top: rect.top - 50,
-        left: rect.left + rect.width / 2 - toolbarWidth / 2,
-      });
-    };
-
-    updatePosition();
-    document.addEventListener("selectionchange", updatePosition);
-    return () =>
-      document.removeEventListener("selectionchange", updatePosition);
-  }, [selection]);
-
-  const toggleMark = (key: string) => {
-    if (!editor) return;
-    const isActive = editor.api.marks()?.[key];
-    if (isActive) {
-      editor.tf.removeMark(key);
-    } else {
-      editor.tf.addMark(key, true);
-    }
-  };
-
-  const toggleBlock = (type: string) => {
-    if (!editor) return;
-    const isActive = isBlockActive(type);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? "p" : type },
-      { match: (n) => Editor.isBlock(editor, n) },
-    );
-  };
-
-  const isBlockActive = (type: string) => {
-    if (!editor?.selection) return false;
-    const [match] = Editor.nodes(editor, {
-      at: editor.selection,
-      match: (n: any) => n.type === type,
-    });
-    return !!match;
-  };
-
-  const isMarkActive = (key: string) => {
-    if (!editor) return false;
-    return !!editor.api.marks()?.[key];
-  };
-
-  if (!position) return null;
-
-  return (
-    <TooltipProvider delayDuration={100}>
-      <div
-        ref={toolbarRef}
-        className={cn(
-          "fixed z-50 flex items-center gap-0.5 p-1 rounded-lg",
-          "bg-popover border border-border shadow-lg",
-          "animate-in fade-in-0 zoom-in-95 duration-150",
-        )}
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-        }}
-      >
-        <div className="flex items-center gap-0.5 px-1">
-          <ToolbarButton
-            icon={<Bold className="w-4 h-4" />}
-            label="Bold"
-            shortcut="Ctrl+B"
-            isActive={isMarkActive("bold")}
-            onClick={() => toggleMark("bold")}
-          />
-          <ToolbarButton
-            icon={<Italic className="w-4 h-4" />}
-            label="Italic"
-            shortcut="Ctrl+I"
-            isActive={isMarkActive("italic")}
-            onClick={() => toggleMark("italic")}
-          />
-          <ToolbarButton
-            icon={<Underline className="w-4 h-4" />}
-            label="Underline"
-            shortcut="Ctrl+U"
-            isActive={isMarkActive("underline")}
-            onClick={() => toggleMark("underline")}
-          />
-          <ToolbarButton
-            icon={<Strikethrough className="w-4 h-4" />}
-            label="Strikethrough"
-            isActive={isMarkActive("strikethrough")}
-            onClick={() => toggleMark("strikethrough")}
-          />
-          <ToolbarButton
-            icon={<Code className="w-4 h-4" />}
-            label="Inline Code"
-            isActive={isMarkActive("code")}
-            onClick={() => toggleMark("code")}
-          />
-        </div>
-
-        <div className="w-px h-5 bg-border mx-1" />
-
-        <div className="flex items-center gap-0.5 px-1">
-          <ToolbarButton
-            icon={<Heading1 className="w-4 h-4" />}
-            label="Heading 1"
-            isActive={isBlockActive("h1")}
-            onClick={() => toggleBlock("h1")}
-          />
-          <ToolbarButton
-            icon={<Heading2 className="w-4 h-4" />}
-            label="Heading 2"
-            isActive={isBlockActive("h2")}
-            onClick={() => toggleBlock("h2")}
-          />
-          <ToolbarButton
-            icon={<Heading3 className="w-4 h-4" />}
-            label="Heading 3"
-            isActive={isBlockActive("h3")}
-            onClick={() => toggleBlock("h3")}
-          />
-          <ToolbarButton
-            icon={<Quote className="w-4 h-4" />}
-            label="Blockquote"
-            isActive={isBlockActive("blockquote")}
-            onClick={() => toggleBlock("blockquote")}
-          />
-        </div>
-      </div>
-    </TooltipProvider>
-  );
-}
-
 // Image Insert Dialog
 interface ImageInsertDialogProps {
   open: boolean;
@@ -557,67 +389,210 @@ function ImageInsertDialog({
 // EditorToolbar component
 interface EditorToolbarProps {
   onInsertImage: () => void;
+  viewMode: ViewMode;
+  onViewModeChange: (mode: ViewMode) => void;
+  disabled?: boolean;
+  isTransitioning?: boolean;
+  markdownWarning?: string | null;
+  onDismissWarning?: () => void;
 }
 
-function EditorToolbar({ onInsertImage }: EditorToolbarProps) {
+function EditorToolbar({
+  onInsertImage,
+  viewMode,
+  onViewModeChange,
+  disabled,
+  isTransitioning,
+  markdownWarning,
+  onDismissWarning,
+}: EditorToolbarProps) {
   const editor = useEditorRef();
+  const isFormatted = viewMode === "formatted";
+
+  const toggleMark = (key: string) => {
+    if (!editor) return;
+    const isActive = editor.api.marks()?.[key];
+    if (isActive) {
+      editor.tf.removeMark(key);
+    } else {
+      editor.tf.addMark(key, true);
+    }
+  };
+
+  const toggleBlock = (type: string) => {
+    if (!editor) return;
+    const isActive = isBlockActive(type);
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? "p" : type },
+      { match: (n) => Editor.isBlock(editor, n) },
+    );
+  };
+
+  const isBlockActive = (type: string) => {
+    if (!editor?.selection) return false;
+    const [match] = Editor.nodes(editor, {
+      at: editor.selection,
+      match: (n: any) => n.type === type,
+    });
+    return !!match;
+  };
+
+  const isMarkActive = (key: string) => {
+    if (!editor) return false;
+    return !!editor.api.marks()?.[key];
+  };
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className="sticky top-0 z-40 flex flex-wrap items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 border-b border-border bg-content1 overflow-x-auto">
-        <div className="flex items-center gap-0.5">
-          <ToolbarButton
-            icon={<Undo className="w-4 h-4" />}
-            label="Undo"
-            shortcut="Ctrl+Z"
-            onClick={() => editor?.undo()}
-          />
-          <ToolbarButton
-            icon={<Redo className="w-4 h-4" />}
-            label="Redo"
-            shortcut="Ctrl+Shift+Z"
-            onClick={() => editor?.redo()}
+      <div className="sticky top-0 z-40 border-b border-border bg-content1 overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2">
+          {/* Format buttons -- only visible in formatted mode */}
+          {isFormatted && (
+            <>
+              {/* Undo / Redo */}
+              <div className="flex items-center gap-0.5">
+                <ToolbarButton
+                  icon={<Undo className="w-4 h-4" />}
+                  label="Undo"
+                  shortcut="Ctrl+Z"
+                  onClick={() => editor?.undo()}
+                />
+                <ToolbarButton
+                  icon={<Redo className="w-4 h-4" />}
+                  label="Redo"
+                  shortcut="Ctrl+Shift+Z"
+                  onClick={() => editor?.redo()}
+                />
+              </div>
+
+              <div className="hidden xs:block w-px h-6 bg-border mx-1" />
+
+              {/* Text marks */}
+              <div className="flex items-center gap-0.5">
+                <ToolbarButton
+                  icon={<Bold className="w-4 h-4" />}
+                  label="Bold"
+                  shortcut="Ctrl+B"
+                  isActive={isMarkActive("bold")}
+                  onClick={() => toggleMark("bold")}
+                />
+                <ToolbarButton
+                  icon={<Italic className="w-4 h-4" />}
+                  label="Italic"
+                  shortcut="Ctrl+I"
+                  isActive={isMarkActive("italic")}
+                  onClick={() => toggleMark("italic")}
+                />
+                <ToolbarButton
+                  icon={<Underline className="w-4 h-4" />}
+                  label="Underline"
+                  shortcut="Ctrl+U"
+                  isActive={isMarkActive("underline")}
+                  onClick={() => toggleMark("underline")}
+                />
+                <ToolbarButton
+                  icon={<Strikethrough className="w-4 h-4" />}
+                  label="Strikethrough"
+                  isActive={isMarkActive("strikethrough")}
+                  onClick={() => toggleMark("strikethrough")}
+                />
+                <ToolbarButton
+                  icon={<Code className="w-4 h-4" />}
+                  label="Inline Code"
+                  isActive={isMarkActive("code")}
+                  onClick={() => toggleMark("code")}
+                />
+              </div>
+
+              <div className="hidden xs:block w-px h-6 bg-border mx-1" />
+
+              {/* Block types */}
+              <div className="flex items-center gap-0.5">
+                <ToolbarButton
+                  icon={<Heading1 className="w-4 h-4" />}
+                  label="Heading 1"
+                  isActive={isBlockActive("h1")}
+                  onClick={() => toggleBlock("h1")}
+                />
+                <ToolbarButton
+                  icon={<Heading2 className="w-4 h-4" />}
+                  label="Heading 2"
+                  isActive={isBlockActive("h2")}
+                  onClick={() => toggleBlock("h2")}
+                />
+                <ToolbarButton
+                  icon={<Heading3 className="w-4 h-4" />}
+                  label="Heading 3"
+                  isActive={isBlockActive("h3")}
+                  onClick={() => toggleBlock("h3")}
+                />
+                <ToolbarButton
+                  icon={<Quote className="w-4 h-4" />}
+                  label="Blockquote"
+                  isActive={isBlockActive("blockquote")}
+                  onClick={() => toggleBlock("blockquote")}
+                />
+              </div>
+
+              <div className="hidden xs:block w-px h-6 bg-border mx-1" />
+
+              {/* Insert Image */}
+              <div className="flex items-center gap-0.5">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={onInsertImage}
+                      className={cn(
+                        "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 rounded-md text-sm transition-colors",
+                        "hover:bg-accent hover:text-accent-foreground",
+                      )}
+                    >
+                      <ImageIcon className="w-4 h-4" />
+                      <span className="hidden md:inline">Image</span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Insert image (Ctrl+Shift+I)</TooltipContent>
+                </Tooltip>
+              </div>
+            </>
+          )}
+
+          {/* Markdown mode label */}
+          {!isFormatted && (
+            <span className="text-xs text-muted-foreground font-mono px-1">
+              Editing raw markdown
+            </span>
+          )}
+
+          <div className="flex-1 min-w-0" />
+
+          {/* View Mode Toggle -- always visible */}
+          <ViewModeToggle
+            mode={viewMode}
+            onModeChange={onViewModeChange}
+            disabled={disabled || isTransitioning}
           />
         </div>
 
-        <div className="hidden xs:block w-px h-6 bg-border mx-1 sm:mx-2" />
-
-        <div className="flex items-center gap-0.5">
-          <Tooltip>
-            <TooltipTrigger asChild>
+        {/* Markdown validation warning banner */}
+        {markdownWarning && (
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border-t border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs animate-slide-down-fade-in">
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+            <span className="flex-1">{markdownWarning}</span>
+            {onDismissWarning && (
               <button
                 type="button"
-                onClick={onInsertImage}
-                className={cn(
-                  "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 rounded-md text-sm transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground",
-                )}
+                onClick={onDismissWarning}
+                className="p-0.5 rounded hover:bg-amber-500/20 transition-colors"
+                aria-label="Dismiss warning"
               >
-                <ImageIcon className="w-4 h-4" />
-                <span className="hidden md:inline">Insert Image</span>
+                <X className="w-3.5 h-3.5" />
               </button>
-            </TooltipTrigger>
-            <TooltipContent>Insert image (Ctrl+Shift+I)</TooltipContent>
-          </Tooltip>
-        </div>
-
-        <div className="flex-1 min-w-0" />
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              className={cn(
-                "hidden sm:flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-colors",
-                "hover:bg-accent hover:text-accent-foreground text-muted-foreground",
-              )}
-            >
-              <History className="w-4 h-4" />
-              <span className="hidden lg:inline">History</span>
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Version history</TooltipContent>
-        </Tooltip>
+            )}
+          </div>
+        )}
       </div>
     </TooltipProvider>
   );
@@ -735,6 +710,10 @@ interface Chapter {
 
 function extractChapters(value: Value): Chapter[] {
   const chapters: Chapter[] = [];
+  // Guard against non-array values (e.g., markdown strings)
+  if (!Array.isArray(value)) {
+    return chapters;
+  }
   value.forEach((node, index) => {
     if (node.type === "h1" || node.type === "h2" || node.type === "h3") {
       const text = node.children
@@ -752,7 +731,11 @@ function extractChapters(value: Value): Chapter[] {
 }
 
 // Analyze content
-function analyzeContent(value: Value, keyword: string): ContentStats {
+function analyzeContent(
+  value: Value,
+  keyword: string,
+  mdContent?: string,
+): ContentStats {
   const keyword_lower = keyword.toLowerCase();
   let plainText = "";
   const headings: ContentStats["headings"] = [];
@@ -804,7 +787,7 @@ function analyzeContent(value: Value, keyword: string): ContentStats {
         .slice(0, 160)
     : "";
 
-  const content = serializeNodesToHtml(value);
+  const content = mdContent ?? plainText;
 
   return {
     wordCount,
@@ -851,12 +834,34 @@ export function PlateEditor({
   blogId,
   articleId,
 }: PlateEditorProps) {
+  // Parse initial content using Plate's markdown plugin
   const parsedInitial = React.useMemo(() => {
     if (initialContent && typeof window !== "undefined") {
-      return parseHtmlToSlate(initialContent);
+      // If content looks like HTML (starts with < tag), use HTML parser
+      if (initialContent.trim().startsWith("<")) {
+        return parseHtmlToSlate(initialContent);
+      }
+      // Otherwise treat as markdown - will be deserialized by MarkdownPlugin
+      return initialContent;
     }
     return emptyValue;
   }, [initialContent]);
+
+  // --- View mode state ---
+  const [viewMode, setViewMode] = React.useState<ViewMode>(() => {
+    if (typeof window !== "undefined") {
+      return (
+        (localStorage.getItem("plate-editor-view-mode") as ViewMode) ||
+        "formatted"
+      );
+    }
+    return "formatted";
+  });
+  const [markdownContent, setMarkdownContent] = React.useState("");
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+  const [markdownWarning, setMarkdownWarning] = React.useState<string | null>(
+    null,
+  );
 
   const [chapters, setChapters] = React.useState<Chapter[]>(() =>
     extractChapters(parsedInitial),
@@ -864,6 +869,7 @@ export function PlateEditor({
   const [activeChapter, setActiveChapter] = React.useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
+  const liveRegionRef = React.useRef<HTMLDivElement>(null);
 
   const editor = usePlateEditor({
     plugins: [
@@ -877,9 +883,25 @@ export function PlateEditor({
       H3Plugin.withComponent(H3Element),
       BlockquotePlugin.withComponent(BlockquoteElement),
       ImagePlugin.withComponent(ImageElement),
+      MarkdownPlugin,
     ],
-    value: parsedInitial,
+    value:
+      typeof parsedInitial === "string"
+        ? undefined // Let MarkdownPlugin handle deserialization
+        : parsedInitial,
   });
+
+  // Deserialize markdown content on mount if needed
+  React.useEffect(() => {
+    if (typeof parsedInitial === "string" && parsedInitial && editor) {
+      try {
+        const slateValue = editor.api.markdown.deserialize(parsedInitial);
+        editor.tf.setValue(slateValue);
+      } catch (error) {
+        console.error("[PlateEditor] Failed to deserialize markdown:", error);
+      }
+    }
+  }, []);
 
   const analyzeTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -888,7 +910,8 @@ export function PlateEditor({
     analyzeTimerRef.current = setTimeout(() => {
       try {
         const value = editor.children as Value;
-        const stats = analyzeContent(value, focusKeyword);
+        const md = editor.api.markdown.serialize();
+        const stats = analyzeContent(value, focusKeyword, md);
         setChapters(extractChapters(value));
         onContentChange?.(stats);
       } catch {
@@ -930,10 +953,149 @@ export function PlateEditor({
     } as any);
   };
 
+  // --- Announce mode changes to screen readers ---
+  const announce = React.useCallback((message: string) => {
+    if (liveRegionRef.current) {
+      liveRegionRef.current.textContent = message;
+      // Clear after announcement so next identical message still triggers
+      setTimeout(() => {
+        if (liveRegionRef.current) liveRegionRef.current.textContent = "";
+      }, 1000);
+    }
+  }, []);
+
+  // --- Validate markdown content ---
+  const validateMarkdown = React.useCallback((md: string): string | null => {
+    if (!md || !md.trim()) return null;
+
+    // Check for unclosed code fences
+    const fenceMatches = md.match(/^```/gm);
+    if (fenceMatches && fenceMatches.length % 2 !== 0) {
+      return "Unclosed code fence detected (```) -- content may render incorrectly.";
+    }
+
+    // Check for unclosed bold markers
+    const boldMatches = md.match(/\*\*/g);
+    if (boldMatches && boldMatches.length % 2 !== 0) {
+      return "Unclosed bold marker (**) detected -- some formatting may be lost.";
+    }
+
+    // Check for unbalanced link syntax
+    const openBrackets = (md.match(/\[/g) || []).length;
+    const closeBrackets = (md.match(/\]/g) || []).length;
+    if (openBrackets !== closeBrackets) {
+      return "Unbalanced brackets [] detected -- some links may not parse correctly.";
+    }
+
+    return null;
+  }, []);
+
+  // --- View mode switching logic ---
+  const handleViewModeChange = React.useCallback(
+    (newMode: ViewMode) => {
+      if (newMode === viewMode || isTransitioning) return;
+
+      setIsTransitioning(true);
+      setMarkdownWarning(null);
+
+      // Brief transition delay for smooth animation
+      const transitionMs = 150;
+
+      setTimeout(() => {
+        try {
+          if (newMode === "markdown") {
+            // Serialize current Slate value to markdown using MarkdownPlugin
+            const md = editor.api.markdown.serialize();
+            setMarkdownContent(md);
+            announce("Switched to markdown source view");
+          } else {
+            // Validate markdown before switching
+            const warning = validateMarkdown(markdownContent);
+            if (warning) {
+              setMarkdownWarning(warning);
+              // Still allow switching -- just warn
+            }
+
+            // Deserialize markdown to Slate value using MarkdownPlugin
+            const slateValue = editor.api.markdown.deserialize(markdownContent);
+            // Replace editor content
+            editor.tf.setValue(slateValue);
+            // Re-analyze after switching back
+            setTimeout(() => triggerAnalysis(), 100);
+            announce("Switched to formatted view");
+          }
+
+          setViewMode(newMode);
+          localStorage.setItem("plate-editor-view-mode", newMode);
+        } catch (err) {
+          console.error("[PlateEditor] View switch error:", err);
+          setMarkdownWarning(
+            "Failed to convert content. Some formatting may be lost.",
+          );
+          // Still switch the view so the user isn't stuck
+          setViewMode(newMode);
+        } finally {
+          // End transition after content settles
+          setTimeout(() => setIsTransitioning(false), transitionMs);
+        }
+      }, transitionMs);
+    },
+    [
+      viewMode,
+      isTransitioning,
+      editor,
+      markdownContent,
+      triggerAnalysis,
+      announce,
+      validateMarkdown,
+    ],
+  );
+
+  // Handle markdown changes in raw mode
+  const handleMarkdownChange = React.useCallback(
+    (md: string) => {
+      setMarkdownContent(md);
+      // Trigger content analysis with the markdown content
+      if (analyzeTimerRef.current) clearTimeout(analyzeTimerRef.current);
+      analyzeTimerRef.current = setTimeout(() => {
+        try {
+          // Live validation while typing
+          const warning = validateMarkdown(md);
+          setMarkdownWarning(warning);
+
+          const slateValue = editor.api.markdown.deserialize(md);
+          const mdContent = editor.api.markdown.serialize({
+            value: slateValue,
+          });
+          const stats = analyzeContent(slateValue, focusKeyword, mdContent);
+          setChapters(extractChapters(slateValue));
+          onContentChange?.(stats);
+        } catch {
+          // ignore parse errors during typing
+        }
+      }, 500);
+    },
+    [editor, focusKeyword, onContentChange, validateMarkdown],
+  );
+
+  // --- Keyboard shortcut: Ctrl+Shift+M ---
+  React.useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "M") {
+        e.preventDefault();
+        handleViewModeChange(
+          viewMode === "formatted" ? "markdown" : "formatted",
+        );
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [handleViewModeChange, viewMode]);
+
   return (
     <div className="flex h-full">
-      {/* Chapter Navigation Sidebar - Collapsible */}
-      {!sidebarCollapsed && (
+      {/* Chapter Navigation Sidebar - Collapsible (only in formatted mode) */}
+      {viewMode === "formatted" && !sidebarCollapsed && (
         <div className="w-56 shrink-0 border-r border-border overflow-y-auto hidden lg:block bg-content1">
           <div className="p-4 border-b border-border flex items-center justify-between">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -988,8 +1150,8 @@ export function PlateEditor({
         </div>
       )}
 
-      {/* Collapsed Sidebar Toggle */}
-      {sidebarCollapsed && (
+      {/* Collapsed Sidebar Toggle (formatted mode only) */}
+      {viewMode === "formatted" && sidebarCollapsed && (
         <div className="hidden lg:flex items-start p-2 border-r border-border">
           <button
             onClick={() => setSidebarCollapsed(false)}
@@ -1001,63 +1163,122 @@ export function PlateEditor({
         </div>
       )}
 
-      {/* Main Editor Area */}
-      <div className="flex-1 min-w-0 flex flex-col h-full bg-content1">
-        <Plate editor={editor} onChange={() => triggerAnalysis()}>
-          <EditorToolbar onInsertImage={() => setImageDialogOpen(true)} />
-          <FloatingToolbar />
+      {/* ARIA live region for screen reader announcements */}
+      <div
+        ref={liveRegionRef}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      />
 
-          <div className="flex-1 overflow-y-auto bg-content1">
+      {/* Main Editor Area */}
+      <div className="flex-1 min-w-0 flex flex-col h-full bg-content1 relative">
+        <Plate
+          editor={editor}
+          onChange={() => {
+            if (viewMode === "formatted") triggerAnalysis();
+          }}
+        >
+          <EditorToolbar
+            onInsertImage={() => setImageDialogOpen(true)}
+            viewMode={viewMode}
+            onViewModeChange={handleViewModeChange}
+            isTransitioning={isTransitioning}
+            markdownWarning={markdownWarning}
+            onDismissWarning={() => setMarkdownWarning(null)}
+          />
+
+          {/* Transition overlay */}
+          {isTransitioning && (
+            <div className="absolute inset-0 z-30 flex items-center justify-center bg-content1/60 backdrop-blur-[1px] animate-fade-in">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-default-100 border border-border shadow-sm">
+                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">
+                  Switching view...
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Formatted (WYSIWYG) view */}
+          {viewMode === "formatted" && (
             <div
               className={cn(
-                "max-w-3xl mx-auto px-6 sm:px-8 py-8 min-h-full transition-all duration-200 slate-editor bg-content1",
-                highlightedSection === "content" && "ring-2 ring-primary/30",
+                "flex-1 flex flex-col transition-opacity duration-200",
+                isTransitioning ? "opacity-0" : "opacity-100",
               )}
             >
-              <PlateContent
-                className="outline-none h-full text-foreground bg-content1 [&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:opacity-50"
-                placeholder="Start writing your article content..."
-                renderElement={({ attributes, children, element }) => {
-                  if (!element.type || element.type === "p") {
-                    return (
-                      <p
-                        {...attributes}
-                        className="my-4 text-base text-foreground leading-relaxed"
-                      >
-                        {children}
-                      </p>
-                    );
-                  }
-                  return <div {...attributes}>{children}</div>;
-                }}
-                renderLeaf={({ attributes, children, leaf }) => {
-                  let result = children;
-                  if (leaf.bold) {
-                    result = (
-                      <strong className="font-semibold">{result}</strong>
-                    );
-                  }
-                  if (leaf.italic) {
-                    result = <em className="italic">{result}</em>;
-                  }
-                  if (leaf.underline) {
-                    result = <u className="underline">{result}</u>;
-                  }
-                  if (leaf.strikethrough) {
-                    result = <s className="line-through">{result}</s>;
-                  }
-                  if (leaf.code) {
-                    result = (
-                      <code className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm border border-border">
-                        {result}
-                      </code>
-                    );
-                  }
-                  return <span {...attributes}>{result}</span>;
-                }}
+              <div className="flex-1 overflow-y-auto bg-content1">
+                <div
+                  className={cn(
+                    "max-w-3xl mx-auto px-6 sm:px-8 py-8 min-h-full transition-all duration-200 slate-editor bg-content1",
+                    highlightedSection === "content" &&
+                      "ring-2 ring-primary/30",
+                  )}
+                >
+                  <PlateContent
+                    className="outline-none h-full text-foreground bg-content1 [&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:opacity-50"
+                    placeholder="Start writing your article content..."
+                    renderElement={({ attributes, children, element }) => {
+                      if (!element.type || element.type === "p") {
+                        return (
+                          <p
+                            {...attributes}
+                            className="my-4 text-base text-foreground leading-relaxed"
+                          >
+                            {children}
+                          </p>
+                        );
+                      }
+                      return <div {...attributes}>{children}</div>;
+                    }}
+                    renderLeaf={({ attributes, children, leaf }) => {
+                      let result = children;
+                      if (leaf.bold) {
+                        result = (
+                          <strong className="font-semibold">{result}</strong>
+                        );
+                      }
+                      if (leaf.italic) {
+                        result = <em className="italic">{result}</em>;
+                      }
+                      if (leaf.underline) {
+                        result = <u className="underline">{result}</u>;
+                      }
+                      if (leaf.strikethrough) {
+                        result = <s className="line-through">{result}</s>;
+                      }
+                      if (leaf.code) {
+                        result = (
+                          <code className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm border border-border">
+                            {result}
+                          </code>
+                        );
+                      }
+                      return <span {...attributes}>{result}</span>;
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Markdown (raw source) view */}
+          {viewMode === "markdown" && (
+            <div
+              className={cn(
+                "flex-1 flex flex-col transition-opacity duration-200",
+                isTransitioning ? "opacity-0" : "opacity-100",
+              )}
+            >
+              <MarkdownView
+                markdown={markdownContent}
+                onChange={handleMarkdownChange}
+                className="flex-1"
               />
             </div>
-          </div>
+          )}
         </Plate>
       </div>
 

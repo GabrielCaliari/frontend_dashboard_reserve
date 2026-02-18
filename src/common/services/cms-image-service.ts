@@ -41,7 +41,7 @@ export const uploadImages = async (
     });
 
     const response = await cmsApiClient.post(
-      `/blogs/${blogId}/articles/${articleId}/images`,
+      `blogs/${blogId}/articles/${articleId}/images`,
       formData,
       {
         headers: {
@@ -78,7 +78,7 @@ export const updateImage = async (
 ): Promise<ArticleImage> => {
   try {
     const response = await cmsApiClient.put(
-      `/blogs/${blogId}/articles/${articleId}/images/${imageId}`,
+      `blogs/${blogId}/articles/${articleId}/images/${imageId}`,
       data
     );
     return response.data;
@@ -110,7 +110,7 @@ export const deleteImage = async (
 ): Promise<void> => {
   try {
     await cmsApiClient.delete(
-      `/blogs/${blogId}/articles/${articleId}/images/${imageId}`
+      `blogs/${blogId}/articles/${articleId}/images/${imageId}`
     );
   } catch (error) {
     throw transformCMSError(error);
@@ -144,7 +144,7 @@ export const reorderImages = async (
 ): Promise<void> => {
   try {
     await cmsApiClient.put(
-      `/blogs/${blogId}/articles/${articleId}/images/reorder`,
+      `blogs/${blogId}/articles/${articleId}/images/reorder`,
       { order }
     );
   } catch (error) {

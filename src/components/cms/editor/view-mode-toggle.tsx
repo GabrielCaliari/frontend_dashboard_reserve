@@ -1,0 +1,101 @@
+"use client";
+
+import * as React from "react";
+import { Eye, FileCode2 } from "lucide-react";
+import { cn } from "@/src/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/src/components/ui/tooltip";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+export type ViewMode = "formatted" | "markdown";
+
+interface ViewModeToggleProps {
+  mode: ViewMode;
+  onModeChange: (mode: ViewMode) => void;
+  disabled?: boolean;
+  className?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+export function ViewModeToggle({
+  mode,
+  onModeChange,
+  disabled = false,
+  className,
+}: ViewModeToggleProps) {
+  const isMarkdown = mode === "markdown";
+
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            className={cn(
+              "inline-flex items-center rounded-lg border border-border bg-default-100 p-0.5 gap-0.5",
+              disabled && "opacity-50 pointer-events-none",
+              className,
+            )}
+            role="radiogroup"
+            aria-label="Editor view mode"
+          >
+            {/* Formatted button */}
+            <button
+              type="button"
+              role="radio"
+              aria-checked={!isMarkdown}
+              aria-label="Formatted view"
+              onClick={() => onModeChange("formatted")}
+              disabled={disabled}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200",
+                !isMarkdown
+                  ? "bg-content1 text-foreground shadow-sm border border-border"
+                  : "text-muted-foreground hover:text-foreground hover:bg-default-200/50",
+              )}
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Formatted</span>
+            </button>
+
+            {/* Markdown button */}
+            <button
+              type="button"
+              role="radio"
+              aria-checked={isMarkdown}
+              aria-label="Markdown source view"
+              onClick={() => onModeChange("markdown")}
+              disabled={disabled}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200",
+                isMarkdown
+                  ? "bg-content1 text-foreground shadow-sm border border-border"
+                  : "text-muted-foreground hover:text-foreground hover:bg-default-200/50",
+              )}
+            >
+              <FileCode2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Markdown</span>
+            </button>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <span className="text-xs">
+            Switch view mode{" "}
+            <kbd className="ml-1 px-1 py-0.5 rounded bg-default-200 text-[10px] font-mono">
+              Ctrl+Shift+M
+            </kbd>
+          </span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}

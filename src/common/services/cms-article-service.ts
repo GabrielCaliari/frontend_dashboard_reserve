@@ -21,7 +21,7 @@ export const fetchArticles = async (
   try {
     return await withRetry(async () => {
       const params = status ? { status } : {};
-      const response = await cmsApiClient.get(`/blogs/${blogId}/articles`, { params });
+      const response = await cmsApiClient.get(`blogs/${blogId}/articles`, { params });
       return response.data;
     });
   } catch (error) {
@@ -41,7 +41,7 @@ export const fetchArticleById = async (
 ): Promise<Article> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get(`/blogs/${blogId}/articles/${articleId}`);
+      const response = await cmsApiClient.get(`blogs/${blogId}/articles/${articleId}`);
       return response.data;
     });
   } catch (error) {
@@ -60,7 +60,7 @@ export const createArticle = async (
   data: CreateArticleDto
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`/blogs/${blogId}/articles`, data);
+    const response = await cmsApiClient.post(`blogs/${blogId}/articles`, data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -80,7 +80,7 @@ export const updateArticle = async (
   data: UpdateArticleDto
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.put(`/blogs/${blogId}/articles/${articleId}`, data);
+    const response = await cmsApiClient.put(`blogs/${blogId}/articles/${articleId}`, data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -98,7 +98,7 @@ export const deleteArticle = async (
   articleId: number
 ): Promise<void> => {
   try {
-    await cmsApiClient.delete(`/blogs/${blogId}/articles/${articleId}`);
+    await cmsApiClient.delete(`blogs/${blogId}/articles/${articleId}`);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -115,7 +115,7 @@ export const publishArticle = async (
   articleId: number
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`/blogs/${blogId}/articles/${articleId}/publish`);
+    const response = await cmsApiClient.post(`blogs/${blogId}/articles/${articleId}/publish`);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -133,7 +133,7 @@ export const archiveArticle = async (
   articleId: number
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`/blogs/${blogId}/articles/${articleId}/archive`);
+    const response = await cmsApiClient.post(`blogs/${blogId}/articles/${articleId}/archive`);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -151,7 +151,7 @@ export const reorderArticles = async (
   order: ReorderArticleDto[]
 ): Promise<void> => {
   try {
-    await cmsApiClient.put(`/blogs/${blogId}/articles/reorder`, { order });
+    await cmsApiClient.put(`blogs/${blogId}/articles/reorder`, { order });
   } catch (error) {
     throw transformCMSError(error);
   }

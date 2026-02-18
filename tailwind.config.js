@@ -1,4 +1,5 @@
 import { nextui } from "@nextui-org/theme";
+import tailwindAnimate from "tailwindcss-animate";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -49,8 +50,27 @@ module.exports = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
       },
+      keyframes: {
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "fade-out": {
+          from: { opacity: "1" },
+          to: { opacity: "0" },
+        },
+        "slide-down-fade-in": {
+          from: { opacity: "0", transform: "translateY(-4px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-in": "fade-in 200ms ease-out",
+        "fade-out": "fade-out 150ms ease-in",
+        "slide-down-fade-in": "slide-down-fade-in 200ms ease-out",
+      },
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui(), tailwindAnimate],
 };
