@@ -1,0 +1,103 @@
+"use client";
+
+import { AlertTriangle, AlertCircle, Info } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/src/components/ui/dialog";
+import { Button } from "@/src/components/ui/button";
+import { cn } from "@/src/lib/utils";
+
+interface ConfirmationDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: "danger" | "warning" | "default";
+  isLoading?: boolean;
+}
+
+export function ConfirmationDialog({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  variant = "default",
+  isLoading = false,
+}: ConfirmationDialogProps) {
+  const getVariantStyles = () => {
+    switch (variant) {
+      case "danger":
+        return {
+          icon: <AlertTriangle className="h-6 w-6 text-red-500" />,
+          iconBg: "bg-red-500/10",
+          confirmButton: "bg-red-600 hover:bg-red-700 text-white",
+        };
+      case "warning":
+        return {
+          icon: <AlertCircle className="h-6 w-6 text-yellow-500" />,
+          iconBg: "bg-yellow-500/10",
+          confirmButton: "bg-yellow-600 hover:bg-yellow-700 text-white",
+        };
+      default:
+        return {
+          icon: <Info className="h-6 w-6 text-blue-500" />,
+          iconBg: "bg-blue-500/10",
+          confirmButton: "bg-blue-600 hover:bg-blue-700 text-white",
+        };
+    }
+  };
+
+  const variantStyles = getVariantStyles();
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px] bg-content1 border-border">
+        <DialogHeader>
+          <div className="flex items-start gap-4">
+            <div className={cn("rounded-full p-3", variantStyles.iconBg)}>
+              {variantStyles.icon}
+            </div>
+            <div className="flex-1">
+              <DialogTitle className="text-xl text-foreground mb-2">
+                {title}
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                {message}
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="flex justify-end gap-3 mt-6">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onClose}
+            disabled={isLoading}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            {cancelText}
+          </Button>
+          <Button
+            type="button"
+            onClick={onConfirm}
+            disabled={isLoading}
+            className={variantStyles.confirmButton}
+          >
+            {isLoading ? "Processing..." : confirmText}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

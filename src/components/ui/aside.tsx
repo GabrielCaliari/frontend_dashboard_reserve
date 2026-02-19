@@ -19,6 +19,9 @@ import {
   FileText,
   LayoutTemplate,
   Database,
+  Shield,
+  UserCog,
+  Building2,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -65,6 +68,11 @@ export function Sidebar({ activeTab }: SidebarProps) {
     if (activeTab === "blogs" || activeTab === "articles") {
       setExpandedMenus((prev) =>
         prev.includes("cms") ? prev : [...prev, "cms"],
+      );
+    }
+    if (activeTab === "admins" || activeTab === "tenants" || activeTab === "users") {
+      setExpandedMenus((prev) =>
+        prev.includes("access-management") ? prev : [...prev, "access-management"],
       );
     }
   }, [activeTab]);
@@ -133,6 +141,31 @@ export function Sidebar({ activeTab }: SidebarProps) {
       label: "Storage",
       icon: Database,
       path: "/dashboard/storage",
+    },
+    {
+      id: "access-management",
+      label: t("accessManagement"),
+      icon: Shield,
+      subItems: [
+        {
+          id: "admins",
+          label: t("admins"),
+          icon: UserCog,
+          path: "/dashboard/access-management/admins",
+        },
+        {
+          id: "tenants",
+          label: t("tenants"),
+          icon: Building2,
+          path: "/dashboard/access-management/tenants",
+        },
+        {
+          id: "users",
+          label: t("users"),
+          icon: Users,
+          path: "/dashboard/access-management/users",
+        },
+      ],
     },
   ];
 

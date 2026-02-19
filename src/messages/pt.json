@@ -35,6 +35,10 @@
   "sidebar": {
     "workspace": "Espaço de trabalho admin",
     "dashboard": "Dashboard",
+    "accessManagement": "Gestão de Acessos",
+    "admins": "Administradores",
+    "tenants": "Tenants",
+    "users": "Usuários",
     "leads": "Leads",
     "allLeads": "Todos os leads",
     "abandonedCarts": "Carrinhos abandonados",

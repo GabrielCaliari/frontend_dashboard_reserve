@@ -1,0 +1,6 @@
+# Access Management Pages
+# This directory contains Next.js App Router pages for access management
+# Routes:
+# - /dashboard/access-management/admins
+# - /dashboard/access-management/tenants
+# - /dashboard/access-management/users

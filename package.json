@@ -104,6 +104,7 @@
 		"zustand": "^5.0.11"
 	},
 	"devDependencies": {
+		"@axe-core/react": "^4.11.1",
 		"@next/eslint-plugin-next": "15.0.4",
 		"@react-types/shared": "3.25.0",
 		"@testing-library/jest-dom": "^6.9.1",
@@ -117,6 +118,7 @@
 		"@vitejs/plugin-react": "^5.1.4",
 		"@vitest/ui": "^4.0.18",
 		"autoprefixer": "10.4.19",
+		"axe-core": "^4.11.1",
 		"eslint": "^8.57.1",
 		"eslint-config-next": "15.0.4",
 		"eslint-config-prettier": "9.1.0",
@@ -134,6 +136,7 @@
 		"tailwind-variants": "0.1.20",
 		"tailwindcss": "3.4.16",
 		"typescript": "^5.9.3",
-		"vitest": "^4.0.18"
+		"vitest": "^4.0.18",
+		"vitest-axe": "^0.1.0"
 	}
 }

@@ -44,6 +44,9 @@ export const sanitizeHtml = (html: string): string => {
       'href', 'target', 'rel', 'src', 'alt', 'title', 'class',
     ],
     ALLOW_DATA_ATTR: false,
+    RETURN_DOM: false,
+    RETURN_DOM_FRAGMENT: false,
+    RETURN_DOM_IMPORT: false,
   });
 };
 
