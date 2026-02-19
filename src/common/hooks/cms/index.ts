@@ -48,3 +48,13 @@ export {
   useDeleteImage,
   useReorderImages,
 } from './useImageMutations';
+
+// Collection hooks (Media Storage)
+export {
+  useCollections,
+  useCollection,
+  useCreateCollection,
+  useUpdateCollection,
+  useDeleteCollection,
+  collectionKeys,
+} from './use-collections';

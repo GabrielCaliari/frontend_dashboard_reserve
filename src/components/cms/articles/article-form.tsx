@@ -38,6 +38,7 @@ import ArticleEditor from "./article-editor";
 import ArticlePreview from "./article-preview";
 import ImageGallery from "../images/image-gallery";
 import ImageUpload from "../images/image-upload";
+import { AttachedAssets } from "../attached-assets";
 import {
   useUploadImages,
   useUpdateImage,
@@ -419,6 +420,15 @@ export default function ArticleForm({
                 )}
               </CardBody>
             </Card>
+          )}
+
+          {/* Attached Assets - New CMS Media Storage Integration */}
+          {isEditMode && article && (
+            <AttachedAssets
+              entityType="article"
+              entityId={article.id}
+              readonly={false}
+            />
           )}
 
           {!isEditMode && (
