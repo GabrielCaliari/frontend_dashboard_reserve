@@ -11,6 +11,8 @@ import {
   Card,
   CardBody,
   Input,
+  Select,
+  SelectItem,
   Chip,
   Spinner,
 } from "@heroui/react";
@@ -21,6 +23,7 @@ import {
   AlertCircle,
   FileText,
   PenLine,
+  User,
 } from "lucide-react";
 import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
 import { useUpdateArticle } from "@/src/common/hooks/cms/use-update-article";
@@ -37,7 +40,10 @@ export default function ArticleEditorPage() {
   const blogId = searchParams.get("blogId");
   const hasSelectedTenant = useHasSelectedTenant();
 
-  const [title, setTitle] = useState("");
+  const [displayTitle, setDisplayTitle] = useState("");
+  const [metaTitle, setMetaTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [selectedAuthorId, setSelectedAuthorId] = useState("");
   const [content, setContent] = useState("");
   const [contentStats, setContentStats] = useState<ContentStats | undefined>(
     undefined,
@@ -53,37 +59,64 @@ export default function ArticleEditorPage() {
     blogId ? parseInt(blogId) : 0,
     articleId,
   );
-  const { data: authors } = useGetAuthors();
+  const { data: authors, isLoading: isLoadingAuthors } = useGetAuthors();
   const { mutate: updateArticle, isPending } = useUpdateArticle(blogId || "");
 
   // Initialize form with article data
   useEffect(() => {
     if (article) {
-      setTitle(article.title);
+      setDisplayTitle(article.displayTitle || article.title || "");
+      setMetaTitle(article.metaTitle || "");
+      setSlug(article.slug || "");
+      setSelectedAuthorId(article.authorId || "");
       setContent(article.content || "");
+      setFocusKeyword(article.focusKeyword || "");
       setHasUnsavedChanges(false);
     }
   }, [article]);
 
   // Track changes
   useEffect(() => {
-    if (article && (title !== article.title || content !== article.content)) {
+    if (
+      article &&
+      (displayTitle !== (article.displayTitle || article.title || "") ||
+        metaTitle !== (article.metaTitle || "") ||
+        slug !== (article.slug || "") ||
+        selectedAuthorId !== (article.authorId || "") ||
+        content !== (article.content || ""))
+    ) {
       setHasUnsavedChanges(true);
     }
-  }, [title, content, article]);
+  }, [displayTitle, metaTitle, slug, selectedAuthorId, content, article]);
+
+  const handleTitleChange = (value: string) => {
+    setDisplayTitle(value);
+    if (!metaTitle || metaTitle === (article?.metaTitle || "")) {
+      setMetaTitle(value.substring(0, 60));
+    }
+    if (!slug || slug === (article?.slug || "")) {
+      setSlug(generateSlug(value));
+    }
+  };
 
   const handleSave = () => {
-    if (!title.trim()) {
+    if (!displayTitle.trim()) {
       toast.error("Title required", {
         description: "Please enter a title for the article before saving.",
       });
       return;
     }
 
-    if (!authors || authors.length === 0) {
+    if (!selectedAuthorId) {
       toast.error("Author required", {
-        description:
-          "No authors found in the system. Please create an author first.",
+        description: "Please select an author for the article.",
+      });
+      return;
+    }
+
+    if (!slug.trim()) {
+      toast.error("Slug required", {
+        description: "Please enter a URL slug for the article.",
       });
       return;
     }
@@ -91,11 +124,12 @@ export default function ArticleEditorPage() {
     updateArticle(
       {
         id: articleId,
-        displayTitle: title.trim(),
-        metaTitle: title.trim().substring(0, 60),
-        slug: generateSlug(title.trim()),
-        authorId: authors[0].id,
+        displayTitle: displayTitle.trim(),
+        metaTitle: metaTitle.trim() || displayTitle.trim().substring(0, 60),
+        slug: slug.trim(),
+        authorId: selectedAuthorId,
         content: content || "",
+        focusKeyword: focusKeyword || undefined,
       },
       {
         onSuccess: () => {
@@ -267,7 +301,7 @@ export default function ArticleEditorPage() {
   return (
     <LayoutScopeRoot routeActive="articles">
       <div className="px-6 py-4 space-y-4 max-w-[1600px] mx-auto">
-        {/* Page Header -- follows dashboard pattern */}
+        {/* Page Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <Button
@@ -288,6 +322,22 @@ export default function ArticleEditorPage() {
               </h1>
               <div className="flex items-center gap-2">
                 <p className="text-default-500 text-xs">{getLastSavedText()}</p>
+                {article.status && (
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    color={
+                      article.status === "published"
+                        ? "success"
+                        : article.status === "archived"
+                          ? "default"
+                          : "warning"
+                    }
+                    className="h-5 capitalize"
+                  >
+                    {article.status}
+                  </Chip>
+                )}
                 {hasUnsavedChanges && (
                   <Chip
                     size="sm"
@@ -318,7 +368,7 @@ export default function ArticleEditorPage() {
               color="primary"
               size="sm"
               onPress={handleSave}
-              isDisabled={isPending || !hasUnsavedChanges || !title.trim()}
+              isDisabled={isPending || !hasUnsavedChanges || !displayTitle.trim() || !selectedAuthorId}
               isLoading={isPending}
               startContent={
                 !isPending ? <Save className="h-4 w-4" /> : undefined
@@ -329,33 +379,104 @@ export default function ArticleEditorPage() {
           </div>
         </div>
 
-        {/* Title Input Card */}
+        {/* Article Metadata Card */}
         <Card>
-          <CardBody className="p-3">
-            <Input
-              label="Article Title"
-              placeholder="Enter article title..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              isDisabled={isPending}
-              maxLength={255}
-              variant="bordered"
-              size="md"
-              classNames={{
-                input: "text-base font-semibold",
-                inputWrapper:
-                  "border-border data-[hover=true]:border-primary/50",
-                label: "text-muted-foreground",
-              }}
-              description={`${title.length}/255 characters`}
-            />
+          <CardBody className="p-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Display Title"
+                placeholder="Enter article title..."
+                value={displayTitle}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                isDisabled={isPending}
+                maxLength={255}
+                variant="bordered"
+                size="lg"
+                isRequired
+                classNames={{
+                  input: "text-lg font-semibold",
+                  inputWrapper:
+                    "border-border data-[hover=true]:border-primary/50",
+                  label: "text-muted-foreground",
+                }}
+                description={`${displayTitle.length}/255 characters`}
+              />
+
+              <Input
+                label="Meta Title (SEO)"
+                placeholder="SEO-optimized title..."
+                value={metaTitle}
+                onChange={(e) => setMetaTitle(e.target.value)}
+                isDisabled={isPending}
+                maxLength={60}
+                variant="bordered"
+                size="lg"
+                classNames={{
+                  inputWrapper:
+                    "border-border data-[hover=true]:border-primary/50",
+                  label: "text-muted-foreground",
+                }}
+                description={`${metaTitle.length}/60 characters`}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="URL Slug"
+                placeholder="article-url-slug"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                isDisabled={isPending}
+                maxLength={255}
+                variant="bordered"
+                isRequired
+                classNames={{
+                  inputWrapper:
+                    "border-border data-[hover=true]:border-primary/50",
+                  label: "text-muted-foreground",
+                }}
+                description={`${slug.length}/255 characters`}
+              />
+
+              <Select
+                label="Author"
+                placeholder="Select an author"
+                selectedKeys={selectedAuthorId ? [selectedAuthorId] : []}
+                onSelectionChange={(keys) => {
+                  const selected = Array.from(keys)[0] as string;
+                  if (selected) setSelectedAuthorId(selected);
+                }}
+                isDisabled={isPending || isLoadingAuthors}
+                variant="bordered"
+                isRequired
+                isLoading={isLoadingAuthors}
+                startContent={<User className="w-4 h-4 text-default-400" />}
+                classNames={{
+                  trigger:
+                    "border-border data-[hover=true]:border-primary/50",
+                  label: "text-muted-foreground",
+                }}
+              >
+                {authors && authors.length > 0 ? (
+                  authors.map((author) => (
+                    <SelectItem key={author.id}>
+                      {author.firstName} {author.lastName}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key="no-authors" isDisabled>
+                    No authors available
+                  </SelectItem>
+                )}
+              </Select>
+            </div>
           </CardBody>
         </Card>
 
         {/* Editor + SEO Sidebar */}
         <div
           className="flex gap-4 items-stretch"
-          style={{ height: "calc(100vh - 240px)", minHeight: "500px" }}
+          style={{ height: "calc(100vh - 340px)", minHeight: "500px" }}
         >
           {/* Editor */}
           <Card className="flex-1 min-w-0 overflow-hidden">

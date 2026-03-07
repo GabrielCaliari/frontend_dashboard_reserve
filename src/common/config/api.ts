@@ -1,5 +1,6 @@
 import axios from "axios";
 import { handleUnauthorizedError, isUnauthorizedError } from "@/src/common/utils/auth-error-handler";
+import { injectAuthHeaders } from "./get-auth-headers";
 
 // In browser (client-side), only NEXT_PUBLIC_ variables are available
 // For server-side, we can use NEXT_LOCAL_API_URL
@@ -18,48 +19,10 @@ const api = axios.create({
   },
 });
 
-// Request interceptor - Adiciona headers de autenticação e tenant
+// Request interceptor - Adiciona headers de autenticação e tenant (client + server)
 api.interceptors.request.use(
-  (config) => {
-    // Recuperar token e session_id dos cookies
-    if (typeof window !== 'undefined') {
-      const token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('token='))
-        ?.split('=')[1];
-      
-      const sessionId = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('session-code='))
-        ?.split('=')[1];
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      if (sessionId) {
-        config.headers['session-id'] = sessionId;
-      }
-
-      // Adicionar x-tenant-id do localStorage (Zustand persist)
-      try {
-        const tenantStorage = localStorage.getItem('tenant-storage');
-        if (tenantStorage) {
-          const { state } = JSON.parse(tenantStorage);
-          if (state?.selectedTenant?.id) {
-            config.headers['x-tenant-id'] = state.selectedTenant.id.toString();
-          }
-        }
-      } catch (error) {
-        // Silent fail - tenant header is optional for some endpoints
-      }
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (config) => injectAuthHeaders(config),
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor - Trata erros de autenticação (ONLY for api.ts)
@@ -86,46 +49,10 @@ const cmsApi = axios.create({
   },
 });
 
-// Request interceptor for CMS API - Same auth logic as main API
+// Request interceptor for CMS API - Same auth logic via shared helper
 cmsApi.interceptors.request.use(
-  (config) => {
-    if (typeof window !== 'undefined') {
-      const token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('token='))
-        ?.split('=')[1];
-      
-      const sessionId = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('session-code='))
-        ?.split('=')[1];
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      if (sessionId) {
-        config.headers['session-id'] = sessionId;
-      }
-
-      try {
-        const tenantStorage = localStorage.getItem('tenant-storage');
-        if (tenantStorage) {
-          const { state } = JSON.parse(tenantStorage);
-          if (state?.selectedTenant?.id) {
-            config.headers['x-tenant-id'] = state.selectedTenant.id.toString();
-          }
-        }
-      } catch (error) {
-        // Silent fail - tenant header is optional for some endpoints
-      }
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (config) => injectAuthHeaders(config),
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor for CMS API - Let errors propagate without redirect

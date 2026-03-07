@@ -367,12 +367,12 @@ export default function NewArticlePage() {
               >
                 {authors && authors.length > 0 ? (
                   authors.map((author) => (
-                    <SelectItem key={author.id} value={author.id}>
+                    <SelectItem key={author.id}>
                       {author.firstName} {author.lastName}
                     </SelectItem>
                   ))
                 ) : (
-                  <SelectItem key="no-authors" value="" isDisabled>
+                  <SelectItem key="no-authors" isDisabled>
                     No authors available
                   </SelectItem>
                 )}

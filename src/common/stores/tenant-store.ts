@@ -12,8 +12,23 @@ export const useTenantStore = create<TenantState>()(
   persist(
     (set) => ({
       selectedTenant: null,
-      setSelectedTenant: (tenant) => set({ selectedTenant: tenant }),
-      clearSelectedTenant: () => set({ selectedTenant: null }),
+      setSelectedTenant: (tenant) => {
+        set({ selectedTenant: tenant });
+        // Sincroniza com cookie para que Server Actions tenham acesso ao tenant
+        if (typeof document !== 'undefined') {
+          if (tenant?.id) {
+            document.cookie = `x-tenant-id=${tenant.id}; path=/; max-age=86400; SameSite=Lax`;
+          } else {
+            document.cookie = 'x-tenant-id=; path=/; max-age=0';
+          }
+        }
+      },
+      clearSelectedTenant: () => {
+        set({ selectedTenant: null });
+        if (typeof document !== 'undefined') {
+          document.cookie = 'x-tenant-id=; path=/; max-age=0';
+        }
+      },
     }),
     {
       name: 'tenant-storage',

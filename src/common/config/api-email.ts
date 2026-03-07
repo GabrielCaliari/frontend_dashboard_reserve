@@ -1,4 +1,5 @@
 import axios from "axios";
+import { injectAuthHeaders } from "./get-auth-headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_EMAIL_URL;
 
@@ -9,48 +10,10 @@ const apiEmail = axios.create({
   },
 });
 
-// Request interceptor - Adiciona headers de autenticação e tenant
+// Request interceptor - Adiciona headers de autenticação e tenant (client + server)
 apiEmail.interceptors.request.use(
-  (config) => {
-    // Recuperar token e session_id dos cookies
-    if (typeof window !== 'undefined') {
-      const token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('token='))
-        ?.split('=')[1];
-      
-      const sessionId = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('session-code='))
-        ?.split('=')[1];
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      if (sessionId) {
-        config.headers['session-id'] = sessionId;
-      }
-
-      // Adicionar x-tenant-id do localStorage (Zustand persist)
-      try {
-        const tenantStorage = localStorage.getItem('tenant-storage');
-        if (tenantStorage) {
-          const { state } = JSON.parse(tenantStorage);
-          if (state?.selectedTenant?.id) {
-            config.headers['x-tenant-id'] = state.selectedTenant.id.toString();
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to read tenant from storage:', error);
-      }
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (config) => injectAuthHeaders(config),
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor - Let errors propagate to caller
