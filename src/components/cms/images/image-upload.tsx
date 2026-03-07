@@ -19,7 +19,7 @@
  */
 
 import { useCallback, useState } from "react";
-import { Button, Card, CardBody, Progress, Input } from "@nextui-org/react";
+import { Button, Card, CardBody, Progress, Input } from "@heroui/react";
 import { Upload, X, Image as ImageIcon, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { useUploadImages } from "@/src/common/hooks/cms/useImageMutations";

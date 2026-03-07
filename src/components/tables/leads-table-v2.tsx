@@ -18,7 +18,7 @@ import {
   DropdownItem,
   Button,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { MoreVertical, Eye, Archive } from "lucide-react";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";

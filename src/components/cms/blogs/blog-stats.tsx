@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardBody, Chip } from '@nextui-org/react';
+import { Card, CardBody, Chip } from "@heroui/react";
 import { FileText, FileCheck, Archive, Files } from 'lucide-react';
 import type { BlogWithStats } from '@/src/common/@types/@cms-blog';
 

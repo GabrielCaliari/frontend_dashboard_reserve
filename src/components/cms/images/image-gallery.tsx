@@ -20,7 +20,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Button, Input, Card, CardBody } from "@nextui-org/react";
+import { Button, Input, Card, CardBody } from "@heroui/react";
 import { Trash2, GripVertical } from "lucide-react";
 import {
   DndContext,

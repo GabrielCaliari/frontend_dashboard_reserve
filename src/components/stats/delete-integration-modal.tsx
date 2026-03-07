@@ -7,7 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { StatsIntegration } from "@/src/common/@types/@stats";

@@ -10,7 +10,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { MoreVertical, Edit, Trash2, Key, FileText } from 'lucide-react';
 import type { Blog } from '@/src/common/@types/@cms-blog';
 import BlogSecretKeyDisplay from './blog-secret-key-display';

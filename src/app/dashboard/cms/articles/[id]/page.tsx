@@ -13,7 +13,7 @@ import {
   Input,
   Chip,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   ArrowLeft,
   Save,

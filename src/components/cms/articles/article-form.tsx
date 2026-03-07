@@ -31,7 +31,7 @@ import {
   Tabs,
   Tab,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Save, Eye, Upload, X } from "lucide-react";
 import ArticleEditor from "./article-editor";
 import ArticlePreview from "./article-preview";

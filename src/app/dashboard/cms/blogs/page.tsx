@@ -11,7 +11,7 @@ import {
   ModalHeader,
   ModalBody,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { BlogList, BlogForm } from "@/src/components/cms/blogs";
 import { useBlogs } from "@/src/common/hooks/cms/useBlogs";
 import {

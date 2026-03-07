@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import { UserCog, Users, Building2, Shield, TrendingUp, ArrowRight } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";

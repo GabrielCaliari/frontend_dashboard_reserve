@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm, Controller } from "react-hook-form";
-import { Button, Input, Textarea, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Textarea, Select, SelectItem } from "@heroui/react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/src/components/ui/dialog";

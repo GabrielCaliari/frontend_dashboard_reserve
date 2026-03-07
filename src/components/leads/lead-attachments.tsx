@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Paperclip, Trash2, Plus, ExternalLink } from "lucide-react";
-import { Button, Input, Spinner } from "@nextui-org/react";
+import { Button, Input, Spinner } from "@heroui/react";
 import {
   useLeadAttachments,
   useAddLeadAttachment,

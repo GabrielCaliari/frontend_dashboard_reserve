@@ -14,7 +14,7 @@ import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrum
 import { useUsers, useUpdateUser, useDeactivateUser, useDeleteUser } from "@/src/common/hooks/access-management/useUsers";
 import type { User, UpdateUserDto } from "@/src/common/@types/@access-management";
 import type { UpdateUserFormData } from "@/src/common/schemas/access-management/user-schema";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 export default function UserListPage() {
   const router = useRouter();

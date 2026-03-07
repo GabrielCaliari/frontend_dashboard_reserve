@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 import {
   Modal,
@@ -21,7 +21,7 @@ import {
   DropdownTrigger,
   Progress,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 import { CardType } from "./kanban-board-with-autosave";
 import { formatDateTimeToBRL } from "@/src/common/utils";

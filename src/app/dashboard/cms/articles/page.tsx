@@ -4,7 +4,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle, FileText } from "lucide-react";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import { BlogSelector } from "@/src/components/cms/blog-selector";
 import { ArticleList } from "@/src/components/cms/articles";
 import { useListArticles } from "@/src/common/hooks/cms/use-list-articles";

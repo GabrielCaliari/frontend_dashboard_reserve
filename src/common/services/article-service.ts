@@ -50,7 +50,7 @@ export const articleService = {
     params?: PublicArticleListParams
   ): Promise<PublicArticleListResponse> {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.get(`${API_URL}/cms/public/articles`, {
+    const response = await axios.get(`${API_URL}/api/cms/public/articles`, {
       headers: {
         'x-blog-secret-key': secretKey,
       },
@@ -64,7 +64,7 @@ export const articleService = {
 
   async getPublicArticleBySlug(secretKey: string, slug: string): Promise<PublicArticle> {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.get(`${API_URL}/cms/public/articles/${slug}`, {
+    const response = await axios.get(`${API_URL}/api/cms/public/articles/${slug}`, {
       headers: {
         'x-blog-secret-key': secretKey,
       },

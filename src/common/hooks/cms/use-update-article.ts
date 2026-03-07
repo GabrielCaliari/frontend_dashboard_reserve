@@ -10,7 +10,7 @@ export function useUpdateArticle(blogId: string) {
   return useMutation({
     mutationFn: (data: UpdateArticleDto & { id: string }) => {
       const { id, ...updateData } = data;
-      return updateArticle(blogId, id, updateData);
+      return updateArticle(Number(id), updateData);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['articles', tenantId, blogId] });

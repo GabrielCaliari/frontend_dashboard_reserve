@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 export type StatusFilter = "all" | "active" | "inactive";
 

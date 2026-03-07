@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, Button, Chip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { Card, CardBody, Button, Chip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
 import { FolderOpen, Image, FileText, Video, Music, Layers, MoreVertical, Pencil, Trash2, ArrowRight } from "lucide-react";
 import type { MediaCollection, CollectionType } from "@/src/common/@types/@cms-media";
 

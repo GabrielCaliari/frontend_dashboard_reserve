@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input, Textarea } from "@heroui/react";
 import { User, FileText } from "lucide-react";
 import type { Author } from "@/src/common/@types/@cms-author";
 import type { CreateAuthorDto, UpdateAuthorDto } from "@/src/common/@types/@cms-author";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Chip, Select, SelectItem, Spinner, Divider } from "@nextui-org/react";
+import { Button, Chip, Select, SelectItem, Spinner, Divider } from "@heroui/react";
 import { Mail, Phone, MapPin, Globe, Calendar, Pencil, Trash2, Archive } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";

@@ -9,7 +9,7 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: [
-      '@nextui-org/react',
+      '@heroui/react',
       'lucide-react',
       'react-icons',
       'recharts',

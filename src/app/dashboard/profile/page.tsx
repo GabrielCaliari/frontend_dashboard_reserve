@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardHeader, Chip, Button, Skeleton } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Chip, Button, Skeleton } from "@heroui/react";
 import { Mail, Shield, Calendar, Building2 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   Button, Card, CardBody, CardHeader, Chip, Skeleton,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   ArrowLeft, Edit, Power, Trash2, Calendar, Mail, User, Shield, CheckCircle, XCircle,
 } from "lucide-react";

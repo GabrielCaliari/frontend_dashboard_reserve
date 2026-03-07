@@ -22,7 +22,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Button, Input, Card, CardBody, CardFooter } from "@nextui-org/react";
+import { Button, Input, Card, CardBody, CardFooter } from "@heroui/react";
 import { Trash2, GripVertical, Edit2, Check, X } from "lucide-react";
 import type { ArticleImage } from "@/src/common/@types/@cms-image";
 

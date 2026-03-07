@@ -14,7 +14,7 @@ import {
   Select,
   SelectItem,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { ArrowLeft, Save, AlertCircle, FileText, PenLine, User } from "lucide-react";
 import { useCreateArticle } from "@/src/common/hooks/cms/use-create-article";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";

@@ -11,7 +11,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
-} from '@nextui-org/react';
+} from "@heroui/react";
 
 const localeLabels: Record<AppLocale, { label: string; flag: string }> = {
   pt: { label: 'Português', flag: '🇧🇷' },

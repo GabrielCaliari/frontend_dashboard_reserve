@@ -13,7 +13,7 @@
 
 import { usePublicArticleBySlug } from "@/src/common/hooks/cms/usePublicArticles";
 import PublicArticleContent from "@/src/components/cms/public/public-article-content";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import Link from "next/link";
 
 // Blog secret key from environment variable

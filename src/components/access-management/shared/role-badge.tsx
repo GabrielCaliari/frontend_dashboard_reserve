@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, Tooltip } from "@nextui-org/react";
+import { Chip, Tooltip } from "@heroui/react";
 import { AdminRole } from "@/src/common/@types/@access-management";
 import { getRoleColor, formatRoleLabel, getRoleDescription } from "@/src/common/utils/role-utils";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem } from "@heroui/react";
 import useAdminDetails from "@/src/common/hooks/useUserDatails";
 import { useTenantStore } from "@/src/common/stores/tenant-store";
 

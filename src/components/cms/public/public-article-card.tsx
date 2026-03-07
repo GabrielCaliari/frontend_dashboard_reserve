@@ -12,7 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Article } from '@/src/common/@types/@cms-article';
 import { truncateHtml } from '@/src/common/utils/content-sanitizer';
-import { Card, CardBody, CardFooter } from '@nextui-org/react';
+import { Card, CardBody, CardFooter } from "@heroui/react";
 
 export interface PublicArticleCardProps {
   article: Article;

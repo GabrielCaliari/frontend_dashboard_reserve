@@ -12,7 +12,7 @@ import {
   ModalBody,
   useDisclosure,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Plus, Users, AlertCircle } from "lucide-react";
 import { AuthorList } from "@/src/components/cms/authors/author-list";
 import { AuthorForm } from "@/src/components/cms/authors/author-form";

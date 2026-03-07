@@ -7,7 +7,7 @@ export function useDeleteArticle(blogId: number) {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (articleId: number) => deleteArticle(blogId, articleId),
+    mutationFn: (articleId: number) => deleteArticle(articleId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['articles', tenantId, blogId] });
     },

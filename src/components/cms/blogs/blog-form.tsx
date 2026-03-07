@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Input, Textarea } from '@nextui-org/react';
+import { Button, Input, Textarea } from "@heroui/react";
 import type { Blog, CreateBlogDto, UpdateBlogDto } from '@/src/common/@types/@cms-blog';
 import { createBlogSchema, updateBlogSchema } from '@/src/common/schemas/cms-blog-schema';
 

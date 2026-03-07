@@ -8,7 +8,7 @@ export function useCreateArticle(blogId: string) {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (data: CreateArticleDto) => createArticle(blogId, data),
+    mutationFn: (data: CreateArticleDto) => createArticle({ ...data, blogId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['articles', tenantId, blogId] });
     },

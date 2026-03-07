@@ -13,7 +13,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Checkbox,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   MoreVertical,
   Eye,

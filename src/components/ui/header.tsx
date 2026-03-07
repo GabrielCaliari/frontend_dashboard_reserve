@@ -7,7 +7,7 @@ import {
   DropdownTrigger,
   Progress,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 import useAdminDetails from "@/src/common/hooks/useUserDatails";
 

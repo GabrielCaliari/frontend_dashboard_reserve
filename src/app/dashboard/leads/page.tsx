@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Chip, Button, Select, SelectItem, Skeleton,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { RefreshCw, Users, Plus } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useListLeads } from "@/src/common/hooks/leads/use-list-leads";

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";

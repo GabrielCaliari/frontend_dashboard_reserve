@@ -3,7 +3,7 @@
 import { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslations } from "next-intl";
-import { Button, Input, Progress, Chip, Alert } from "@nextui-org/react";
+import { Button, Input, Progress, Chip, Alert } from "@heroui/react";
 import { Upload, X, CheckCircle, AlertCircle, RefreshCw, Image as ImageIcon } from "lucide-react";
 import { useUploadAsset } from "@/src/common/hooks/cms/use-assets";
 import type { MediaCollection, UploadQueueItem } from "@/src/common/@types/@cms-media";

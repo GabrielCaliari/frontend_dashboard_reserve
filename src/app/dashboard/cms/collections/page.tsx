@@ -20,7 +20,7 @@ import {
   Chip,
   Pagination,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   useCollections,
   useDeleteCollection,

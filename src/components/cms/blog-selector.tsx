@@ -1,7 +1,7 @@
 "use client";
 
 import { useListBlogs } from "@/src/common/hooks/cms/use-list-blogs";
-import { Select, SelectItem, Spinner } from "@nextui-org/react";
+import { Select, SelectItem, Spinner } from "@heroui/react";
 import { Globe } from "lucide-react";
 
 interface BlogSelectorProps {

@@ -21,7 +21,7 @@ import {
   DropdownItem,
   Button,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   MoreVertical,
   Eye,

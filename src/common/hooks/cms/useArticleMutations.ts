@@ -52,7 +52,7 @@ export function useCreateArticle() {
 
   return useMutation({
     mutationFn: ({ blogId, data }: { blogId: number; data: CreateArticleDto }) =>
-      createArticle(blogId, data),
+      createArticle({ ...data, blogId: String(blogId) }),
     onSuccess: (_data, variables) => {
       // Invalidate all article queries for this blog to refetch with new article
       queryClient.invalidateQueries({ 
@@ -107,7 +107,7 @@ export function useUpdateArticle() {
       blogId: number; 
       articleId: number; 
       data: UpdateArticleDto 
-    }) => updateArticle(blogId, articleId, data),
+    }) => updateArticle(articleId, data),
     onMutate: async ({ blogId, articleId, data }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ 
@@ -180,7 +180,7 @@ export function useDeleteArticle() {
 
   return useMutation({
     mutationFn: ({ blogId, articleId }: { blogId: number; articleId: number }) =>
-      deleteArticle(blogId, articleId),
+      deleteArticle(articleId),
     onSuccess: (_data, variables) => {
       // Invalidate the article list to remove deleted article
       queryClient.invalidateQueries({ 
@@ -234,7 +234,7 @@ export function usePublishArticle() {
 
   return useMutation({
     mutationFn: ({ blogId, articleId }: { blogId: number; articleId: number }) =>
-      publishArticle(blogId, articleId),
+      publishArticle(articleId),
     onSuccess: (updatedArticle, variables) => {
       // Update the article in cache with new status and published_at
       queryClient.setQueryData<Article>(
@@ -290,7 +290,7 @@ export function useArchiveArticle() {
 
   return useMutation({
     mutationFn: ({ blogId, articleId }: { blogId: number; articleId: number }) =>
-      archiveArticle(blogId, articleId),
+      archiveArticle(articleId),
     onSuccess: (updatedArticle, variables) => {
       // Update the article in cache with new status
       queryClient.setQueryData<Article>(

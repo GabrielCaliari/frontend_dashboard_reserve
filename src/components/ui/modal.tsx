@@ -8,7 +8,7 @@ import {
   ModalBody as NextUIModalBody,
   ModalFooter as NextUIModalFooter,
   ModalProps as NextUIModalProps,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { cn } from "@/src/lib/utils";
 
 export interface ModalProps extends Omit<NextUIModalProps, "classNames"> {

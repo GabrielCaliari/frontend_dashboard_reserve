@@ -14,7 +14,7 @@ import {
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { PlusCircle, Save } from "lucide-react";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import {
   Modal,
   ModalContent,
@@ -23,7 +23,7 @@ import {
   ModalFooter,
 } from "@/src/components/ui/modal";
 
-import { Input } from "@nextui-org/react";
+import { Input } from "@heroui/react";
 import { useToast } from "@/src/common/hooks/use-toast";
 import { useTranslations } from "next-intl";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input, InputProps } from "@nextui-org/react";
+import { Input, InputProps } from "@heroui/react";
 import { Eye, EyeOff } from "lucide-react";
 
 export const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(

@@ -9,7 +9,7 @@ import {
   CardHeader,
   Chip,
   Skeleton,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   ArrowLeft,
   Building2,

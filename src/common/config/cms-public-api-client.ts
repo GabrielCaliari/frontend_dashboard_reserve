@@ -20,7 +20,7 @@ export const createPublicCmsClient = (blogSecretKey: string): AxiosInstance => {
     baseURL: `${CMS_API_URL}/api/cms/public`,
     headers: {
       'Content-Type': 'application/json',
-      'X-Blog-Secret': blogSecretKey,
+      'x-blog-secret-key': blogSecretKey,
     },
   });
 

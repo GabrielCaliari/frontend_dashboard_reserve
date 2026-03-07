@@ -12,7 +12,7 @@ import {
   Select,
   SelectItem,
   Pagination,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   Modal,
   ModalContent,

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Button, Chip, Spinner, Switch,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   Plus, Pencil, Trash2, RefreshCw, Key, ExternalLink, FolderOpen,
 } from "lucide-react";
@@ -17,7 +17,7 @@ import { useRegenerateCollectionKey } from "@/src/common/hooks/leads/use-regener
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from "@/src/components/ui/dialog";
-import { Input } from "@nextui-org/react";
+import { Input } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import type { LeadCollection, CreateCollectionDto, UpdateCollectionDto } from "@/src/common/@types/@lead";
 import { formatDate } from "@/src/lib/utils";

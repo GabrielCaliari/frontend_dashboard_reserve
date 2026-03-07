@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { LayoutDashboardIcon, Menu, TicketIcon, X, Mail } from "lucide-react";
-import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
 import { useRouter } from "nextjs-toploader/app";
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
 import { useTranslations } from "next-intl";

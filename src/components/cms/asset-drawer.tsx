@@ -2,8 +2,8 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Button, Input, Textarea, Chip, Spinner } from "@nextui-org/react";
-import { useDisclosure } from "@nextui-org/react";
+import { Button, Input, Textarea, Chip, Spinner } from "@heroui/react";
+import { useDisclosure } from "@heroui/react";
 import {
   Modal,
   ModalContent,
@@ -147,7 +147,6 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
         className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-
       {/* Drawer panel */}
       <div className="fixed right-0 top-0 h-full w-full max-w-2xl z-50 bg-[#0e0e1a] border-l border-gray-800 shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
@@ -185,11 +184,11 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
                   />
                 ) : asset.mime_type.startsWith("video/") ? (
                   // eslint-disable-next-line jsx-a11y/media-has-caption
-                  <video
+                  (<video
                     src={asset.url}
                     controls
                     className="max-w-full max-h-[400px] rounded-lg"
-                  />
+                  />)
                 ) : (
                   <div className="flex flex-col items-center gap-3 text-center">
                     {getFilePreviewIcon(asset.mime_type)}
@@ -412,7 +411,6 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
           </div>
         )}
       </div>
-
       {/* Delete confirmation modal */}
       <Modal isOpen={deleteOpen} onClose={closeDelete} variant="danger">
         <ModalContent>

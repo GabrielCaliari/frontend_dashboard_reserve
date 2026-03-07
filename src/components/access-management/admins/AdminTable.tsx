@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Chip, Button, Skeleton, Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Edit, Power, Trash2, ExternalLink } from "lucide-react";
 import { Admin } from "@/src/common/@types/@access-management";
 import { formatDate } from "@/src/lib/utils";

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { Button, Card, CardBody, CardHeader, Chip, Skeleton } from "@nextui-org/react";
+import { Button, Card, CardBody, CardHeader, Chip, Skeleton } from "@heroui/react";
 import {
   ArrowLeft, Edit, Power, Trash2, Calendar, Mail, User, Phone,
   CreditCard, CheckCircle, XCircle,

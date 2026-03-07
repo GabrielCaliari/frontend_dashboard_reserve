@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Chip } from '@nextui-org/react';
+import { Button, Chip } from "@heroui/react";
 import { Eye, EyeOff, Copy, Check, AlertTriangle } from 'lucide-react';
 
 interface BlogSecretKeyDisplayProps {

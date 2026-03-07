@@ -16,9 +16,9 @@ import {
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Download, PlusCircle, Save, Upload } from "lucide-react";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 // import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@nextui-org/react";
+import { Input } from "@heroui/react";
 
 import {
   Modal,

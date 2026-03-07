@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle, ArrowLeft } from "lucide-react";
-import { Card, CardBody, CardHeader, Button } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Button } from "@heroui/react";
 import { CollectionForm } from "@/src/components/cms/collection-form";
 import { useCreateCollection } from "@/src/common/hooks/cms/use-collections";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";

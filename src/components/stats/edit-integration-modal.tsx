@@ -9,7 +9,7 @@ import {
   ModalFooter,
   Button,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { DynamicConfigForm } from "./dynamic-config-form";
 import type {

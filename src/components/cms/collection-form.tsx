@@ -10,7 +10,7 @@ import {
   SelectItem,
   Button,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { MIME_TYPE_GROUPS } from "@/src/common/utils/validate-file";
 import type { MediaCollection, CollectionType } from "@/src/common/@types/@cms-media";
 

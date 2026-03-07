@@ -7,7 +7,7 @@ export function useGetArticle(blogId: number, articleId: number) {
 
   return useQuery({
     queryKey: ['article', tenantId, blogId, articleId],
-    queryFn: () => fetchArticleById(blogId, articleId),
+    queryFn: () => fetchArticleById(articleId),
     enabled: !!blogId && !!articleId && !!tenantId,
   });
 }

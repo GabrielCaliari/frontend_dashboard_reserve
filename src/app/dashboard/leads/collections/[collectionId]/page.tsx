@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Chip, Button, Select, SelectItem, Skeleton, Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { ArrowLeft, RefreshCw, ChevronDown, Plus } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collection-leads";

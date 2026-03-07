@@ -4,8 +4,8 @@ import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { GripVertical, MoreHorizontal, PlusCircle, Trash2 } from "lucide-react"
 
-import { Button } from "@nextui-org/react"
-import { Card, CardHeader } from "@nextui-org/react"
+import { Button } from "@heroui/react"
+import { Card, CardHeader } from "@heroui/react"
 
 import {
   Dropdown,
@@ -14,7 +14,7 @@ import {
   DropdownTrigger,
   Progress,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 import type { ColumnType } from "./kanban-board"
 import KanbanCard from "./kanban-card"

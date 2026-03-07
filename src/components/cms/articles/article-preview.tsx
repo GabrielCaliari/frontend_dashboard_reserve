@@ -19,7 +19,7 @@
 
 import { useMemo } from "react";
 import Image from "next/image";
-import { Card, CardBody, Chip } from "@nextui-org/react";
+import { Card, CardBody, Chip } from "@heroui/react";
 import { Calendar, Clock, Info } from "lucide-react";
 import { sanitizeHtml } from "@/src/common/utils/content-sanitizer";
 import type { Article } from "@/src/common/@types/@cms-article";

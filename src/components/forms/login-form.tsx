@@ -1,7 +1,7 @@
 "use client";
 
 import { loginSchema } from "@/src/common/schemas/login-schema";
-import { Button, Input, Spinner } from "@nextui-org/react";
+import { Button, Input, Spinner } from "@heroui/react";
 import { useFormik } from "formik";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";

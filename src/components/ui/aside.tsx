@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import TenantSelector from "../tenant-selector";

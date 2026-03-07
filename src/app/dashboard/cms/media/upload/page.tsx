@@ -6,7 +6,7 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { AssetUpload } from "@/src/components/cms/asset-upload";
-import { Button, Select, SelectItem, Spinner, Card, CardBody } from "@nextui-org/react";
+import { Button, Select, SelectItem, Spinner, Card, CardBody } from "@heroui/react";
 import { ArrowLeft, FolderOpen, Upload } from "lucide-react";
 import type { MediaCollection } from "@/src/common/@types/@cms-media";
 

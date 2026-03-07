@@ -10,7 +10,7 @@ import {
   Skeleton,
   Chip,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Plus, Search, FileText, Sparkles } from "lucide-react";
 import type {
   Article,

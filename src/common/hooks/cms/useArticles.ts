@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { articleService } from '@/src/common/services/article-service';
+import { fetchArticles, fetchArticleById } from '@/src/common/services/cms-article-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
-import type { ArticleStatus } from '@/src/common/@types/@article';
+import type { ArticleStatus } from '@/src/common/@types/@cms-article';
 
 /**
  * Query key constants for article-related queries
@@ -61,20 +61,7 @@ export function useArticles(
 
   return useQuery({
     queryKey: ARTICLE_QUERY_KEYS.filtered(tenantId, blogId, status),
-    queryFn: async () => {
-      const response = await articleService.listArticles(blogId, page, limit);
-      
-      // Apply status filter on client side if provided
-      // Note: Ideally this should be done server-side, but we filter here for now
-      if (status) {
-        return {
-          ...response,
-          data: response.data.filter(article => article.status === status),
-        };
-      }
-      
-      return response;
-    },
+    queryFn: () => fetchArticles(blogId, status, page, limit),
     enabled: !!blogId && !!tenantId,
     staleTime: 2 * 60 * 1000, // 2 minutes for admin content
   });
@@ -110,7 +97,7 @@ export function useArticle(blogId: number, articleId: number) {
 
   return useQuery({
     queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
-    queryFn: () => articleService.getArticle(blogId, articleId),
+    queryFn: () => fetchArticleById(articleId),
     enabled: !!blogId && !!articleId && !!tenantId,
     staleTime: 2 * 60 * 1000, // 2 minutes for admin content
   });

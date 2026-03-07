@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Spinner } from "@nextui-org/react";
+import { Button, Spinner } from "@heroui/react";
 import { Plus } from "lucide-react";
 import type { Blog } from "@/src/common/@types/@cms-blog";
 import BlogCard from "./blog-card";

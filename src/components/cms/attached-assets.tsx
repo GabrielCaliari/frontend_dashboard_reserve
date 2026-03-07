@@ -33,7 +33,7 @@
  */
 
 import { useState, useMemo } from "react";
-import { Button, Card, CardBody, Spinner, Chip } from "@nextui-org/react";
+import { Button, Card, CardBody, Spinner, Chip } from "@heroui/react";
 import { Paperclip, Trash2, GripVertical, Image as ImageIcon } from "lucide-react";
 import {
   DndContext,

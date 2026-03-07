@@ -7,7 +7,7 @@ import {
   Button,
   Avatar,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Edit, Trash2, User as UserIcon } from "lucide-react";
 import type { Author } from "@/src/common/@types/@cms-author";
 

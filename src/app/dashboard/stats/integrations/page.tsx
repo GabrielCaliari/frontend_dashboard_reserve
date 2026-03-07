@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle, Plus, Plug } from "lucide-react";
-import { Card, CardBody, Spinner, Button } from "@nextui-org/react";
+import { Card, CardBody, Spinner, Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 import usePermissions from "@/src/common/hooks/use-permissions";
