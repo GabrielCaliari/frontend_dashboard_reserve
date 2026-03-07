@@ -18,7 +18,6 @@ import {
   UsersRound,
   FileText,
   LayoutTemplate,
-  Database,
   Shield,
   UserCog,
   Building2,
@@ -184,12 +183,6 @@ export function Sidebar({
             path: "/dashboard/cms/media",
           },
         ],
-      },
-      {
-        id: "storage",
-        label: "Storage",
-        icon: Database,
-        path: "/dashboard/storage",
       },
       {
         id: "profile",

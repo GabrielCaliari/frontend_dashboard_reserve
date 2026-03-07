@@ -31,10 +31,11 @@ import { useTranslations } from "next-intl";
 import { formatFileSize } from "@/src/common/utils/format-file-size";
 import type { MediaAsset, CollectionType } from "@/src/common/@types/@cms-media";
 
-const TYPE_BADGES: Record<CollectionType, { color: "success" | "primary" | "secondary" | "warning" }> = {
-  images: { color: "success" },
-  documents: { color: "primary" },
-  videos: { color: "secondary" },
+const TYPE_BADGES: Partial<Record<CollectionType, { color: "success" | "primary" | "secondary" | "warning" }>> = {
+  image: { color: "success" },
+  document: { color: "primary" },
+  video: { color: "secondary" },
+  audio: { color: "primary" },
   mixed: { color: "warning" },
 };
 
@@ -122,7 +123,7 @@ export default function CollectionAssetBrowserPage() {
   // Loading state
   if (collectionLoading) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="media">
         <div className="p-4 flex justify-center items-center h-64">
           <Spinner size="lg" />
         </div>
@@ -133,7 +134,7 @@ export default function CollectionAssetBrowserPage() {
   // Not found / error state
   if (collectionError || !collection) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="media">
         <div className="p-4">
           <div className="text-center py-16 bg-[#12121f] rounded-lg border border-gray-800">
             <div className="text-5xl mb-4">📂</div>
@@ -156,10 +157,10 @@ export default function CollectionAssetBrowserPage() {
 
   const assets = assetsData?.data || [];
   const meta = assetsData?.meta;
-  const typeBadge = TYPE_BADGES[collection.type];
+  const typeBadge = TYPE_BADGES[collection.type] ?? { color: "default" as const };
 
   return (
-    <LayoutScopeRoot routeActive="cms">
+    <LayoutScopeRoot routeActive="media">
       <div className="p-4">
         {/* Breadcrumbs */}
         <Breadcrumbs className="mb-4">

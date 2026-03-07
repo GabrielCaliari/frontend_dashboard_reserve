@@ -47,9 +47,10 @@ export default function MediaLibraryPage() {
 
   const TYPE_FILTERS: { label: string; value: CollectionType | "all" }[] = [
     { label: t("filterAll"), value: "all" },
-    { label: tCollections("typeImages"), value: "images" },
-    { label: tCollections("typeDocuments"), value: "documents" },
-    { label: tCollections("typeVideos"), value: "videos" },
+    { label: tCollections("typeImages"), value: "image" },
+    { label: tCollections("typeDocuments"), value: "document" },
+    { label: tCollections("typeVideos"), value: "video" },
+    { label: tCollections("typeAudio"), value: "audio" },
     { label: tCollections("typeMixed"), value: "mixed" },
   ];
 
@@ -120,13 +121,13 @@ export default function MediaLibraryPage() {
     setPage(1);
   }, []);
 
-  const collections = (collectionsData?.data || []).filter(
+  const collections = (Array.isArray(collectionsData?.data) ? collectionsData.data : []).filter(
     (c) => typeFilter === "all" || c.type === typeFilter
   );
   const meta = collectionsData?.meta;
 
   return (
-    <LayoutScopeRoot routeActive="cms">
+    <LayoutScopeRoot routeActive="media">
       <div className="p-4">
         {/* Page header */}
         <div className="flex items-center justify-between mb-6">

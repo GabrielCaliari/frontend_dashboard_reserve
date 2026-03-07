@@ -108,7 +108,7 @@ export default function AuthorsPage() {
   // No tenant selected
   if (!hasSelectedTenant) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="authors">
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center py-16">
             <Card className="max-w-md border-warning/20 bg-warning/5">
@@ -131,7 +131,7 @@ export default function AuthorsPage() {
   }
 
   return (
-    <LayoutScopeRoot routeActive="cms">
+    <LayoutScopeRoot routeActive="authors">
       <div className="p-8 space-y-6 max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="flex items-start justify-between gap-4">

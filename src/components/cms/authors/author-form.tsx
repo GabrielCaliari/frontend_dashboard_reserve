@@ -3,9 +3,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Textarea } from "@nextui-org/react";
-import { User, Mail, Link as LinkIcon, FileText } from "lucide-react";
+import { User, FileText } from "lucide-react";
 import type { Author } from "@/src/common/@types/@cms-author";
-import type { CreateAuthorDto, UpdateAuthorDto } from "@/src/common/services/cms-author-service";
+import type { CreateAuthorDto, UpdateAuthorDto } from "@/src/common/@types/@cms-author";
 import {
   createAuthorSchema,
   updateAuthorSchema,
@@ -39,17 +39,14 @@ export function AuthorForm({
     defaultValues: {
       firstName: author?.firstName || "",
       lastName: author?.lastName || "",
-      email: author?.email || "",
-      bio: author?.bio || "",
-      avatar_url: author?.avatar_url || "",
+      biography: author?.biography || "",
+      avatarId: author?.avatarId || "",
     },
   });
 
   const firstName = watch("firstName");
   const lastName = watch("lastName");
-  const email = watch("email");
-  const bio = watch("bio");
-  const avatarUrl = watch("avatar_url");
+  const biography = watch("biography");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -81,44 +78,18 @@ export function AuthorForm({
         />
       </div>
 
-      <Input
-        label="Email"
-        placeholder="author@example.com"
-        type="email"
-        isDisabled={isSubmitting}
-        isInvalid={!!errors.email}
-        errorMessage={errors.email?.message}
-        startContent={<Mail className="w-4 h-4 text-default-400" />}
-        variant="bordered"
-        {...register("email")}
-        description={`${(email?.length || 0)}/255 characters`}
-      />
-
       <Textarea
-        label="Bio"
+        label="Biography"
         placeholder="Brief biography or description"
         isDisabled={isSubmitting}
-        isInvalid={!!errors.bio}
-        errorMessage={errors.bio?.message}
+        isInvalid={!!errors.biography}
+        errorMessage={errors.biography?.message}
         startContent={<FileText className="w-4 h-4 text-default-400" />}
         variant="bordered"
         minRows={3}
         maxRows={6}
-        {...register("bio")}
-        description={`${(bio?.length || 0)}/1000 characters`}
-      />
-
-      <Input
-        label="Avatar URL"
-        placeholder="https://example.com/avatar.jpg"
-        type="url"
-        isDisabled={isSubmitting}
-        isInvalid={!!errors.avatar_url}
-        errorMessage={errors.avatar_url?.message}
-        startContent={<LinkIcon className="w-4 h-4 text-default-400" />}
-        variant="bordered"
-        {...register("avatar_url")}
-        description={`${(avatarUrl?.length || 0)}/500 characters`}
+        {...register("biography")}
+        description={`${(biography?.length || 0)}/1000 characters`}
       />
 
       <div className="flex justify-end gap-2 pt-4">

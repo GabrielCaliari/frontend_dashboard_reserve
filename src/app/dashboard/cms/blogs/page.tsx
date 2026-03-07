@@ -95,7 +95,7 @@ export default function BlogsPage() {
   // Show tenant selection warning
   if (!hasSelectedTenant) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="blogs">
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center py-16">
             <Card className="max-w-md border-warning/20 bg-warning/5">
@@ -118,7 +118,7 @@ export default function BlogsPage() {
   }
 
   return (
-    <LayoutScopeRoot routeActive="cms">
+    <LayoutScopeRoot routeActive="blogs">
       <div className="p-8 space-y-6 max-w-7xl mx-auto">
         <BlogList
           blogs={blogs}

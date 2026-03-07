@@ -6,8 +6,14 @@ export interface Article {
   id: number;
   blog_id: number;
   title: string;
+  displayTitle: string;
   slug: string;
   content: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  focusKeyword?: string;
+  authorId?: string;
+  coverImageId?: string;
   status: ArticleStatus;
   display_order: number;
   published_at: string | null;
@@ -18,20 +24,26 @@ export interface Article {
 
 export interface CreateArticleDto {
   displayTitle: string;
-  metaTitle: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  focusKeyword?: string;
   slug: string;
   authorId: string;
   blogId?: string;
   content: string;
+  coverImageId?: string;
 }
 
 export interface UpdateArticleDto {
   displayTitle?: string;
   metaTitle?: string;
+  metaDescription?: string;
+  focusKeyword?: string;
   slug?: string;
   authorId?: string;
   blogId?: string;
   content?: string;
+  coverImageId?: string;
 }
 
 export interface ReorderArticleDto {

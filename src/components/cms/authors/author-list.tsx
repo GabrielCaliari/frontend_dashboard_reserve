@@ -8,7 +8,7 @@ import {
   Avatar,
   Chip,
 } from "@nextui-org/react";
-import { Edit, Trash2, Mail, User as UserIcon } from "lucide-react";
+import { Edit, Trash2, User as UserIcon } from "lucide-react";
 import type { Author } from "@/src/common/@types/@cms-author";
 
 interface AuthorListProps {
@@ -57,7 +57,6 @@ export function AuthorList({
           <CardBody className="p-6">
             <div className="flex items-start gap-4">
               <Avatar
-                src={author.avatar_url}
                 name={`${author.firstName} ${author.lastName}`}
                 size="lg"
                 className="flex-shrink-0"
@@ -69,15 +68,9 @@ export function AuthorList({
                 <h3 className="text-lg font-semibold text-foreground truncate">
                   {author.firstName} {author.lastName}
                 </h3>
-                {author.email && (
-                  <div className="flex items-center gap-1 text-sm text-default-500 mt-1">
-                    <Mail className="w-3 h-3" />
-                    <span className="truncate">{author.email}</span>
-                  </div>
-                )}
-                {author.bio && (
+                {author.biography && (
                   <p className="text-sm text-default-600 mt-2 line-clamp-2">
-                    {author.bio}
+                    {author.biography}
                   </p>
                 )}
               </div>

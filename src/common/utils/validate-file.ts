@@ -150,21 +150,22 @@ export const MIME_TYPES = {
  * Predefined MIME type groups for common collection types
  */
 export const MIME_TYPE_GROUPS = {
-  images: [
+  image: [
     MIME_TYPES.IMAGE_JPEG,
     MIME_TYPES.IMAGE_PNG,
     MIME_TYPES.IMAGE_GIF,
     MIME_TYPES.IMAGE_WEBP,
     MIME_TYPES.IMAGE_SVG,
   ],
-  documents: [
+  document: [
     MIME_TYPES.PDF,
     MIME_TYPES.DOC,
     MIME_TYPES.DOCX,
     MIME_TYPES.XLS,
     MIME_TYPES.XLSX,
   ],
-  videos: [MIME_TYPES.VIDEO_MP4, MIME_TYPES.VIDEO_WEBM],
+  video: [MIME_TYPES.VIDEO_MP4, MIME_TYPES.VIDEO_WEBM],
+  audio: [MIME_TYPES.AUDIO_MP3, MIME_TYPES.AUDIO_WAV],
   mixed: ['*/*'],
 } as const;
 

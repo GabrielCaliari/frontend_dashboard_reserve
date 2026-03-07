@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardBody, Button, Chip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
-import { FolderOpen, Image, FileText, Video, Layers, MoreVertical, Pencil, Trash2, ArrowRight } from "lucide-react";
+import { FolderOpen, Image, FileText, Video, Music, Layers, MoreVertical, Pencil, Trash2, ArrowRight } from "lucide-react";
 import type { MediaCollection, CollectionType } from "@/src/common/@types/@cms-media";
 
 interface CollectionCardProps {
@@ -11,11 +11,12 @@ interface CollectionCardProps {
   onDelete: (collection: MediaCollection) => void;
 }
 
-const TYPE_CONFIG: Record<CollectionType, { icon: React.ElementType; color: string; bg: string; badge: "success" | "primary" | "secondary" | "warning" }> = {
-  images:    { icon: Image,    color: "text-emerald-400", bg: "bg-emerald-500/10",  badge: "success"   },
-  documents: { icon: FileText, color: "text-blue-400",    bg: "bg-blue-500/10",     badge: "primary"   },
-  videos:    { icon: Video,    color: "text-violet-400",  bg: "bg-violet-500/10",   badge: "secondary" },
-  mixed:     { icon: Layers,   color: "text-amber-400",   bg: "bg-amber-500/10",    badge: "warning"   },
+const TYPE_CONFIG: Record<CollectionType, { icon: React.ElementType; color: string; bg: string; badge: "success" | "primary" | "secondary" | "warning" | "default" }> = {
+  image:    { icon: Image,    color: "text-emerald-400", bg: "bg-emerald-500/10",  badge: "success"   },
+  document: { icon: FileText, color: "text-blue-400",    bg: "bg-blue-500/10",     badge: "primary"   },
+  video:    { icon: Video,    color: "text-violet-400",  bg: "bg-violet-500/10",   badge: "secondary" },
+  audio:    { icon: Music,    color: "text-amber-400",   bg: "bg-amber-500/10",    badge: "warning"   },
+  mixed:    { icon: Layers,   color: "text-gray-400",    bg: "bg-gray-500/10",     badge: "default"   },
 };
 
 function formatFileSize(bytes: number): string {

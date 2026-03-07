@@ -32,7 +32,7 @@ export const collectionFormSchema = z.object({
     .max(500, "Description must not exceed 500 characters")
     .optional(),
   
-  type: z.enum(["images", "documents", "videos", "mixed"], {
+  type: z.enum(["image", "document", "video", "audio", "mixed"], {
     required_error: "Please select a collection type",
   }),
   
@@ -73,7 +73,7 @@ export function collectionFormToDto(data: CollectionFormData) {
  * Common MIME types by category
  */
 export const MIME_TYPES_BY_CATEGORY = {
-  images: [
+  image: [
     { value: "image/jpeg", label: "JPEG" },
     { value: "image/png", label: "PNG" },
     { value: "image/gif", label: "GIF" },
@@ -82,7 +82,7 @@ export const MIME_TYPES_BY_CATEGORY = {
     { value: "image/bmp", label: "BMP" },
     { value: "image/tiff", label: "TIFF" },
   ],
-  documents: [
+  document: [
     { value: "application/pdf", label: "PDF" },
     { value: "application/msword", label: "DOC" },
     { value: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", label: "DOCX" },
@@ -93,13 +93,21 @@ export const MIME_TYPES_BY_CATEGORY = {
     { value: "text/plain", label: "TXT" },
     { value: "text/csv", label: "CSV" },
   ],
-  videos: [
+  video: [
     { value: "video/mp4", label: "MP4" },
     { value: "video/mpeg", label: "MPEG" },
     { value: "video/quicktime", label: "MOV" },
     { value: "video/x-msvideo", label: "AVI" },
     { value: "video/webm", label: "WebM" },
     { value: "video/x-matroska", label: "MKV" },
+  ],
+  audio: [
+    { value: "audio/mpeg", label: "MP3" },
+    { value: "audio/wav", label: "WAV" },
+    { value: "audio/ogg", label: "OGG" },
+    { value: "audio/aac", label: "AAC" },
+    { value: "audio/flac", label: "FLAC" },
+    { value: "audio/webm", label: "WebM Audio" },
   ],
   mixed: [
     // All of the above

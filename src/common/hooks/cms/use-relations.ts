@@ -4,7 +4,6 @@ import {
   createRelation,
   deleteRelation,
   reorderRelations,
-  type RelationFilters,
   type CreateRelationDto,
   type ReorderRelationDto,
 } from '@/src/common/services/cms-media-service';
@@ -18,27 +17,27 @@ import { assetKeys } from './use-assets';
 export const relationKeys = {
   all: (tenantId: string | null) => ['relations', tenantId] as const,
   lists: (tenantId: string | null) => [...relationKeys.all(tenantId), 'list'] as const,
-  list: (tenantId: string | null, filters?: RelationFilters) =>
-    [...relationKeys.lists(tenantId), filters] as const,
-  byEntity: (tenantId: string | null, entityType: string, entityId: number) =>
+  byEntity: (tenantId: string | null, entityType: string, entityId: string) =>
     [...relationKeys.lists(tenantId), { entity_type: entityType, entity_id: entityId }] as const,
   byAsset: (tenantId: string | null, assetId: number) =>
     [...relationKeys.lists(tenantId), { asset_id: assetId }] as const,
 };
 
 /**
- * Hook to fetch relations with optional filters
- * @param filters - Relation filters (entity_type, entity_id, asset_id)
+ * Hook to fetch relations for a specific entity
+ * @param entityType - Entity type (article, brand, company, etc.)
+ * @param entityId - Entity identifier (UUID or int as string)
+ * @param relationType - Optional relation type filter
  * @returns React Query result with relations data
  */
-export function useRelations(filters?: RelationFilters) {
+export function useRelations(entityType: string, entityId: string, relationType?: string) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
-    queryKey: relationKeys.list(tenantId, filters),
-    queryFn: () => fetchRelations(filters),
-    enabled: !!tenantId,
-    staleTime: 30 * 1000, // 30 seconds - relations change moderately
+    queryKey: relationKeys.byEntity(tenantId, entityType, entityId),
+    queryFn: () => fetchRelations(entityType, entityId, relationType),
+    enabled: !!tenantId && !!entityType && !!entityId,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -88,7 +87,6 @@ export function useAttachAsset() {
 /**
  * Hook to detach an asset from an entity (delete relation)
  * Invalidates relations cache on success
- * Uses optimistic updates for better UX
  * @returns React Query mutation result
  */
 export function useDetachAsset() {
@@ -96,42 +94,15 @@ export function useDetachAsset() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (id: number) => deleteRelation(id),
-    onMutate: async (id) => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries({
-        queryKey: relationKeys.lists(tenantId),
-      });
-
-      // Snapshot the previous lists
-      const previousLists = queryClient.getQueriesData({
-        queryKey: relationKeys.lists(tenantId),
-      });
-
-      // Optimistically remove the relation from all list caches
-      queryClient.setQueriesData(
-        { queryKey: relationKeys.lists(tenantId) },
-        (old: any) => {
-          if (!Array.isArray(old)) return old;
-          return old.filter((relation: any) => relation.id !== id);
-        }
-      );
-
-      // Return context with the previous lists
-      return { previousLists };
-    },
-    onError: (_error, _id, context) => {
-      // Rollback to the previous lists on error
-      if (context?.previousLists) {
-        context.previousLists.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      }
-    },
-    onSuccess: () => {
-      // Invalidate all relation lists to ensure fresh data
+    mutationFn: (data: { asset_id: number; entity_type: string; entity_id: string; relation_type?: string }) =>
+      deleteRelation(data),
+    onSuccess: (_result, variables) => {
       queryClient.invalidateQueries({
-        queryKey: relationKeys.lists(tenantId),
+        queryKey: relationKeys.byEntity(
+          tenantId,
+          variables.entity_type,
+          variables.entity_id
+        ),
       });
     },
   });

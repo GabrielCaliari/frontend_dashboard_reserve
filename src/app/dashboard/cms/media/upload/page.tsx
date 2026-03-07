@@ -62,7 +62,7 @@ export default function MediaUploadPage() {
   // Loading state
   if (collectionsLoading) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="media">
         <div className="p-4">
           <div className="flex justify-center items-center h-64">
             <Spinner size="lg" label={tCommon("loading")} />
@@ -75,7 +75,7 @@ export default function MediaUploadPage() {
   // Error state
   if (collectionsError) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="media">
         <div className="p-4">
           <div className="text-center py-8">
             <p className="text-red-400">{t("errorLoadingCollections")}</p>
@@ -95,7 +95,7 @@ export default function MediaUploadPage() {
   // No collections state
   if (collections.length === 0) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="media">
         <div className="p-4">
           <div className="mb-6">
             <Button
@@ -133,7 +133,7 @@ export default function MediaUploadPage() {
   }
 
   return (
-    <LayoutScopeRoot routeActive="cms">
+    <LayoutScopeRoot routeActive="media">
       <div className="p-4">
         {/* Header with back button */}
         <div className="mb-6 flex items-center justify-between">

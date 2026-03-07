@@ -22,7 +22,7 @@ const collectionSchema = z.object({
     .max(255, "Slug must be less than 255 characters")
     .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   description: z.string().optional(),
-  type: z.enum(["images", "documents", "videos", "mixed"]),
+  type: z.enum(["image", "document", "video", "audio", "mixed"]),
   allowed_mime_types: z.array(z.string()).min(1, "At least one MIME type is required"),
   max_file_size: z.number().min(1, "Max file size must be at least 1 byte"),
   max_file_size_unit: z.enum(["KB", "MB", "GB"]),
@@ -39,9 +39,10 @@ interface CollectionFormProps {
 }
 
 const COLLECTION_TYPES: { value: CollectionType; label: string }[] = [
-  { value: "images", label: "Images" },
-  { value: "documents", label: "Documents" },
-  { value: "videos", label: "Videos" },
+  { value: "image", label: "Images" },
+  { value: "document", label: "Documents" },
+  { value: "video", label: "Videos" },
+  { value: "audio", label: "Audio" },
   { value: "mixed", label: "Mixed" },
 ];
 
@@ -99,8 +100,8 @@ export function CollectionForm({
       name: collection?.name || "",
       slug: collection?.slug || "",
       description: collection?.description || "",
-      type: collection?.type || "images",
-      allowed_mime_types: collection?.allowed_mime_types || MIME_TYPE_GROUPS.images,
+      type: collection?.type || "image",
+      allowed_mime_types: collection?.allowed_mime_types || MIME_TYPE_GROUPS.image,
       max_file_size: defaultMaxFileSize.value,
       max_file_size_unit: defaultMaxFileSize.unit,
       max_items: collection?.max_items,

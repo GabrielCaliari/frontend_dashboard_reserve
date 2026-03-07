@@ -1,16 +1,34 @@
 import { cmsApiClient } from '@/src/common/config/api';
-import { Author } from '@/src/common/@types/@cms-author';
+import type {
+  Author,
+  CreateAuthorDto,
+  UpdateAuthorDto,
+  AssignAvatarDto,
+} from '@/src/common/@types/@cms-author';
 import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
+
+export type { CreateAuthorDto, UpdateAuthorDto, AssignAvatarDto };
 
 /**
  * Fetch all authors for the current tenant (AUTHENTICATED)
+ * @param active - Optional filter by active status
+ * @param page - Page number (default: 1)
+ * @param limit - Items per page (default: 30)
  * @returns Promise<Author[]>
  */
-export const fetchAuthors = async (): Promise<Author[]> => {
+export const fetchAuthors = async (
+  active?: boolean,
+  page: number = 1,
+  limit: number = 30
+): Promise<Author[]> => {
   try {
     return await withRetry(async () => {
-      // Use authenticated endpoint: GET /api/cms/authors
-      const response = await cmsApiClient.get('cms/authors');
+      const params: Record<string, any> = { page, limit };
+      if (active !== undefined) {
+        params.active = active;
+      }
+
+      const response = await cmsApiClient.get('cms/authors', { params });
       
       // Handle paginated response format
       if (response.data && Array.isArray(response.data.data)) {
@@ -52,7 +70,7 @@ export const fetchAuthorById = async (authorId: string): Promise<Author> => {
  * @returns Promise<Author>
  */
 export const createAuthor = async (
-  data: Omit<Author, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>
+  data: CreateAuthorDto
 ): Promise<Author> => {
   try {
     // Use authenticated endpoint: POST /api/cms/authors
@@ -71,7 +89,7 @@ export const createAuthor = async (
  */
 export const updateAuthor = async (
   authorId: string,
-  data: Partial<Omit<Author, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>>
+  data: UpdateAuthorDto
 ): Promise<Author> => {
   try {
     // Use authenticated endpoint: PUT /api/cms/authors/{id}
@@ -91,6 +109,28 @@ export const deleteAuthor = async (authorId: string): Promise<void> => {
   try {
     // Use authenticated endpoint: DELETE /api/cms/authors/{id}
     await cmsApiClient.delete(`cms/authors/${authorId}`);
+  } catch (error) {
+    throw transformCMSError(error);
+  }
+};
+
+/**
+ * Assign an avatar to an author (AUTHENTICATED)
+ * Uses an existing MediaAsset ID from the storage system.
+ * Upload the file first via POST /api/cms/assets, then reference by ID.
+ * @param authorId - The author ID
+ * @param avatarId - The UUID of an existing MediaAsset
+ * @returns Promise<Author>
+ */
+export const assignAuthorAvatar = async (
+  authorId: string,
+  avatarId: string
+): Promise<Author> => {
+  try {
+    const response = await cmsApiClient.post(`cms/authors/${authorId}/avatar`, {
+      avatarId,
+    });
+    return response.data;
   } catch (error) {
     throw transformCMSError(error);
   }

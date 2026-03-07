@@ -20,7 +20,7 @@ function getDefaultRange() {
   };
 }
 
-export default function DashboardPage() {
+export default function StatsPage() {
   const t = useTranslations("stats");
   const hasSelectedTenant = useHasSelectedTenant();
 
@@ -32,7 +32,7 @@ export default function DashboardPage() {
 
   if (!hasSelectedTenant) {
     return (
-      <LayoutScopeRoot routeActive="dashboard">
+      <LayoutScopeRoot routeActive="stats-overview">
         <div className="flex flex-col items-center justify-center py-16">
           <Card className="max-w-md border-warning/20 bg-warning/5">
             <CardBody className="p-8 text-center">
@@ -51,8 +51,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <LayoutScopeRoot routeActive="dashboard">
+    <LayoutScopeRoot routeActive="stats-overview">
       <div className="space-y-6">
+        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-100">{t("title")}</h1>
@@ -86,6 +87,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Content */}
         {isLoading && (
           <div className="flex justify-center py-16">
             <Spinner size="lg" />

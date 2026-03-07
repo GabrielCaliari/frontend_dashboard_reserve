@@ -12,7 +12,7 @@
 /**
  * Collection type defining the category of media assets
  */
-export type CollectionType = 'images' | 'documents' | 'videos' | 'mixed';
+export type CollectionType = 'image' | 'document' | 'video' | 'audio' | 'mixed';
 
 /**
  * Asset status indicating the current state of a media asset
@@ -77,8 +77,10 @@ export interface MediaAsset {
 export interface MediaRelation {
   id: number;
   asset_id: number;
-  entity_type: string; // e.g., 'article', 'blog'
-  entity_id: number;
+  entity_type: string; // e.g., 'article', 'blog', 'brand', 'company'
+  entity_id: string; // UUID or int as string
+  entity_id_type: 'uuid' | 'int';
+  relation_type: string; // e.g., 'featured', 'gallery', 'avatar', 'logo'
   display_order: number;
   metadata?: Record<string, any>;
   tenant_id: number;
@@ -139,7 +141,9 @@ export interface UpdateAssetRequest {
 export interface CreateRelationRequest {
   asset_id: number;
   entity_type: string;
-  entity_id: number;
+  entity_id: string; // UUID or int as string
+  entity_id_type: 'uuid' | 'int';
+  relation_type: string; // e.g., 'featured', 'gallery', 'avatar', 'logo'
   display_order?: number;
   metadata?: Record<string, any>;
 }
@@ -189,7 +193,8 @@ export interface AssetListParams extends PaginationParams {
  */
 export interface RelationListParams extends PaginationParams {
   entity_type?: string;
-  entity_id?: number;
+  entity_id?: string;
+  relation_type?: string;
   asset_id?: number;
 }
 

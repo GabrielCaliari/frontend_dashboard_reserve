@@ -59,7 +59,7 @@ export default function EditCollectionPage() {
   // Show tenant selection warning
   if (!hasSelectedTenant) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="collections">
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center py-16">
             <Card className="max-w-md border-warning/20 bg-warning/5">
@@ -84,7 +84,7 @@ export default function EditCollectionPage() {
   // Loading state
   if (isLoading) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="collections">
         <div className="p-8 space-y-6 max-w-4xl mx-auto">
           <div className="flex justify-center items-center py-16">
             <Spinner size="lg" />
@@ -97,7 +97,7 @@ export default function EditCollectionPage() {
   // Not found
   if (!collection) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="collections">
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center py-16">
             <Card className="max-w-md border-danger/20 bg-danger/5">
@@ -126,7 +126,7 @@ export default function EditCollectionPage() {
   }
 
   return (
-    <LayoutScopeRoot routeActive="cms">
+    <LayoutScopeRoot routeActive="collections">
       <div className="p-8 space-y-6 max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between">

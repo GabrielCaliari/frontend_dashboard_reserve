@@ -15,7 +15,7 @@ export interface MediaCollection {
   name: string;
   slug: string;
   description?: string;
-  type: 'images' | 'documents' | 'videos' | 'mixed';
+  type: 'image' | 'document' | 'video' | 'audio' | 'mixed';
   allowed_mime_types: string[];
   max_file_size: number; // bytes
   max_items?: number;
@@ -47,7 +47,9 @@ export interface MediaRelation {
   id: number;
   asset_id: number;
   entity_type: string;
-  entity_id: number;
+  entity_id: string;
+  entity_id_type: 'uuid' | 'int';
+  relation_type: string;
   display_order: number;
   metadata?: Record<string, any>;
   tenant_id: number;
@@ -74,7 +76,7 @@ export interface CreateCollectionDto {
   name: string;
   slug: string;
   description?: string;
-  type: 'images' | 'documents' | 'videos' | 'mixed';
+  type: 'image' | 'document' | 'video' | 'audio' | 'mixed';
   allowed_mime_types: string[];
   max_file_size: number;
   max_items?: number;
@@ -83,7 +85,7 @@ export interface CreateCollectionDto {
 export interface UpdateCollectionDto {
   name?: string;
   description?: string;
-  type?: 'images' | 'documents' | 'videos' | 'mixed';
+  type?: 'image' | 'document' | 'video' | 'audio' | 'mixed';
   allowed_mime_types?: string[];
   max_file_size?: number;
   max_items?: number;
@@ -105,7 +107,9 @@ export interface UpdateAssetDto {
 export interface CreateRelationDto {
   asset_id: number;
   entity_type: string;
-  entity_id: number;
+  entity_id: string;
+  entity_id_type: 'uuid' | 'int';
+  relation_type: string;
   display_order?: number;
   metadata?: Record<string, any>;
 }
@@ -123,7 +127,8 @@ export interface AssetFilters {
 
 export interface RelationFilters {
   entity_type?: string;
-  entity_id?: number;
+  entity_id?: string;
+  relation_type?: string;
   asset_id?: number;
 }
 
@@ -142,7 +147,20 @@ export const fetchCollections = async (
   try {
     return await withRetry(async () => {
       const response = await cmsApiClient.get('cms/collections', { params });
-      return response.data;
+      const d = response.data;
+
+      // Normalize: { data: [...], meta: {...} }
+      if (d && Array.isArray(d.data)) return d;
+
+      // Normalize: plain array
+      if (Array.isArray(d)) {
+        return {
+          data: d,
+          meta: { page: params?.page ?? 1, limit: params?.limit ?? 20, total: d.length, totalPages: 1 },
+        };
+      }
+
+      return { data: [], meta: { page: params?.page ?? 1, limit: params?.limit ?? 20, total: 0, totalPages: 0 } };
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -330,16 +348,24 @@ export const deleteAsset = async (id: number): Promise<void> => {
 // ============================================================================
 
 /**
- * Fetch relations with optional filters
- * @param filters - Relation filters (entity_type, entity_id, asset_id)
+ * Fetch relations for a specific entity
+ * @param entityType - Entity type (article, brand, company, etc.)
+ * @param entityId - Entity identifier (UUID or int as string)
+ * @param relationType - Optional relation type filter (featured, gallery, etc.)
  * @returns Promise<MediaRelation[]>
  */
 export const fetchRelations = async (
-  filters?: RelationFilters
+  entityType: string,
+  entityId: string,
+  relationType?: string
 ): Promise<MediaRelation[]> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get('cms/relations', { params: filters });
+      const params: Record<string, string> = {};
+      if (relationType) {
+        params.relation_type = relationType;
+      }
+      const response = await cmsApiClient.get(`cms/relations/${entityType}/${entityId}`, { params });
       return response.data;
     });
   } catch (error) {
@@ -348,15 +374,15 @@ export const fetchRelations = async (
 };
 
 /**
- * Create a new relation (attach asset to entity)
- * @param data - Relation creation data
+ * Attach an asset to an entity (create relation)
+ * @param data - Relation creation data with entity_id_type and relation_type
  * @returns Promise<MediaRelation>
  */
 export const createRelation = async (
   data: CreateRelationDto
 ): Promise<MediaRelation> => {
   try {
-    const response = await cmsApiClient.post('cms/relations', data);
+    const response = await cmsApiClient.post('cms/relations/attach', data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -364,13 +390,15 @@ export const createRelation = async (
 };
 
 /**
- * Delete a relation (detach asset from entity)
- * @param id - Relation ID
+ * Detach an asset from an entity (delete relation)
+ * @param data - Detach data identifying the relation
  * @returns Promise<void>
  */
-export const deleteRelation = async (id: number): Promise<void> => {
+export const deleteRelation = async (
+  data: { asset_id: number; entity_type: string; entity_id: string; relation_type?: string }
+): Promise<void> => {
   try {
-    await cmsApiClient.delete(`cms/relations/${id}`);
+    await cmsApiClient.post('cms/relations/detach', data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -385,7 +413,7 @@ export const reorderRelations = async (
   order: ReorderRelationDto[]
 ): Promise<void> => {
   try {
-    await cmsApiClient.patch('cms/relations/reorder', { order });
+    await cmsApiClient.put('cms/relations/reorder', { order });
   } catch (error) {
     throw transformCMSError(error);
   }

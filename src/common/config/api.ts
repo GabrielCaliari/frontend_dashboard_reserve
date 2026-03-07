@@ -80,7 +80,7 @@ export { api as apiClient };
 
 // CMS API Client - Dedicated client for CMS endpoints
 const cmsApi = axios.create({
-  baseURL: `${API_URL}/api/cms`,
+  baseURL: `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },

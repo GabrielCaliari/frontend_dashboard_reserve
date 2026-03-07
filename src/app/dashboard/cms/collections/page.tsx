@@ -29,13 +29,14 @@ import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 import { formatFileSize } from "@/src/common/utils/format-file-size";
 import type { CollectionType } from "@/src/common/@types/@cms-media";
 
-const COLLECTION_TYPES: CollectionType[] = ["images", "documents", "videos", "mixed"];
+const COLLECTION_TYPES: CollectionType[] = ["image", "document", "video", "audio", "mixed"];
 
 const COLLECTION_TYPE_COLORS = {
-  images: "success",
-  documents: "primary",
-  videos: "secondary",
-  mixed: "warning",
+  image: "success",
+  document: "primary",
+  video: "secondary",
+  audio: "warning",
+  mixed: "default",
 } as const;
 
 export default function CollectionsPage() {
@@ -86,7 +87,7 @@ export default function CollectionsPage() {
   // Show tenant selection warning
   if (!hasSelectedTenant) {
     return (
-      <LayoutScopeRoot routeActive="cms">
+      <LayoutScopeRoot routeActive="collections">
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center py-16">
             <Card className="max-w-md border-warning/20 bg-warning/5">
@@ -109,7 +110,7 @@ export default function CollectionsPage() {
   }
 
   return (
-    <LayoutScopeRoot routeActive="cms">
+    <LayoutScopeRoot routeActive="collections">
       <div className="p-8 space-y-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center">
