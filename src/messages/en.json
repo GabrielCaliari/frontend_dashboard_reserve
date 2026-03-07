@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "cancel": "Cancel",
     "close": "Close",
@@ -41,8 +41,12 @@
     "users": "Users",
     "leads": "Leads",
     "allLeads": "All leads",
+    "leadCollections": "Collections",
     "abandonedCarts": "Abandoned carts",
-    "emailCampaigns": "Email Campaigns"
+    "emailCampaigns": "Email Campaigns",
+    "profile": "My Profile",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
 
   "header": {
@@ -720,6 +724,38 @@
       "deleteSuccess": "Asset deleted successfully",
       "deleteError": "Error deleting asset",
       "saveChanges": "Save Changes",
+      "libraryTitle": "Media Library",
+      "librarySubtitle": "Organize your media assets in collections",
+      "newCollection": "New Collection",
+      "filterAll": "All",
+      "loadingCollections": "Loading collections...",
+      "errorLoadingCollections": "Error loading collections. Please try again.",
+      "noCollectionsYet": "No collections yet",
+      "noCollectionsDescription": "Create a collection to start organizing your media assets.",
+      "createFirstCollection": "Create First Collection",
+      "deleteCollectionTitle": "Delete Collection",
+      "deleteCollectionConfirm": "Are you sure you want to delete \"{name}\"?",
+      "collectionMustBeEmpty": "The collection must be empty before it can be deleted. This action cannot be undone.",
+      "collectionDeleteSuccess": "Collection \"{name}\" deleted",
+      "collectionDeleteError": "Failed to delete collection",
+      "collectionUpdateSuccess": "Collection updated successfully",
+      "collectionCreateSuccess": "Collection created successfully",
+      "operationFailed": "Operation failed",
+      "editCollectionTitle": "Edit Collection",
+      "uploadModalTitle": "Upload Assets — {name}",
+      "collectionNotFound": "Collection not found",
+      "collectionNotFoundMessage": "This collection may have been deleted or does not exist.",
+      "backToLibrary": "Back to Media Library",
+      "showingAssets": "Showing {count} of {total} assets",
+      "uploadButton": "Upload",
+      "noAssetsInCollection": "No assets in this collection. Click Upload to add files.",
+      "associations": "Associations",
+      "notAssociated": "Not associated with any entity",
+      "failedToCopyUrl": "Failed to copy URL",
+      "openInNewTab": "Open in new tab",
+      "constraintMaxSize": "Max file size",
+      "constraintMaxItems": "Max items",
+      "constraintAllowedTypes": "Allowed types",
       "upload": {
         "dragDropFiles": "Drag and drop files here",
         "dropFilesHere": "Drop files here",
@@ -790,6 +826,216 @@
       "removeError": "Failed to remove asset. Please try again.",
       "reorderSuccess": "Assets reordered successfully",
       "reorderError": "Failed to reorder assets. Please try again."
+    }
+  },
+
+  "accessManagement": {
+    "title": "Access Management",
+    "description": "Control who has access to the dashboard and the platform.",
+    "admins": {
+      "title": "Admins",
+      "description": "Manage dashboard admin accounts, roles, and permissions.",
+      "statLabel": "total admins",
+      "management": {
+        "title": "Admin Management",
+        "description": "Manage admin accounts, roles, and permissions",
+        "searching": "Search by name or email...",
+        "showing": "Showing {count} of {total} admins",
+        "createButton": "Create Admin",
+        "errorTitle": "Error Loading Admins",
+        "errorMessage": "Failed to load admin data.",
+        "retry": "Retry",
+        "deactivateConfirmTitle": "Deactivate Admin",
+        "activateConfirmTitle": "Activate Admin",
+        "deactivateConfirmMessage": "Are you sure you want to deactivate this admin? They will lose access.",
+        "activateConfirmMessage": "Are you sure you want to activate this admin?",
+        "deleteConfirmTitle": "Delete Admin",
+        "deleteConfirmMessage": "Are you sure? This action cannot be undone.",
+        "cannotDeactivateSelf": "You cannot deactivate your own account",
+        "cannotDeleteSelf": "You cannot delete your own account",
+        "confirmDelete": "Delete",
+        "confirmAction": "Confirm"
+      }
+    },
+    "users": {
+      "title": "Users",
+      "description": "View and manage end-users registered on the platform.",
+      "statLabel": "total users",
+      "management": {
+        "title": "User Management",
+        "description": "View and manage platform end-users",
+        "searching": "Search by name or email...",
+        "showing": "Showing {count} of {total} users",
+        "errorTitle": "Error Loading Users",
+        "errorMessage": "Failed to load user data.",
+        "retry": "Retry",
+        "deactivateConfirmTitle": "Deactivate User",
+        "deactivateConfirmMessage": "Are you sure you want to deactivate this user? They will lose access to the platform.",
+        "deleteConfirmTitle": "Delete User",
+        "deleteConfirmMessage": "Are you sure? This action cannot be undone and will permanently remove the user.",
+        "confirmDelete": "Delete",
+        "confirmAction": "Confirm"
+      }
+    },
+    "tenants": {
+      "title": "Tenants",
+      "description": "Configure tenant organisations and their admin assignments.",
+      "management": {
+        "title": "Tenant Management",
+        "description": "Manage tenant organizations, domains, and access",
+        "searching": "Search by name, slug, or domain...",
+        "showing": "Showing {count} of {total} tenants",
+        "createButton": "Create Tenant",
+        "errorTitle": "Error Loading Tenants",
+        "errorMessage": "Failed to load tenant data. Please try again.",
+        "retry": "Retry",
+        "deactivateConfirmTitle": "Deactivate Tenant",
+        "activateConfirmTitle": "Activate Tenant",
+        "deactivateConfirmMessage": "Are you sure you want to deactivate this tenant? All associated users will lose access to the system.",
+        "activateConfirmMessage": "Are you sure you want to activate this tenant? All associated users will regain access to the system.",
+        "deleteConfirmTitle": "Delete Tenant",
+        "deleteConfirmMessage": "Are you sure you want to delete this tenant? This action cannot be undone and will permanently remove the tenant and all associated data.",
+        "confirmDelete": "Delete",
+        "confirmAction": "Confirm"
+      },
+      "form": {
+        "createTitle": "Create Tenant",
+        "editTitle": "Edit Tenant",
+        "nameLabel": "Name",
+        "namePlaceholder": "Enter tenant name",
+        "slugLabel": "Slug",
+        "slugPlaceholder": "Enter tenant slug",
+        "slugDescription": "Unique identifier used in URLs",
+        "domainLabel": "Domain",
+        "domainPlaceholder": "Enter tenant domain",
+        "domainDescription": "Primary domain for this tenant",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "create": "Create"
+      }
+    },
+    "table": {
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "role": "Role",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "slug": "Slug",
+        "domain": "Domain"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "tooltips": {
+        "viewDetails": "View details",
+        "editUser": "Edit user",
+        "deactivateUser": "Deactivate user",
+        "deleteUser": "Delete user",
+        "editAdmin": "Edit admin",
+        "deactivate": "Deactivate",
+        "activate": "Activate",
+        "deleteAdmin": "Delete admin",
+        "cannotDeactivateSelf": "Cannot deactivate your own account",
+        "cannotDeleteSelf": "Cannot delete your own account",
+        "editTenant": "Edit tenant",
+        "deleteTenant": "Delete tenant"
+      },
+      "ariaLabels": {
+        "viewUser": "View user",
+        "editUser": "Edit user",
+        "deactivateUser": "Deactivate user",
+        "deleteUser": "Delete user",
+        "viewAdmin": "View admin",
+        "editAdmin": "Edit admin",
+        "deactivateAdmin": "Deactivate admin",
+        "activateAdmin": "Activate admin",
+        "deleteAdmin": "Delete admin",
+        "editTenant": "Edit tenant",
+        "deactivateTenant": "Deactivate tenant",
+        "activateTenant": "Activate tenant",
+        "deleteTenant": "Delete tenant",
+        "userTable": "User management table",
+        "adminTable": "Admin management table",
+        "tenantTable": "Tenant management table"
+      },
+      "empty": {
+        "noUsersFound": "No users found",
+        "usersWillAppear": "Users will appear here once they register",
+        "noAdminsFound": "No admins found",
+        "createNewAdmin": "Create a new admin to get started",
+        "noTenantsFound": "No tenants found",
+        "createNewTenant": "Create a new tenant to get started"
+      }
+    },
+    "statusFilter": {
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "userForm": {
+      "editTitle": "Edit User",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter user name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "user@example.com",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "+55 11 99999-9999",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "adminForm": {
+      "createTitle": "Create New Admin",
+      "editTitle": "Edit Admin",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter admin name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "admin@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter password",
+      "roleLabel": "Role",
+      "rolePlaceholder": "Select role",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "create": "Create Admin",
+      "roles": {
+        "super_admin": "Super Admin",
+        "owner": "Owner",
+        "manager": "Manager",
+        "editor": "Editor",
+        "viewer": "Viewer"
+      },
+      "roleDescriptions": {
+        "super_admin": "Full system access and control",
+        "owner": "Manage tenants and admins",
+        "manager": "Manage campaigns and content",
+        "editor": "Create and edit content",
+        "viewer": "Read-only access"
+      }
+    },
+    "userDetail": {
+      "backToUsers": "Back to Users",
+      "errorTitle": "Error Loading User",
+      "userNotFound": "User Not Found",
+      "userNotFoundMessage": "The requested user could not be found.",
+      "retry": "Retry",
+      "returnToList": "Return to List",
+      "editButton": "Edit",
+      "userInformation": "User Information",
+      "dateOfBirth": "Date of Birth",
+      "expires": "Expires",
+      "created": "Created",
+      "updated": "Updated"
+    },
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "accessManagement": "Access Management",
+      "admins": "Admins",
+      "users": "Users",
+      "tenants": "Tenants"
     }
   }
 }

@@ -1,10 +1,18 @@
 import axios from "axios";
 import { handleUnauthorizedError, isUnauthorizedError } from "@/src/common/utils/auth-error-handler";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+// In browser (client-side), only NEXT_PUBLIC_ variables are available
+// For server-side, we can use NEXT_LOCAL_API_URL
+const API_URL = typeof window !== 'undefined'
+  ? (process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3002'  // Hardcoded for client-side dev
+      : process.env.NEXT_PUBLIC_API_URL)
+  : (process.env.NODE_ENV === 'development'
+      ? process.env.NEXT_LOCAL_API_URL
+      : process.env.NEXT_PUBLIC_API_URL);
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -43,7 +51,7 @@ api.interceptors.request.use(
           }
         }
       } catch (error) {
-        console.warn('Failed to read tenant from storage:', error);
+        // Silent fail - tenant header is optional for some endpoints
       }
     }
 
@@ -69,3 +77,64 @@ api.interceptors.response.use(
 
 export default api;
 export { api as apiClient };
+
+// CMS API Client - Dedicated client for CMS endpoints
+const cmsApi = axios.create({
+  baseURL: `${API_URL}/api/cms`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor for CMS API - Same auth logic as main API
+cmsApi.interceptors.request.use(
+  (config) => {
+    if (typeof window !== 'undefined') {
+      const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))
+        ?.split('=')[1];
+      
+      const sessionId = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('session-code='))
+        ?.split('=')[1];
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      if (sessionId) {
+        config.headers['session-id'] = sessionId;
+      }
+
+      try {
+        const tenantStorage = localStorage.getItem('tenant-storage');
+        if (tenantStorage) {
+          const { state } = JSON.parse(tenantStorage);
+          if (state?.selectedTenant?.id) {
+            config.headers['x-tenant-id'] = state.selectedTenant.id.toString();
+          }
+        }
+      } catch (error) {
+        // Silent fail - tenant header is optional for some endpoints
+      }
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for CMS API - Let errors propagate without redirect
+cmsApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Don't redirect on 401 for CMS API - let the caller handle it
+    return Promise.reject(error);
+  }
+);
+
+export { cmsApi as cmsApiClient };

@@ -18,20 +18,17 @@ import { useState } from 'react';
  * Provides consistent query keys for cache management
  */
 export const assetKeys = {
-  all: (tenantId: number | null) => ['assets', tenantId] as const,
-  lists: (tenantId: number | null) => [...assetKeys.all(tenantId), 'list'] as const,
-  list: (tenantId: number | null, filters?: AssetFilters, params?: PaginationParams) =>
+  all: (tenantId: string | null) => ['assets', tenantId] as const,
+  lists: (tenantId: string | null) => [...assetKeys.all(tenantId), 'list'] as const,
+  list: (tenantId: string | null, filters?: AssetFilters, params?: PaginationParams) =>
     [...assetKeys.lists(tenantId), filters, params] as const,
-  details: (tenantId: number | null) => [...assetKeys.all(tenantId), 'detail'] as const,
-  detail: (tenantId: number | null, id: number) =>
+  details: (tenantId: string | null) => [...assetKeys.all(tenantId), 'detail'] as const,
+  detail: (tenantId: string | null, id: number) =>
     [...assetKeys.details(tenantId), id] as const,
 };
 
 /**
  * Hook to fetch paginated list of assets with optional filters
- * @param filters - Asset filters (collection_id, status, search)
- * @param params - Pagination parameters (page, limit)
- * @returns React Query result with assets data
  */
 export function useAssets(filters?: AssetFilters, params?: PaginationParams) {
   const tenantId = useSelectedTenantId();
@@ -40,14 +37,12 @@ export function useAssets(filters?: AssetFilters, params?: PaginationParams) {
     queryKey: assetKeys.list(tenantId, filters, params),
     queryFn: () => fetchAssets(filters, params),
     enabled: !!tenantId,
-    staleTime: 30 * 1000, // 30 seconds - assets change more frequently than collections
+    staleTime: 30 * 1000,
   });
 }
 
 /**
  * Hook to fetch a single asset by ID
- * @param id - Asset ID
- * @returns React Query result with asset data
  */
 export function useAsset(id: number) {
   const tenantId = useSelectedTenantId();
@@ -56,14 +51,12 @@ export function useAsset(id: number) {
     queryKey: assetKeys.detail(tenantId, id),
     queryFn: () => fetchAssetById(id),
     enabled: !!tenantId && !!id,
-    staleTime: 30 * 1000, // 30 seconds
+    staleTime: 30 * 1000,
   });
 }
 
 /**
  * Hook to upload a new asset with progress tracking
- * Invalidates assets list cache on success
- * @returns React Query mutation result with upload progress state
  */
 export function useUploadAsset() {
   const queryClient = useQueryClient();
@@ -76,22 +69,18 @@ export function useUploadAsset() {
         setUploadProgress(progress);
       }),
     onSuccess: (newAsset) => {
-      // Reset progress
       setUploadProgress(0);
 
-      // Optimistically add the new asset to the cache
       queryClient.setQueryData(
         assetKeys.detail(tenantId, newAsset.id),
         newAsset
       );
 
-      // Invalidate all asset lists to refetch with new data
       queryClient.invalidateQueries({
         queryKey: assetKeys.lists(tenantId),
       });
     },
     onError: () => {
-      // Reset progress on error
       setUploadProgress(0);
     },
   });
@@ -104,9 +93,6 @@ export function useUploadAsset() {
 
 /**
  * Hook to update asset metadata
- * Invalidates both the specific asset and lists cache on success
- * Uses optimistic updates for better UX
- * @returns React Query mutation result
  */
 export function useUpdateAsset() {
   const queryClient = useQueryClient();
@@ -116,17 +102,14 @@ export function useUpdateAsset() {
     mutationFn: ({ id, data }: { id: number; data: UpdateAssetDto }) =>
       updateAsset(id, data),
     onMutate: async ({ id, data }) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({
         queryKey: assetKeys.detail(tenantId, id),
       });
 
-      // Snapshot the previous value
       const previousAsset = queryClient.getQueryData(
         assetKeys.detail(tenantId, id)
       );
 
-      // Optimistically update to the new value
       if (previousAsset) {
         queryClient.setQueryData(
           assetKeys.detail(tenantId, id),
@@ -134,11 +117,9 @@ export function useUpdateAsset() {
         );
       }
 
-      // Return context with the previous value
       return { previousAsset };
     },
     onError: (_error, variables, context) => {
-      // Rollback to the previous value on error
       if (context?.previousAsset) {
         queryClient.setQueryData(
           assetKeys.detail(tenantId, variables.id),
@@ -147,11 +128,9 @@ export function useUpdateAsset() {
       }
     },
     onSuccess: (_data, variables) => {
-      // Invalidate the specific asset detail to ensure fresh data
       queryClient.invalidateQueries({
         queryKey: assetKeys.detail(tenantId, variables.id),
       });
-      // Invalidate all asset lists
       queryClient.invalidateQueries({
         queryKey: assetKeys.lists(tenantId),
       });
@@ -161,9 +140,6 @@ export function useUpdateAsset() {
 
 /**
  * Hook to delete an asset
- * Invalidates assets list cache on success
- * Uses optimistic updates for better UX
- * @returns React Query mutation result
  */
 export function useDeleteAsset() {
   const queryClient = useQueryClient();
@@ -172,17 +148,14 @@ export function useDeleteAsset() {
   return useMutation({
     mutationFn: (id: number) => deleteAsset(id),
     onMutate: async (id) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({
         queryKey: assetKeys.lists(tenantId),
       });
 
-      // Snapshot the previous lists
       const previousLists = queryClient.getQueriesData({
         queryKey: assetKeys.lists(tenantId),
       });
 
-      // Optimistically remove the asset from all list caches
       queryClient.setQueriesData(
         { queryKey: assetKeys.lists(tenantId) },
         (old: any) => {
@@ -198,11 +171,9 @@ export function useDeleteAsset() {
         }
       );
 
-      // Return context with the previous lists
       return { previousLists };
     },
     onError: (_error, _id, context) => {
-      // Rollback to the previous lists on error
       if (context?.previousLists) {
         context.previousLists.forEach(([queryKey, data]) => {
           queryClient.setQueryData(queryKey, data);
@@ -210,11 +181,9 @@ export function useDeleteAsset() {
       }
     },
     onSuccess: (_data, id) => {
-      // Remove the specific asset from cache
       queryClient.removeQueries({
         queryKey: assetKeys.detail(tenantId, id),
       });
-      // Invalidate all asset lists to ensure fresh data
       queryClient.invalidateQueries({
         queryKey: assetKeys.lists(tenantId),
       });

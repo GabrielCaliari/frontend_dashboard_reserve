@@ -24,6 +24,7 @@ const useAdminDetails = () => {
       deleteCookie("token");
       deleteCookie("session_name");
       replace("/auth/login");
+      throw error; // Throw error instead of returning undefined
     }
   };
 

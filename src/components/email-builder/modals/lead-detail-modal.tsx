@@ -1,16 +1,22 @@
 "use client";
 
 import {
+  Button,
+  Chip,
+  Tabs,
+  Tab,
+  ScrollShadow,
+  Divider,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
+import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
-  Chip,
-  Select,
-  SelectItem,
-} from "@nextui-org/react";
+} from "@/src/components/ui/modal";
 import { Lead, LeadOrigin, LeadStatus } from "@/src/common/@types/@lead";
 import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
 import { format } from "date-fns";
@@ -40,9 +46,13 @@ const statusLabels: Record<LeadStatus, string> = {
   [LeadStatus.ARCHIVED]: "Archived",
 };
 
-export function LeadDetailModal({ lead, isOpen, onClose }: LeadDetailModalProps) {
+export function LeadDetailModal({
+  lead,
+  isOpen,
+  onClose,
+}: LeadDetailModalProps) {
   const [selectedStatus, setSelectedStatus] = useState<string>(
-    lead.status.toString()
+    lead.status.toString(),
   );
   const updateStatus = useUpdateLeadStatus();
 
@@ -56,12 +66,12 @@ export function LeadDetailModal({ lead, isOpen, onClose }: LeadDetailModalProps)
         onSuccess: () => {
           onClose();
         },
-      }
+      },
     );
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal isOpen={isOpen} onOpenChange={onClose} size="2xl">
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <h2 className="text-xl font-semibold">Lead Details</h2>
@@ -112,7 +122,9 @@ export function LeadDetailModal({ lead, isOpen, onClose }: LeadDetailModalProps)
                 {lead.origin_font && (
                   <div className="flex items-center gap-2">
                     <span className="text-sm">Source:</span>
-                    <span className="text-sm font-medium">{lead.origin_font}</span>
+                    <span className="text-sm font-medium">
+                      {lead.origin_font}
+                    </span>
                   </div>
                 )}
               </div>

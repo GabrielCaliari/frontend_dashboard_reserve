@@ -7,12 +7,14 @@ export interface LoginCredentials {
 
 export enum AdminRole {
   super_admin = 'super_admin',
-  company_admin = 'company_admin',
-  tenant_admin = 'tenant_admin',
+  owner = 'owner',
+  manager = 'manager',
+  editor = 'editor',
+  viewer = 'viewer',
 }
 
 export interface AuthResponse {
-  session_id: number;
+  session_id: string;
   session_token: string;
   details: {
     name: string;
@@ -30,7 +32,7 @@ export interface AdminProfile {
 }
 
 export interface Tenant {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   domain: string;

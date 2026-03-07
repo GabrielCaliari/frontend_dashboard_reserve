@@ -2,15 +2,14 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Input } from "@nextui-org/react";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
-  Input,
-} from "@nextui-org/react";
+} from "@/src/components/ui/modal";
 import { useEffect } from "react";
 import {
   createTenantSchema,
@@ -19,12 +18,15 @@ import {
   type UpdateTenantFormData,
 } from "@/src/common/schemas/access-management/tenant-schema";
 import { Tenant } from "@/src/common/@types/@access-management";
+import { useTranslations } from "next-intl";
 
 interface TenantFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   tenant?: Tenant; // undefined for create, defined for edit
-  onSubmit: (data: CreateTenantFormData | UpdateTenantFormData) => Promise<void>;
+  onSubmit: (
+    data: CreateTenantFormData | UpdateTenantFormData,
+  ) => Promise<void>;
   isLoading?: boolean;
 }
 
@@ -35,6 +37,7 @@ export function TenantFormModal({
   onSubmit,
   isLoading = false,
 }: TenantFormModalProps) {
+  const t = useTranslations("accessManagement.tenants.form");
   const isEditMode = !!tenant;
   const schema = isEditMode ? updateTenantSchema : createTenantSchema;
 
@@ -78,7 +81,7 @@ export function TenantFormModal({
   }, [isOpen, isEditMode, tenant, reset]);
 
   const handleFormSubmit = async (
-    data: CreateTenantFormData | UpdateTenantFormData
+    data: CreateTenantFormData | UpdateTenantFormData,
   ) => {
     try {
       await onSubmit(data);
@@ -100,14 +103,14 @@ export function TenantFormModal({
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>
             <h2 className="text-xl font-semibold">
-              {isEditMode ? "Edit Tenant" : "Create Tenant"}
+              {isEditMode ? t("editTitle") : t("createTitle")}
             </h2>
           </ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               <Input
-                label="Name"
-                placeholder="Enter tenant name"
+                label={t("nameLabel")}
+                placeholder={t("namePlaceholder")}
                 {...register("name")}
                 isInvalid={!!errors.name}
                 errorMessage={errors.name?.message}
@@ -116,23 +119,23 @@ export function TenantFormModal({
               />
 
               <Input
-                label="Slug"
-                placeholder="tenant-slug"
+                label={t("slugLabel")}
+                placeholder={t("slugPlaceholder")}
                 {...register("slug")}
                 isInvalid={!!errors.slug}
                 errorMessage={errors.slug?.message}
                 isRequired
-                description="Lowercase letters, numbers, and hyphens only"
+                description={t("slugDescription")}
               />
 
               <Input
-                label="Domain"
-                placeholder="example.com"
+                label={t("domainLabel")}
+                placeholder={t("domainPlaceholder")}
                 {...register("domain")}
                 isInvalid={!!errors.domain}
                 errorMessage={errors.domain?.message}
                 isRequired
-                description="Valid domain format (e.g., example.com)"
+                description={t("domainDescription")}
               />
             </div>
           </ModalBody>
@@ -142,14 +145,14 @@ export function TenantFormModal({
               onPress={handleClose}
               isDisabled={isSubmitting || isLoading}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               color="primary"
               type="submit"
               isLoading={isSubmitting || isLoading}
             >
-              {isEditMode ? "Save Changes" : "Create"}
+              {isEditMode ? t("saveChanges") : t("create")}
             </Button>
           </ModalFooter>
         </form>

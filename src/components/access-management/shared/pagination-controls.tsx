@@ -70,8 +70,8 @@ export function PaginationControls({
           className={cn(
             "min-w-[2.5rem]",
             currentPage === page
-              ? "bg-blue-600 text-white hover:bg-blue-700"
-              : "text-muted-foreground hover:text-foreground hover:bg-accent"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "text-muted-foreground hover:text-foreground hover:bg-content2",
           )}
           aria-label={`Page ${page}`}
           aria-current={currentPage === page ? "page" : undefined}

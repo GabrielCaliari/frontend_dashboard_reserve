@@ -2,121 +2,67 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  Input,
-} from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@/src/components/ui/modal";
 import { useEffect } from "react";
-import {
-  userSchema,
-  type UpdateUserFormData,
-} from "@/src/common/schemas/access-management/user-schema";
+import { useTranslations } from "next-intl";
+import { userSchema, type UpdateUserFormData } from "@/src/common/schemas/access-management/user-schema";
 import { User } from "@/src/common/@types/@access-management";
 
 interface UserFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  user: User; // Always defined - users are only edited, not created
+  user: User;
   onSubmit: (data: UpdateUserFormData) => Promise<void>;
   isLoading?: boolean;
 }
 
-export function UserFormModal({
-  isOpen,
-  onClose,
-  user,
-  onSubmit,
-  isLoading = false,
-}: UserFormModalProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<UpdateUserFormData>({
+export function UserFormModal({ isOpen, onClose, user, onSubmit, isLoading = false }: UserFormModalProps) {
+  const t = useTranslations("accessManagement.userForm");
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<UpdateUserFormData>({
     resolver: zodResolver(userSchema),
-    defaultValues: {
-      name: user.name,
-      email: user.email,
-    },
+    defaultValues: { name: user.name, email: user.email, phone_number: user.phone_number || "" },
   });
 
-  // Reset form when modal opens/closes or user changes
   useEffect(() => {
     if (isOpen) {
-      reset({
-        name: user.name,
-        email: user.email,
-      });
+      reset({ name: user.name, email: user.email, phone_number: user.phone_number || "" });
     }
   }, [isOpen, user, reset]);
 
   const handleFormSubmit = async (data: UpdateUserFormData) => {
-    try {
-      await onSubmit(data);
-      handleClose();
-    } catch (error) {
-      // Error handling is done by the parent component
-      // Modal stays open to allow user to correct errors
-    }
+    try { await onSubmit(data); handleClose(); } catch {}
   };
 
-  const handleClose = () => {
-    reset();
-    onClose();
-  };
+  const handleClose = () => { reset(); onClose(); };
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
       <ModalContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <ModalHeader>
-            <h2 className="text-xl font-semibold">Edit User</h2>
-          </ModalHeader>
+          <ModalHeader><h2 className="text-xl font-semibold">{t("editTitle")}</h2></ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               <Input
-                label="Name"
-                placeholder="Enter user name"
-                {...register("name")}
-                isInvalid={!!errors.name}
-                errorMessage={errors.name?.message}
-                isRequired
-                autoComplete="name"
+                label={t("nameLabel")} placeholder={t("namePlaceholder")}
+                {...register("name")} isInvalid={!!errors.name} errorMessage={errors.name?.message}
+                isRequired autoComplete="name"
               />
-
               <Input
-                label="Email"
-                type="email"
-                placeholder="user@example.com"
-                {...register("email")}
-                isInvalid={!!errors.email}
-                errorMessage={errors.email?.message}
-                isRequired
-                autoComplete="email"
+                label={t("emailLabel")} type="email" placeholder={t("emailPlaceholder")}
+                {...register("email")} isInvalid={!!errors.email} errorMessage={errors.email?.message}
+                isRequired autoComplete="email"
+              />
+              <Input
+                label={t("phoneLabel")} placeholder={t("phonePlaceholder")}
+                {...register("phone_number")} isInvalid={!!errors.phone_number} errorMessage={errors.phone_number?.message}
+                autoComplete="tel"
               />
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button
-              variant="light"
-              onPress={handleClose}
-              isDisabled={isSubmitting || isLoading}
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              type="submit"
-              isLoading={isSubmitting || isLoading}
-            >
-              Save Changes
-            </Button>
+            <Button variant="light" onPress={handleClose} isDisabled={isSubmitting || isLoading}>{t("cancel")}</Button>
+            <Button color="primary" type="submit" isLoading={isSubmitting || isLoading}>{t("saveChanges")}</Button>
           </ModalFooter>
         </form>
       </ModalContent>

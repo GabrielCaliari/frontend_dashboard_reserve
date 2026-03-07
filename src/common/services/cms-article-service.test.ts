@@ -9,7 +9,7 @@ import {
   archiveArticle,
   reorderArticles,
 } from './cms-article-service';
-import cmsApiClient from '@/src/common/config/cms-api-client';
+import { cmsApiClient } from '@/src/common/config/api';
 import type {
   Article,
   ArticleStatus,
@@ -211,7 +211,10 @@ describe('CMS Article Service', () => {
 
     it('should create article with default draft status', async () => {
       const createData: CreateArticleDto = {
-        title: 'New Article',
+        displayTitle: 'New Article',
+        metaTitle: 'New Article',
+        slug: 'new-article',
+        authorId: '1',
         content: '<p>New article content</p>',
       };
 
@@ -241,7 +244,10 @@ describe('CMS Article Service', () => {
 
     it('should generate unique slug from article title', async () => {
       const createData: CreateArticleDto = {
-        title: 'My Awesome Article!',
+        displayTitle: 'My Awesome Article!',
+        metaTitle: 'My Awesome Article!',
+        slug: 'my-awesome-article',
+        authorId: '1',
         content: '<p>Content</p>',
       };
 
@@ -268,7 +274,10 @@ describe('CMS Article Service', () => {
 
     it('should set display_order automatically to position article last', async () => {
       const createData: CreateArticleDto = {
-        title: 'Third Article',
+        displayTitle: 'Third Article',
+        metaTitle: 'Third Article',
+        slug: 'third-article',
+        authorId: '1',
         content: '<p>Content</p>',
       };
 
@@ -295,7 +304,10 @@ describe('CMS Article Service', () => {
 
     it('should not set published_at for draft articles', async () => {
       const createData: CreateArticleDto = {
-        title: 'Draft Article',
+        displayTitle: 'Draft Article',
+        metaTitle: 'Draft Article',
+        slug: 'draft-article',
+        authorId: '1',
         content: '<p>Draft content</p>',
       };
 
@@ -327,7 +339,7 @@ describe('CMS Article Service', () => {
 
     it('should update article with partial data (title only)', async () => {
       const updateData: UpdateArticleDto = {
-        title: 'Updated Title',
+        displayTitle: 'Updated Title',
       };
 
       const mockUpdatedArticle: Article = {
@@ -383,7 +395,7 @@ describe('CMS Article Service', () => {
 
     it('should not alter article status during content updates', async () => {
       const updateData: UpdateArticleDto = {
-        title: 'Updated Title',
+        displayTitle: 'Updated Title',
         content: '<p>Updated content</p>',
       };
 
@@ -412,7 +424,7 @@ describe('CMS Article Service', () => {
     it('should maintain original slug without regeneration', async () => {
       const originalSlug = 'original-slug';
       const updateData: UpdateArticleDto = {
-        title: 'Completely Different Title',
+        displayTitle: 'Completely Different Title',
       };
 
       const mockUpdatedArticle: Article = {
@@ -438,7 +450,7 @@ describe('CMS Article Service', () => {
 
     it('should handle error for invalid article ID', async () => {
       const updateData: UpdateArticleDto = {
-        title: 'Updated Title',
+        displayTitle: 'Updated Title',
       };
 
       const error = new Error('Article not found');

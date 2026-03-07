@@ -15,7 +15,7 @@ import {
   deactivateTenant,
   deleteTenant,
 } from '../tenant-service';
-import { accessManagementApiClient } from '@/src/common/config/access-management-api-client';
+import { apiClient as accessManagementApiClient } from '@/src/common/config/api';
 import type { Tenant, PaginatedResponse, CreateTenantDto, UpdateTenantDto } from '@/src/common/@types/@access-management';
 
 // Mock the API client

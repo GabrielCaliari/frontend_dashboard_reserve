@@ -1,165 +1,96 @@
 /**
  * Admin Service
- * 
+ *
  * Service layer for admin management operations.
- * Handles all API calls related to admin CRUD operations.
- * 
- * API Base URL: http://localhost:3000/api
- * Authentication: Bearer token (handled by accessManagementApiClient interceptor)
+ * All IDs are strings (UUIDs) matching the backend.
  */
 
-import { accessManagementApiClient } from '@/src/common/config/access-management-api-client';
+import { apiClient } from '@/src/common/config/api';
 import {
   Admin,
   PaginatedResponse,
   CreateAdminDto,
   UpdateAdminDto,
-  PaginationParams,
+  AdminRole,
 } from '@/src/common/@types/@access-management';
 
-/**
- * Fetch paginated list of admins with optional search
- * 
- * @param page - Page number (default: 1)
- * @param perPage - Items per page (default: 10)
- * @param search - Optional search term for filtering by name or email
- * @returns Promise<PaginatedResponse<Admin>>
- * 
- * API Endpoint: GET /api/admins
- * Query Parameters: page, per_page, search
- * 
- * Validates: Requirements 1.1, 1.2, 7.2
- */
+/** Fetch paginated list of admins. Client-side search/pagination because backend returns a flat array. */
 export const fetchAdmins = async (
   page: number = 1,
   perPage: number = 10,
-  search?: string
+  search?: string,
 ): Promise<PaginatedResponse<Admin>> => {
-  // Backend uses /admin/list endpoint (not paginated in current implementation)
-  const response = await accessManagementApiClient.get<Admin[]>('/admin/list');
-  
-  // Transform to paginated response format
+  const response = await apiClient.get<Admin[]>('/admin/list');
   const allAdmins = response.data;
-  const filteredAdmins = search 
-    ? allAdmins.filter(admin => 
-        admin.name.toLowerCase().includes(search.toLowerCase()) ||
-        admin.email.toLowerCase().includes(search.toLowerCase())
+
+  const filtered = search
+    ? allAdmins.filter(
+        (a) =>
+          a.name.toLowerCase().includes(search.toLowerCase()) ||
+          a.email.toLowerCase().includes(search.toLowerCase()),
       )
     : allAdmins;
-  
-  const startIndex = (page - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredAdmins.slice(startIndex, endIndex);
-  
+
+  const start = (page - 1) * perPage;
+  const paged = filtered.slice(start, start + perPage);
+
   return {
-    data: paginatedData,
+    data: paged,
     meta: {
-      page,
+      current_page: page,
       per_page: perPage,
-      total: filteredAdmins.length,
-      total_pages: Math.ceil(filteredAdmins.length / perPage),
+      total: filtered.length,
+      total_pages: Math.ceil(filtered.length / perPage),
     },
   };
 };
 
-/**
- * Fetch a single admin by ID with detailed information
- * 
- * @param id - Admin ID
- * @returns Promise<Admin>
- * 
- * API Endpoint: GET /api/admins/:id
- * Response includes: admin details + assigned tenants with roles
- * 
- * Validates: Requirements 3.1, 3.2, 3.3
- */
-export const fetchAdminById = async (id: number): Promise<Admin> => {
-  const response = await accessManagementApiClient.get<Admin>(`/admin/${id}`);
+/** Fetch a single admin by UUID. */
+export const fetchAdminById = async (id: string): Promise<Admin> => {
+  const response = await apiClient.get<Admin>(`/admin/${id}`);
   return response.data;
 };
 
-/**
- * Create a new admin account
- * 
- * @param data - Admin creation data (name, email, password, role)
- * @returns Promise<Admin>
- * 
- * API Endpoint: POST /api/admins
- * Request Body: CreateAdminDto
- * 
- * Validates: Requirements 2.6, 2.7
- */
+/** Create a new admin account. */
 export const createAdmin = async (data: CreateAdminDto): Promise<Admin> => {
-  const response = await accessManagementApiClient.post<Admin>('/admin/register', data);
+  const response = await apiClient.post<Admin>('/admin/register', data);
   return response.data;
 };
 
-/**
- * Update an existing admin's information
- * 
- * @param id - Admin ID
- * @param data - Admin update data (name, email, role - all optional)
- * @returns Promise<Admin>
- * 
- * API Endpoint: PATCH /api/admins/:id
- * Request Body: UpdateAdminDto
- * 
- * Validates: Requirements 4.4, 4.5
- */
+/** Update name and/or email for an existing admin. */
 export const updateAdmin = async (
-  id: number,
-  data: UpdateAdminDto
+  id: string,
+  data: Omit<UpdateAdminDto, 'role'>,
 ): Promise<Admin> => {
-  const response = await accessManagementApiClient.patch<Admin>(`/admin/${id}`, data);
+  const response = await apiClient.patch<Admin>(`/admin/${id}`, data);
   return response.data;
 };
 
 /**
- * Activate an admin account
- * 
- * @param id - Admin ID
- * @returns Promise<Admin>
- * 
- * API Endpoint: PATCH /api/admins/:id/activate
- * Sets is_active to true
- * 
- * Validates: Requirements 5.5, 5.7
+ * Update the role of an existing admin.
+ * Backend requires a dedicated endpoint: PATCH /admin/:id/role
  */
-export const activateAdmin = async (id: number): Promise<Admin> => {
-  const response = await accessManagementApiClient.patch<Admin>(`/admin/${id}/activate`);
+export const updateAdminRole = async (
+  id: string,
+  role: AdminRole,
+): Promise<Admin> => {
+  const response = await apiClient.patch<Admin>(`/admin/${id}/role`, { role });
   return response.data;
 };
 
-/**
- * Deactivate an admin account
- * 
- * @param id - Admin ID
- * @returns Promise<Admin>
- * 
- * API Endpoint: PATCH /api/admins/:id/deactivate
- * Sets is_active to false
- * 
- * Note: Self-deactivation prevention should be handled at the UI layer
- * 
- * Validates: Requirements 5.4, 5.7
- */
-export const deactivateAdmin = async (id: number): Promise<Admin> => {
-  const response = await accessManagementApiClient.patch<Admin>(`/admin/${id}/deactivate`);
+/** Activate an admin account. */
+export const activateAdmin = async (id: string): Promise<Admin> => {
+  const response = await apiClient.patch<Admin>(`/admin/${id}/activate`);
   return response.data;
 };
 
-/**
- * Delete an admin account permanently
- * 
- * @param id - Admin ID
- * @returns Promise<void>
- * 
- * API Endpoint: DELETE /api/admins/:id
- * 
- * Note: Self-deletion prevention should be handled at the UI layer
- * 
- * Validates: Requirements 6.2, 6.4
- */
-export const deleteAdmin = async (id: number): Promise<void> => {
-  await accessManagementApiClient.delete(`/admin/${id}`);
+/** Deactivate an admin account. Self-deactivation prevention must be handled at the UI layer. */
+export const deactivateAdmin = async (id: string): Promise<Admin> => {
+  const response = await apiClient.patch<Admin>(`/admin/${id}/deactivate`);
+  return response.data;
+};
+
+/** Permanently delete an admin account. Self-deletion prevention must be handled at the UI layer. */
+export const deleteAdmin = async (id: string): Promise<void> => {
+  await apiClient.delete(`/admin/${id}`);
 };

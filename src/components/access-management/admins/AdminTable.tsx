@@ -1,157 +1,99 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
+import { useTranslations } from "next-intl";
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Chip,
-  Button,
-  Skeleton,
-  Tooltip,
-} from '@nextui-org/react';
-import { Edit, Power, Trash2 } from 'lucide-react';
-import { Admin, AdminRole } from '@/src/common/@types/@access-management';
-import { formatDate } from '@/src/lib/utils';
+  Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
+  Chip, Button, Skeleton, Tooltip,
+} from "@nextui-org/react";
+import { Edit, Power, Trash2, ExternalLink } from "lucide-react";
+import { Admin } from "@/src/common/@types/@access-management";
+import { formatDate } from "@/src/lib/utils";
+import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
+import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
 
 interface AdminTableProps {
   admins: Admin[];
   isLoading: boolean;
+  currentAdminId: string;
   onEdit: (admin: Admin) => void;
-  onToggleActive: (adminId: number, isActive: boolean) => void;
-  onDelete: (adminId: number) => void;
+  onRowClick: (adminId: string) => void;
+  onToggleActive: (adminId: string, isActive: boolean) => void;
+  onDelete: (adminId: string) => void;
 }
 
 const AdminTable: React.FC<AdminTableProps> = ({
-  admins,
-  isLoading,
-  onEdit,
-  onToggleActive,
-  onDelete,
+  admins, isLoading, currentAdminId, onEdit, onRowClick, onToggleActive, onDelete,
 }) => {
+  const t = useTranslations("accessManagement");
+
   const columns = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'role', label: 'Role' },
-    { key: 'status', label: 'Status' },
-    { key: 'created_at', label: 'Created At' },
-    { key: 'actions', label: 'Actions' },
+    { key: "name",       label: t("table.columns.name")      },
+    { key: "email",      label: t("table.columns.email")     },
+    { key: "role",       label: t("table.columns.role")      },
+    { key: "status",     label: t("table.columns.status")    },
+    { key: "created_at", label: t("table.columns.createdAt") },
+    { key: "actions",    label: t("table.columns.actions")   },
   ];
-
-  const getRoleColor = (role: AdminRole): 'primary' | 'secondary' | 'success' | 'warning' | 'danger' => {
-    switch (role) {
-      case AdminRole.super_admin:
-        return 'danger';
-      case AdminRole.owner:
-        return 'primary';
-      case AdminRole.manager:
-        return 'secondary';
-      case AdminRole.editor:
-        return 'success';
-      case AdminRole.viewer:
-        return 'warning';
-      default:
-        return 'secondary';
-    }
-  };
-
-  const formatRoleLabel = (role: AdminRole): string => {
-    return role.split('_').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
-  };
 
   const renderCell = (admin: Admin, columnKey: React.Key) => {
     switch (columnKey) {
-      case 'id':
-        return <span className="text-sm text-gray-700">{admin.id}</span>;
-      
-      case 'name':
+      case "name":
         return (
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-900">{admin.name}</span>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => onRowClick(admin.id)}>
+            <EntityAvatar name={admin.name} size="sm" />
+            <span className="text-sm font-medium text-foreground hover:text-primary transition-colors">{admin.name}</span>
           </div>
         );
-      
-      case 'email':
-        return <span className="text-sm text-gray-600">{admin.email}</span>;
-      
-      case 'role':
+      case "email":
+        return <span className="text-sm text-foreground-400">{admin.email}</span>;
+      case "role":
+        return <RoleBadge role={admin.role} showTooltip />;
+      case "status":
         return (
-          <Chip
-            color={getRoleColor(admin.role)}
-            size="sm"
-            variant="flat"
-          >
-            {formatRoleLabel(admin.role)}
+          <Chip color={admin.is_active ? "success" : "danger"} size="sm" variant="dot">
+            {admin.is_active ? t("table.status.active") : t("table.status.inactive")}
           </Chip>
         );
-      
-      case 'status':
+      case "created_at":
+        return <span className="text-sm text-foreground-400">{formatDate(admin.created_at)}</span>;
+      case "actions":
+        const isSelf = admin.id === currentAdminId;
         return (
-          <Chip
-            color={admin.is_active ? 'success' : 'danger'}
-            size="sm"
-            variant="dot"
-          >
-            {admin.is_active ? 'Active' : 'Inactive'}
-          </Chip>
-        );
-      
-      case 'created_at':
-        return (
-          <span className="text-sm text-gray-600">
-            {formatDate(admin.created_at)}
-          </span>
-        );
-      
-      case 'actions':
-        return (
-          <div className="flex items-center gap-2">
-            <Tooltip content="Edit admin">
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                onPress={() => onEdit(admin)}
-                aria-label="Edit admin"
-              >
+          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+            <Tooltip content={t("table.tooltips.viewDetails")}>
+              <Button isIconOnly size="sm" variant="light" onPress={() => onRowClick(admin.id)} aria-label={t("table.ariaLabels.viewAdmin")}>
+                <ExternalLink className="w-4 h-4" />
+              </Button>
+            </Tooltip>
+            <Tooltip content={t("table.tooltips.editAdmin")}>
+              <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(admin)} aria-label={t("table.ariaLabels.editAdmin")}>
                 <Edit className="w-4 h-4" />
               </Button>
             </Tooltip>
-            
-            <Tooltip content={admin.is_active ? 'Deactivate admin' : 'Activate admin'}>
+            <Tooltip content={isSelf ? t("table.tooltips.cannotDeactivateSelf") : (admin.is_active ? t("table.tooltips.deactivate") : t("table.tooltips.activate"))}>
               <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                color={admin.is_active ? 'warning' : 'success'}
+                isIconOnly size="sm" variant="light"
+                color={admin.is_active ? "warning" : "success"}
                 onPress={() => onToggleActive(admin.id, admin.is_active)}
-                aria-label={admin.is_active ? 'Deactivate admin' : 'Activate admin'}
+                isDisabled={isSelf && admin.is_active}
+                aria-label={admin.is_active ? t("table.ariaLabels.deactivateAdmin") : t("table.ariaLabels.activateAdmin")}
               >
                 <Power className="w-4 h-4" />
               </Button>
             </Tooltip>
-            
-            <Tooltip content="Delete admin" color="danger">
+            <Tooltip content={isSelf ? t("table.tooltips.cannotDeleteSelf") : t("table.tooltips.deleteAdmin")} color="danger">
               <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                color="danger"
+                isIconOnly size="sm" variant="light" color="danger"
                 onPress={() => onDelete(admin.id)}
-                aria-label="Delete admin"
+                isDisabled={isSelf}
+                aria-label={t("table.ariaLabels.deleteAdmin")}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
             </Tooltip>
           </div>
         );
-      
       default:
         return null;
     }
@@ -160,10 +102,8 @@ const AdminTable: React.FC<AdminTableProps> = ({
   if (isLoading) {
     return (
       <div className="space-y-3">
-        {[...Array(5)].map((_, index) => (
-          <div key={index} className="flex gap-4 items-center">
-            <Skeleton className="h-12 w-full rounded-lg" />
-          </div>
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex gap-4 items-center"><Skeleton className="h-12 w-full rounded-lg" /></div>
         ))}
       </div>
     );
@@ -172,39 +112,29 @@ const AdminTable: React.FC<AdminTableProps> = ({
   if (admins.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">No admins found</p>
-        <p className="text-gray-400 text-sm mt-2">
-          Create a new admin to get started
-        </p>
+        <p className="text-foreground-500 text-lg">{t("table.empty.noAdminsFound")}</p>
+        <p className="text-foreground-400 text-sm mt-2">{t("table.empty.createNewAdmin")}</p>
       </div>
     );
   }
 
   return (
     <Table
-      aria-label="Admin management table"
+      aria-label={t("table.ariaLabels.adminTable")}
       classNames={{
-        wrapper: 'shadow-none border border-gray-200',
-        th: 'bg-gray-50 text-gray-700 font-semibold',
-        td: 'py-4',
+        wrapper: "shadow-none border border-divider bg-content1 rounded-lg overflow-x-auto",
+        th: "bg-content2 text-foreground font-semibold",
+        td: "py-3",
+        tr: "hover:bg-content2/50 transition-colors cursor-pointer",
       }}
     >
       <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn
-            key={column.key}
-            align={column.key === 'actions' ? 'center' : 'start'}
-          >
-            {column.label}
-          </TableColumn>
-        )}
+        {(col) => <TableColumn key={col.key} align={col.key === "actions" ? "center" : "start"}>{col.label}</TableColumn>}
       </TableHeader>
       <TableBody items={admins}>
         {(admin) => (
-          <TableRow key={admin.id}>
-            {(columnKey) => (
-              <TableCell>{renderCell(admin, columnKey)}</TableCell>
-            )}
+          <TableRow key={admin.id} onClick={() => onRowClick(admin.id)}>
+            {(columnKey) => <TableCell onClick={columnKey === "actions" ? (e) => e.stopPropagation() : undefined}>{renderCell(admin, columnKey)}</TableCell>}
           </TableRow>
         )}
       </TableBody>

@@ -15,8 +15,11 @@ import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 import { Label } from "@/src/components/ui/label";
 import { useCreateBlog } from "@/src/common/hooks/cms/use-create-blog";
-import { blogCreateSchema, type BlogCreateFormData } from "@/src/common/schemas/blog-schema";
-import type { Blog } from "@/src/common/@types/@blog";
+import {
+  blogCreateSchema,
+  type BlogCreateFormData,
+} from "@/src/common/schemas/blog-schema";
+import type { Blog } from "@/src/common/@types/@cms-blog";
 
 interface CreateBlogDialogProps {
   open: boolean;
@@ -24,7 +27,11 @@ interface CreateBlogDialogProps {
   onSuccess?: (blog: Blog & { secret_key?: string }) => void;
 }
 
-export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDialogProps) {
+export function CreateBlogDialog({
+  open,
+  onOpenChange,
+  onSuccess,
+}: CreateBlogDialogProps) {
   const { mutate: createBlog, isPending } = useCreateBlog();
 
   const {
@@ -37,8 +44,6 @@ export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDi
   } = useForm<BlogCreateFormData>({
     resolver: zodResolver(blogCreateSchema),
   });
-
-
 
   const onSubmit = (data: BlogCreateFormData) => {
     createBlog(data, {
@@ -54,9 +59,12 @@ export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] bg-content1 border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-foreground">Create New Blog</DialogTitle>
+          <DialogTitle className="text-2xl text-foreground">
+            Create New Blog
+          </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Create a new blog to publish articles. A secret key will be generated for API access.
+            Create a new blog to publish articles. A secret key will be
+            generated for API access.
           </DialogDescription>
         </DialogHeader>
 
@@ -93,7 +101,9 @@ export function CreateBlogDialog({ open, onOpenChange, onSuccess }: CreateBlogDi
               disabled={isPending}
             />
             {errors.description && (
-              <p className="text-sm text-red-400">{errors.description.message}</p>
+              <p className="text-sm text-red-400">
+                {errors.description.message}
+              </p>
             )}
           </div>
 

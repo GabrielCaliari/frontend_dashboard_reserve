@@ -2,39 +2,60 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button, Card, CardBody, CardHeader, Chip, Skeleton } from "@nextui-org/react";
-import { ArrowLeft, Building2, Globe, Hash, Calendar, CheckCircle, XCircle, Edit, Power, Trash2, User, Mail, Shield } from "lucide-react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Skeleton,
+} from "@nextui-org/react";
+import {
+  ArrowLeft,
+  Building2,
+  Globe,
+  Hash,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Edit,
+  Power,
+  Trash2,
+  User,
+  Mail,
+  Shield,
+} from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
-import { 
-  useTenantById, 
-  useUpdateTenant, 
-  useToggleTenantStatus, 
-  useDeleteTenant 
+import {
+  useTenantById,
+  useUpdateTenant,
+  useToggleTenantStatus,
+  useDeleteTenant,
 } from "@/src/common/hooks/access-management/useTenants";
 import { AdminRole } from "@/src/common/@types/@access-management";
 import { toast } from "react-hot-toast";
 
 /**
  * TenantDetailPage Component
- * 
+ *
  * Displays detailed information about a specific tenant including:
  * - Basic tenant information (id, name, slug, domain, status)
  * - Timestamps (created_at, updated_at)
  * - List of assigned admins with their roles
- * 
+ *
  * Features:
  * - Loading skeleton during data fetch
  * - Error state with retry option
  * - Empty state when tenant has no assigned admins
  * - Back button to return to tenant list
  * - Responsive layout with NextUI components
- * 
+ *
  * Validates: Requirements 10.1, 10.2, 10.3, 10.4, 10.5
  */
 export default function TenantDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const tenantId = Number(params.id);
+  const tenantId = params.id as string;
 
   // Fetch tenant details with assigned admins
   const { data: tenant, isLoading, error } = useTenantById({ id: tenantId });
@@ -62,7 +83,9 @@ export default function TenantDetailPage() {
   /**
    * Get role color for chip display
    */
-  const getRoleColor = (role: AdminRole): "primary" | "secondary" | "success" | "warning" | "danger" => {
+  const getRoleColor = (
+    role: AdminRole,
+  ): "primary" | "secondary" | "success" | "warning" | "danger" => {
     switch (role) {
       case AdminRole.super_admin:
         return "danger";
@@ -143,11 +166,11 @@ export default function TenantDetailPage() {
             Back to Tenants
           </Button>
 
-          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 text-center">
-            <h2 className="text-xl font-semibold text-red-500 mb-2">
-              Error Loading Tenant Details
+          <div className="bg-danger/10 border border-danger/20 rounded-lg p-6 text-center">
+            <h2 className="text-xl font-semibold text-danger mb-2">
+              Error Loading Tenant
             </h2>
-            <p className="text-red-400 mb-4">
+            <p className="text-danger-500 mb-4">
               {error.message || "Failed to load tenant data. Please try again."}
             </p>
             <Button
@@ -187,11 +210,7 @@ export default function TenantDetailPage() {
             <p className="text-warning-400 mb-4">
               The requested tenant could not be found.
             </p>
-            <Button
-              color="warning"
-              variant="flat"
-              onPress={handleBack}
-            >
+            <Button color="warning" variant="flat" onPress={handleBack}>
               Return to Tenant List
             </Button>
           </div>
@@ -245,7 +264,9 @@ export default function TenantDetailPage() {
                 <Building2 className="w-4 h-4" />
                 Name:
               </div>
-              <div className="flex-1 text-foreground font-medium">{tenant.name}</div>
+              <div className="flex-1 text-foreground font-medium">
+                {tenant.name}
+              </div>
             </div>
 
             {/* Slug */}
@@ -254,7 +275,9 @@ export default function TenantDetailPage() {
                 <Hash className="w-4 h-4" />
                 Slug:
               </div>
-              <div className="flex-1 text-foreground font-mono">{tenant.slug}</div>
+              <div className="flex-1 text-foreground font-mono">
+                {tenant.slug}
+              </div>
             </div>
 
             {/* Domain */}
@@ -268,7 +291,9 @@ export default function TenantDetailPage() {
 
             {/* Status */}
             <div className="flex items-start gap-3">
-              <div className="w-32 text-muted-foreground font-medium">Status:</div>
+              <div className="w-32 text-muted-foreground font-medium">
+                Status:
+              </div>
               <div className="flex-1">
                 <Chip
                   color={tenant.is_active ? "success" : "danger"}
@@ -293,7 +318,9 @@ export default function TenantDetailPage() {
                 <Calendar className="w-4 h-4" />
                 Created:
               </div>
-              <div className="flex-1 text-foreground">{formatDate(tenant.created_at)}</div>
+              <div className="flex-1 text-foreground">
+                {formatDate(tenant.created_at)}
+              </div>
             </div>
 
             {/* Updated At */}
@@ -302,7 +329,9 @@ export default function TenantDetailPage() {
                 <Calendar className="w-4 h-4" />
                 Updated:
               </div>
-              <div className="flex-1 text-foreground">{formatDate(tenant.updated_at)}</div>
+              <div className="flex-1 text-foreground">
+                {formatDate(tenant.updated_at)}
+              </div>
             </div>
           </CardBody>
         </Card>

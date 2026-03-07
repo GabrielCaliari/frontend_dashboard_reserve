@@ -1,53 +1,83 @@
 /**
  * Lead Types
- * Based on API v2 - /leads endpoints
+ * Based on backend API - /leads endpoints
  */
 
-export enum LeadOrigin {
-  UNKNOWN = 1,
-  WEBSITE = 2,
-  SOCIAL_MEDIA = 3,
-  EMAIL_CAMPAIGN = 4,
-  REFERRAL = 5,
-  LANDING_PAGE = 6,
+export enum ELeadStatus {
+  new = 1,
+  archived = 8,
 }
 
-export enum LeadStatus {
-  NEW = 1,
-  CONTACTED = 2,
-  QUALIFIED = 3,
-  CONVERTED = 4,
-  ARCHIVED = 5,
+export enum EOriginLead {
+  seo_tool = 1,
+  seo_archive = 2,
+  email = 3,
+  facebook_ads = 4,
+  google_ads = 5,
+  page = 6,
 }
+
+// Keep old enums for backward compat with existing pages that use LeadStatus/LeadOrigin
+export { ELeadStatus as LeadStatus };
+export { EOriginLead as LeadOrigin };
 
 export interface Lead {
-  id: number;
-  name: string;
-  email: string;
-  phone_number: string;
-  origin: LeadOrigin;
+  id: string;
+  name?: string;
+  email?: string;
+  phone_number?: string;
+  origin: EOriginLead;
   origin_font?: string;
   description?: string;
-  status: LeadStatus;
+  status: ELeadStatus;
   data?: Record<string, any>;
   collection_id?: number;
-  tenant_id: number;
+  tenant_id?: number;
+  ip_address?: string;
+  user_agent?: string;
+  country?: string;
+  city?: string;
+  region?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface LeadAttachment {
+  id: number;
+  asset_id: number;
+  label?: string;
+  lead_id: string;
+  created_at: string;
 }
 
 export interface CreateLeadDto {
   name?: string;
   email?: string;
   phone_number?: string;
-  origin?: LeadOrigin;
+  origin?: EOriginLead;
   origin_font?: string;
   description?: string;
-  data: Record<string, any>;
+  data?: Record<string, any>;
+  collection_id?: number;
 }
 
 export interface UpdateLeadStatusDto {
-  status: LeadStatus;
+  status: ELeadStatus;
+}
+
+export interface UpdateLeadDto {
+  name?: string;
+  email?: string;
+  phone_number?: string;
+  origin?: EOriginLead;
+  origin_font?: string;
+  description?: string;
+  data?: Record<string, any>;
+}
+
+export interface AddAttachmentDto {
+  asset_id: number;
+  label?: string;
 }
 
 export interface LeadListResponse {
@@ -72,23 +102,14 @@ export interface LeadDetailResponse {
  * Lead Collection Types
  */
 
-export enum CollectionAccessMode {
-  PUBLIC = 'public',
-  PRIVATE = 'private',
-  RESTRICTED = 'restricted',
-}
-
 export interface LeadCollection {
   id: number;
   name: string;
   slug: string;
   source: string;
-  access_mode: CollectionAccessMode;
-  allowed_domains: string[];
   active: boolean;
-  tenant_id: number;
+  tenant_id?: number;
   secret_key?: string;
-  lead_count?: number;
   created_at: string;
   updated_at: string;
 }
@@ -96,15 +117,11 @@ export interface LeadCollection {
 export interface CreateCollectionDto {
   name: string;
   source: string;
-  access_mode: CollectionAccessMode;
-  allowed_domains?: string[];
 }
 
 export interface UpdateCollectionDto {
   name?: string;
   source?: string;
-  access_mode?: CollectionAccessMode;
-  allowed_domains?: string[];
   active?: boolean;
 }
 
@@ -122,7 +139,7 @@ export interface CollectionListResponse {
 
 export interface CollectionDetailResponse {
   success: boolean;
-  data: LeadCollection;
+  data: LeadCollection & { secretKey?: string };
 }
 
 export interface RegenerateKeyResponse {
@@ -130,4 +147,11 @@ export interface RegenerateKeyResponse {
   data: {
     secretKey: string;
   };
+}
+
+// Keep for backward compat
+export enum CollectionAccessMode {
+  PUBLIC = 'public',
+  PRIVATE = 'private',
+  RESTRICTED = 'restricted',
 }

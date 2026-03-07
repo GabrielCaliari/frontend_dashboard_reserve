@@ -1,13 +1,10 @@
 import { apiClient } from '@/src/common/config/api';
-import type { UpdateLeadStatusDto, LeadDetailResponse } from '@/src/common/@types/@lead';
+import type { LeadDetailResponse, UpdateLeadStatusDto } from '@/src/common/@types/@lead';
 
 export async function updateLeadStatusService(
-  id: number,
+  id: string,
   data: UpdateLeadStatusDto
 ): Promise<LeadDetailResponse> {
-  const response = await apiClient.put<LeadDetailResponse>(
-    `/leads/${id}/status`,
-    data
-  );
+  const response = await apiClient.put<LeadDetailResponse>(`/leads/${id}/status`, data);
   return response.data;
 }

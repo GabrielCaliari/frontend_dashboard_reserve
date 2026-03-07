@@ -13,19 +13,20 @@ import type {
 export const articleService = {
   // Admin endpoints (tenant_id via header x-tenant-id)
   async listArticles(blogId: number, page = 1, limit = 10): Promise<ArticleListResponse> {
-    const response = await api.get(`/cms/blogs/${blogId}/articles`, {
-      params: { page, limit },
+    const response = await api.get('/cms/articles', {
+      params: { blogId, page, limit },
     });
     return response.data;
   },
 
   async getArticle(blogId: number, articleId: number): Promise<Article> {
-    const response = await api.get(`/cms/blogs/${blogId}/articles/${articleId}`);
+    const response = await api.get(`/cms/articles/${articleId}`, { params: { blogId } });
     return response.data;
   },
 
   async createArticle(blogId: number, data: ArticleCreateInput): Promise<Article> {
-    const response = await api.post(`/cms/blogs/${blogId}/articles`, data);
+    const payload = { ...data, blogId };
+    const response = await api.post('/cms/articles', payload);
     return response.data;
   },
 
@@ -34,12 +35,13 @@ export const articleService = {
     articleId: number,
     data: ArticleUpdateInput
   ): Promise<Article> {
-    const response = await api.put(`/cms/blogs/${blogId}/articles/${articleId}`, data);
+    const payload = { ...data, blogId };
+    const response = await api.put(`/cms/articles/${articleId}`, payload);
     return response.data;
   },
 
   async deleteArticle(blogId: number, articleId: number): Promise<void> {
-    await api.delete(`/cms/blogs/${blogId}/articles/${articleId}`);
+    await api.delete(`/cms/articles/${articleId}`, { params: { blogId } });
   },
 
   // Public API endpoints (require secret key)

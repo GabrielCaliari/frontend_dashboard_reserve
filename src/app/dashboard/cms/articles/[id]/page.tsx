@@ -26,6 +26,8 @@ import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
 import { useUpdateArticle } from "@/src/common/hooks/cms/use-update-article";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 import { toast } from "sonner";
+import { generateSlug } from "@/src/common/utils/slug-generator";
+import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 
 export default function ArticleEditorPage() {
   const params = useParams();
@@ -51,9 +53,8 @@ export default function ArticleEditorPage() {
     blogId ? parseInt(blogId) : 0,
     articleId,
   );
-  const { mutate: updateArticle, isPending } = useUpdateArticle(
-    blogId ? parseInt(blogId) : 0,
-  );
+  const { data: authors } = useGetAuthors();
+  const { mutate: updateArticle, isPending } = useUpdateArticle(blogId || "");
 
   // Initialize form with article data
   useEffect(() => {
@@ -79,10 +80,21 @@ export default function ArticleEditorPage() {
       return;
     }
 
+    if (!authors || authors.length === 0) {
+      toast.error("Author required", {
+        description:
+          "No authors found in the system. Please create an author first.",
+      });
+      return;
+    }
+
     updateArticle(
       {
         id: articleId,
-        title: title.trim(),
+        displayTitle: title.trim(),
+        metaTitle: title.trim().substring(0, 60),
+        slug: generateSlug(title.trim()),
+        authorId: authors[0].id,
         content: content || "",
       },
       {

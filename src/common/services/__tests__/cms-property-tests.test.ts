@@ -36,7 +36,7 @@ vi.mock('@/src/common/config/cms-public-api-client', () => ({
   })),
 }));
 
-import cmsApiClient from '@/src/common/config/cms-api-client';
+import { cmsApiClient } from '@/src/common/config/api';
 import { createPublicCmsClient } from '@/src/common/config/cms-public-api-client';
 
 describe('CMS Property-Based Tests', () => {

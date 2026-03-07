@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@nextui-org/react";
 import { Plus } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
@@ -27,33 +28,15 @@ import type {
 } from "@/src/common/schemas/access-management/tenant-schema";
 import { toast } from "react-hot-toast";
 
-/**
- * TenantListPage Component
- * 
- * Main page for tenant management with CRUD operations.
- * 
- * Features:
- * - Paginated list of tenants with search functionality
- * - Create new tenant with name, slug, and domain
- * - Edit existing tenant information
- * - Activate/deactivate tenant accounts
- * - Delete tenant accounts with confirmation
- * - Loading and error states
- * - Toast notifications for user feedback
- * 
- * Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 17.1, 17.2, 17.3
- */
 export default function TenantListPage() {
-  // Pagination and search state
+  const t = useTranslations("accessManagement");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const perPage = 10;
 
-  // Modal state
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | undefined>(undefined);
 
-  // Confirmation dialog state
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -68,75 +51,51 @@ export default function TenantListPage() {
     onConfirm: () => {},
   });
 
-  // Fetch tenants with pagination and search
   const { data, isLoading, error } = useTenants({
     page: currentPage,
     perPage,
     search: searchTerm || undefined,
   });
 
-  // Mutations
   const createTenantMutation = useCreateTenant();
   const updateTenantMutation = useUpdateTenant();
   const toggleStatusMutation = useToggleTenantStatus();
   const deleteTenantMutation = useDeleteTenant();
 
-  // ============================================================================
-  // Handlers
-  // ============================================================================
-
-  /**
-   * Handle page change
-   */
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  /**
-   * Handle search input change
-   */
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1);
   };
 
-  /**
-   * Open create tenant modal
-   */
   const handleCreateClick = () => {
     setSelectedTenant(undefined);
     setIsFormModalOpen(true);
   };
 
-  /**
-   * Open edit tenant modal
-   */
   const handleEditClick = (tenant: Tenant) => {
     setSelectedTenant(tenant);
     setIsFormModalOpen(true);
   };
 
-  /**
-   * Handle form submission (create or update)
-   */
   const handleFormSubmit = async (
-    formData: CreateTenantFormData | UpdateTenantFormData
+    formData: CreateTenantFormData | UpdateTenantFormData,
   ) => {
     try {
       if (selectedTenant) {
-        // Update existing tenant
         const updateData: UpdateTenantDto = {
           name: formData.name,
           slug: formData.slug,
           domain: formData.domain,
         };
-
         await updateTenantMutation.mutateAsync({
           id: selectedTenant.id,
           data: updateData,
         });
       } else {
-        // Create new tenant
         const createData = formData as CreateTenantFormData;
         await createTenantMutation.mutateAsync(createData);
       }
@@ -144,20 +103,15 @@ export default function TenantListPage() {
       setIsFormModalOpen(false);
       setSelectedTenant(undefined);
     } catch (error) {
-      // Error is already handled by the mutation hooks with toast
-      throw error; // Re-throw to keep modal open
+      throw error;
     }
   };
 
-  /**
-   * Handle toggle tenant status (activate/deactivate)
-   */
-  const handleToggleStatus = (tenantId: number, isActive: boolean) => {
-    const action = isActive ? "deactivate" : "activate";
-    const actionTitle = isActive ? "Deactivate Tenant" : "Activate Tenant";
+  const handleToggleStatus = (tenantId: string, isActive: boolean) => {
+    const actionTitle = isActive ? t("tenants.management.deactivateConfirmTitle") : t("tenants.management.activateConfirmTitle");
     const actionMessage = isActive
-      ? "Are you sure you want to deactivate this tenant? All associated users will lose access to the system."
-      : "Are you sure you want to activate this tenant? All associated users will regain access to the system.";
+      ? t("tenants.management.deactivateConfirmMessage")
+      : t("tenants.management.activateConfirmMessage");
 
     setConfirmDialog({
       isOpen: true,
@@ -167,7 +121,7 @@ export default function TenantListPage() {
       onConfirm: async () => {
         try {
           await toggleStatusMutation.mutateAsync({ id: tenantId, isActive });
-          setConfirmDialog({ ...confirmDialog, isOpen: false });
+          setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
         } catch (error) {
           // Error is already handled by the mutation hook
         }
@@ -175,20 +129,16 @@ export default function TenantListPage() {
     });
   };
 
-  /**
-   * Handle delete tenant
-   */
-  const handleDeleteClick = (tenantId: number) => {
+  const handleDeleteClick = (tenantId: string) => {
     setConfirmDialog({
       isOpen: true,
-      title: "Delete Tenant",
-      message:
-        "Are you sure you want to delete this tenant? This action cannot be undone and will permanently remove the tenant and all associated data.",
+      title: t("tenants.management.deleteConfirmTitle"),
+      message: t("tenants.management.deleteConfirmMessage"),
       variant: "danger",
       onConfirm: async () => {
         try {
           await deleteTenantMutation.mutateAsync(tenantId);
-          setConfirmDialog({ ...confirmDialog, isOpen: false });
+          setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
         } catch (error) {
           // Error is already handled by the mutation hook
         }
@@ -196,38 +146,29 @@ export default function TenantListPage() {
     });
   };
 
-  /**
-   * Close confirmation dialog
-   */
   const handleCloseConfirmDialog = () => {
-    setConfirmDialog({ ...confirmDialog, isOpen: false });
+    setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
   };
 
-  // ============================================================================
-  // Render
-  // ============================================================================
-
-  // Calculate total pages
   const totalPages = data?.meta?.total_pages || 1;
 
-  // Handle error state
   if (error) {
     return (
       <LayoutScopeRoot routeActive="access-management">
         <div className="p-6">
-          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 text-center">
-            <h2 className="text-xl font-semibold text-red-500 mb-2">
-              Error Loading Tenants
+          <div className="bg-danger/10 border border-danger/20 rounded-lg p-6 text-center">
+            <h2 className="text-xl font-semibold text-danger mb-2">
+              {t("tenants.management.errorTitle")}
             </h2>
-            <p className="text-red-400 mb-4">
-              {error.message || "Failed to load tenant data. Please try again."}
+            <p className="text-danger-500 mb-4">
+              {error.message || t("tenants.management.errorMessage")}
             </p>
             <Button
               color="danger"
               variant="flat"
               onPress={() => window.location.reload()}
             >
-              Retry
+              {t("tenants.management.retry")}
             </Button>
           </div>
         </div>
@@ -239,23 +180,21 @@ export default function TenantListPage() {
     <>
       <LayoutScopeRoot routeActive="access-management">
         <div className="p-6">
-          {/* Header */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              Tenant Management
+              {t("tenants.management.title")}
             </h1>
             <p className="text-muted-foreground">
-              Manage tenant organizations, domains, and access
+              {t("tenants.management.description")}
             </p>
           </div>
 
-          {/* Actions Bar */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex-1">
               <SearchInput
                 value={searchTerm}
                 onChange={handleSearchChange}
-                placeholder="Search by name, slug, or domain..."
+                placeholder={t("tenants.management.searching")}
                 className="max-w-md"
               />
             </div>
@@ -265,26 +204,22 @@ export default function TenantListPage() {
               onPress={handleCreateClick}
               className="sm:w-auto w-full"
             >
-              Create Tenant
+              {t("tenants.management.createButton")}
             </Button>
           </div>
 
-          {/* Tenant Table */}
-          <div className="bg-content1 rounded-lg border border-border">
-            <TenantTable
-              tenants={data?.data || []}
-              isLoading={isLoading}
-              onEdit={handleEditClick}
-              onToggleActive={handleToggleStatus}
-              onDelete={handleDeleteClick}
-            />
-          </div>
+          <TenantTable
+            tenants={data?.data || []}
+            isLoading={isLoading}
+            onEdit={handleEditClick}
+            onToggleActive={handleToggleStatus}
+            onDelete={handleDeleteClick}
+          />
 
-          {/* Pagination */}
           {!isLoading && data?.data && data.data.length > 0 && (
             <div className="mt-6 flex justify-between items-center">
               <p className="text-sm text-muted-foreground">
-                Showing {data.data.length} of {data.meta.total} tenants
+                {t("tenants.management.showing", { count: data.data.length, total: data.meta.total })}
               </p>
               <PaginationControls
                 currentPage={currentPage}
@@ -297,7 +232,6 @@ export default function TenantListPage() {
         </div>
       </LayoutScopeRoot>
 
-      {/* Tenant Form Modal (Create/Edit) */}
       <TenantFormModal
         isOpen={isFormModalOpen}
         onClose={() => {
@@ -311,7 +245,6 @@ export default function TenantListPage() {
         }
       />
 
-      {/* Confirmation Dialog (Delete/Deactivate) */}
       <ConfirmationDialog
         isOpen={confirmDialog.isOpen}
         onClose={handleCloseConfirmDialog}
@@ -319,7 +252,7 @@ export default function TenantListPage() {
         title={confirmDialog.title}
         message={confirmDialog.message}
         variant={confirmDialog.variant}
-        confirmText={confirmDialog.variant === "danger" ? "Delete" : "Confirm"}
+        confirmText={confirmDialog.variant === "danger" ? t("tenants.management.confirmDelete") : t("tenants.management.confirmAction")}
         isLoading={
           toggleStatusMutation.isPending || deleteTenantMutation.isPending
         }

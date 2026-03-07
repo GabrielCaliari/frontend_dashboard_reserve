@@ -3,7 +3,7 @@ import { getLeadAction } from '@/src/common/actions/leads/get-lead';
 import type { LeadDetailResponse } from '@/src/common/@types/@lead';
 
 interface UseGetLeadParams {
-  id: number;
+  id: string;
   enabled?: boolean;
 }
 
@@ -12,6 +12,6 @@ export function useGetLead({ id, enabled = true }: UseGetLeadParams) {
     queryKey: ['leads', 'detail', id],
     queryFn: () => getLeadAction(id),
     enabled: enabled && !!id,
-    staleTime: 60000, // 1 minute
+    staleTime: 60000,
   });
 }

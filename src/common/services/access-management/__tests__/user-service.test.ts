@@ -13,7 +13,7 @@ import {
   deactivateUser,
   deleteUser,
 } from '../user-service';
-import { accessManagementApiClient } from '@/src/common/config/access-management-api-client';
+import { apiClient as accessManagementApiClient } from '@/src/common/config/api';
 import type { User, PaginatedResponse, UpdateUserDto } from '@/src/common/@types/@access-management';
 
 // Mock the API client

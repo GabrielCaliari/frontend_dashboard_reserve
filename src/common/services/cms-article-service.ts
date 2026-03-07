@@ -1,28 +1,53 @@
-import cmsApiClient from '@/src/common/config/cms-api-client';
+import { cmsApiClient } from '@/src/common/config/api';
 import {
   Article,
   ArticleStatus,
   CreateArticleDto,
   UpdateArticleDto,
   ReorderArticleDto,
-} from '@/common/@types/@cms-article';
+} from '@/src/common/@types/@cms-article';
 import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
 
 /**
- * Fetch articles for a specific blog with optional status filter
+ * Fetch articles for a specific blog with optional status filter (AUTHENTICATED)
  * @param blogId - The blog ID
  * @param status - Optional status filter (draft, published, archived)
+ * @param page - Page number (default: 1)
+ * @param limit - Items per page (default: 30)
  * @returns Promise<Article[]>
  */
 export const fetchArticles = async (
-  blogId: number,
-  status?: ArticleStatus
+  blogId: string | number,
+  status?: ArticleStatus,
+  page: number = 1,
+  limit: number = 30
 ): Promise<Article[]> => {
   try {
     return await withRetry(async () => {
-      const params = status ? { status } : {};
-      const response = await cmsApiClient.get(`blogs/${blogId}/articles`, { params });
-      return response.data;
+      const params: Record<string, any> = { 
+        blogId,
+        page,
+        limit
+      };
+      
+      if (status) {
+        params.status = status;
+      }
+      
+      // Use authenticated endpoint: /api/cms/articles?blogId={blogId}
+      const response = await cmsApiClient.get('cms/articles', { params });
+      
+      // Handle paginated response format
+      if (response.data && Array.isArray(response.data.data)) {
+        return response.data.data;
+      }
+      
+      // Fallback for direct array response
+      if (Array.isArray(response.data)) {
+        return response.data;
+      }
+      
+      return [];
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -30,18 +55,17 @@ export const fetchArticles = async (
 };
 
 /**
- * Fetch a single article by ID
- * @param blogId - The blog ID
+ * Fetch a single article by ID (AUTHENTICATED)
  * @param articleId - The article ID
  * @returns Promise<Article>
  */
 export const fetchArticleById = async (
-  blogId: number,
   articleId: number
 ): Promise<Article> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get(`blogs/${blogId}/articles/${articleId}`);
+      // Use authenticated endpoint: /api/cms/articles/{id}
+      const response = await cmsApiClient.get(`cms/articles/${articleId}`);
       return response.data;
     });
   } catch (error) {
@@ -50,17 +74,21 @@ export const fetchArticleById = async (
 };
 
 /**
- * Create a new article
- * @param blogId - The blog ID
- * @param data - Article creation data
+ * Create a new article (AUTHENTICATED)
+ * @param data - Article creation data (must include blogId)
  * @returns Promise<Article>
  */
 export const createArticle = async (
-  blogId: number,
   data: CreateArticleDto
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`blogs/${blogId}/articles`, data);
+    const payload = { 
+      ...data,
+      authorId: String(data.authorId)
+    };
+    
+    // Use authenticated endpoint: POST /api/cms/articles
+    const response = await cmsApiClient.post('cms/articles', payload);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -68,19 +96,18 @@ export const createArticle = async (
 };
 
 /**
- * Update an existing article
- * @param blogId - The blog ID
+ * Update an existing article (AUTHENTICATED)
  * @param articleId - The article ID
  * @param data - Article update data
  * @returns Promise<Article>
  */
 export const updateArticle = async (
-  blogId: number,
   articleId: number,
   data: UpdateArticleDto
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.put(`blogs/${blogId}/articles/${articleId}`, data);
+    // Use authenticated endpoint: PUT /api/cms/articles/{id}
+    const response = await cmsApiClient.put(`cms/articles/${articleId}`, data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -88,34 +115,32 @@ export const updateArticle = async (
 };
 
 /**
- * Delete an article
- * @param blogId - The blog ID
+ * Delete an article (AUTHENTICATED)
  * @param articleId - The article ID
  * @returns Promise<void>
  */
 export const deleteArticle = async (
-  blogId: number,
   articleId: number
 ): Promise<void> => {
   try {
-    await cmsApiClient.delete(`blogs/${blogId}/articles/${articleId}`);
+    // Use authenticated endpoint: DELETE /api/cms/articles/{id}
+    await cmsApiClient.delete(`cms/articles/${articleId}`);
   } catch (error) {
     throw transformCMSError(error);
   }
 };
 
 /**
- * Publish an article (transition from draft to published)
- * @param blogId - The blog ID
+ * Publish an article (transition from draft to published) (AUTHENTICATED)
  * @param articleId - The article ID
  * @returns Promise<Article>
  */
 export const publishArticle = async (
-  blogId: number,
   articleId: number
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`blogs/${blogId}/articles/${articleId}/publish`);
+    // Use authenticated endpoint: POST /api/cms/articles/{id}/publish
+    const response = await cmsApiClient.post(`cms/articles/${articleId}/publish`);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -123,17 +148,16 @@ export const publishArticle = async (
 };
 
 /**
- * Archive an article (transition from published to archived)
- * @param blogId - The blog ID
+ * Archive an article (transition from published to archived) (AUTHENTICATED)
  * @param articleId - The article ID
  * @returns Promise<Article>
  */
 export const archiveArticle = async (
-  blogId: number,
   articleId: number
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`blogs/${blogId}/articles/${articleId}/archive`);
+    // Use authenticated endpoint: POST /api/cms/articles/{id}/archive
+    const response = await cmsApiClient.post(`cms/articles/${articleId}/archive`);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -141,17 +165,18 @@ export const archiveArticle = async (
 };
 
 /**
- * Reorder articles by updating display_order values
+ * Reorder articles by updating display_order values (AUTHENTICATED)
  * @param blogId - The blog ID
  * @param order - Array of article IDs with new display_order values
  * @returns Promise<void>
  */
 export const reorderArticles = async (
-  blogId: number,
+  blogId: string | number,
   order: ReorderArticleDto[]
 ): Promise<void> => {
   try {
-    await cmsApiClient.put(`blogs/${blogId}/articles/reorder`, { order });
+    // Use authenticated endpoint: PUT /api/cms/articles/reorder
+    await cmsApiClient.put('cms/articles/reorder', { blogId, order });
   } catch (error) {
     throw transformCMSError(error);
   }

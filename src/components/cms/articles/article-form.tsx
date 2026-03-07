@@ -1,4 +1,3 @@
-
 "use client";
 
 /**
@@ -134,10 +133,13 @@ export default function ArticleForm({
     setAutoSaveStatus("saving");
     const timeoutId = setTimeout(() => {
       const data = {
-        title: titleValue,
+        displayTitle: titleValue,
+        metaTitle: titleValue.substring(0, 60),
+        slug: generateSlug(titleValue),
+        authorId: "123e4567-e89b-12d3-a456-426614174000", // Valid UUID format
         content: contentValue,
       };
-      onSubmit(data);
+      onSubmit(data as any);
       setAutoSaveStatus("saved");
 
       // Reset to idle after 2 seconds
@@ -149,7 +151,14 @@ export default function ArticleForm({
 
   // Handle form submission
   const handleFormSubmit = (data: ArticleFormData) => {
-    onSubmit(data);
+    const payload = {
+      displayTitle: data.title,
+      metaTitle: data.title.substring(0, 60),
+      slug: generateSlug(data.title),
+      authorId: "123e4567-e89b-12d3-a456-426614174000", // Valid UUID format
+      content: data.content,
+    };
+    onSubmit(payload as any);
   };
 
   // Handle image upload

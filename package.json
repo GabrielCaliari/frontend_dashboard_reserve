@@ -68,7 +68,7 @@
 		"jspdf": "^2.5.2",
 		"lucide-react": "^0.468.0",
 		"next": "16.1.6",
-		"next-intl": "^4.8.2",
+		"next-intl": "^4.8.3",
 		"next-themes": "^0.4.6",
 		"nextjs-toploader": "^3.9.17",
 		"pdf-lib": "^1.17.1",

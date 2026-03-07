@@ -16,13 +16,13 @@ import { assetKeys } from './use-assets';
  * Provides consistent query keys for cache management
  */
 export const relationKeys = {
-  all: (tenantId: number | null) => ['relations', tenantId] as const,
-  lists: (tenantId: number | null) => [...relationKeys.all(tenantId), 'list'] as const,
-  list: (tenantId: number | null, filters?: RelationFilters) =>
+  all: (tenantId: string | null) => ['relations', tenantId] as const,
+  lists: (tenantId: string | null) => [...relationKeys.all(tenantId), 'list'] as const,
+  list: (tenantId: string | null, filters?: RelationFilters) =>
     [...relationKeys.lists(tenantId), filters] as const,
-  byEntity: (tenantId: number | null, entityType: string, entityId: number) =>
+  byEntity: (tenantId: string | null, entityType: string, entityId: number) =>
     [...relationKeys.lists(tenantId), { entity_type: entityType, entity_id: entityId }] as const,
-  byAsset: (tenantId: number | null, assetId: number) =>
+  byAsset: (tenantId: string | null, assetId: number) =>
     [...relationKeys.lists(tenantId), { asset_id: assetId }] as const,
 };
 

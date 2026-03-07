@@ -2,18 +2,17 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-} from "@nextui-org/react";
+} from "@/src/components/ui/modal";
+import { PasswordInput } from "@/src/components/ui/password-input";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   createAdminSchema,
   updateAdminSchema,
@@ -55,6 +54,7 @@ export function AdminFormModal({
   isLoading = false,
 }: AdminFormModalProps) {
   const isEditMode = !!admin;
+  const t = useTranslations("accessManagement.adminForm");
   const schema = isEditMode ? updateAdminSchema : createAdminSchema;
 
   const {
@@ -103,7 +103,7 @@ export function AdminFormModal({
   }, [isOpen, isEditMode, admin, reset]);
 
   const handleFormSubmit = async (
-    data: CreateAdminFormData | UpdateAdminFormData
+    data: CreateAdminFormData | UpdateAdminFormData,
   ) => {
     try {
       await onSubmit(data);
@@ -125,14 +125,14 @@ export function AdminFormModal({
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>
             <h2 className="text-xl font-semibold">
-              {isEditMode ? "Edit Admin" : "Create New Admin"}
+              {isEditMode ? t("editTitle") : t("createTitle")}
             </h2>
           </ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               <Input
-                label="Name"
-                placeholder="Enter admin name"
+                label={t("nameLabel")}
+                placeholder={t("namePlaceholder")}
                 {...register("name")}
                 isInvalid={!!errors.name}
                 errorMessage={errors.name?.message}
@@ -141,9 +141,9 @@ export function AdminFormModal({
               />
 
               <Input
-                label="Email"
+                label={t("emailLabel")}
                 type="email"
-                placeholder="admin@example.com"
+                placeholder={t("emailPlaceholder")}
                 {...register("email")}
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
@@ -152,10 +152,9 @@ export function AdminFormModal({
               />
 
               {!isEditMode && (
-                <Input
-                  label="Password"
-                  type="password"
-                  placeholder="Enter password"
+                <PasswordInput
+                  label={t("passwordLabel")}
+                  placeholder={t("passwordPlaceholder")}
                   {...register("password")}
                   isInvalid={!!errors.password}
                   errorMessage={errors.password?.message}
@@ -166,9 +165,8 @@ export function AdminFormModal({
               )}
 
               {isEditMode && (
-                <Input
-                  label="Password"
-                  type="password"
+                <PasswordInput
+                  label={t("passwordLabel")}
                   placeholder="Leave blank to keep current password"
                   {...register("password")}
                   isInvalid={!!errors.password}
@@ -179,8 +177,8 @@ export function AdminFormModal({
               )}
 
               <Select
-                label="Role"
-                placeholder="Select admin role"
+                label={t("roleLabel")}
+                placeholder={t("rolePlaceholder")}
                 selectedKeys={selectedRole ? [selectedRole] : []}
                 onSelectionChange={(keys) => {
                   const selected = Array.from(keys)[0] as AdminRoleType;
@@ -192,30 +190,34 @@ export function AdminFormModal({
               >
                 {Object.entries(roleLabels).map(([value, label]) => (
                   <SelectItem key={value} value={value}>
-                    {label}
+                    {t(`roles.${value}` as any)}
                   </SelectItem>
                 ))}
               </Select>
 
               {selectedRole && (
-                <div className="p-3 bg-default-100 rounded-lg">
-                  <p className="text-sm text-default-600">
-                    {roleDescriptions[selectedRole as AdminRole]}
+                <div className="p-3 bg-content2 rounded-lg">
+                  <p className="text-sm text-foreground-500">
+                    {t(`roleDescriptions.${selectedRole}` as any)}
                   </p>
                 </div>
               )}
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button variant="light" onPress={handleClose} isDisabled={isSubmitting || isLoading}>
-              Cancel
+            <Button
+              variant="light"
+              onPress={handleClose}
+              isDisabled={isSubmitting || isLoading}
+            >
+              {t("cancel")}
             </Button>
             <Button
               color="primary"
               type="submit"
               isLoading={isSubmitting || isLoading}
             >
-              {isEditMode ? "Update Admin" : "Create Admin"}
+              {isEditMode ? t("saveChanges") : t("create")}
             </Button>
           </ModalFooter>
         </form>

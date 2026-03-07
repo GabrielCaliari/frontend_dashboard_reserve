@@ -1,4 +1,4 @@
-import cmsApiClient from '@/src/common/config/cms-api-client';
+import { cmsApiClient } from '@/src/common/config/api';
 import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
 
 /**
@@ -141,7 +141,7 @@ export const fetchCollections = async (
 ): Promise<PaginatedResponse<MediaCollection>> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get('collections', { params });
+      const response = await cmsApiClient.get('cms/collections', { params });
       return response.data;
     });
   } catch (error) {
@@ -157,7 +157,7 @@ export const fetchCollections = async (
 export const fetchCollectionById = async (id: number): Promise<MediaCollection> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get(`collections/${id}`);
+      const response = await cmsApiClient.get(`cms/collections/${id}`);
       return response.data;
     });
   } catch (error) {
@@ -174,7 +174,7 @@ export const createCollection = async (
   data: CreateCollectionDto
 ): Promise<MediaCollection> => {
   try {
-    const response = await cmsApiClient.post('collections', data);
+    const response = await cmsApiClient.post('cms/collections', data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -192,7 +192,7 @@ export const updateCollection = async (
   data: UpdateCollectionDto
 ): Promise<MediaCollection> => {
   try {
-    const response = await cmsApiClient.patch(`collections/${id}`, data);
+    const response = await cmsApiClient.put(`cms/collections/${id}`, data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -206,7 +206,7 @@ export const updateCollection = async (
  */
 export const deleteCollection = async (id: number): Promise<void> => {
   try {
-    await cmsApiClient.delete(`collections/${id}`);
+    await cmsApiClient.delete(`cms/collections/${id}`);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -229,7 +229,7 @@ export const fetchAssets = async (
   try {
     return await withRetry(async () => {
       const queryParams = { ...filters, ...params };
-      const response = await cmsApiClient.get('assets', { params: queryParams });
+      const response = await cmsApiClient.get('cms/assets', { params: queryParams });
       return response.data;
     });
   } catch (error) {
@@ -245,7 +245,7 @@ export const fetchAssets = async (
 export const fetchAssetById = async (id: number): Promise<MediaAsset> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get(`assets/${id}`);
+      const response = await cmsApiClient.get(`cms/assets/${id}`);
       return response.data;
     });
   } catch (error) {
@@ -276,7 +276,7 @@ export const uploadAsset = async (
       formData.append('metadata', JSON.stringify(data.metadata));
     }
 
-    const response = await cmsApiClient.post('assets', formData, {
+    const response = await cmsApiClient.post('cms/assets', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -305,7 +305,7 @@ export const updateAsset = async (
   data: UpdateAssetDto
 ): Promise<MediaAsset> => {
   try {
-    const response = await cmsApiClient.patch(`assets/${id}`, data);
+    const response = await cmsApiClient.patch(`cms/assets/${id}`, data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -319,7 +319,7 @@ export const updateAsset = async (
  */
 export const deleteAsset = async (id: number): Promise<void> => {
   try {
-    await cmsApiClient.delete(`assets/${id}`);
+    await cmsApiClient.delete(`cms/assets/${id}`);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -339,7 +339,7 @@ export const fetchRelations = async (
 ): Promise<MediaRelation[]> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get('relations', { params: filters });
+      const response = await cmsApiClient.get('cms/relations', { params: filters });
       return response.data;
     });
   } catch (error) {
@@ -356,7 +356,7 @@ export const createRelation = async (
   data: CreateRelationDto
 ): Promise<MediaRelation> => {
   try {
-    const response = await cmsApiClient.post('relations', data);
+    const response = await cmsApiClient.post('cms/relations', data);
     return response.data;
   } catch (error) {
     throw transformCMSError(error);
@@ -370,7 +370,7 @@ export const createRelation = async (
  */
 export const deleteRelation = async (id: number): Promise<void> => {
   try {
-    await cmsApiClient.delete(`relations/${id}`);
+    await cmsApiClient.delete(`cms/relations/${id}`);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -385,7 +385,7 @@ export const reorderRelations = async (
   order: ReorderRelationDto[]
 ): Promise<void> => {
   try {
-    await cmsApiClient.patch('relations/reorder', { order });
+    await cmsApiClient.patch('cms/relations/reorder', { order });
   } catch (error) {
     throw transformCMSError(error);
   }

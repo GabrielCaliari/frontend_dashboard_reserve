@@ -2,18 +2,14 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-} from "@nextui-org/react";
+} from "@/src/components/ui/modal";
 import { useCreateCollection } from "@/src/common/hooks/leads/use-create-collection";
 import {
   createCollectionSchema,
@@ -34,8 +30,7 @@ const accessModeLabels: Record<CollectionAccessMode, string> = {
 };
 
 const accessModeDescriptions: Record<CollectionAccessMode, string> = {
-  [CollectionAccessMode.PUBLIC]:
-    "Anyone can submit leads to this collection",
+  [CollectionAccessMode.PUBLIC]: "Anyone can submit leads to this collection",
   [CollectionAccessMode.PRIVATE]:
     "Only allowed domains can submit leads (CORS protection)",
   [CollectionAccessMode.RESTRICTED]:

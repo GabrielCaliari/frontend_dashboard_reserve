@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle, FileText } from "lucide-react";
 import { Card, CardBody } from "@nextui-org/react";
@@ -26,9 +26,12 @@ import { toast } from "sonner";
 
 type ArticleStatus = "draft" | "published" | "archived";
 
-export default function ArticlesPage() {
+function ArticlesPageContent() {
   const router = useRouter();
-  const [selectedBlogId, setSelectedBlogId] = useState<string>("");
+  const searchParams = useSearchParams();
+  const [selectedBlogId, setSelectedBlogId] = useState<string>(
+    searchParams.get("blogId") || "",
+  );
   const [currentStatus, setCurrentStatus] = useState<ArticleStatus | undefined>(
     undefined,
   );
@@ -38,7 +41,8 @@ export default function ArticlesPage() {
 
   const blogIdNum = selectedBlogId ? parseInt(selectedBlogId) : 0;
 
-  const { data: articlesData, isLoading } = useListArticles(blogIdNum, 1, 50);
+  const { data: articlesData, isLoading, error, isError } = useListArticles(blogIdNum, 1, 50);
+  
   const { mutate: deleteArticle } = useDeleteArticle(blogIdNum);
   const { mutate: publishArticle } = usePublishArticle();
   const { mutate: archiveArticle } = useArchiveArticle();
@@ -48,6 +52,31 @@ export default function ArticlesPage() {
   const articles: Article[] = Array.isArray(articlesData)
     ? articlesData
     : ((articlesData as any)?.data ?? []);
+
+  // Show error state
+  if (isError && selectedBlogId) {
+    return (
+      <LayoutScopeRoot routeActive="articles">
+        <div className="p-8 space-y-8 max-w-7xl mx-auto">
+          <div className="flex flex-col items-center justify-center py-16">
+            <Card className="max-w-md border-danger/20 bg-danger/5">
+              <CardBody className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-danger/10 flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-8 h-8 text-danger" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Error Loading Articles
+                </h3>
+                <p className="text-muted-foreground">
+                  {error instanceof Error ? error.message : 'Failed to load articles. Please try again.'}
+                </p>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
+      </LayoutScopeRoot>
+    );
+  }
 
   const handleDelete = (article: Article) => {
     if (confirm(`Are you sure you want to delete "${article.title}"?`)) {
@@ -177,5 +206,22 @@ export default function ArticlesPage() {
         )}
       </div>
     </LayoutScopeRoot>
+  );
+}
+
+export default function ArticlesPage() {
+  return (
+    <Suspense
+      fallback={
+        <LayoutScopeRoot routeActive="articles">
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <span className="ml-3 text-gray-400">Loading articles...</span>
+          </div>
+        </LayoutScopeRoot>
+      }
+    >
+      <ArticlesPageContent />
+    </Suspense>
   );
 }

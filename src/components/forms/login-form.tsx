@@ -3,17 +3,18 @@
 import { loginSchema } from "@/src/common/schemas/login-schema";
 import { Button, Input, Spinner } from "@nextui-org/react";
 import { useFormik } from "formik";
-import { useRouter } from 'nextjs-toploader/app';
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import useAdminAuthentication from "@/src/common/hooks/use-user-authentication";
 import { useTranslations } from "next-intl";
+import { PasswordInput } from "@/src/components/ui/password-input";
 
 export function LoginForm() {
   const { execAdminAuthentication } = useAdminAuthentication();
   const t = useTranslations();
-  
+
   const [loading, setLoading] = useState(false);
 
   const { replace } = useRouter();
@@ -27,18 +28,17 @@ export function LoginForm() {
     onSubmit: async (values) => {
       const result = await execAdminAuthentication({
         email: values.email,
-        password: values.password
+        password: values.password,
       });
 
       if (result) {
-        replace('/dashboard')
+        replace("/dashboard");
       }
     },
   });
 
   return (
     <>
-
       <form
         onSubmit={formik.handleSubmit}
         className="flex flex-col gap-4 w-full mt-5"
@@ -50,39 +50,28 @@ export function LoginForm() {
             type="text"
             size="lg"
             className="rounded-xl"
-            errorMessage={
-              formik.touched.email && formik.errors.email
-            }
-            isInvalid={
-              formik.touched.email &&
-              Boolean(formik.errors.email)
-            }
+            errorMessage={formik.touched.email && formik.errors.email}
+            isInvalid={formik.touched.email && Boolean(formik.errors.email)}
             {...formik.getFieldProps("email")}
           />
         </div>
         <div className="flex flex-col w-full">
-          <Input
+          <PasswordInput
             label={t("auth.password")}
             placeholder={t("auth.yourPassword")}
-            type="password"
             size="lg"
             className="rounded-xl"
-            errorMessage={
-              formik.touched.password && formik.errors.password
-            }
+            errorMessage={formik.touched.password && formik.errors.password}
             isInvalid={
-              formik.touched.password &&
-              Boolean(formik.errors.password)
+              formik.touched.password && Boolean(formik.errors.password)
             }
             {...formik.getFieldProps("password")}
           />
           {formik.touched.password && formik.errors.password && (
-            <div className="text-red-500 text-sm mt-2">
-              {}
-            </div>
+            <div className="text-red-500 text-sm mt-2">{}</div>
           )}
         </div>
-            
+
         <div className="flex w-full mt-2">
           <Button
             fullWidth
@@ -91,8 +80,8 @@ export function LoginForm() {
             type="submit"
             isDisabled={loading}
           >
-            {!loading && t('auth.login')}
-            {loading && <Spinner color="white"  size="md"/>}
+            {!loading && t("auth.login")}
+            {loading && <Spinner color="white" size="md" />}
           </Button>
         </div>
       </form>

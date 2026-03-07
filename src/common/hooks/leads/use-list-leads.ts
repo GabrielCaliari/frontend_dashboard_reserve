@@ -5,16 +5,18 @@ import type { LeadListResponse } from '@/src/common/@types/@lead';
 interface UseListLeadsParams {
   page?: number;
   limit?: number;
+  status?: number;
+  origin?: number;
   enabled?: boolean;
 }
 
 export function useListLeads(params: UseListLeadsParams = {}) {
-  const { page = 1, limit = 30, enabled = true } = params;
+  const { page = 1, limit = 30, status, origin, enabled = true } = params;
 
   return useQuery<LeadListResponse>({
-    queryKey: ['leads', 'list', page, limit],
-    queryFn: () => listLeadsAction({ page, limit }),
+    queryKey: ['leads', 'list', page, limit, status, origin],
+    queryFn: () => listLeadsAction({ page, limit, status, origin }),
     enabled,
-    staleTime: 30000, // 30 seconds
+    staleTime: 30000,
   });
 }

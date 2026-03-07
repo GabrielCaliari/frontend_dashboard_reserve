@@ -13,11 +13,11 @@ import type { ArticleStatus } from '@/src/common/@types/@article';
  * - detail: Key for single article
  */
 export const ARTICLE_QUERY_KEYS = {
-  all: (tenantId: number | null, blogId: number) => 
+  all: (tenantId: string | null, blogId: number) => 
     ['cms', 'blogs', tenantId, blogId, 'articles'] as const,
-  filtered: (tenantId: number | null, blogId: number, status?: ArticleStatus) => 
+  filtered: (tenantId: string | null, blogId: number, status?: ArticleStatus) => 
     ['cms', 'blogs', tenantId, blogId, 'articles', { status }] as const,
-  detail: (tenantId: number | null, blogId: number, articleId: number) => 
+  detail: (tenantId: string | null, blogId: number, articleId: number) => 
     ['cms', 'blogs', tenantId, blogId, 'articles', articleId] as const,
 } as const;
 

@@ -4,7 +4,7 @@ import type { UpdateLeadStatusDto, LeadDetailResponse } from '@/src/common/@type
 import { toast } from 'react-hot-toast';
 
 interface UpdateLeadStatusParams {
-  id: number;
+  id: string;
   data: UpdateLeadStatusDto;
 }
 

@@ -7,7 +7,7 @@ import {
   deleteBlog,
   regenerateBlogSecretKey,
 } from './cms-blog-service';
-import cmsApiClient from '@/src/common/config/cms-api-client';
+import { cmsApiClient } from '@/src/common/config/api';
 import type { Blog, CreateBlogDto, UpdateBlogDto } from '@/src/common/@types/@cms-blog';
 
 // Mock the API client

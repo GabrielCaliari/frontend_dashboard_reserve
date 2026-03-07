@@ -3,7 +3,7 @@ import { createArticle } from '@/src/common/services/cms-article-service';
 import type { CreateArticleDto } from '@/src/common/@types/@cms-article';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 
-export function useCreateArticle(blogId: number) {
+export function useCreateArticle(blogId: string) {
   const queryClient = useQueryClient();
   const tenantId = useSelectedTenantId();
 

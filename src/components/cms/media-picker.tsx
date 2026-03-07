@@ -2,25 +2,33 @@
 
 import { useState, useCallback, useEffect } from "react";
 import {
+  Button,
+  Input,
+  Tabs,
+  Tab,
+  Card,
+  CardBody,
+  Spinner,
+  Select,
+  SelectItem,
+  Pagination,
+} from "@nextui-org/react";
+import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
-  Tabs,
-  Tab,
-  Select,
-  SelectItem,
-  Input,
-  Pagination,
-} from "@nextui-org/react";
+} from "@/src/components/ui/modal";
 import { Search } from "lucide-react";
 import { AssetGrid } from "./asset-grid";
 import { AssetUpload } from "./asset-upload";
 import { useAssets } from "@/src/common/hooks/cms/use-assets";
 import { useCollections } from "@/src/common/hooks/cms/use-collections";
-import type { MediaAsset, MediaCollection } from "@/src/common/@types/@cms-media";
+import type {
+  MediaAsset,
+  MediaCollection,
+} from "@/src/common/@types/@cms-media";
 import { useDebounce } from "@/src/common/hooks/use-debounce";
 
 interface MediaPickerProps {
@@ -33,10 +41,10 @@ interface MediaPickerProps {
 
 /**
  * Media Picker Modal Component
- * 
+ *
  * A modal component for browsing and selecting media assets from the library
  * or uploading new assets. Supports both single and multiple selection modes.
- * 
+ *
  * Features:
  * - Two tabs: Browse Library and Upload New
  * - Collection filtering
@@ -45,26 +53,26 @@ interface MediaPickerProps {
  * - Asset selection with visual feedback
  * - Auto-select newly uploaded assets
  * - Automatic tab switching after upload
- * 
+ *
  * @param isOpen - Controls modal visibility
  * @param onClose - Callback when modal is closed
  * @param onSelect - Callback with selected assets array
  * @param selectionMode - 'single' or 'multiple' selection mode
  * @param defaultCollection - Optional default collection ID to filter by
- * 
+ *
  * @example
  * ```tsx
  * import { MediaPicker } from '@/src/components/cms/media-picker';
  * import { useState } from 'react';
- * 
+ *
  * function MyComponent() {
  *   const [isOpen, setIsOpen] = useState(false);
- *   
+ *
  *   const handleSelect = (assets) => {
  *     console.log('Selected assets:', assets);
  *     setIsOpen(false);
  *   };
- *   
+ *
  *   return (
  *     <>
  *       <Button onPress={() => setIsOpen(true)}>Select Media</Button>
@@ -88,12 +96,13 @@ export function MediaPicker({
 }: MediaPickerProps) {
   const [activeTab, setActiveTab] = useState<string>("browse");
   const [selectedAssets, setSelectedAssets] = useState<MediaAsset[]>([]);
-  const [selectedCollectionId, setSelectedCollectionId] = useState<number | undefined>(
-    defaultCollection
-  );
+  const [selectedCollectionId, setSelectedCollectionId] = useState<
+    number | undefined
+  >(defaultCollection);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [uploadCollection, setUploadCollection] = useState<MediaCollection | null>(null);
+  const [uploadCollection, setUploadCollection] =
+    useState<MediaCollection | null>(null);
 
   const debouncedSearch = useDebounce(searchQuery, 300);
 
@@ -110,11 +119,11 @@ export function MediaPicker({
     {
       page: currentPage,
       limit: 20,
-    }
+    },
   );
 
   const assets = assetsData?.data || [];
-  const totalPages = assetsData?.meta?.total_pages || 1;
+  const totalPages = assetsData?.meta?.totalPages || 1;
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -157,7 +166,7 @@ export function MediaPicker({
         });
       }
     },
-    [selectionMode]
+    [selectionMode],
   );
 
   // Handle upload complete
@@ -206,12 +215,6 @@ export function MediaPicker({
       onClose={handleCancel}
       size="5xl"
       scrollBehavior="inside"
-      classNames={{
-        base: "bg-[#1a1a2e]",
-        header: "border-b border-gray-700",
-        body: "py-6",
-        footer: "border-t border-gray-700",
-      }}
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
@@ -257,7 +260,10 @@ export function MediaPicker({
                       All Collections
                     </SelectItem>
                     {collections.map((collection) => (
-                      <SelectItem key={collection.id.toString()} value={collection.id.toString()}>
+                      <SelectItem
+                        key={collection.id.toString()}
+                        value={collection.id.toString()}
+                      >
                         {collection.name}
                       </SelectItem>
                     ))}
@@ -318,7 +324,7 @@ export function MediaPicker({
                         selectedKeys={[uploadCollection.id.toString()]}
                         onChange={(e) => {
                           const collection = collections.find(
-                            (c) => c.id === parseInt(e.target.value, 10)
+                            (c) => c.id === parseInt(e.target.value, 10),
                           );
                           if (collection) {
                             setUploadCollection(collection);
@@ -349,7 +355,8 @@ export function MediaPicker({
                 ) : (
                   <div className="text-center py-12">
                     <p className="text-gray-400">
-                      No collections available. Create a collection first to upload assets.
+                      No collections available. Create a collection first to
+                      upload assets.
                     </p>
                   </div>
                 )}

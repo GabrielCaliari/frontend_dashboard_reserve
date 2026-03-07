@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Button, Spinner } from '@nextui-org/react';
-import { Plus } from 'lucide-react';
-import type { Blog } from '@/src/common/@types/@cms-blog';
-import BlogCard from './blog-card';
+import { Button, Spinner } from "@nextui-org/react";
+import { Plus } from "lucide-react";
+import type { Blog } from "@/src/common/@types/@cms-blog";
+import BlogCard from "./blog-card";
 
 interface BlogListProps {
   blogs: Blog[];
@@ -69,7 +69,7 @@ export default function BlogList({
               onDelete={() => onDeleteClick(blog)}
               onRegenerateKey={() => onRegenerateKeyClick(blog)}
               onViewArticles={() => {
-                window.location.href = `/dashboard/cms/blogs/${blog.id}/articles`;
+                window.location.href = `/dashboard/cms/articles?blogId=${blog.id}`;
               }}
             />
           ))}

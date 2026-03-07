@@ -6,6 +6,8 @@ import type { LeadListResponse } from '@/src/common/@types/@lead';
 interface ListLeadsParams {
   page?: number;
   limit?: number;
+  status?: number;
+  origin?: number;
 }
 
 export async function listLeadsAction(

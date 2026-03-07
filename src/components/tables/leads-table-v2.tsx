@@ -77,6 +77,7 @@ export function LeadsTableV2({ onViewLead }: LeadsTableProps) {
 
   return (
     <div className="space-y-4">
+      <div className="overflow-x-auto w-full">
       <Table aria-label="Leads table">
         <TableHeader>
           <TableColumn>NAME</TableColumn>
@@ -143,6 +144,7 @@ export function LeadsTableV2({ onViewLead }: LeadsTableProps) {
           ))}
         </TableBody>
       </Table>
+      </div>
 
       {pageInfo && (
         <div className="flex items-center justify-between">

@@ -1,216 +1,176 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { ArrowLeft, Trash2, Loader2 } from "lucide-react";
-import { Button } from "@nextui-org/react";
+import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { AlertCircle, ArrowLeft, Trash2 } from "lucide-react";
+import { Card, CardBody, CardHeader, Button, Spinner } from "@nextui-org/react";
 import { CollectionForm } from "@/src/components/cms/collection-form";
 import {
   useCollection,
   useUpdateCollection,
   useDeleteCollection,
 } from "@/src/common/hooks/cms/use-collections";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/src/components/ui/dialog";
-import type { CollectionFormData } from "@/src/common/schemas/collection-schema";
+import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 import { toast } from "sonner";
 
 export default function EditCollectionPage() {
   const router = useRouter();
   const params = useParams();
   const collectionId = parseInt(params.id as string);
-  const t = useTranslations();
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  // Fetch collection data
-  const {
-    data: collection,
-    isLoading: isLoadingCollection,
-    error: collectionError,
-  } = useCollection(collectionId);
+  const hasSelectedTenant = useHasSelectedTenant();
+  const { data: collection, isLoading } = useCollection(collectionId);
+  const updateCollectionMutation = useUpdateCollection();
+  const deleteCollectionMutation = useDeleteCollection();
 
-  // Mutations
-  const { mutate: updateCollection, isPending: isUpdating } = useUpdateCollection();
-  const { mutate: deleteCollection, isPending: isDeleting } = useDeleteCollection();
-
-  const handleSubmit = async (data: CollectionFormData) => {
-    updateCollection(
-      { id: collectionId, data },
-      {
-        onSuccess: () => {
-          toast.success(
-            t("cms.collections.updateSuccess") || "Collection updated successfully"
-          );
-          router.push("/dashboard/cms/collections");
-        },
-        onError: (error: any) => {
-          toast.error(
-            error?.message || t("cms.collections.updateError") || "Failed to update collection"
-          );
-        },
-      }
-    );
+  const handleSubmit = async (data: any) => {
+    try {
+      await updateCollectionMutation.mutateAsync({
+        id: collectionId,
+        data,
+      });
+      toast.success("Collection updated successfully");
+      router.push("/dashboard/cms/collections");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to update collection");
+    }
   };
 
-  const handleDelete = () => {
-    deleteCollection(collectionId, {
-      onSuccess: () => {
-        toast.success(
-          t("cms.collections.deleteSuccess") || "Collection deleted successfully"
-        );
+  const handleDelete = async () => {
+    if (
+      confirm(
+        `Are you sure you want to delete "${collection?.name}"? This will not delete the assets, only the collection.`
+      )
+    ) {
+      try {
+        await deleteCollectionMutation.mutateAsync(collectionId);
+        toast.success("Collection deleted successfully");
         router.push("/dashboard/cms/collections");
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.message || t("cms.collections.deleteError") || "Failed to delete collection"
-        );
-        setShowDeleteDialog(false);
-      },
-    });
+      } catch (error: any) {
+        toast.error(error?.message || "Failed to delete collection");
+      }
+    }
   };
 
   const handleCancel = () => {
     router.push("/dashboard/cms/collections");
   };
 
+  // Show tenant selection warning
+  if (!hasSelectedTenant) {
+    return (
+      <LayoutScopeRoot routeActive="cms">
+        <div className="p-8 space-y-8 max-w-7xl mx-auto">
+          <div className="flex flex-col items-center justify-center py-16">
+            <Card className="max-w-md border-warning/20 bg-warning/5">
+              <CardBody className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-8 h-8 text-warning" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  No Tenant Selected
+                </h3>
+                <p className="text-muted-foreground">
+                  Please select a tenant from the sidebar to edit collections.
+                </p>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
+      </LayoutScopeRoot>
+    );
+  }
+
   // Loading state
-  if (isLoadingCollection) {
+  if (isLoading) {
     return (
-      <div className="container mx-auto py-8 px-4 max-w-4xl">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      <LayoutScopeRoot routeActive="cms">
+        <div className="p-8 space-y-6 max-w-4xl mx-auto">
+          <div className="flex justify-center items-center py-16">
+            <Spinner size="lg" />
+          </div>
         </div>
-      </div>
+      </LayoutScopeRoot>
     );
   }
 
-  // Error state
-  if (collectionError || !collection) {
+  // Not found
+  if (!collection) {
     return (
-      <div className="container mx-auto py-8 px-4 max-w-4xl">
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6">
-          <h2 className="text-xl font-semibold text-red-400 mb-2">
-            Failed to load collection
-          </h2>
-          <p className="text-muted-foreground mb-4">
-            {collectionError?.message || "The collection could not be found."}
-          </p>
-          <Button
-            variant="ghost"
-            onClick={() => router.push("/dashboard/cms/collections")}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Collections
-          </Button>
+      <LayoutScopeRoot routeActive="cms">
+        <div className="p-8 space-y-8 max-w-7xl mx-auto">
+          <div className="flex flex-col items-center justify-center py-16">
+            <Card className="max-w-md border-danger/20 bg-danger/5">
+              <CardBody className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-danger/10 flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-8 h-8 text-danger" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Collection Not Found
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  The collection you're looking for doesn't exist or has been deleted.
+                </p>
+                <Button
+                  color="primary"
+                  onPress={() => router.push("/dashboard/cms/collections")}
+                >
+                  Back to Collections
+                </Button>
+              </CardBody>
+            </Card>
+          </div>
         </div>
-      </div>
+      </LayoutScopeRoot>
     );
   }
-
-  // Prepare default values for the form
-  const initialData = collection
-    ? {
-        ...collection,
-        description: collection.description || "",
-        max_items: collection.max_items || null,
-      }
-    : undefined;
 
   return (
-    <>
-      <div className="container mx-auto py-8 px-4 max-w-4xl">
+    <LayoutScopeRoot routeActive="cms">
+      <div className="p-8 space-y-6 max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <Button
-            variant="light"
-            onClick={() => router.push("/dashboard/cms/collections")}
-            className="mb-4 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t("common.back") || "Back to Collections"}
-          </Button>
-
-          <div className="flex items-start justify-between">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              isIconOnly
+              variant="light"
+              onPress={() => router.push("/dashboard/cms/collections")}
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                {t("cms.collections.editTitle") || "Edit Collection"}
-              </h1>
-              <p className="text-muted-foreground">
-                {t("cms.collections.editDescription") ||
-                  "Update collection settings and constraints. The slug cannot be changed."}
+              <h1 className="text-3xl font-bold text-foreground">Edit Collection</h1>
+              <p className="text-muted-foreground mt-1">
+                Update collection settings and validation rules
               </p>
             </div>
-
-            <Button
-              color="danger"
-              variant="flat"
-              onClick={() => setShowDeleteDialog(true)}
-              isDisabled={isUpdating || isDeleting}
-              startContent={<Trash2 className="w-4 h-4" />}
-            >
-              {t("cms.collections.deleteButton") || "Delete Collection"}
-            </Button>
           </div>
+          <Button
+            color="danger"
+            variant="flat"
+            startContent={<Trash2 className="w-4 h-4" />}
+            onPress={handleDelete}
+            isLoading={deleteCollectionMutation.isPending}
+          >
+            Delete Collection
+          </Button>
         </div>
 
         {/* Form Card */}
-        <div className="bg-content1 border border-border rounded-lg p-6 shadow-sm">
-          <CollectionForm
-            initialData={initialData}
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-            isLoading={isUpdating}
-          />
-        </div>
+        <Card>
+          <CardHeader className="pb-0">
+            <h2 className="text-xl font-semibold">Collection Details</h2>
+          </CardHeader>
+          <CardBody className="pt-6">
+            <CollectionForm
+              collection={collection}
+              onSubmit={handleSubmit}
+              onCancel={handleCancel}
+              isSubmitting={updateCollectionMutation.isPending}
+            />
+          </CardBody>
+        </Card>
       </div>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent className="bg-content1 border-border">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">
-              {t("cms.collections.deleteDialogTitle") || "Delete Collection"}
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              {t("cms.collections.deleteDialogDescription") ||
-                `Are you sure you want to delete the collection "${collection?.name}"? This action cannot be undone. All assets in this collection will remain but will no longer be associated with this collection.`}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button
-              variant="light"
-              onClick={() => setShowDeleteDialog(false)}
-              isDisabled={isDeleting}
-            >
-              {t("common.cancel") || "Cancel"}
-            </Button>
-            <Button
-              color="danger"
-              onClick={handleDelete}
-              isDisabled={isDeleting}
-              startContent={
-                isDeleting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Trash2 className="w-4 h-4" />
-                )
-              }
-            >
-              {isDeleting
-                ? t("cms.collections.deleting") || "Deleting..."
-                : t("cms.collections.deleteButton") || "Delete Collection"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+    </LayoutScopeRoot>
   );
 }

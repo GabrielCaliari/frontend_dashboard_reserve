@@ -1,279 +1,217 @@
 "use client";
 
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
-import { useAssets } from "@/src/common/hooks/cms/use-assets";
-import { useCollections } from "@/src/common/hooks/cms/use-collections";
-import { useState, useMemo, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { AssetGrid } from "@/src/components/cms/asset-grid";
-import { Button, Select, SelectItem, Input, Pagination, Spinner } from "@nextui-org/react";
-import { Upload, Search } from "lucide-react";
-import type { AssetStatus } from "@/src/common/@types/@cms-media";
+import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { useCollections, useDeleteCollection } from "@/src/common/hooks/cms/use-collections";
+import { CollectionCard } from "@/src/components/cms/collection-card";
+import { CollectionModal } from "@/src/components/cms/collection-modal";
+import {
+  Button,
+  Pagination,
+  Spinner,
+  useDisclosure,
+} from "@nextui-org/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@/src/components/ui/modal";
+import { Plus, FolderOpen, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import type { CollectionType, MediaCollection } from "@/src/common/@types/@cms-media";
 
 /**
- * Assets List Page
- * 
- * Main page for browsing and managing media assets.
+ * Media Library Page
+ *
+ * Shows all media collections belonging to the selected tenant in a grid layout.
+ * Collections act as folders organizing assets by type and rules.
+ *
  * Features:
- * - Grid view of assets with thumbnails
- * - Filter by collection
- * - Filter by status (active, archived, failed, all)
- * - Search by filename with debounce
- * - Pagination (20 items per page)
- * - Upload button navigation
- * - Loading skeleton
- * - Empty state
+ * - Collections grid with type-specific icons and metadata
+ * - Type filter tabs (All / Images / Documents / Videos / Mixed)
+ * - Create collection modal
+ * - Inline edit collection modal
+ * - Delete collection with confirmation
+ * - Pagination
+ * - Empty state with call-to-action
  */
-export default function MediaAssetsPage() {
+export default function MediaLibraryPage() {
   const t = useTranslations("cms.media");
+  const tCollections = useTranslations("cms.collections");
+  const tCommon = useTranslations("common");
   const router = useRouter();
 
-  // State
-  const [currentPage, setCurrentPage] = useState(1);
-  const [collectionFilter, setCollectionFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<AssetStatus | "all">("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const TYPE_FILTERS: { label: string; value: CollectionType | "all" }[] = [
+    { label: t("filterAll"), value: "all" },
+    { label: tCollections("typeImages"), value: "images" },
+    { label: tCollections("typeDocuments"), value: "documents" },
+    { label: tCollections("typeVideos"), value: "videos" },
+    { label: tCollections("typeMixed"), value: "mixed" },
+  ];
 
-  // Debounce search with 300ms delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-      setCurrentPage(1); // Reset to first page on search
-    }, 300);
+  // Filter and pagination state
+  const [typeFilter, setTypeFilter] = useState<CollectionType | "all">("all");
+  const [page, setPage] = useState(1);
 
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+  // Modal state
+  const [collectionModalOpen, setCollectionModalOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<MediaCollection | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<MediaCollection | null>(null);
+  const { isOpen: deleteOpen, onOpen: openDeleteDialog, onClose: closeDeleteDialog } = useDisclosure();
 
-  // Fetch collections for filter dropdown
-  const { data: collectionsData, isLoading: collectionsLoading } = useCollections({
-    page: 1,
-    limit: 100, // Get all collections for filter
-  });
-
-  // Build filters for assets query
-  const assetFilters = useMemo(() => {
-    const filters: {
-      collection_id?: number;
-      status?: AssetStatus;
-      search?: string;
-    } = {};
-
-    if (collectionFilter !== "all") {
-      filters.collection_id = parseInt(collectionFilter);
-    }
-
-    if (statusFilter !== "all") {
-      filters.status = statusFilter;
-    }
-
-    if (debouncedSearch.trim()) {
-      filters.search = debouncedSearch.trim();
-    }
-
-    return filters;
-  }, [collectionFilter, statusFilter, debouncedSearch]);
-
-  // Fetch assets with filters and pagination
+  // Data
   const {
-    data: assetsData,
-    isLoading: assetsLoading,
-    error: assetsError,
-  } = useAssets(assetFilters, {
-    page: currentPage,
-    limit: 20,
+    data: collectionsData,
+    isLoading,
+    error,
+  } = useCollections({
+    page,
+    limit: 100,
   });
+
+  const deleteMutation = useDeleteCollection();
 
   // Handlers
-  const handleUploadClick = useCallback(() => {
-    router.push("/dashboard/cms/media/upload");
-  }, [router]);
+  const handleCollectionClick = useCallback(
+    (collection: MediaCollection) => {
+      router.push(`/dashboard/cms/media/${collection.id}`);
+    },
+    [router]
+  );
 
-  const handleAssetView = useCallback((asset: any) => {
-    router.push(`/dashboard/cms/media/${asset.id}`);
-  }, [router]);
+  const handleEditCollection = useCallback((collection: MediaCollection) => {
+    setEditTarget(collection);
+    setCollectionModalOpen(true);
+  }, []);
 
-  const handleAssetEdit = useCallback((asset: any) => {
-    router.push(`/dashboard/cms/media/${asset.id}/edit`);
-  }, [router]);
+  const handleDeleteCollection = useCallback((collection: MediaCollection) => {
+    setDeleteTarget(collection);
+    openDeleteDialog();
+  }, [openDeleteDialog]);
 
-  // Loading state
-  if (assetsLoading && currentPage === 1) {
-    return (
-      <LayoutScopeRoot routeActive="cms">
-        <div className="p-4">
-          <h1 className="text-2xl font-bold mb-6 text-gray-100">
-            {t("assetsTitle")}
-          </h1>
-          <div className="flex justify-center items-center h-64">
-            <Spinner size="lg" label={t("loading")} />
-          </div>
-        </div>
-      </LayoutScopeRoot>
-    );
-  }
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteMutation.mutateAsync(deleteTarget.id);
+      toast.success(t("collectionDeleteSuccess", { name: deleteTarget.name }));
+      closeDeleteDialog();
+      setDeleteTarget(null);
+    } catch (err: any) {
+      toast.error(err?.message || t("collectionDeleteError"));
+    }
+  }, [deleteTarget, deleteMutation, closeDeleteDialog]);
 
-  // Error state
-  if (assetsError) {
-    return (
-      <LayoutScopeRoot routeActive="cms">
-        <div className="p-4">
-          <h1 className="text-2xl font-bold mb-6 text-gray-100">
-            {t("assetsTitle")}
-          </h1>
-          <div className="text-center py-8">
-            <p className="text-red-400">{t("errorLoading")}</p>
-          </div>
-        </div>
-      </LayoutScopeRoot>
-    );
-  }
+  const handleOpenCreate = useCallback(() => {
+    setEditTarget(null);
+    setCollectionModalOpen(true);
+  }, []);
 
-  const assets = assetsData?.data || [];
-  const meta = assetsData?.meta;
-  const collections = collectionsData?.data || [];
+  const handleCloseModal = useCallback(() => {
+    setCollectionModalOpen(false);
+    setEditTarget(null);
+  }, []);
+
+  const handleTypeFilter = useCallback((value: CollectionType | "all") => {
+    setTypeFilter(value);
+    setPage(1);
+  }, []);
+
+  const collections = (collectionsData?.data || []).filter(
+    (c) => typeFilter === "all" || c.type === typeFilter
+  );
+  const meta = collectionsData?.meta;
 
   return (
     <LayoutScopeRoot routeActive="cms">
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-6 text-gray-100">
-          {t("assetsTitle")}
-        </h1>
-
-        <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
-          {/* Filters and actions bar */}
-          <div className="flex flex-col lg:flex-row gap-4 mb-6">
-            {/* Search input */}
-            <div className="flex-1">
-              <Input
-                type="text"
-                placeholder={t("searchPlaceholder")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                startContent={<Search className="h-5 w-5 text-gray-400" />}
-                classNames={{
-                  base: "w-full",
-                  input: "bg-[#1a1a2e] text-gray-200",
-                  inputWrapper: "bg-[#1a1a2e] border border-gray-700 hover:border-gray-600",
-                }}
-              />
-            </div>
-
-            {/* Collection filter */}
-            <div className="w-full lg:w-64">
-              <Select
-                label={t("collectionFilter")}
-                placeholder={t("allCollections")}
-                selectedKeys={[collectionFilter]}
-                onChange={(e) => {
-                  setCollectionFilter(e.target.value);
-                  setCurrentPage(1);
-                }}
-                classNames={{
-                  base: "w-full",
-                  trigger: "bg-[#1a1a2e] border border-gray-700 hover:border-gray-600",
-                  value: "text-gray-200",
-                  label: "text-gray-400",
-                }}
-                isLoading={collectionsLoading}
-              >
-                <SelectItem key="all" value="all">
-                  {t("allCollections")}
-                </SelectItem>
-                {collections.map((collection) => (
-                  <SelectItem key={collection.id.toString()} value={collection.id.toString()}>
-                    {collection.name}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-
-            {/* Status filter */}
-            <div className="w-full lg:w-48">
-              <Select
-                label={t("statusFilter")}
-                placeholder={t("allStatuses")}
-                selectedKeys={[statusFilter]}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value as AssetStatus | "all");
-                  setCurrentPage(1);
-                }}
-                classNames={{
-                  base: "w-full",
-                  trigger: "bg-[#1a1a2e] border border-gray-700 hover:border-gray-600",
-                  value: "text-gray-200",
-                  label: "text-gray-400",
-                }}
-              >
-                <SelectItem key="all" value="all">
-                  {t("allStatuses")}
-                </SelectItem>
-                <SelectItem key="active" value="active">
-                  {t("statusActive")}
-                </SelectItem>
-                <SelectItem key="archived" value="archived">
-                  {t("statusArchived")}
-                </SelectItem>
-                <SelectItem key="failed" value="failed">
-                  {t("statusFailed")}
-                </SelectItem>
-              </Select>
-            </div>
-
-            {/* Upload button */}
-            <Button
-              onClick={handleUploadClick}
-              className="bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2 lg:w-auto w-full"
-              startContent={<Upload className="h-5 w-5" />}
-            >
-              {t("uploadAssets")}
-            </Button>
+        {/* Page header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-100">{t("libraryTitle")}</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {t("librarySubtitle")}
+            </p>
           </div>
+          <Button
+            color="primary"
+            startContent={<Plus className="w-4 h-4" />}
+            onPress={handleOpenCreate}
+          >
+            {t("newCollection")}
+          </Button>
+        </div>
 
-          {/* Assets grid */}
-          {assetsLoading ? (
-            <div className="flex justify-center items-center py-20">
-              <Spinner size="lg" label={t("loading")} />
+        {/* Type filter tabs */}
+        <div className="flex gap-2 mb-6 flex-wrap">
+          {TYPE_FILTERS.map((f) => (
+            <button
+              key={f.value}
+              onClick={() => handleTypeFilter(f.value)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                typeFilter === f.value
+                  ? "bg-blue-600 text-white"
+                  : "bg-[#1a1a2e] text-gray-400 hover:text-gray-200 border border-gray-700 hover:border-gray-600"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Content area */}
+        <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
+          {isLoading ? (
+            <div className="flex justify-center items-center py-24">
+              <Spinner size="lg" label={t("loadingCollections")} />
             </div>
-          ) : assets.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <div className="text-6xl mb-4">📁</div>
-              <p className="text-gray-400 text-lg mb-2">{t("noAssetsFound")}</p>
-              <p className="text-gray-500 text-sm mb-6">{t("uploadFirstAsset")}</p>
+          ) : error ? (
+            <div className="text-center py-16">
+              <p className="text-red-400">{t("errorLoadingCollections")}</p>
+            </div>
+          ) : collections.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="w-16 h-16 bg-[#1a1a2e] rounded-2xl flex items-center justify-center mb-4">
+                <FolderOpen className="w-8 h-8 text-gray-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                {t("noCollectionsYet")}
+              </h3>
+              <p className="text-gray-500 text-sm mb-6 text-center max-w-xs">
+                {t("noCollectionsDescription")}
+              </p>
               <Button
-                onClick={handleUploadClick}
-                className="bg-blue-600 text-white hover:bg-blue-700"
-                startContent={<Upload className="h-5 w-5" />}
+                color="primary"
+                startContent={<Plus className="w-4 h-4" />}
+                onPress={handleOpenCreate}
               >
-                {t("uploadAssets")}
+                {t("createFirstCollection")}
               </Button>
             </div>
           ) : (
-            <AssetGrid
-              assets={assets}
-              onView={handleAssetView}
-              onEdit={handleAssetEdit}
-              emptyMessage={t("noAssetsFound")}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {collections.map((collection) => (
+                <CollectionCard
+                  key={collection.id}
+                  collection={collection}
+                  onClick={handleCollectionClick}
+                  onEdit={handleEditCollection}
+                  onDelete={handleDeleteCollection}
+                />
+              ))}
+            </div>
           )}
 
           {/* Pagination */}
-          {meta && meta.total_pages > 1 && (
-            <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="text-sm text-gray-400">
-                {t("showingResults", {
-                  count: assets.length,
-                  total: meta.total,
-                  page: meta.page,
-                  totalPages: meta.total_pages,
-                })}
-              </div>
-
+          {meta && meta.totalPages > 1 && (
+            <div className="mt-8 flex justify-center">
               <Pagination
-                total={meta.total_pages}
-                page={currentPage}
-                onChange={setCurrentPage}
+                total={meta.totalPages}
+                page={page}
+                onChange={setPage}
                 showControls
                 classNames={{
                   wrapper: "gap-2",
@@ -285,6 +223,56 @@ export default function MediaAssetsPage() {
           )}
         </div>
       </div>
+
+      {/* Create / Edit collection modal */}
+      <CollectionModal
+        isOpen={collectionModalOpen}
+        onClose={handleCloseModal}
+        collection={editTarget ?? undefined}
+      />
+
+      {/* Delete confirmation modal */}
+      <Modal
+        isOpen={deleteOpen}
+        onClose={() => {
+          closeDeleteDialog();
+          setDeleteTarget(null);
+        }}
+        variant="danger"
+      >
+        <ModalContent>
+          <ModalHeader>{t("deleteCollectionTitle")}</ModalHeader>
+          <ModalBody>
+            <p className="text-gray-300">
+              {t("deleteCollectionConfirm", { name: deleteTarget?.name || "" })}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {t("collectionMustBeEmpty")}
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="light"
+              onPress={() => {
+                closeDeleteDialog();
+                setDeleteTarget(null);
+              }}
+            >
+              {tCommon("cancel")}
+            </Button>
+            <Button
+              color="danger"
+              onPress={handleConfirmDelete}
+              isLoading={deleteMutation.isPending}
+              startContent={
+                !deleteMutation.isPending && <Trash2 className="w-4 h-4" />
+              }
+            >
+              {tCommon("delete")}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </LayoutScopeRoot>
   );
 }

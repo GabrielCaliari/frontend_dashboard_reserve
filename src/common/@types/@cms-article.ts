@@ -17,12 +17,20 @@ export interface Article {
 }
 
 export interface CreateArticleDto {
-  title: string;
+  displayTitle: string;
+  metaTitle: string;
+  slug: string;
+  authorId: string;
+  blogId?: string;
   content: string;
 }
 
 export interface UpdateArticleDto {
-  title?: string;
+  displayTitle?: string;
+  metaTitle?: string;
+  slug?: string;
+  authorId?: string;
+  blogId?: string;
   content?: string;
 }
 

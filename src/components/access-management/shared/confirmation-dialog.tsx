@@ -38,21 +38,21 @@ export function ConfirmationDialog({
     switch (variant) {
       case "danger":
         return {
-          icon: <AlertTriangle className="h-6 w-6 text-red-500" />,
-          iconBg: "bg-red-500/10",
-          confirmButton: "bg-red-600 hover:bg-red-700 text-white",
+          icon: <AlertTriangle className="h-6 w-6 text-danger" />,
+          iconBg: "bg-danger/10",
+          confirmButton: "bg-danger hover:bg-danger/90 text-white",
         };
       case "warning":
         return {
-          icon: <AlertCircle className="h-6 w-6 text-yellow-500" />,
-          iconBg: "bg-yellow-500/10",
-          confirmButton: "bg-yellow-600 hover:bg-yellow-700 text-white",
+          icon: <AlertCircle className="h-6 w-6 text-warning" />,
+          iconBg: "bg-warning/10",
+          confirmButton: "bg-warning hover:bg-warning/90 text-white",
         };
       default:
         return {
-          icon: <Info className="h-6 w-6 text-blue-500" />,
-          iconBg: "bg-blue-500/10",
-          confirmButton: "bg-blue-600 hover:bg-blue-700 text-white",
+          icon: <Info className="h-6 w-6 text-primary" />,
+          iconBg: "bg-primary/10",
+          confirmButton: "bg-primary hover:bg-primary/90 text-white",
         };
     }
   };

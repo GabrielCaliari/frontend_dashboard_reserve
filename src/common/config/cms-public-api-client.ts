@@ -1,6 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 
-const CMS_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const CMS_API_URL = process.env.NODE_ENV === 'development' 
+  ? process.env.NEXT_LOCAL_API_URL 
+  : process.env.NEXT_PUBLIC_API_URL;
 
 /**
  * Factory function to create a configured axios instance for CMS public API endpoints.
@@ -15,7 +17,7 @@ const CMS_API_URL = process.env.NEXT_PUBLIC_API_URL;
  */
 export const createPublicCmsClient = (blogSecretKey: string): AxiosInstance => {
   const client = axios.create({
-    baseURL: `${CMS_API_URL}/cms/public`,
+    baseURL: `${CMS_API_URL}/api/cms/public`,
     headers: {
       'Content-Type': 'application/json',
       'X-Blog-Secret': blogSecretKey,

@@ -29,7 +29,7 @@ expect.extend(toHaveNoViolations);
 // Mock data for tests
 const mockAdmins = [
   {
-    id: 1,
+    id: 'uuid-1',
     name: 'John Doe',
     email: 'john@example.com',
     role: AdminRole.super_admin,
@@ -38,7 +38,7 @@ const mockAdmins = [
     updated_at: '2024-01-01T00:00:00Z',
   },
   {
-    id: 2,
+    id: 'uuid-2',
     name: 'Jane Smith',
     email: 'jane@example.com',
     role: AdminRole.manager,
@@ -55,6 +55,8 @@ describe('Accessibility Tests - WCAG 2.1 AA Compliance', () => {
         <AdminTable
           admins={mockAdmins}
           isLoading={false}
+          currentAdminId="current-user"
+          onRowClick={() => {}}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleActive={() => {}}
@@ -70,6 +72,8 @@ describe('Accessibility Tests - WCAG 2.1 AA Compliance', () => {
         <AdminTable
           admins={mockAdmins}
           isLoading={false}
+          currentAdminId="current-user"
+          onRowClick={() => {}}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleActive={() => {}}
@@ -91,6 +95,8 @@ describe('Accessibility Tests - WCAG 2.1 AA Compliance', () => {
         <AdminTable
           admins={mockAdmins}
           isLoading={false}
+          currentAdminId="current-user"
+          onRowClick={() => {}}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleActive={() => {}}
@@ -110,6 +116,8 @@ describe('Accessibility Tests - WCAG 2.1 AA Compliance', () => {
         <AdminTable
           admins={[]}
           isLoading={false}
+          currentAdminId="current-user"
+          onRowClick={() => {}}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleActive={() => {}}
@@ -467,6 +475,8 @@ describe('Screen Reader Compatibility', () => {
         <AdminTable
           admins={mockAdmins}
           isLoading={false}
+          currentAdminId="current-user"
+          onRowClick={() => {}}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleActive={() => {}}
@@ -486,6 +496,8 @@ describe('Screen Reader Compatibility', () => {
         <AdminTable
           admins={[]}
           isLoading={false}
+          currentAdminId="current-user"
+          onRowClick={() => {}}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleActive={() => {}}
@@ -527,6 +539,8 @@ describe('Color Contrast and Visual Accessibility', () => {
         <AdminTable
           admins={mockAdmins}
           isLoading={false}
+          currentAdminId="current-user"
+          onRowClick={() => {}}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleActive={() => {}}

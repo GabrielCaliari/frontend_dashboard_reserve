@@ -1,10 +1,11 @@
+import { Button } from "@nextui-org/react";
 import {
   Modal,
   ModalContent,
+  ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
-} from "@nextui-org/react";
+} from "@/src/components/ui/modal";
 
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "nextjs-toploader/app";
@@ -13,10 +14,14 @@ import { useTranslations } from "next-intl";
 interface LogoutModalProps {
   isOpen: boolean;
   onOpenChange: any;
-  onClose: any,
+  onClose: any;
 }
 
-export function LogoutModal({ isOpen, onOpenChange, onClose }: LogoutModalProps) {
+export function LogoutModal({
+  isOpen,
+  onOpenChange,
+  onClose,
+}: LogoutModalProps) {
   const { replace } = useRouter();
   const t = useTranslations("logout");
   const tc = useTranslations("common");
@@ -37,7 +42,9 @@ export function LogoutModal({ isOpen, onOpenChange, onClose }: LogoutModalProps)
             <>
               <ModalBody>
                 <div className="p-3 py-6">
-                  <h1 className="text-2xl font-bold mb-1 text-gray-100">{t("title")}</h1>
+                  <h1 className="text-2xl font-bold mb-1 text-gray-100">
+                    {t("title")}
+                  </h1>
                   <span className="text-base text-gray-400 mt-12">
                     {t("confirm")}
                   </span>
