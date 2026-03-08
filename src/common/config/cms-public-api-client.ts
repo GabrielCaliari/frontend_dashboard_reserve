@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { buildApiBaseUrl } from './build-api-base-url';
 
 const CMS_API_URL = process.env.NODE_ENV === 'development' 
   ? process.env.NEXT_LOCAL_API_URL 
@@ -17,7 +18,7 @@ const CMS_API_URL = process.env.NODE_ENV === 'development'
  */
 export const createPublicCmsClient = (blogSecretKey: string): AxiosInstance => {
   const client = axios.create({
-    baseURL: `${CMS_API_URL}/api/cms/public`,
+    baseURL: buildApiBaseUrl(CMS_API_URL, 'api/cms/public'),
     headers: {
       'Content-Type': 'application/json',
       'x-blog-secret-key': blogSecretKey,

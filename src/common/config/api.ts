@@ -1,5 +1,6 @@
 import axios from "axios";
 import { handleUnauthorizedError, isUnauthorizedError } from "@/src/common/utils/auth-error-handler";
+import { buildApiBaseUrl } from "./build-api-base-url";
 import { injectAuthHeaders } from "./get-auth-headers";
 
 // In browser (client-side), only NEXT_PUBLIC_ variables are available
@@ -13,7 +14,7 @@ const API_URL = typeof window !== 'undefined'
       : process.env.NEXT_PUBLIC_API_URL);
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: buildApiBaseUrl(API_URL),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -49,7 +50,7 @@ export { api as apiClient };
 
 // CMS API Client - Dedicated client for CMS endpoints
 const cmsApi = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: buildApiBaseUrl(API_URL),
   headers: {
     'Content-Type': 'application/json',
   },

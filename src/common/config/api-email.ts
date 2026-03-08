@@ -1,10 +1,11 @@
 import axios from "axios";
+import { buildApiBaseUrl } from "./build-api-base-url";
 import { injectAuthHeaders } from "./get-auth-headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_EMAIL_URL;
 
 const apiEmail = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: buildApiBaseUrl(API_URL),
   headers: {
     'Content-Type': 'application/json',
   },

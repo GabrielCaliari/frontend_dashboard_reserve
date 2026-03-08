@@ -1,5 +1,6 @@
 import api from '@/src/common/config/api';
 import axios from 'axios';
+import { buildApiBaseUrl } from '@/src/common/config/build-api-base-url';
 import type {
   Article,
   ArticleCreateInput,
@@ -49,8 +50,9 @@ export const articleService = {
     secretKey: string,
     params?: PublicArticleListParams
   ): Promise<PublicArticleListResponse> {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.get(`${API_URL}/api/cms/public/articles`, {
+    const response = await axios.get(
+      `${buildApiBaseUrl(process.env.NEXT_PUBLIC_API_URL, 'api/cms/public')}/articles`,
+      {
       headers: {
         'x-blog-secret-key': secretKey,
       },
@@ -58,17 +60,20 @@ export const articleService = {
         page: params?.page || 1,
         limit: params?.limit || 10,
       },
-    });
+      },
+    );
     return response.data;
   },
 
   async getPublicArticleBySlug(secretKey: string, slug: string): Promise<PublicArticle> {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.get(`${API_URL}/api/cms/public/articles/${slug}`, {
-      headers: {
-        'x-blog-secret-key': secretKey,
+    const response = await axios.get(
+      `${buildApiBaseUrl(process.env.NEXT_PUBLIC_API_URL, 'api/cms/public')}/articles/${slug}`,
+      {
+        headers: {
+          'x-blog-secret-key': secretKey,
+        },
       },
-    });
+    );
     return response.data;
   },
 };
