@@ -26,16 +26,15 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useUpdateAsset, useDeleteAsset } from "@/src/common/hooks/cms/use-assets";
-import { useRelations } from "@/src/common/hooks/cms/use-relations";
 import { formatFileSize } from "@/src/common/utils/format-file-size";
 import { toast } from "sonner";
-import type { MediaAsset } from "@/src/common/@types/@cms-media";
+import type { CmsMediaId, MediaAsset } from "@/src/common/@types/@cms-media";
 
 interface AssetDrawerProps {
   asset: MediaAsset | null;
   isOpen: boolean;
   onClose: () => void;
-  onDeleted: (id: number) => void;
+  onDeleted: (id: CmsMediaId) => void;
 }
 
 function getFilePreviewIcon(mimeType: string) {
@@ -61,11 +60,6 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
 
   const updateMutation = useUpdateAsset();
   const deleteMutation = useDeleteAsset();
-
-  // Only query relations when we have an asset (cached per asset_id, only shown when section is expanded)
-  const { data: relations, isLoading: relationsLoading } = useRelations(
-    asset ? { asset_id: asset.id } : undefined
-  );
 
   // Sync form state when asset changes
   useEffect(() => {
@@ -346,36 +340,9 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
 
                   {associationsOpen && (
                     <div className="mt-3">
-                      {relationsLoading ? (
-                        <div className="flex justify-center py-4">
-                          <Spinner size="sm" />
-                        </div>
-                      ) : (
-                        (() => {
-                          const items = (relations as any)?.data ?? [];
-                          return items.length === 0 ? (
-                            <p className="text-xs text-gray-500 text-center py-4">
-                              {t("notAssociated")}
-                            </p>
-                          ) : (
-                            <div className="space-y-2">
-                              {items.map((rel: any) => (
-                                <div
-                                  key={rel.id}
-                                  className="flex items-center justify-between bg-[#1a1a2e] rounded px-3 py-2"
-                                >
-                                  <span className="text-xs text-gray-300 capitalize">
-                                    {rel.entity_type}
-                                  </span>
-                                  <span className="text-xs text-gray-500">
-                                    ID: {rel.entity_id}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        })()
-                      )}
+                      <p className="text-xs text-gray-500 text-center py-4">
+                        Associations are managed from each entity editor via the relations endpoints.
+                      </p>
                     </div>
                   )}
                 </div>

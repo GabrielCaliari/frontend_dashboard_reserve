@@ -25,8 +25,7 @@ import Image from "next/image";
 import { useUploadImages } from "@/src/common/hooks/cms/useImageMutations";
 
 interface ImageUploadProps {
-  blogId: number;
-  articleId: number;
+  articleId: string;
   onUploadComplete?: () => void;
   maxFiles?: number;
   maxSizeMB?: number;
@@ -44,13 +43,12 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/png",
   "image/webp",
 ];
-const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_MB = 10;
 
 export default function ImageUpload({
-  blogId,
   articleId,
   onUploadComplete,
-  maxFiles = 10,
+  maxFiles = 20,
   maxSizeMB = MAX_FILE_SIZE_MB,
 }: ImageUploadProps) {
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
@@ -130,7 +128,6 @@ export default function ImageUpload({
       const altTexts = selectedFiles.map((f) => f.altText || null);
 
       await uploadImagesMutation.mutateAsync({
-        blogId,
         articleId,
         files,
         altTexts,

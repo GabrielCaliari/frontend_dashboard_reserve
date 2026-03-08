@@ -16,7 +16,7 @@ import { toast } from "sonner";
 export default function EditCollectionPage() {
   const router = useRouter();
   const params = useParams();
-  const collectionId = parseInt(params.id as string);
+  const collectionId = params.id as string;
 
   const hasSelectedTenant = useHasSelectedTenant();
   const { data: collection, isLoading } = useCollection(collectionId);

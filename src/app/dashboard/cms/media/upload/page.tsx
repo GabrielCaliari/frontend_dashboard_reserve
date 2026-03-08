@@ -43,7 +43,7 @@ export default function MediaUploadPage() {
 
   const collections = collectionsData?.data || [];
   const selectedCollection = collections.find(
-    c => c.id.toString() === selectedCollectionId
+    c => c.id === selectedCollectionId
   );
 
   // Handlers
@@ -178,8 +178,8 @@ export default function MediaUploadPage() {
             >
               {collections.map((collection) => (
                 <SelectItem
-                  key={collection.id.toString()}
-                  value={collection.id.toString()}
+                  key={collection.id}
+                  value={collection.id}
                   textValue={collection.name}
                 >
                   <div className="flex flex-col">

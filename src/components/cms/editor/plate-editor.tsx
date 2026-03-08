@@ -257,8 +257,8 @@ interface ImageInsertDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onInsert: (url: string, alt: string) => void;
-  blogId?: number;
-  articleId?: number;
+  blogId?: string | number;
+  articleId?: string;
 }
 
 function ImageInsertDialog({
@@ -283,7 +283,6 @@ function ImageInsertDialog({
     } else if (uploadMode === "upload" && selectedFile && blogId && articleId) {
       try {
         const result = await uploadImagesMutation.mutateAsync({
-          blogId,
           articleId,
           files: [selectedFile],
           altTexts: [altText || null],
@@ -898,8 +897,8 @@ interface PlateEditorProps {
   onContentChange?: (stats: ContentStats) => void;
   focusKeyword?: string;
   initialContent?: string;
-  blogId?: number;
-  articleId?: number;
+  blogId?: string | number;
+  articleId?: string;
 }
 
 export function PlateEditor({

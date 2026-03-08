@@ -15,6 +15,11 @@
 export type CollectionType = 'image' | 'document' | 'video' | 'audio' | 'mixed';
 
 /**
+ * CMS media identifiers are CUID strings.
+ */
+export type CmsMediaId = string;
+
+/**
  * Asset status indicating the current state of a media asset
  */
 export type AssetStatus = 'active' | 'archived' | 'failed';
@@ -30,7 +35,7 @@ export type AssetStatus = 'active' | 'archived' | 'failed';
  * Collections organize assets by context and enforce validation rules.
  */
 export interface MediaCollection {
-  id: number;
+  id: CmsMediaId;
   name: string;
   slug: string;
   description?: string;
@@ -38,7 +43,7 @@ export interface MediaCollection {
   allowed_mime_types: string[];
   max_file_size: number; // bytes
   max_items?: number;
-  tenant_id: number;
+  tenant_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -50,7 +55,7 @@ export interface MediaCollection {
  * Contains metadata, dimensions, and storage information.
  */
 export interface MediaAsset {
-  id: number;
+  id: CmsMediaId;
   url: string;
   storage_key: string;
   filename: string;
@@ -59,11 +64,11 @@ export interface MediaAsset {
   width?: number;
   height?: number;
   alt_text?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   status: AssetStatus;
-  collection_id: number;
-  tenant_id: number;
-  created_by: number;
+  collection_id: CmsMediaId;
+  tenant_id: string;
+  created_by: string;
   created_at: string;
   updated_at: string;
 }
@@ -76,14 +81,13 @@ export interface MediaAsset {
  */
 export interface MediaRelation {
   id: number;
-  asset_id: number;
+  asset_id: CmsMediaId;
   entity_type: string; // e.g., 'article', 'blog', 'brand', 'company'
-  entity_id: string; // UUID or int as string
-  entity_id_type: 'uuid' | 'int';
+  entity_id: string;
   relation_type: string; // e.g., 'featured', 'gallery', 'avatar', 'logo'
   display_order: number;
-  metadata?: Record<string, any>;
-  tenant_id: number;
+  metadata?: Record<string, unknown>;
+  tenant_id: string;
   created_at: string;
   asset?: MediaAsset; // populated in responses
 }
@@ -121,9 +125,9 @@ export interface UpdateCollectionRequest {
  */
 export interface UploadAssetRequest {
   file: File;
-  collection_id: number;
+  collection_id: CmsMediaId;
   alt_text?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -131,7 +135,7 @@ export interface UploadAssetRequest {
  */
 export interface UpdateAssetRequest {
   alt_text?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   status?: AssetStatus;
 }
 
@@ -139,19 +143,21 @@ export interface UpdateAssetRequest {
  * Create Relation Request
  */
 export interface CreateRelationRequest {
-  asset_id: number;
+  asset_id: CmsMediaId;
   entity_type: string;
-  entity_id: string; // UUID or int as string
-  entity_id_type: 'uuid' | 'int';
+  entity_id: string;
   relation_type: string; // e.g., 'featured', 'gallery', 'avatar', 'logo'
   display_order?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
  * Reorder Relations Request
  */
 export interface ReorderRelationsRequest {
+  entity_type: string;
+  entity_id: string;
+  relation_type?: string;
   relations: Array<{
     id: number;
     display_order: number;
@@ -182,7 +188,7 @@ export interface CollectionListParams extends PaginationParams {
  * Asset List Query Parameters
  */
 export interface AssetListParams extends PaginationParams {
-  collection_id?: number;
+  collection_id?: CmsMediaId;
   status?: AssetStatus;
   search?: string;
   mime_type?: string;
@@ -195,7 +201,7 @@ export interface RelationListParams extends PaginationParams {
   entity_type?: string;
   entity_id?: string;
   relation_type?: string;
-  asset_id?: number;
+  asset_id?: CmsMediaId;
 }
 
 // ============================================================================
@@ -263,7 +269,7 @@ export interface ApiErrorResponse {
   error: {
     code: string;
     message: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
   };
   status: number;
 }
@@ -286,7 +292,7 @@ export interface UploadProgressEvent {
  */
 export interface MediaPickerConfig {
   multiple?: boolean;
-  collectionId?: number;
+  collectionId?: CmsMediaId;
   allowedTypes?: CollectionType[];
   maxSelections?: number;
 }
@@ -313,7 +319,7 @@ export interface AssetGridItem extends MediaAsset {
 export interface UploadQueueItem {
   id: string;
   file: File;
-  collectionId: number;
+  collectionId: CmsMediaId;
   altText?: string;
   status: 'pending' | 'uploading' | 'success' | 'error';
   progress: number;

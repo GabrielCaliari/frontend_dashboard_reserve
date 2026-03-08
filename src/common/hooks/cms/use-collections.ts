@@ -5,11 +5,12 @@ import {
   createCollection,
   updateCollection,
   deleteCollection,
-  type PaginationParams,
+  type CollectionFilters,
   type CreateCollectionDto,
   type UpdateCollectionDto,
 } from '@/src/common/services/cms-media-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
+import type { CmsMediaId } from '@/src/common/@types/@cms-media';
 
 /**
  * Query key factory for collections
@@ -18,17 +19,17 @@ import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 export const collectionKeys = {
   all: (tenantId: string | null) => ['collections', tenantId] as const,
   lists: (tenantId: string | null) => [...collectionKeys.all(tenantId), 'list'] as const,
-  list: (tenantId: string | null, params?: PaginationParams) =>
+  list: (tenantId: string | null, params?: CollectionFilters) =>
     [...collectionKeys.lists(tenantId), params] as const,
   details: (tenantId: string | null) => [...collectionKeys.all(tenantId), 'detail'] as const,
-  detail: (tenantId: string | null, id: number) =>
+  detail: (tenantId: string | null, id: CmsMediaId) =>
     [...collectionKeys.details(tenantId), id] as const,
 };
 
 /**
  * Hook to fetch paginated list of collections
  */
-export function useCollections(params?: PaginationParams) {
+export function useCollections(params?: CollectionFilters) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
@@ -42,7 +43,7 @@ export function useCollections(params?: PaginationParams) {
 /**
  * Hook to fetch a single collection by ID
  */
-export function useCollection(id: number) {
+export function useCollection(id: CmsMediaId) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
@@ -78,7 +79,7 @@ export function useUpdateCollection() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateCollectionDto }) =>
+    mutationFn: ({ id, data }: { id: CmsMediaId; data: UpdateCollectionDto }) =>
       updateCollection(id, data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -99,7 +100,7 @@ export function useDeleteCollection() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (id: number) => deleteCollection(id),
+    mutationFn: (id: CmsMediaId) => deleteCollection(id),
     onSuccess: (_data, id) => {
       queryClient.removeQueries({
         queryKey: collectionKeys.detail(tenantId, id),

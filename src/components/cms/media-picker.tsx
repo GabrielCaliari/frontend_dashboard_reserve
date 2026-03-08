@@ -26,6 +26,7 @@ import { AssetUpload } from "./asset-upload";
 import { useAssets } from "@/src/common/hooks/cms/use-assets";
 import { useCollections } from "@/src/common/hooks/cms/use-collections";
 import type {
+  CmsMediaId,
   MediaAsset,
   MediaCollection,
 } from "@/src/common/@types/@cms-media";
@@ -36,7 +37,7 @@ interface MediaPickerProps {
   onClose: () => void;
   onSelect: (assets: MediaAsset[]) => void;
   selectionMode?: "single" | "multiple";
-  defaultCollection?: number;
+  defaultCollection?: CmsMediaId;
 }
 
 /**
@@ -97,7 +98,7 @@ export function MediaPicker({
   const [activeTab, setActiveTab] = useState<string>("browse");
   const [selectedAssets, setSelectedAssets] = useState<MediaAsset[]>([]);
   const [selectedCollectionId, setSelectedCollectionId] = useState<
-    number | undefined
+    CmsMediaId | undefined
   >(defaultCollection);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -191,7 +192,7 @@ export function MediaPicker({
 
   // Handle collection filter change
   const handleCollectionChange = useCallback((value: string) => {
-    const collectionId = value === "all" ? undefined : parseInt(value, 10);
+    const collectionId = value === "all" ? undefined : value;
     setSelectedCollectionId(collectionId);
     setCurrentPage(1);
   }, []);
@@ -245,7 +246,7 @@ export function MediaPicker({
                     placeholder="All Collections"
                     selectedKeys={
                       selectedCollectionId
-                        ? [selectedCollectionId.toString()]
+                        ? [selectedCollectionId]
                         : ["all"]
                     }
                     onChange={(e) => handleCollectionChange(e.target.value)}
@@ -261,8 +262,8 @@ export function MediaPicker({
                     </SelectItem>
                     {collections.map((collection) => (
                       <SelectItem
-                        key={collection.id.toString()}
-                        value={collection.id.toString()}
+                        key={collection.id}
+                        value={collection.id}
                       >
                         {collection.name}
                       </SelectItem>
@@ -321,10 +322,10 @@ export function MediaPicker({
                     <div className="mb-4">
                       <Select
                         label="Upload to Collection"
-                        selectedKeys={[uploadCollection.id.toString()]}
+                        selectedKeys={[uploadCollection.id]}
                         onChange={(e) => {
                           const collection = collections.find(
-                            (c) => c.id === parseInt(e.target.value, 10),
+                            (c) => c.id === e.target.value,
                           );
                           if (collection) {
                             setUploadCollection(collection);
@@ -338,8 +339,8 @@ export function MediaPicker({
                       >
                         {collections.map((collection) => (
                           <SelectItem
-                            key={collection.id.toString()}
-                            value={collection.id.toString()}
+                            key={collection.id}
+                            value={collection.id}
                           >
                             {collection.name}
                           </SelectItem>

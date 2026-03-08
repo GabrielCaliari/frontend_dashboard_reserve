@@ -51,25 +51,21 @@ export function useUploadImages() {
 
   return useMutation({
     mutationFn: ({
-      blogId,
       articleId,
       files,
       altTexts,
     }: {
-      blogId: number;
-      articleId: number;
+      articleId: string;
       files: File[];
       altTexts?: (string | null)[];
-    }) => uploadImages(blogId, articleId, files, altTexts),
+    }) => uploadImages(articleId, files, altTexts),
     onSuccess: (data, variables) => {
-      // Invalidate article detail query to refresh with new images
       queryClient.invalidateQueries({
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, variables.blogId, variables.articleId),
+        queryKey: ['cms', 'article', tenantId, variables.articleId],
       });
-      
-      // Also invalidate article list to update image counts
+
       queryClient.invalidateQueries({
-        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, variables.blogId),
+        queryKey: ARTICLE_QUERY_KEYS.details(tenantId),
       });
       
       toast.imagesUploaded(data.length);
@@ -115,30 +111,29 @@ export function useUpdateImage() {
 
   return useMutation({
     mutationFn: ({
-      blogId,
       articleId,
       imageId,
       data,
     }: {
-      blogId: number;
-      articleId: number;
-      imageId: number;
+      blogId?: string | number;
+      articleId: string;
+      imageId: string;
       data: UpdateArticleImageDto;
-    }) => updateImage(blogId, articleId, imageId, data),
+    }) => updateImage(articleId, imageId, data),
     onMutate: async ({ blogId, articleId, imageId, data }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        queryKey: ['cms', 'article', tenantId, articleId],
       });
 
       // Snapshot previous value
       const previousArticle = queryClient.getQueryData<Article>(
-        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId)
+        ['cms', 'article', tenantId, articleId]
       );
 
       // Optimistically update the image in the article's images array
       queryClient.setQueryData<Article>(
-        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        ['cms', 'article', tenantId, articleId],
         (old) => {
           if (!old) return old;
           
@@ -153,11 +148,11 @@ export function useUpdateImage() {
 
       return { previousArticle };
     },
-    onError: (error, { blogId, articleId }, context) => {
+    onError: (error, { articleId }, context) => {
       // Rollback on error
       if (context?.previousArticle) {
         queryClient.setQueryData(
-          ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+          ['cms', 'article', tenantId, articleId],
           context.previousArticle
         );
       }
@@ -166,8 +161,13 @@ export function useUpdateImage() {
     onSuccess: (_data, { blogId, articleId }) => {
       // Invalidate to ensure we have the latest data from server
       queryClient.invalidateQueries({
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        queryKey: ['cms', 'article', tenantId, articleId],
       });
+      if (blogId != null) {
+        queryClient.invalidateQueries({
+          queryKey: ARTICLE_QUERY_KEYS.all(tenantId, String(blogId)),
+        });
+      }
       toast.imageUpdated();
     },
   });
@@ -209,28 +209,27 @@ export function useDeleteImage() {
 
   return useMutation({
     mutationFn: ({
-      blogId,
       articleId,
       imageId,
     }: {
-      blogId: number;
-      articleId: number;
-      imageId: number;
-    }) => deleteImage(blogId, articleId, imageId),
-    onMutate: async ({ blogId, articleId, imageId }) => {
+      blogId?: string | number;
+      articleId: string;
+      imageId: string;
+    }) => deleteImage(articleId, imageId),
+    onMutate: async ({ articleId, imageId }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        queryKey: ['cms', 'article', tenantId, articleId],
       });
 
       // Snapshot previous value
       const previousArticle = queryClient.getQueryData<Article>(
-        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId)
+        ['cms', 'article', tenantId, articleId]
       );
 
       // Optimistically remove the image from the article's images array
       queryClient.setQueryData<Article>(
-        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        ['cms', 'article', tenantId, articleId],
         (old) => {
           if (!old) return old;
           
@@ -243,11 +242,11 @@ export function useDeleteImage() {
 
       return { previousArticle };
     },
-    onError: (error, { blogId, articleId }, context) => {
+    onError: (error, { articleId }, context) => {
       // Rollback on error
       if (context?.previousArticle) {
         queryClient.setQueryData(
-          ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+          ['cms', 'article', tenantId, articleId],
           context.previousArticle
         );
       }
@@ -256,13 +255,14 @@ export function useDeleteImage() {
     onSuccess: (_data, { blogId, articleId }) => {
       // Invalidate article detail to refresh image data
       queryClient.invalidateQueries({
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        queryKey: ['cms', 'article', tenantId, articleId],
       });
       
-      // Also invalidate article list to update image counts
-      queryClient.invalidateQueries({
-        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, blogId),
-      });
+      if (blogId != null) {
+        queryClient.invalidateQueries({
+          queryKey: ARTICLE_QUERY_KEYS.all(tenantId, String(blogId)),
+        });
+      }
       
       toast.imageDeleted();
     },
@@ -310,23 +310,22 @@ export function useReorderImages() {
 
   return useMutation({
     mutationFn: ({
-      blogId,
       articleId,
       order,
     }: {
-      blogId: number;
-      articleId: number;
+      blogId?: string | number;
+      articleId: string;
       order: ReorderImageDto[];
-    }) => reorderImages(blogId, articleId, order),
-    onMutate: async ({ blogId, articleId, order }) => {
+    }) => reorderImages(articleId, order),
+    onMutate: async ({ articleId, order }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        queryKey: ['cms', 'article', tenantId, articleId],
       });
 
       // Snapshot previous value
       const previousArticle = queryClient.getQueryData<Article>(
-        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId)
+        ['cms', 'article', tenantId, articleId]
       );
 
       // Optimistically update the image order
@@ -334,7 +333,7 @@ export function useReorderImages() {
       const orderMap = new Map(order.map((item) => [item.id, item.display_order]));
 
       queryClient.setQueryData<Article>(
-        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        ['cms', 'article', tenantId, articleId],
         (old) => {
           if (!old) return old;
 
@@ -358,11 +357,11 @@ export function useReorderImages() {
 
       return { previousArticle };
     },
-    onError: (error, { blogId, articleId }, context) => {
+    onError: (error, { articleId }, context) => {
       // Rollback on error
       if (context?.previousArticle) {
         queryClient.setQueryData(
-          ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+          ['cms', 'article', tenantId, articleId],
           context.previousArticle
         );
       }
@@ -371,8 +370,13 @@ export function useReorderImages() {
     onSuccess: (_data, { blogId, articleId }) => {
       // Invalidate to ensure we have the latest data from server
       queryClient.invalidateQueries({
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
+        queryKey: ['cms', 'article', tenantId, articleId],
       });
+      if (blogId != null) {
+        queryClient.invalidateQueries({
+          queryKey: ARTICLE_QUERY_KEYS.all(tenantId, String(blogId)),
+        });
+      }
       toast.imagesReordered();
     },
   });

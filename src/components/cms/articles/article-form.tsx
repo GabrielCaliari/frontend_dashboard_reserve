@@ -68,7 +68,7 @@ const articleFormSchema = z.object({
 type ArticleFormData = z.infer<typeof articleFormSchema>;
 
 interface ArticleFormProps {
-  blogId: number;
+  blogId: string | number;
   article?: Article;
   onSubmit: (data: CreateArticleDto | UpdateArticleDto) => void;
   onCancel: () => void;
@@ -203,7 +203,7 @@ export default function ArticleForm({
   };
 
   // Handle image delete
-  const handleImageDelete = async (imageId: number) => {
+  const handleImageDelete = async (imageId: string) => {
     if (!article?.id) return;
 
     if (!confirm("Are you sure you want to delete this image?")) return;
@@ -221,7 +221,7 @@ export default function ArticleForm({
   };
 
   // Handle alt text update
-  const handleAltTextUpdate = async (imageId: number, altText: string) => {
+  const handleAltTextUpdate = async (imageId: string, altText: string) => {
     if (!article?.id) return;
 
     try {
@@ -409,8 +409,8 @@ export default function ArticleForm({
                   <ImageUpload
                     articleId={article.id}
                     onUploadComplete={handleImageUpload}
-                    maxFiles={10}
-                    maxSizeMB={5}
+                    maxFiles={20}
+                    maxSizeMB={10}
                   />
                 )}
 

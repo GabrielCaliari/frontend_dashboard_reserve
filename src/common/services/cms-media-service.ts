@@ -1,136 +1,215 @@
 import { cmsApiClient } from '@/src/common/config/api';
 import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
+import type {
+  CmsMediaId,
+  MediaCollection,
+  MediaAsset,
+  MediaRelation,
+  PaginationParams,
+  PaginatedResponse,
+  CreateCollectionRequest,
+  UpdateCollectionRequest,
+  UploadAssetRequest,
+  UpdateAssetRequest,
+  CreateRelationRequest,
+  ReorderRelationsRequest,
+  CollectionListParams,
+  AssetListParams,
+} from '@/src/common/@types/@cms-media';
 
 /**
  * CMS Media Storage Service
  * Handles collections, assets, and relations for the CMS media storage system
  */
 
-// ============================================================================
-// Types
-// ============================================================================
+export type CreateCollectionDto = CreateCollectionRequest;
+export type UpdateCollectionDto = UpdateCollectionRequest;
+export type UploadAssetDto = UploadAssetRequest;
+export type UpdateAssetDto = UpdateAssetRequest;
+export type CreateRelationDto = CreateRelationRequest;
+export type ReorderRelationDto = ReorderRelationsRequest['relations'][number];
+export type CollectionFilters = CollectionListParams;
+export type AssetFilters = AssetListParams;
 
-export interface MediaCollection {
-  id: number;
-  name: string;
-  slug: string;
-  description?: string;
-  type: 'image' | 'document' | 'video' | 'audio' | 'mixed';
-  allowed_mime_types: string[];
-  max_file_size: number; // bytes
-  max_items?: number;
-  tenant_id: number;
-  created_at: string;
-  updated_at: string;
-}
+const getResponsePayload = <T>(payload: T | { data: T }): T => {
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    'data' in payload &&
+    !Array.isArray(payload)
+  ) {
+    return payload.data as T;
+  }
 
-export interface MediaAsset {
-  id: number;
-  url: string;
-  storage_key: string;
-  filename: string;
-  mime_type: string;
-  file_size: number; // bytes
-  width?: number;
-  height?: number;
-  alt_text?: string;
-  metadata?: Record<string, any>;
-  status: 'active' | 'archived' | 'failed';
-  collection_id: number;
-  tenant_id: number;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
-}
+  return payload as T;
+};
 
-export interface MediaRelation {
-  id: number;
-  asset_id: number;
-  entity_type: string;
-  entity_id: string;
-  entity_id_type: 'uuid' | 'int';
-  relation_type: string;
-  display_order: number;
-  metadata?: Record<string, any>;
-  tenant_id: number;
-  created_at: string;
-  asset?: MediaAsset;
-}
+const getNestedArrayPayload = <T>(payload: unknown): T[] | null => {
+  if (!payload || typeof payload !== 'object') {
+    return null;
+  }
 
-export interface PaginationParams {
-  page?: number;
-  limit?: number;
-}
+  const candidateKeys = ['data', 'collections', 'assets', 'relations', 'items'];
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
+  for (const key of candidateKeys) {
+    const value = (payload as Record<string, unknown>)[key];
+    if (Array.isArray(value)) {
+      return value as T[];
+    }
+  }
+
+  return null;
+};
+
+const getPaginationPayload = (
+  payload: unknown,
+): Record<string, number | undefined> | undefined => {
+  if (!payload || typeof payload !== 'object') {
+    return undefined;
+  }
+
+  const directMeta = (payload as Record<string, unknown>).meta;
+  if (directMeta && typeof directMeta === 'object') {
+    return directMeta as Record<string, number | undefined>;
+  }
+
+  const directPagination = (payload as Record<string, unknown>).pagination;
+  if (directPagination && typeof directPagination === 'object') {
+    return directPagination as Record<string, number | undefined>;
+  }
+
+  return undefined;
+};
+
+const normalizePaginatedResponse = <T>(
+  payload: unknown,
+  params?: PaginationParams,
+): PaginatedResponse<T> => {
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    'data' in payload &&
+    (payload as { data?: unknown }).data &&
+    typeof (payload as { data?: unknown }).data === 'object' &&
+    (
+      'data' in ((payload as { data: Record<string, unknown> }).data) ||
+      'collections' in ((payload as { data: Record<string, unknown> }).data) ||
+      'assets' in ((payload as { data: Record<string, unknown> }).data) ||
+      'relations' in ((payload as { data: Record<string, unknown> }).data) ||
+      'items' in ((payload as { data: Record<string, unknown> }).data)
+    )
+  ) {
+    return normalizePaginatedResponse<T>(
+      (payload as { data: unknown }).data,
+      params,
+    );
+  }
+
+  const nestedArrayPayload = getNestedArrayPayload<T>(payload);
+
+  if (nestedArrayPayload) {
+    const paginationPayload = getPaginationPayload(payload);
+
+    return {
+      data: nestedArrayPayload,
+      meta: {
+        page:
+          paginationPayload?.page ??
+          paginationPayload?.current_page ??
+          params?.page ??
+          1,
+        limit:
+          paginationPayload?.limit ??
+          params?.limit ??
+          nestedArrayPayload.length ??
+          20,
+        total:
+          paginationPayload?.total ??
+          paginationPayload?.total_records ??
+          nestedArrayPayload.length,
+        totalPages:
+          paginationPayload?.totalPages ??
+          paginationPayload?.total_pages ??
+          (nestedArrayPayload.length > 0 ? 1 : 0),
+      },
+    };
+  }
+
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    'data' in payload &&
+    Array.isArray((payload as PaginatedResponse<T>).data)
+  ) {
+    const typedPayload = payload as {
+      data: T[];
+      meta?: Record<string, number | undefined>;
+    };
+
+    return {
+      data: typedPayload.data,
+      meta: {
+        page:
+          typedPayload.meta?.page ??
+          typedPayload.meta?.current_page ??
+          params?.page ??
+          1,
+        limit:
+          typedPayload.meta?.limit ??
+          params?.limit ??
+          typedPayload.data.length ??
+          20,
+        total:
+          typedPayload.meta?.total ??
+          typedPayload.meta?.total_records ??
+          typedPayload.data.length,
+        totalPages:
+          typedPayload.meta?.totalPages ??
+          typedPayload.meta?.total_pages ??
+          (typedPayload.data.length > 0 ? 1 : 0),
+      },
+    };
+  }
+
+  if (Array.isArray(payload)) {
+    return {
+      data: payload as T[],
+      meta: {
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 20,
+        total: payload.length,
+        totalPages: payload.length > 0 ? 1 : 0,
+      },
+    };
+  }
+
+  return {
+    data: [],
+    meta: {
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 20,
+      total: 0,
+      totalPages: 0,
+    },
   };
-}
+};
 
-export interface CreateCollectionDto {
-  name: string;
-  slug: string;
-  description?: string;
-  type: 'image' | 'document' | 'video' | 'audio' | 'mixed';
-  allowed_mime_types: string[];
-  max_file_size: number;
-  max_items?: number;
-}
+const normalizeRelationListResponse = (payload: unknown): MediaRelation[] => {
+  if (Array.isArray(payload)) {
+    return payload as MediaRelation[];
+  }
 
-export interface UpdateCollectionDto {
-  name?: string;
-  description?: string;
-  type?: 'image' | 'document' | 'video' | 'audio' | 'mixed';
-  allowed_mime_types?: string[];
-  max_file_size?: number;
-  max_items?: number;
-}
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    'data' in payload &&
+    Array.isArray((payload as { data: MediaRelation[] }).data)
+  ) {
+    return (payload as { data: MediaRelation[] }).data;
+  }
 
-export interface UploadAssetDto {
-  file: File;
-  collection_id: number;
-  alt_text?: string;
-  metadata?: Record<string, any>;
-}
-
-export interface UpdateAssetDto {
-  alt_text?: string;
-  metadata?: Record<string, any>;
-  status?: 'active' | 'archived' | 'failed';
-}
-
-export interface CreateRelationDto {
-  asset_id: number;
-  entity_type: string;
-  entity_id: string;
-  entity_id_type: 'uuid' | 'int';
-  relation_type: string;
-  display_order?: number;
-  metadata?: Record<string, any>;
-}
-
-export interface ReorderRelationDto {
-  id: number;
-  display_order: number;
-}
-
-export interface AssetFilters {
-  collection_id?: number;
-  status?: 'active' | 'archived' | 'failed';
-  search?: string;
-}
-
-export interface RelationFilters {
-  entity_type?: string;
-  entity_id?: string;
-  relation_type?: string;
-  asset_id?: number;
-}
+  return [];
+};
 
 // ============================================================================
 // Collection Methods
@@ -142,25 +221,12 @@ export interface RelationFilters {
  * @returns Promise<PaginatedResponse<MediaCollection>>
  */
 export const fetchCollections = async (
-  params?: PaginationParams
+  params?: CollectionFilters
 ): Promise<PaginatedResponse<MediaCollection>> => {
   try {
     return await withRetry(async () => {
       const response = await cmsApiClient.get('cms/collections', { params });
-      const d = response.data;
-
-      // Normalize: { data: [...], meta: {...} }
-      if (d && Array.isArray(d.data)) return d;
-
-      // Normalize: plain array
-      if (Array.isArray(d)) {
-        return {
-          data: d,
-          meta: { page: params?.page ?? 1, limit: params?.limit ?? 20, total: d.length, totalPages: 1 },
-        };
-      }
-
-      return { data: [], meta: { page: params?.page ?? 1, limit: params?.limit ?? 20, total: 0, totalPages: 0 } };
+      return normalizePaginatedResponse<MediaCollection>(response.data, params);
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -172,11 +238,11 @@ export const fetchCollections = async (
  * @param id - Collection ID
  * @returns Promise<MediaCollection>
  */
-export const fetchCollectionById = async (id: number): Promise<MediaCollection> => {
+export const fetchCollectionById = async (id: CmsMediaId): Promise<MediaCollection> => {
   try {
     return await withRetry(async () => {
       const response = await cmsApiClient.get(`cms/collections/${id}`);
-      return response.data;
+      return getResponsePayload<MediaCollection>(response.data);
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -193,7 +259,7 @@ export const createCollection = async (
 ): Promise<MediaCollection> => {
   try {
     const response = await cmsApiClient.post('cms/collections', data);
-    return response.data;
+    return getResponsePayload<MediaCollection>(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -206,12 +272,12 @@ export const createCollection = async (
  * @returns Promise<MediaCollection>
  */
 export const updateCollection = async (
-  id: number,
+  id: CmsMediaId,
   data: UpdateCollectionDto
 ): Promise<MediaCollection> => {
   try {
     const response = await cmsApiClient.put(`cms/collections/${id}`, data);
-    return response.data;
+    return getResponsePayload<MediaCollection>(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -222,7 +288,7 @@ export const updateCollection = async (
  * @param id - Collection ID
  * @returns Promise<void>
  */
-export const deleteCollection = async (id: number): Promise<void> => {
+export const deleteCollection = async (id: CmsMediaId): Promise<void> => {
   try {
     await cmsApiClient.delete(`cms/collections/${id}`);
   } catch (error) {
@@ -248,7 +314,7 @@ export const fetchAssets = async (
     return await withRetry(async () => {
       const queryParams = { ...filters, ...params };
       const response = await cmsApiClient.get('cms/assets', { params: queryParams });
-      return response.data;
+      return normalizePaginatedResponse<MediaAsset>(response.data, params);
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -260,11 +326,11 @@ export const fetchAssets = async (
  * @param id - Asset ID
  * @returns Promise<MediaAsset>
  */
-export const fetchAssetById = async (id: number): Promise<MediaAsset> => {
+export const fetchAssetById = async (id: CmsMediaId): Promise<MediaAsset> => {
   try {
     return await withRetry(async () => {
       const response = await cmsApiClient.get(`cms/assets/${id}`);
-      return response.data;
+      return getResponsePayload<MediaAsset>(response.data);
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -284,7 +350,7 @@ export const uploadAsset = async (
   try {
     const formData = new FormData();
     formData.append('file', data.file);
-    formData.append('collection_id', data.collection_id.toString());
+    formData.append('collection_id', data.collection_id);
     
     if (data.alt_text) {
       formData.append('alt_text', data.alt_text);
@@ -306,7 +372,7 @@ export const uploadAsset = async (
       },
     });
 
-    return response.data;
+    return getResponsePayload<MediaAsset>(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -319,12 +385,12 @@ export const uploadAsset = async (
  * @returns Promise<MediaAsset>
  */
 export const updateAsset = async (
-  id: number,
+  id: CmsMediaId,
   data: UpdateAssetDto
 ): Promise<MediaAsset> => {
   try {
     const response = await cmsApiClient.patch(`cms/assets/${id}`, data);
-    return response.data;
+    return getResponsePayload<MediaAsset>(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -335,7 +401,7 @@ export const updateAsset = async (
  * @param id - Asset ID
  * @returns Promise<void>
  */
-export const deleteAsset = async (id: number): Promise<void> => {
+export const deleteAsset = async (id: CmsMediaId): Promise<void> => {
   try {
     await cmsApiClient.delete(`cms/assets/${id}`);
   } catch (error) {
@@ -366,7 +432,7 @@ export const fetchRelations = async (
         params.relation_type = relationType;
       }
       const response = await cmsApiClient.get(`cms/relations/${entityType}/${entityId}`, { params });
-      return response.data;
+      return normalizeRelationListResponse(response.data);
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -383,7 +449,7 @@ export const createRelation = async (
 ): Promise<MediaRelation> => {
   try {
     const response = await cmsApiClient.post('cms/relations/attach', data);
-    return response.data;
+    return getResponsePayload<MediaRelation>(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -395,7 +461,7 @@ export const createRelation = async (
  * @returns Promise<void>
  */
 export const deleteRelation = async (
-  data: { asset_id: number; entity_type: string; entity_id: string; relation_type?: string }
+  data: { asset_id: CmsMediaId; entity_type: string; entity_id: string; relation_type?: string }
 ): Promise<void> => {
   try {
     await cmsApiClient.post('cms/relations/detach', data);
@@ -410,10 +476,13 @@ export const deleteRelation = async (
  * @returns Promise<void>
  */
 export const reorderRelations = async (
-  order: ReorderRelationDto[]
+  data: ReorderRelationsRequest
 ): Promise<void> => {
   try {
-    await cmsApiClient.put('cms/relations/reorder', { order });
+    await cmsApiClient.put('cms/relations/reorder', {
+      ...data,
+      order: data.relations,
+    });
   } catch (error) {
     throw transformCMSError(error);
   }

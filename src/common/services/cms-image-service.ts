@@ -25,8 +25,7 @@ import { transformCMSError } from '@/src/common/utils/cms-error-handler';
  * **Validates: Requirements 12.1, 12.2**
  */
 export const uploadImages = async (
-  blogId: number,
-  articleId: number,
+  articleId: string,
   files: File[],
   altTexts?: (string | null)[]
 ): Promise<ArticleImage[]> => {
@@ -50,7 +49,15 @@ export const uploadImages = async (
       }
     );
     
-    return response.data;
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+
+    if (response.data?.data && Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+
+    return [];
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -71,9 +78,8 @@ export const uploadImages = async (
  * **Validates: Requirements 12.3**
  */
 export const updateImage = async (
-  blogId: number,
-  articleId: number,
-  imageId: number,
+  articleId: string,
+  imageId: string,
   data: UpdateArticleImageDto
 ): Promise<ArticleImage> => {
   try {
@@ -81,7 +87,7 @@ export const updateImage = async (
       `cms/articles/${articleId}/images/${imageId}`,
       data
     );
-    return response.data;
+    return response.data?.data ?? response.data;
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -104,9 +110,8 @@ export const updateImage = async (
  * **Validates: Requirements 12.5**
  */
 export const deleteImage = async (
-  blogId: number,
-  articleId: number,
-  imageId: number
+  articleId: string,
+  imageId: string
 ): Promise<void> => {
   try {
     await cmsApiClient.delete(
@@ -138,8 +143,7 @@ export const deleteImage = async (
  * **Validates: Requirements 12.4**
  */
 export const reorderImages = async (
-  blogId: number,
-  articleId: number,
+  articleId: string,
   order: ReorderImageDto[]
 ): Promise<void> => {
   try {

@@ -12,6 +12,7 @@ import {
 } from '@/src/common/services/cms-media-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 import { useState } from 'react';
+import type { CmsMediaId, MediaAsset, PaginatedResponse } from '@/src/common/@types/@cms-media';
 
 /**
  * Query key factory for assets
@@ -23,7 +24,7 @@ export const assetKeys = {
   list: (tenantId: string | null, filters?: AssetFilters, params?: PaginationParams) =>
     [...assetKeys.lists(tenantId), filters, params] as const,
   details: (tenantId: string | null) => [...assetKeys.all(tenantId), 'detail'] as const,
-  detail: (tenantId: string | null, id: number) =>
+  detail: (tenantId: string | null, id: CmsMediaId) =>
     [...assetKeys.details(tenantId), id] as const,
 };
 
@@ -44,7 +45,7 @@ export function useAssets(filters?: AssetFilters, params?: PaginationParams) {
 /**
  * Hook to fetch a single asset by ID
  */
-export function useAsset(id: number) {
+export function useAsset(id: CmsMediaId) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
@@ -146,7 +147,7 @@ export function useDeleteAsset() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (id: number) => deleteAsset(id),
+    mutationFn: (id: CmsMediaId) => deleteAsset(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({
         queryKey: assetKeys.lists(tenantId),
@@ -158,14 +159,14 @@ export function useDeleteAsset() {
 
       queryClient.setQueriesData(
         { queryKey: assetKeys.lists(tenantId) },
-        (old: any) => {
+        (old: PaginatedResponse<MediaAsset> | undefined) => {
           if (!old?.data) return old;
           return {
             ...old,
             data: old.data.filter((asset: any) => asset.id !== id),
             meta: {
               ...old.meta,
-              total: old.meta.total - 1,
+              total: Math.max(old.meta.total - 1, 0),
             },
           };
         }

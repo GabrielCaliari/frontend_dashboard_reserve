@@ -60,7 +60,7 @@ export default function CollectionAssetBrowserPage() {
   const tCommon = useTranslations("common");
   const router = useRouter();
   const params = useParams();
-  const collectionId = parseInt(params.id as string);
+  const collectionId = params.id as string;
 
   // Page state
   const [page, setPage] = useState(1);

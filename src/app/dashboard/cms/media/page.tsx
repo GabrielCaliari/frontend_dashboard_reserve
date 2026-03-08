@@ -71,7 +71,8 @@ export default function MediaLibraryPage() {
     error,
   } = useCollections({
     page,
-    limit: 100,
+    limit: 20,
+    type: typeFilter === "all" ? undefined : typeFilter,
   });
 
   const deleteMutation = useDeleteCollection();
@@ -121,9 +122,7 @@ export default function MediaLibraryPage() {
     setPage(1);
   }, []);
 
-  const collections = (Array.isArray(collectionsData?.data) ? collectionsData.data : []).filter(
-    (c) => typeFilter === "all" || c.type === typeFilter
-  );
+  const collections = Array.isArray(collectionsData?.data) ? collectionsData.data : [];
   const meta = collectionsData?.meta;
 
   return (

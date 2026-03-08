@@ -1,6 +1,6 @@
 export interface ArticleImage {
-  id: number;
-  article_id: number;
+  id: string;
+  article_id: string;
   url: string;
   alt_text: string | null;
   display_order: number;
@@ -8,7 +8,7 @@ export interface ArticleImage {
 }
 
 export interface CreateArticleImageDto {
-  article_id: number;
+  article_id: string;
   file: File;
   alt_text?: string;
 }
@@ -19,6 +19,6 @@ export interface UpdateArticleImageDto {
 }
 
 export interface ReorderImageDto {
-  id: number;
+  id: string;
   display_order: number;
 }

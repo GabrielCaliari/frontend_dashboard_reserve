@@ -9,6 +9,7 @@ import {
 } from '@/src/common/services/cms-media-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 import { assetKeys } from './use-assets';
+import type { CmsMediaId, MediaRelation, ReorderRelationsRequest } from '@/src/common/@types/@cms-media';
 
 /**
  * Query key factory for relations
@@ -19,7 +20,7 @@ export const relationKeys = {
   lists: (tenantId: string | null) => [...relationKeys.all(tenantId), 'list'] as const,
   byEntity: (tenantId: string | null, entityType: string, entityId: string) =>
     [...relationKeys.lists(tenantId), { entity_type: entityType, entity_id: entityId }] as const,
-  byAsset: (tenantId: string | null, assetId: number) =>
+  byAsset: (tenantId: string | null, assetId: CmsMediaId) =>
     [...relationKeys.lists(tenantId), { asset_id: assetId }] as const,
 };
 
@@ -60,7 +61,7 @@ export function useAttachAsset() {
         variables.entity_id
       );
 
-      queryClient.setQueryData(entityKey, (old: any) => {
+      queryClient.setQueryData(entityKey, (old: MediaRelation[] | undefined) => {
         if (!old) return [newRelation];
         return [...old, newRelation];
       });
@@ -94,7 +95,7 @@ export function useDetachAsset() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (data: { asset_id: number; entity_type: string; entity_id: string; relation_type?: string }) =>
+    mutationFn: (data: { asset_id: CmsMediaId; entity_type: string; entity_id: string; relation_type?: string }) =>
       deleteRelation(data),
     onSuccess: (_result, variables) => {
       queryClient.invalidateQueries({
@@ -119,8 +120,8 @@ export function useReorderRelations() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (order: ReorderRelationDto[]) => reorderRelations(order),
-    onMutate: async (order) => {
+    mutationFn: (request: ReorderRelationsRequest) => reorderRelations(request),
+    onMutate: async (request) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({
         queryKey: relationKeys.lists(tenantId),
@@ -134,24 +135,24 @@ export function useReorderRelations() {
       // Optimistically update the display_order in all list caches
       queryClient.setQueriesData(
         { queryKey: relationKeys.lists(tenantId) },
-        (old: any) => {
+        (old: MediaRelation[] | undefined) => {
           if (!Array.isArray(old)) return old;
 
           // Create a map of id -> new display_order
           const orderMap = new Map(
-            order.map((item) => [item.id, item.display_order])
+            request.relations.map((item) => [item.id, item.display_order])
           );
 
           // Update display_order for matching relations and sort
           return old
-            .map((relation: any) => {
+            .map((relation) => {
               const newOrder = orderMap.get(relation.id);
               if (newOrder !== undefined) {
                 return { ...relation, display_order: newOrder };
               }
               return relation;
             })
-            .sort((a: any, b: any) => a.display_order - b.display_order);
+            .sort((a, b) => a.display_order - b.display_order);
         }
       );
 

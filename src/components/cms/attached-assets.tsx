@@ -60,13 +60,14 @@ import {
   useReorderRelations,
 } from "@/src/common/hooks/cms/use-relations";
 import { formatFileSize } from "@/src/common/utils/format-file-size";
-import type { MediaAsset, MediaRelation } from "@/src/common/@types/@cms-media";
+import type { CmsMediaId, MediaAsset, MediaRelation } from "@/src/common/@types/@cms-media";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
 interface AttachedAssetsProps {
   entityType: string;
-  entityId: number;
+  entityId: string;
+  relationType?: string;
   readonly?: boolean;
 }
 
@@ -77,7 +78,7 @@ interface AttachedAssetsProps {
 interface SortableAssetItemProps {
   relation: MediaRelation;
   readonly: boolean;
-  onRemove: (id: number) => void;
+  onRemove: (assetId: CmsMediaId) => void;
 }
 
 function SortableAssetItem({ relation, readonly, onRemove }: SortableAssetItemProps) {
@@ -155,7 +156,7 @@ function SortableAssetItem({ relation, readonly, onRemove }: SortableAssetItemPr
           size="sm"
           variant="light"
           color="danger"
-          onPress={() => onRemove(relation.id)}
+          onPress={() => onRemove(relation.asset_id)}
           aria-label={t("removeAsset")}
         >
           <Trash2 size={16} />
@@ -171,16 +172,14 @@ function SortableAssetItem({ relation, readonly, onRemove }: SortableAssetItemPr
 export function AttachedAssets({
   entityType,
   entityId,
+  relationType = "gallery",
   readonly = false,
 }: AttachedAssetsProps) {
   const t = useTranslations("cms.attachedAssets");
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   // Fetch relations for this entity
-  const { data: relations = [], isLoading } = useRelations({
-    entity_type: entityType,
-    entity_id: entityId,
-  });
+  const { data: relations = [], isLoading } = useRelations(entityType, entityId, relationType);
 
   // Mutations
   const attachAsset = useAttachAsset();
@@ -220,7 +219,12 @@ export function AttachedAssets({
     }));
 
     try {
-      await reorderRelations.mutateAsync(order);
+      await reorderRelations.mutateAsync({
+        entity_type: entityType,
+        entity_id: entityId,
+        relation_type: relationType,
+        relations: order,
+      });
       toast.success(t("reorderSuccess"));
     } catch (error) {
       console.error("Failed to reorder assets:", error);
@@ -239,6 +243,7 @@ export function AttachedAssets({
           asset_id: asset.id,
           entity_type: entityType,
           entity_id: entityId,
+          relation_type: relationType,
           display_order: sortedRelations.length,
         });
       }
@@ -256,12 +261,17 @@ export function AttachedAssets({
   };
 
   // Handle asset removal
-  const handleRemove = async (relationId: number) => {
+  const handleRemove = async (assetId: CmsMediaId) => {
     const confirmed = window.confirm(t("removeConfirmation"));
     if (!confirmed) return;
 
     try {
-      await detachAsset.mutateAsync(relationId);
+      await detachAsset.mutateAsync({
+        asset_id: assetId,
+        entity_type: entityType,
+        entity_id: entityId,
+        relation_type: relationType,
+      });
       toast.success(t("removeSuccess"));
     } catch (error) {
       console.error("Failed to remove asset:", error);
