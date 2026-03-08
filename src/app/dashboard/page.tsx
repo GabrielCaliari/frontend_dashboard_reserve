@@ -7,8 +7,12 @@ import { Card, CardBody, Spinner, Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
-import { useStatsDashboard } from "@/src/common/hooks/stats";
-import { StatGroupCard, DateRangePicker } from "@/src/components/stats";
+import { useStatsDashboard, useStatsTimeseries } from "@/src/common/hooks/stats";
+import {
+  StatGroupCard,
+  DateRangePicker,
+  StatsTimeseriesCard,
+} from "@/src/components/stats";
 
 function getDefaultRange() {
   const to = new Date();
@@ -20,6 +24,13 @@ function getDefaultRange() {
   };
 }
 
+function buildIsoRange(from: string, to: string) {
+  return {
+    from: from ? `${from}T00:00:00.000Z` : undefined,
+    to: to ? `${to}T23:59:59.999Z` : undefined,
+  };
+}
+
 export default function DashboardPage() {
   const t = useTranslations("stats");
   const hasSelectedTenant = useHasSelectedTenant();
@@ -27,8 +38,11 @@ export default function DashboardPage() {
   const defaultRange = useMemo(getDefaultRange, []);
   const [from, setFrom] = useState(defaultRange.from);
   const [to, setTo] = useState(defaultRange.to);
+  const range = useMemo(() => buildIsoRange(from, to), [from, to]);
 
-  const { data, isLoading, isError } = useStatsDashboard(from, to);
+  const { data, isLoading, isError } = useStatsDashboard(range);
+  const leadsTimeseries = useStatsTimeseries({ ...range, module: "leads", granularity: "day" });
+  const cmsTimeseries = useStatsTimeseries({ ...range, module: "cms", granularity: "day" });
 
   if (!hasSelectedTenant) {
     return (
@@ -120,6 +134,23 @@ export default function DashboardPage() {
 
         {data && data.groups.length > 0 && (
           <div className="space-y-6">
+            <div className="grid gap-6 xl:grid-cols-2">
+              <StatsTimeseriesCard
+                title={t("leadsSeriesTitle")}
+                description={t("leadsSeriesDescription")}
+                seriesItem={leadsTimeseries.data?.series[0]}
+                isLoading={leadsTimeseries.isLoading}
+                error={leadsTimeseries.isError ? t("timeseriesError") : undefined}
+              />
+              <StatsTimeseriesCard
+                title={t("cmsSeriesTitle")}
+                description={t("cmsSeriesDescription")}
+                seriesItem={cmsTimeseries.data?.series[0]}
+                isLoading={cmsTimeseries.isLoading}
+                error={cmsTimeseries.isError ? t("timeseriesError") : undefined}
+              />
+            </div>
+
             {data.groups.map((group) => (
               <StatGroupCard key={group.moduleKey} group={group} />
             ))}

@@ -1,16 +1,33 @@
 import type { InternalAxiosRequestConfig } from 'axios';
 
+type TenantStorageSnapshot = {
+  state?: {
+    selectedTenant?: {
+      id?: string | number;
+    } | null;
+    dashboardScope?: 'tenant' | 'global';
+  };
+};
+
 /**
  * Extrai o tenant ID do valor do cookie "tenant-storage" (JSON persistido pelo Zustand).
  */
-function extractTenantId(cookieValue: string): string | null {
+function parseTenantCookie(cookieValue: string): TenantStorageSnapshot | null {
   try {
     const decoded = decodeURIComponent(cookieValue);
-    const parsed = JSON.parse(decoded);
-    return parsed?.state?.selectedTenant?.id?.toString() ?? null;
+    return JSON.parse(decoded) as TenantStorageSnapshot;
   } catch {
     return null;
   }
+}
+
+function extractTenantId(cookieValue: string): string | null {
+  const parsed = parseTenantCookie(cookieValue);
+  if (!parsed || parsed.state?.dashboardScope === 'global') {
+    return null;
+  }
+
+  return parsed.state?.selectedTenant?.id?.toString() ?? null;
 }
 
 /**
@@ -22,6 +39,10 @@ function extractTenantId(cookieValue: string): string | null {
 export async function injectAuthHeaders(
   config: InternalAxiosRequestConfig,
 ): Promise<InternalAxiosRequestConfig> {
+  const requestConfig = config as InternalAxiosRequestConfig & {
+    skipTenantHeader?: boolean;
+  };
+
   if (typeof window !== 'undefined') {
     // === CLIENT-SIDE ===
     const getCookie = (name: string) =>
@@ -39,7 +60,7 @@ export async function injectAuthHeaders(
     if (token) config.headers.Authorization = `Bearer ${token}`;
     if (sessionId) config.headers['session-id'] = sessionId;
 
-    if (tenantCookie) {
+    if (!requestConfig.skipTenantHeader && tenantCookie) {
       const tenantId = extractTenantId(tenantCookie);
       if (tenantId) config.headers['x-tenant-id'] = tenantId;
     }
@@ -56,7 +77,7 @@ export async function injectAuthHeaders(
       if (token) config.headers.Authorization = `Bearer ${token}`;
       if (sessionId) config.headers['session-id'] = sessionId;
 
-      if (tenantCookie) {
+      if (!requestConfig.skipTenantHeader && tenantCookie) {
         const tenantId = extractTenantId(tenantCookie);
         if (tenantId) config.headers['x-tenant-id'] = tenantId;
       }

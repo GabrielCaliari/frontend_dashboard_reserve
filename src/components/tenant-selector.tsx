@@ -3,13 +3,24 @@
 import { useEffect, useState } from "react";
 import { Select, SelectItem } from "@heroui/react";
 import useAdminDetails from "@/src/common/hooks/useUserDatails";
-import { useTenantStore } from "@/src/common/stores/tenant-store";
+import usePermissions from "@/src/common/hooks/use-permissions";
+import { useRouter } from "nextjs-toploader/app";
+import {
+  useDashboardScope,
+  useTenantStore,
+} from "@/src/common/stores/tenant-store";
+
+const GLOBAL_VIEW_KEY = "__global_view__";
 
 export default function TenantSelector() {
+  const { push } = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const { data: adminData, isLoading } = useAdminDetails();
+  const { isSuperAdmin } = usePermissions();
+  const dashboardScope = useDashboardScope();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const setSelectedTenant = useTenantStore((state) => state.setSelectedTenant);
+  const setDashboardScope = useTenantStore((state) => state.setDashboardScope);
 
   const tenants = adminData?.tenants || [];
 
@@ -27,11 +38,19 @@ export default function TenantSelector() {
 
   const handleSelectionChange = (keys: any) => {
     const selectedKey = Array.from(keys)[0] as string;
-    if (selectedKey) {
-      const tenant = tenants.find((t) => t.id.toString() === selectedKey);
-      if (tenant) {
-        setSelectedTenant(tenant);
-      }
+    if (!selectedKey) return;
+
+    if (selectedKey === GLOBAL_VIEW_KEY && isSuperAdmin) {
+      setDashboardScope("global");
+      push("/dashboard/global");
+      return;
+    }
+
+    const tenant = tenants.find((t) => t.id.toString() === selectedKey);
+    if (tenant) {
+      setSelectedTenant(tenant);
+      setDashboardScope("tenant");
+      push("/dashboard");
     }
   };
 
@@ -54,7 +73,7 @@ export default function TenantSelector() {
     );
   }
 
-  if (tenants.length === 0) {
+  if (tenants.length === 0 && !isSuperAdmin) {
     return (
       <Select
         label="Tenant"
@@ -75,7 +94,13 @@ export default function TenantSelector() {
     <Select
       label="Tenant"
       placeholder="Select Tenant"
-      selectedKeys={selectedTenant ? new Set([selectedTenant.id.toString()]) : new Set()}
+      selectedKeys={
+        dashboardScope === "global"
+          ? new Set([GLOBAL_VIEW_KEY])
+          : selectedTenant
+            ? new Set([selectedTenant.id.toString()])
+            : new Set()
+      }
       onSelectionChange={handleSelectionChange}
       className="max-w-xs"
       classNames={{
@@ -96,6 +121,15 @@ export default function TenantSelector() {
         },
       }}
     >
+      {isSuperAdmin && (
+        <SelectItem
+          key={GLOBAL_VIEW_KEY}
+          value={GLOBAL_VIEW_KEY}
+          textValue="Visão Global"
+        >
+          Visão Global
+        </SelectItem>
+      )}
       {tenants.map((tenant) => (
         <SelectItem
           key={tenant.id.toString()}

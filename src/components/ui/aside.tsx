@@ -33,6 +33,11 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "nextjs-toploader/app";
 import { useTranslations } from "next-intl";
 import { useMobileDrawerStore } from "@/src/common/stores/mobile-drawer.store";
+import {
+  useDashboardScope,
+  useTenantStore,
+} from "@/src/common/stores/tenant-store";
+import usePermissions from "@/src/common/hooks/use-permissions";
 
 export interface SidebarProps {
   activeTab: any;
@@ -54,6 +59,9 @@ export function Sidebar({
   mobileStyle = "footer",
 }: SidebarProps) {
   const { push } = useRouter();
+  const { isSuperAdmin } = usePermissions();
+  const dashboardScope = useDashboardScope();
+  const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const [userName, setUserName] = useState<string>("");
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const { isOpen: mobileDrawerOpen, close: closeMobileDrawer } = useMobileDrawerStore();
@@ -109,114 +117,158 @@ export function Sidebar({
   };
 
   const navItems: NavItem[] = useMemo(
-    () => [
-      {
-        id: "dashboard",
-        label: t("dashboard"),
-        icon: LayoutDashboardIcon,
-        path: "/dashboard",
-      },
-      {
-        id: "leads-menu",
-        label: t("leads"),
-        icon: HiOutlineDatabase,
-        subItems: [
+    () => {
+      if (dashboardScope === "global" && isSuperAdmin) {
+        return [
           {
-            id: "leads",
-            label: t("allLeads"),
-            icon: UsersRound,
-            path: "/dashboard/leads",
+            id: "dashboard-global",
+            label: t("globalDashboard") || "Visão Global",
+            icon: LayoutDashboardIcon,
+            path: "/dashboard/global",
           },
           {
-            id: "lead-collections",
-            label: t("leadCollections"),
-            icon: FolderOpen,
-            path: "/dashboard/leads/collections",
+            id: "access-management",
+            label: t("accessManagement"),
+            icon: Shield,
+            subItems: [
+              {
+                id: "admins",
+                label: t("admins"),
+                icon: UserCog,
+                path: "/dashboard/access-management/admins",
+              },
+              {
+                id: "tenants",
+                label: t("tenants"),
+                icon: Building2,
+                path: "/dashboard/access-management/tenants",
+              },
+              {
+                id: "users",
+                label: t("users"),
+                icon: Users,
+                path: "/dashboard/access-management/users",
+              },
+            ],
           },
           {
-            id: "abandoned-carts",
-            label: t("abandonedCarts"),
-            icon: ShoppingCart,
-            path: "/dashboard/abandoned-carts",
+            id: "profile",
+            label: t("profile") || "My Profile",
+            icon: Settings,
+            path: "/dashboard/profile",
           },
-        ],
-      },
-      {
-        id: "email",
-        label: t("emailCampaigns"),
-        icon: Mail,
-        path: "/dashboard/email-campaign",
-      },
-      {
-        id: "cms",
-        label: "CMS",
-        icon: LayoutTemplate,
-        subItems: [
-          {
-            id: "blogs",
-            label: "Blogs",
-            icon: FileText,
-            path: "/dashboard/cms/blogs",
-          },
-          {
-            id: "articles",
-            label: "Articles",
-            icon: FileText,
-            path: "/dashboard/cms/articles",
-          },
-          {
-            id: "authors",
-            label: "Authors",
-            icon: UserCircle,
-            path: "/dashboard/cms/authors",
-          },
-          {
-            id: "collections",
-            label: "Collections",
-            icon: FolderOpen,
-            path: "/dashboard/cms/collections",
-          },
-          {
-            id: "media",
-            label: "Media",
-            icon: Image,
-            path: "/dashboard/cms/media",
-          },
-        ],
-      },
-      {
-        id: "profile",
-        label: t("profile") || "My Profile",
-        icon: Settings,
-        path: "/dashboard/profile",
-      },
-      {
-        id: "access-management",
-        label: t("accessManagement"),
-        icon: Shield,
-        subItems: [
-          {
-            id: "admins",
-            label: t("admins"),
-            icon: UserCog,
-            path: "/dashboard/access-management/admins",
-          },
-          {
-            id: "tenants",
-            label: t("tenants"),
-            icon: Building2,
-            path: "/dashboard/access-management/tenants",
-          },
-          {
-            id: "users",
-            label: t("users"),
-            icon: Users,
-            path: "/dashboard/access-management/users",
-          },
-        ],
-      },
-    ],
-    [t],
+        ];
+      }
+
+      return [
+        {
+          id: "dashboard",
+          label: t("dashboard"),
+          icon: LayoutDashboardIcon,
+          path: "/dashboard",
+        },
+        {
+          id: "leads-menu",
+          label: t("leads"),
+          icon: HiOutlineDatabase,
+          subItems: [
+            {
+              id: "leads",
+              label: t("allLeads"),
+              icon: UsersRound,
+              path: "/dashboard/leads",
+            },
+            {
+              id: "lead-collections",
+              label: t("leadCollections"),
+              icon: FolderOpen,
+              path: "/dashboard/leads/collections",
+            },
+            {
+              id: "abandoned-carts",
+              label: t("abandonedCarts"),
+              icon: ShoppingCart,
+              path: "/dashboard/abandoned-carts",
+            },
+          ],
+        },
+        {
+          id: "email",
+          label: t("emailCampaigns"),
+          icon: Mail,
+          path: "/dashboard/email-campaign",
+        },
+        {
+          id: "cms",
+          label: "CMS",
+          icon: LayoutTemplate,
+          subItems: [
+            {
+              id: "blogs",
+              label: "Blogs",
+              icon: FileText,
+              path: "/dashboard/cms/blogs",
+            },
+            {
+              id: "articles",
+              label: "Articles",
+              icon: FileText,
+              path: "/dashboard/cms/articles",
+            },
+            {
+              id: "authors",
+              label: "Authors",
+              icon: UserCircle,
+              path: "/dashboard/cms/authors",
+            },
+            {
+              id: "collections",
+              label: "Collections",
+              icon: FolderOpen,
+              path: "/dashboard/cms/collections",
+            },
+            {
+              id: "media",
+              label: "Media",
+              icon: Image,
+              path: "/dashboard/cms/media",
+            },
+          ],
+        },
+        {
+          id: "profile",
+          label: t("profile") || "My Profile",
+          icon: Settings,
+          path: "/dashboard/profile",
+        },
+        {
+          id: "access-management",
+          label: t("accessManagement"),
+          icon: Shield,
+          subItems: [
+            {
+              id: "admins",
+              label: t("admins"),
+              icon: UserCog,
+              path: "/dashboard/access-management/admins",
+            },
+            {
+              id: "tenants",
+              label: t("tenants"),
+              icon: Building2,
+              path: "/dashboard/access-management/tenants",
+            },
+            {
+              id: "users",
+              label: t("users"),
+              icon: Users,
+              path: "/dashboard/access-management/users",
+            },
+          ],
+        },
+      ];
+    },
+    [dashboardScope, isSuperAdmin, t],
   );
 
   // Filter items recursively based on disabledTabs
@@ -314,7 +366,7 @@ export function Sidebar({
         <div className="w-full flex-1 flex flex-col min-h-0">
           <div className="flex flex-col w-full shrink-0">
             <Link
-              href="/dashboard"
+              href={dashboardScope === "global" && isSuperAdmin ? "/dashboard/global" : "/dashboard"}
               className="flex items-center justify-between hover:bg-white/5 p-3 hover:cursor-pointer rounded-xl w-full transition-colors group"
             >
               <div className="flex items-center gap-3 rounded-lg w-full">
@@ -327,7 +379,9 @@ export function Sidebar({
                     {userName || "User"}
                   </h1>
                   <p className="text-xs text-gray-500 truncate">
-                    {t("workspace")}
+                    {dashboardScope === "global" && isSuperAdmin
+                      ? t("globalWorkspace") || "Workspace global"
+                      : selectedTenant?.name || t("workspace")}
                   </p>
                 </div>
               </div>
@@ -373,7 +427,11 @@ export function Sidebar({
                   <span className="text-sm font-bold text-gray-100 capitalize truncate">
                     {userName || "User"}
                   </span>
-                  <span className="text-xs text-gray-500">{t("workspace")}</span>
+                  <span className="text-xs text-gray-500">
+                    {dashboardScope === "global" && isSuperAdmin
+                      ? t("globalWorkspace") || "Workspace global"
+                      : selectedTenant?.name || t("workspace")}
+                  </span>
                 </div>
               </div>
               <Button

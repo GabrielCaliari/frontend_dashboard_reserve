@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Button,
   Card,
@@ -21,6 +22,7 @@ import {
   Edit,
   Power,
   Trash2,
+  BarChart3,
   User,
   Mail,
   Shield,
@@ -244,6 +246,17 @@ export default function TenantDetailPage() {
           <p className="text-muted-foreground">
             View detailed information about this tenant account
           </p>
+          <div className="mt-4">
+            <Button
+              as={Link}
+              href={`/dashboard/global/tenants/${tenant.id}`}
+              color="primary"
+              variant="flat"
+              startContent={<BarChart3 className="w-4 h-4" />}
+            >
+              Open Stats Drill-down
+            </Button>
+          </div>
         </div>
 
         {/* Tenant Information Card */}

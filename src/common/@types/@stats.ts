@@ -30,6 +30,40 @@ export interface DashboardResponse {
   groups: MetricGroupResponse[];
 }
 
+export type StatsModuleResponse = MetricGroupResponse;
+
+export type StatsTimeseriesGranularity = 'hour' | 'day' | 'week' | 'month';
+
+export interface StatsTimeseriesPoint {
+  date: string;
+  value: number;
+}
+
+export interface StatsTimeseriesItem {
+  moduleKey: string;
+  label: string;
+  metricKey: string;
+  metricLabel: string;
+  granularity: StatsTimeseriesGranularity;
+  from: string;
+  to: string;
+  series: StatsTimeseriesPoint[];
+}
+
+export interface StatsTimeseriesResponse {
+  series: StatsTimeseriesItem[];
+}
+
+export interface StatsDashboardQuery {
+  from?: string;
+  to?: string;
+}
+
+export interface StatsTimeseriesQuery extends StatsDashboardQuery {
+  granularity?: StatsTimeseriesGranularity;
+  module?: string;
+}
+
 // ──────────────────────────────────────────────
 // Integrations
 // ──────────────────────────────────────────────

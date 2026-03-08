@@ -2,9 +2,13 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Tenant } from '@/src/common/@types/@auth';
 
+export type DashboardScope = 'tenant' | 'global';
+
 interface TenantState {
   selectedTenant: Tenant | null;
+  dashboardScope: DashboardScope;
   setSelectedTenant: (tenant: Tenant | null) => void;
+  setDashboardScope: (scope: DashboardScope) => void;
   clearSelectedTenant: () => void;
 }
 
@@ -43,8 +47,10 @@ export const useTenantStore = create<TenantState>()(
   persist(
     (set) => ({
       selectedTenant: null,
+      dashboardScope: 'tenant',
       setSelectedTenant: (tenant) => set({ selectedTenant: tenant }),
-      clearSelectedTenant: () => set({ selectedTenant: null }),
+      setDashboardScope: (dashboardScope) => set({ dashboardScope }),
+      clearSelectedTenant: () => set({ selectedTenant: null, dashboardScope: 'tenant' }),
     }),
     {
       name: 'tenant-storage',
@@ -56,11 +62,22 @@ export const useTenantStore = create<TenantState>()(
 // Hook para obter o tenant ID selecionado (útil para APIs)
 export const useSelectedTenantId = () => {
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
+  const dashboardScope = useTenantStore((state) => state.dashboardScope);
+  if (dashboardScope === 'global') return null;
   return selectedTenant?.id || null;
 };
 
 // Hook para verificar se um tenant está selecionado
 export const useHasSelectedTenant = () => {
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
-  return selectedTenant !== null;
+  const dashboardScope = useTenantStore((state) => state.dashboardScope);
+  return dashboardScope === 'tenant' && selectedTenant !== null;
+};
+
+export const useDashboardScope = () => {
+  return useTenantStore((state) => state.dashboardScope);
+};
+
+export const useIsGlobalDashboardScope = () => {
+  return useTenantStore((state) => state.dashboardScope === 'global');
 };

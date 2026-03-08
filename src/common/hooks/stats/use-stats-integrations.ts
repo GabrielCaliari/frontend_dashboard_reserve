@@ -18,12 +18,9 @@ export function useStatsIntegrations() {
 }
 
 export function useStatsProviders() {
-  const tenantId = useSelectedTenantId();
-
   return useQuery({
-    queryKey: ['stats-providers', tenantId],
+    queryKey: ['stats-providers'],
     queryFn: () => statsService.getProviders(),
-    enabled: !!tenantId,
   });
 }
 

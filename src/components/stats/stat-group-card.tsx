@@ -11,14 +11,26 @@ import {
 import { StatKpiCard } from "./stat-kpi-card";
 import { MetadataTable } from "./metadata-table";
 import type { MetricGroupResponse } from "@/src/common/@types/@stats";
+import { formatStatValue } from "./format-stat-value";
 
 interface StatGroupCardProps {
   group: MetricGroupResponse;
 }
 
 export function StatGroupCard({ group }: StatGroupCardProps) {
+  const isTopBlogsMetric = (metricKey: string) => metricKey.startsWith("cms.blog.");
+  const isTopCollectionsMetric = (metricKey: string) => metricKey.startsWith("leads.collection.");
+
+  const topBlogsMetrics = group.metrics.filter((metric) => isTopBlogsMetric(metric.key));
+  const topCollectionsMetrics = group.metrics.filter((metric) => isTopCollectionsMetric(metric.key));
   const metricsWithMetadata = group.metrics.filter((m) => m.metadata);
-  const metricsWithoutMetadata = group.metrics.filter((m) => !m.metadata);
+  const metricsWithoutMetadata = group.metrics.filter(
+    (metric) =>
+      !metric.metadata && !isTopBlogsMetric(metric.key) && !isTopCollectionsMetric(metric.key),
+  );
+  const metadataMetrics = metricsWithMetadata.filter(
+    (metric) => !isTopBlogsMetric(metric.key) && !isTopCollectionsMetric(metric.key),
+  );
 
   return (
     <Card className="bg-[#111125] border-gray-800">
@@ -53,9 +65,69 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
           </div>
         )}
 
-        {metricsWithMetadata.length > 0 && (
+        {(topBlogsMetrics.length > 0 || topCollectionsMetrics.length > 0) && (
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            {topBlogsMetrics.length > 0 && (
+              <Card className="bg-[#16162a] border-gray-800">
+                <CardContent className="p-4">
+                  <p className="mb-3 text-sm font-medium text-gray-200">Top Blogs</p>
+                  <div className="space-y-2">
+                    {topBlogsMetrics.map((metric) => (
+                      <div
+                        key={metric.key}
+                        className="flex items-center justify-between rounded-md border border-gray-800 px-3 py-2"
+                      >
+                        <div>
+                          <p className="text-sm text-gray-100">
+                            {String(metric.metadata?.blog_name ?? metric.label)}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {String(metric.metadata?.blog_id ?? metric.key)}
+                          </p>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-100">
+                          {formatStatValue(metric.value, metric.unit)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {topCollectionsMetrics.length > 0 && (
+              <Card className="bg-[#16162a] border-gray-800">
+                <CardContent className="p-4">
+                  <p className="mb-3 text-sm font-medium text-gray-200">Top Lead Collections</p>
+                  <div className="space-y-2">
+                    {topCollectionsMetrics.map((metric) => (
+                      <div
+                        key={metric.key}
+                        className="flex items-center justify-between rounded-md border border-gray-800 px-3 py-2"
+                      >
+                        <div>
+                          <p className="text-sm text-gray-100">
+                            {String(metric.metadata?.collection_name ?? metric.label)}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {String(metric.metadata?.collection_id ?? metric.key)}
+                          </p>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-100">
+                          {formatStatValue(metric.value, metric.unit)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {metadataMetrics.length > 0 && (
           <div className="mt-4 space-y-3">
-            {metricsWithMetadata.map((metric) => (
+            {metadataMetrics.map((metric) => (
               <Card
                 key={metric.key}
                 className="bg-[#16162a] border-gray-800"
@@ -66,12 +138,7 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
                       {metric.label}
                     </p>
                     <span className="text-lg font-bold text-gray-100">
-                      {metric.value}
-                      {metric.unit && (
-                        <span className="ml-1 text-xs font-normal text-gray-400">
-                          {metric.unit}
-                        </span>
-                      )}
+                      {formatStatValue(metric.value, metric.unit)}
                     </span>
                   </div>
                   {metric.metadata && (

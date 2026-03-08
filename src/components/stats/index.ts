@@ -9,3 +9,4 @@ export { DynamicConfigForm } from "./dynamic-config-form";
 export { AddIntegrationModal } from "./add-integration-modal";
 export { EditIntegrationModal } from "./edit-integration-modal";
 export { DeleteIntegrationModal } from "./delete-integration-modal";
+export { StatsTimeseriesCard } from "./stats-timeseries-card";

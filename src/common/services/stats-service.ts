@@ -5,18 +5,71 @@ import type {
   AvailableIntegration,
   CreateStatsIntegrationDto,
   UpdateStatsIntegrationDto,
+  StatsDashboardQuery,
+  StatsTimeseriesQuery,
+  StatsTimeseriesResponse,
+  StatsModuleResponse,
 } from '@/src/common/@types/@stats';
+
+function buildDashboardParams(query: StatsDashboardQuery = {}) {
+  const params: Record<string, string> = {};
+
+  if (query.from) params.from = query.from;
+  if (query.to) params.to = query.to;
+
+  return Object.keys(params).length > 0 ? params : undefined;
+}
 
 export const statsService = {
   // ── Dashboard ─────────────────────────────────
 
-  async getDashboard(from?: string, to?: string): Promise<DashboardResponse> {
-    const params: Record<string, string> = {};
-    if (from) params.from = from;
-    if (to) params.to = to;
+  async getDashboard(query: StatsDashboardQuery = {}): Promise<DashboardResponse> {
     const response = await api.get<DashboardResponse>('/stats/dashboard', {
+      params: buildDashboardParams(query),
+    });
+    return response.data;
+  },
+
+  async getTenantDashboard(
+    tenantId: string,
+    query: StatsDashboardQuery = {},
+  ): Promise<DashboardResponse> {
+    const response = await api.get<DashboardResponse>(
+      `/stats/dashboard/tenants/${tenantId}`,
+      {
+        params: buildDashboardParams(query),
+        skipTenantHeader: true,
+      } as never,
+    );
+    return response.data;
+  },
+
+  async getGlobalDashboard(query: StatsDashboardQuery = {}): Promise<DashboardResponse> {
+    const response = await api.get<DashboardResponse>('/stats/dashboard/global', {
+      params: buildDashboardParams(query),
+      skipTenantHeader: true,
+    } as never);
+    return response.data;
+  },
+
+  async getTimeseries(
+    query: StatsTimeseriesQuery = {},
+  ): Promise<StatsTimeseriesResponse> {
+    const params: Record<string, string> = {};
+
+    if (query.from) params.from = query.from;
+    if (query.to) params.to = query.to;
+    if (query.granularity) params.granularity = query.granularity;
+    if (query.module) params.module = query.module;
+
+    const response = await api.get<StatsTimeseriesResponse>('/stats/timeseries', {
       params: Object.keys(params).length > 0 ? params : undefined,
     });
+    return response.data;
+  },
+
+  async getModuleStats(moduleKey: string): Promise<StatsModuleResponse> {
+    const response = await api.get<StatsModuleResponse>(`/stats/module/${moduleKey}`);
     return response.data;
   },
 
@@ -33,7 +86,9 @@ export const statsService = {
   },
 
   async getProviders(): Promise<AvailableIntegration[]> {
-    const response = await api.get<AvailableIntegration[]>('/stats/integrations/providers');
+    const response = await api.get<AvailableIntegration[]>('/stats/available-integrations', {
+      skipTenantHeader: true,
+    } as never);
     return response.data;
   },
 
