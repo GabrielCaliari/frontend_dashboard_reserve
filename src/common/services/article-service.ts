@@ -11,6 +11,13 @@ import type {
   PublicArticle,
 } from '@/src/common/@types/@article';
 
+const publicCmsBaseUrl = buildApiBaseUrl(
+  process.env.NODE_ENV === 'development'
+    ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? process.env.NEXT_LOCAL_API_URL)
+    : (process.env.NEXT_PUBLIC_ZARP_API_URL ?? process.env.NEXT_PUBLIC_API_URL),
+  'api/cms/public',
+);
+
 export const articleService = {
   // Admin endpoints (tenant_id via header x-tenant-id)
   async listArticles(blogId: number, page = 1, limit = 10): Promise<ArticleListResponse> {
@@ -51,7 +58,7 @@ export const articleService = {
     params?: PublicArticleListParams
   ): Promise<PublicArticleListResponse> {
     const response = await axios.get(
-      `${buildApiBaseUrl(process.env.NEXT_PUBLIC_API_URL, 'api/cms/public')}/articles`,
+      `${publicCmsBaseUrl}/articles`,
       {
       headers: {
         'x-blog-secret-key': secretKey,
@@ -67,7 +74,7 @@ export const articleService = {
 
   async getPublicArticleBySlug(secretKey: string, slug: string): Promise<PublicArticle> {
     const response = await axios.get(
-      `${buildApiBaseUrl(process.env.NEXT_PUBLIC_API_URL, 'api/cms/public')}/articles/${slug}`,
+      `${publicCmsBaseUrl}/articles/${slug}`,
       {
         headers: {
           'x-blog-secret-key': secretKey,

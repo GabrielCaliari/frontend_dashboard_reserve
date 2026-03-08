@@ -2,8 +2,8 @@ import axios, { AxiosInstance } from 'axios';
 import { buildApiBaseUrl } from './build-api-base-url';
 
 const CMS_API_URL = process.env.NODE_ENV === 'development' 
-  ? process.env.NEXT_LOCAL_API_URL 
-  : process.env.NEXT_PUBLIC_API_URL;
+  ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? process.env.NEXT_LOCAL_API_URL)
+  : (process.env.NEXT_PUBLIC_ZARP_API_URL ?? process.env.NEXT_PUBLIC_API_URL);
 
 /**
  * Factory function to create a configured axios instance for CMS public API endpoints.

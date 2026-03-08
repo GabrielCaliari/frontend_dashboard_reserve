@@ -2,7 +2,7 @@ import axios from "axios";
 import { buildApiBaseUrl } from "./build-api-base-url";
 import { injectAuthHeaders } from "./get-auth-headers";
 
-const API_URL = process.env.NEXT_PUBLIC_API_EMAIL_URL;
+const API_URL = process.env.NEXT_PUBLIC_ZARP_API_EMAIL_URL ?? process.env.NEXT_PUBLIC_API_EMAIL_URL;
 
 const apiEmail = axios.create({
   baseURL: buildApiBaseUrl(API_URL),

@@ -4,14 +4,13 @@ import { buildApiBaseUrl } from "./build-api-base-url";
 import { injectAuthHeaders } from "./get-auth-headers";
 
 // In browser (client-side), only NEXT_PUBLIC_ variables are available
-// For server-side, we can use NEXT_LOCAL_API_URL
 const API_URL = typeof window !== 'undefined'
   ? (process.env.NODE_ENV === 'development' 
-      ? 'http://localhost:3002'  // Hardcoded for client-side dev
-      : process.env.NEXT_PUBLIC_API_URL)
+    ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? 'http://localhost:3002')
+    : (process.env.NEXT_PUBLIC_ZARP_API_URL ?? process.env.NEXT_PUBLIC_API_URL))
   : (process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_LOCAL_API_URL
-      : process.env.NEXT_PUBLIC_API_URL);
+    ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? process.env.NEXT_LOCAL_API_URL)
+    : (process.env.NEXT_PUBLIC_ZARP_API_URL ?? process.env.NEXT_PUBLIC_API_URL));
 
 const api = axios.create({
   baseURL: buildApiBaseUrl(API_URL),
