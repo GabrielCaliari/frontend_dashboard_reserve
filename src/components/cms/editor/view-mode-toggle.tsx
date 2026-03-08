@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Eye, FileCode2 } from "lucide-react";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/common/lib/utils";
 import {
   Tooltip,
   TooltipContent,

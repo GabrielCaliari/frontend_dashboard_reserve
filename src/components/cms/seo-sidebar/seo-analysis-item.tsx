@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { CheckCircle2, XCircle, AlertCircle, HelpCircle } from "lucide-react";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/common/lib/utils";
 // Ensure Tooltip is imported from your UI components
 import {
   Tooltip,

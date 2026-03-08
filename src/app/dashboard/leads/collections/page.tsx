@@ -20,7 +20,7 @@ import {
 import { Input } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import type { LeadCollection, CreateCollectionDto, UpdateCollectionDto } from "@/src/common/@types/@lead";
-import { formatDate } from "@/src/lib/utils";
+import { formatDate } from "@/src/common/lib/utils";
 import { toast } from "react-hot-toast";
 
 type CollectionFormValues = {

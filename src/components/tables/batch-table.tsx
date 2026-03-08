@@ -10,7 +10,7 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import { LeadListDialog } from "@/src/components/email-builder/modals/lead-list-dialog";
 import { EmailPreviewDialog } from "@/src/components/email-builder/modals/email-preview-dialog";
-import { formatDate } from "@/src/lib/utils";
+import { formatDate } from "@/src/common/lib/utils";
 import { CopyDeliveryDialog } from "../email-builder/modals/copy-delivery-dialog";
 import { useTranslations } from "next-intl";
 

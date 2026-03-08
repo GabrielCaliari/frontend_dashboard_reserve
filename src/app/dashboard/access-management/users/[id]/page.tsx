@@ -16,7 +16,7 @@ import { EntityAvatar } from "@/src/components/access-management/shared/entity-a
 import { useUserById, useUpdateUser, useDeactivateUser, useDeleteUser } from "@/src/common/hooks/access-management/useUsers";
 import type { UpdateUserDto } from "@/src/common/@types/@access-management";
 import type { UpdateUserFormData } from "@/src/common/schemas/access-management/user-schema";
-import { formatDate } from "@/src/lib/utils";
+import { formatDate } from "@/src/common/lib/utils";
 
 export default function UserDetailPage() {
   const params  = useParams();

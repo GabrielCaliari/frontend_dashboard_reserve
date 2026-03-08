@@ -8,7 +8,7 @@ import {
 } from "@heroui/react";
 import { Edit, Power, Trash2, ExternalLink } from "lucide-react";
 import { Admin } from "@/src/common/@types/@access-management";
-import { formatDate } from "@/src/lib/utils";
+import { formatDate } from "@/src/common/lib/utils";
 import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
 

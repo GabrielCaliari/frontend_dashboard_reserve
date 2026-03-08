@@ -20,7 +20,7 @@ import {
 import { useCurrentAdmin } from "@/src/common/hooks/use-current-admin";
 import type { UpdateAdminDto, AdminRole } from "@/src/common/@types/@access-management";
 import type { UpdateAdminFormData } from "@/src/common/schemas/access-management/admin-schema";
-import { formatDate } from "@/src/lib/utils";
+import { formatDate } from "@/src/common/lib/utils";
 import { toast } from "react-hot-toast";
 
 export default function AdminDetailPage() {

@@ -8,7 +8,7 @@ import {
 } from "@heroui/react";
 import { Edit, Power, Trash2 } from "lucide-react";
 import { Tenant } from "@/src/common/@types/@access-management";
-import { formatDate } from "@/src/lib/utils";
+import { formatDate } from "@/src/common/lib/utils";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
 
 interface TenantTableProps {

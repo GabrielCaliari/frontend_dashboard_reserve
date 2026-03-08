@@ -27,19 +27,6 @@ export function LayoutScopeRoot({ children, routeActive }: RootLayoutProps) {
   );
 }
 
-/**
- * Full-height layout variant for immersive editor pages.
- * Does not add top margin or page-level scrolling — inner panels handle their own overflow.
- */
-export function LayoutScopeEditor({ children, routeActive }: RootLayoutProps) {
-  return (
-    <div className="inline-flex h-screen w-screen overflow-hidden">
-      <Sidebar
-        activeTab={routeActive}
-        disabledTabs={[]}
-        mobileStyle="footer"
-      />
-      <div className="flex-1 h-full overflow-hidden">{children}</div>
-    </div>
-  );
+export function LayoutScopeEditor(props: RootLayoutProps) {
+  return <LayoutScopeRoot {...props} />;
 }

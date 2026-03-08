@@ -9,7 +9,7 @@ import {
   ModalFooter as NextUIModalFooter,
   ModalProps as NextUIModalProps,
 } from "@heroui/react";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/common/lib/utils";
 
 export interface ModalProps extends Omit<NextUIModalProps, "classNames"> {
   children: React.ReactNode;

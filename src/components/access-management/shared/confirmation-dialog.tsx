@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/common/lib/utils";
 
 interface ConfirmationDialogProps {
   isOpen: boolean;

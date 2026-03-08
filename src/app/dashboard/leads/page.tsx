@@ -17,7 +17,7 @@ import { LeadDrawer } from "@/src/components/leads/lead-drawer";
 import { CreateLeadDialog } from "@/src/components/leads/create-lead-dialog";
 import type { Lead } from "@/src/common/@types/@lead";
 import { ELeadStatus, EOriginLead } from "@/src/common/@types/@lead";
-import { formatDate } from "@/src/lib/utils";
+import { formatDate } from "@/src/common/lib/utils";
 
 export default function LeadsPage() {
   const router = useRouter();

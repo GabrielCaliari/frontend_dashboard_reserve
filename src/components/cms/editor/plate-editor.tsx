@@ -24,7 +24,7 @@ import {
 import { ImagePlugin } from "@platejs/media/react";
 import { MarkdownPlugin } from "@platejs/markdown";
 import { Transforms, Editor } from "slate";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/common/lib/utils";
 import {
   ChevronDown,
   ChevronRight,

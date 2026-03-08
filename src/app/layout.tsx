@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import "@/styles/globals.css";
+import "@/src/common/styles/globals.css";
 
 import clsx from "clsx";
 

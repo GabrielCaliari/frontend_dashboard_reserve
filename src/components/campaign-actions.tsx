@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { IEmail } from "../common/@types/@email";
 import { ISmtpServer } from "../common/@types/@smtp-server";
-import { EEmailCampaignStatus } from "../enums/email-campaign";
+import { EEmailCampaignStatus } from "../common/enums/email-campaign";
 import { Button } from "./ui/button";
 import { StartCampaignConfirmDialog } from "./email-builder/modals/start-campaign-confirm-dialog";
 import { updateMetricsService } from "@/src/common/services/email-campaign/update-metrics-service";
