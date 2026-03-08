@@ -21,7 +21,7 @@ import { useMemo } from "react";
 import Image from "next/image";
 import { Card, CardBody, Chip } from "@heroui/react";
 import { Calendar, Clock, Info } from "lucide-react";
-import { sanitizeHtml } from "@/src/common/utils/content-sanitizer";
+import { ArticleContentRenderer } from "@/src/components/cms/articles/article-content-renderer";
 import type { Article } from "@/src/common/@types/@cms-article";
 
 interface ArticlePreviewProps {
@@ -29,12 +29,6 @@ interface ArticlePreviewProps {
 }
 
 export default function ArticlePreview({ article }: ArticlePreviewProps) {
-  // Sanitize HTML content to prevent XSS
-  const sanitizedContent = useMemo(
-    () => sanitizeHtml(article.content),
-    [article.content],
-  );
-
   // Format dates
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Not published";
@@ -124,7 +118,8 @@ export default function ArticlePreview({ article }: ArticlePreviewProps) {
           )}
 
           {/* Article content */}
-          <div
+          <ArticleContentRenderer
+            content={article.content}
             className="prose prose-invert prose-lg max-w-none
               prose-headings:text-foreground
               prose-p:text-muted-foreground
@@ -134,7 +129,6 @@ export default function ArticlePreview({ article }: ArticlePreviewProps) {
               prose-blockquote:text-muted-foreground
               prose-code:bg-muted
               prose-code:text-foreground"
-            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
 
           {/* Additional images gallery */}

@@ -10,7 +10,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Article } from '@/src/common/@types/@cms-article';
-import { sanitizeHtml } from '@/src/common/utils/content-sanitizer';
+import { ArticleContentRenderer } from '@/src/components/cms/articles/article-content-renderer';
 
 export interface PublicArticleContentProps {
   article: Article;
@@ -145,9 +145,6 @@ const ArticleImageGallery: React.FC<{
 export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
   article,
 }) => {
-  // Sanitize HTML content to prevent XSS attacks
-  const sanitizedContent = sanitizeHtml(article.content);
-
   return (
     <article className="max-w-4xl mx-auto px-4 py-8">
       {/* Article Header */}
@@ -163,7 +160,8 @@ export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
       </header>
 
       {/* Article Content */}
-      <div
+      <ArticleContentRenderer
+        content={article.content}
         className="prose prose-lg dark:prose-invert max-w-none
           prose-headings:text-default-900 prose-headings:font-semibold
           prose-p:text-default-700 prose-p:leading-relaxed
@@ -176,7 +174,6 @@ export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
           prose-li:text-default-700
           prose-table:text-default-700
           prose-img:rounded-lg"
-        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
       />
 
       {/* Article Images Gallery */}

@@ -4,10 +4,10 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent } from "@/src/components/ui/card";
+import { ArticleContentRenderer } from "@/src/components/cms/articles/article-content-renderer";
 import { ArrowLeft, Edit, Loader2, AlertCircle, Calendar, Clock } from "lucide-react";
 import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
-import DOMPurify from "isomorphic-dompurify";
 
 export default function ArticlePreviewPage() {
   const params = useParams();
@@ -29,44 +29,6 @@ export default function ArticlePreviewPage() {
   const handleBack = () => {
     router.push(`/dashboard/cms/articles?blogId=${blogId}`);
   };
-
-  // Sanitize HTML content
-  const sanitizedContent = article?.content
-    ? DOMPurify.sanitize(article.content, {
-        ALLOWED_TAGS: [
-          "p",
-          "br",
-          "strong",
-          "em",
-          "u",
-          "s",
-          "a",
-          "ul",
-          "ol",
-          "li",
-          "h1",
-          "h2",
-          "h3",
-          "h4",
-          "h5",
-          "h6",
-          "blockquote",
-          "code",
-          "pre",
-          "img",
-          "figure",
-          "figcaption",
-          "table",
-          "thead",
-          "tbody",
-          "tr",
-          "th",
-          "td",
-        ],
-        ALLOWED_ATTR: ["href", "target", "rel", "src", "alt", "title", "class"],
-        ALLOW_DATA_ATTR: false,
-      })
-    : "";
 
   // Show tenant selection warning
   if (!hasSelectedTenant) {
@@ -233,7 +195,8 @@ export default function ArticlePreviewPage() {
             <hr className="border-border" />
 
             {/* Article Body */}
-            <div
+            <ArticleContentRenderer
+              content={article.content}
               className="prose prose-invert prose-lg max-w-none
                 prose-headings:text-foreground prose-headings:font-bold
                 prose-p:text-muted-foreground prose-p:leading-relaxed
@@ -245,7 +208,6 @@ export default function ArticlePreviewPage() {
                 prose-ul:text-muted-foreground prose-ol:text-muted-foreground
                 prose-li:text-muted-foreground
                 prose-img:rounded-lg prose-img:shadow-lg"
-              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
             />
 
             {/* Empty State */}

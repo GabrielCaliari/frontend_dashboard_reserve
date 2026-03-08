@@ -139,7 +139,9 @@ export function AssetGrid({
                       onValueChange={() => onSelect?.(asset)}
                       size="lg"
                       color="primary"
-                      icon={<CheckCircle className="w-4 h-4" />}
+                      icon={({ isSelected: _isSelected, disableAnimation: _disableAnimation, ...iconProps }) => (
+                        <CheckCircle {...iconProps} className="w-4 h-4" />
+                      )}
                     />
                   </div>
                 )}
