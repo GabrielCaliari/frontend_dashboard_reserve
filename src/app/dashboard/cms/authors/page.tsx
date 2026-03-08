@@ -6,14 +6,14 @@ import {
   Button,
   Card,
   CardBody,
+  Input,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   useDisclosure,
-  Spinner,
 } from "@heroui/react";
-import { Plus, Users, AlertCircle } from "lucide-react";
+import { Plus, Users, AlertCircle, Search } from "lucide-react";
 import { AuthorList } from "@/src/components/cms/authors/author-list";
 import { AuthorForm } from "@/src/components/cms/authors/author-form";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
@@ -32,11 +32,20 @@ export default function AuthorsPage() {
   const hasSelectedTenant = useHasSelectedTenant();
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
+  const [search, setSearch] = useState("");
 
   const { data: authors, isLoading } = useGetAuthors();
   const createAuthorMutation = useCreateAuthor();
   const updateAuthorMutation = useUpdateAuthor();
   const deleteAuthorMutation = useDeleteAuthor();
+
+  const filteredAuthors = (authors || []).filter((author) =>
+    search
+      ? `${author.firstName} ${author.lastName}`
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      : true
+  );
 
   const handleCreate = () => {
     setSelectedAuthor(null);
@@ -105,7 +114,6 @@ export default function AuthorsPage() {
     onClose();
   };
 
-  // No tenant selected
   if (!hasSelectedTenant) {
     return (
       <LayoutScopeRoot routeActive="authors">
@@ -155,19 +163,33 @@ export default function AuthorsPage() {
           </Button>
         </div>
 
-        {/* Authors List */}
-        {isLoading ? (
-          <div className="flex justify-center items-center py-16">
-            <Spinner size="lg" />
-          </div>
-        ) : (
-          <AuthorList
-            authors={authors || []}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onCreateClick={handleCreate}
-          />
-        )}
+        {/* Search */}
+        <Card>
+          <CardBody>
+            <Input
+              placeholder="Search authors..."
+              value={search}
+              onValueChange={setSearch}
+              startContent={<Search className="w-4 h-4 text-default-400" />}
+              isClearable
+              onClear={() => setSearch("")}
+            />
+          </CardBody>
+        </Card>
+
+        {/* Authors Table */}
+        <Card>
+          <CardBody className="p-0">
+            <AuthorList
+              authors={filteredAuthors}
+              isLoading={isLoading}
+              search={search}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onCreateClick={handleCreate}
+            />
+          </CardBody>
+        </Card>
 
         {/* Create/Edit Modal */}
         <Modal

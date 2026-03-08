@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle } from "lucide-react";
-import {
-  Card,
-  CardBody,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  useDisclosure,
-} from "@heroui/react";
+import { Card, CardBody } from "@heroui/react";
 import { BlogList, BlogForm } from "@/src/components/cms/blogs";
+import { SecretKeyDialog } from "@/src/components/cms/secret-key-dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/src/components/ui/sheet";
 import { useBlogs } from "@/src/common/hooks/cms/useBlogs";
 import {
   useCreateBlog,
@@ -28,8 +28,11 @@ import type {
 } from "@/src/common/@types/@cms-blog";
 
 export default function BlogsPage() {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSecretKeyOpen, setIsSecretKeyOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<Blog | undefined>(undefined);
+  const [secretKeyTargetBlog, setSecretKeyTargetBlog] = useState<Blog | null>(null);
+  const [generatedSecretKey, setGeneratedSecretKey] = useState<string | null>(null);
 
   const hasSelectedTenant = useHasSelectedTenant();
 
@@ -42,14 +45,32 @@ export default function BlogsPage() {
   // Normalize blogs array
   const blogs: Blog[] = Array.isArray(blogsData) ? blogsData : [];
 
+  const handleFormOpenChange = (open: boolean) => {
+    setIsFormOpen(open);
+    if (!open) {
+      setSelectedBlog(undefined);
+    }
+  };
+
+  const handleSecretKeyOpenChange = (open: boolean) => {
+    if (!regenerateKeyMutation.isPending) {
+      setIsSecretKeyOpen(open);
+    }
+
+    if (!open && !regenerateKeyMutation.isPending) {
+      setGeneratedSecretKey(null);
+      setSecretKeyTargetBlog(null);
+    }
+  };
+
   const handleCreateClick = () => {
     setSelectedBlog(undefined);
-    onOpen();
+    setIsFormOpen(true);
   };
 
   const handleEditClick = (blog: Blog) => {
     setSelectedBlog(blog);
-    onOpen();
+    setIsFormOpen(true);
   };
 
   const handleDeleteClick = async (blog: Blog) => {
@@ -66,13 +87,23 @@ export default function BlogsPage() {
     }
   };
 
-  const handleRegenerateKeyClick = async (blog: Blog) => {
-    if (confirm("This will invalidate the current key. Continue?")) {
-      try {
-        await regenerateKeyMutation.mutateAsync(blog.id);
-      } catch (error) {
-        // Error is handled by mutation
-      }
+  const handleRegenerateKeyClick = (blog: Blog) => {
+    setSecretKeyTargetBlog(blog);
+    setGeneratedSecretKey(null);
+    setIsSecretKeyOpen(true);
+  };
+
+  const handleConfirmRegenerateKey = async () => {
+    if (!secretKeyTargetBlog) {
+      return;
+    }
+
+    try {
+      const updatedBlog = await regenerateKeyMutation.mutateAsync(secretKeyTargetBlog.id);
+      setGeneratedSecretKey(updatedBlog.secret_key);
+      setSecretKeyTargetBlog(updatedBlog);
+    } catch (error) {
+      // Error is handled by mutation
     }
   };
 
@@ -84,9 +115,13 @@ export default function BlogsPage() {
           data: data as UpdateBlogDto,
         });
       } else {
-        await createBlogMutation.mutateAsync(data as CreateBlogDto);
+        const createdBlog = await createBlogMutation.mutateAsync(data as CreateBlogDto);
+        setSecretKeyTargetBlog(createdBlog);
+        setGeneratedSecretKey(createdBlog.secret_key);
+        setIsSecretKeyOpen(true);
       }
-      onClose();
+
+      handleFormOpenChange(false);
     } catch (error) {
       // Error is handled by mutation
     }
@@ -129,28 +164,41 @@ export default function BlogsPage() {
           onRegenerateKeyClick={handleRegenerateKeyClick}
         />
 
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl">
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  {selectedBlog ? "Edit Blog" : "Create Blog"}
-                </ModalHeader>
-                <ModalBody className="pb-6">
-                  <BlogForm
-                    blog={selectedBlog}
-                    onSubmit={handleSubmit}
-                    onCancel={onClose}
-                    isSubmitting={
-                      createBlogMutation.isPending ||
-                      updateBlogMutation.isPending
-                    }
-                  />
-                </ModalBody>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
+        <Sheet open={isFormOpen} onOpenChange={handleFormOpenChange}>
+          <SheetContent className="flex h-full w-full flex-col overflow-hidden border-border bg-background p-0 sm:max-w-2xl">
+            <SheetHeader className="border-b border-border px-6 py-4 text-left">
+              <SheetTitle>
+                {selectedBlog ? "Edit Blog" : "Create Blog"}
+              </SheetTitle>
+              <SheetDescription>
+                {selectedBlog
+                  ? "Update blog metadata, media collection, and availability settings."
+                  : "Create a new blog and generate its first secret key."}
+              </SheetDescription>
+            </SheetHeader>
+
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              <BlogForm
+                blog={selectedBlog}
+                onSubmit={handleSubmit}
+                onCancel={() => handleFormOpenChange(false)}
+                isSubmitting={
+                  createBlogMutation.isPending ||
+                  updateBlogMutation.isPending
+                }
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        <SecretKeyDialog
+          open={isSecretKeyOpen}
+          onOpenChange={handleSecretKeyOpenChange}
+          secretKey={generatedSecretKey}
+          blogTitle={secretKeyTargetBlog?.name ?? "Selected Blog"}
+          onConfirmRegenerate={generatedSecretKey ? undefined : handleConfirmRegenerateKey}
+          isPending={regenerateKeyMutation.isPending}
+        />
       </div>
     </LayoutScopeRoot>
   );

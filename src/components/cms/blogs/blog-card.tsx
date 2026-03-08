@@ -12,7 +12,16 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
-import { MoreVertical, Edit, Trash2, Key, FileText } from 'lucide-react';
+import {
+  MoreVertical,
+  Edit,
+  Trash2,
+  Key,
+  FileText,
+  FolderOpen,
+  CalendarDays,
+  ShieldCheck,
+} from 'lucide-react';
 import type { Blog } from '@/src/common/@types/@cms-blog';
 import BlogSecretKeyDisplay from './blog-secret-key-display';
 
@@ -31,21 +40,56 @@ export default function BlogCard({
   onRegenerateKey,
   onViewArticles,
 }: BlogCardProps) {
+  const createdAt = new Date(blog.created_at).toLocaleDateString();
+  const updatedAt = new Date(blog.updated_at).toLocaleDateString();
+
   return (
-    <Card className="w-full">
-      <CardHeader className="flex justify-between items-start">
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold">{blog.name}</h3>
+    <Card className="flex h-full w-full flex-col overflow-hidden border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(77,171,247,0.14),_transparent_35%),linear-gradient(180deg,_rgba(255,255,255,0.03),_rgba(255,255,255,0.01))] shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+      <CardHeader className="relative flex items-start justify-between gap-4 border-b border-white/10 bg-black/10 px-5 pb-5 pt-5">
+        <div className="min-w-0 flex-1 space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
             <Chip size="sm" variant="flat" color={blog.active ? "success" : "default"}>
               {blog.active ? 'Active' : 'Inactive'}
             </Chip>
+            <Chip
+              size="sm"
+              variant="bordered"
+              color={blog.mediaCollectionId ? 'primary' : 'warning'}
+              startContent={<FolderOpen size={12} />}
+            >
+              {blog.mediaCollectionId ? 'Collection linked' : 'No collection'}
+            </Chip>
           </div>
-          <p className="text-sm text-default-500 mt-1">/{blog.slug}</p>
+
+          <div className="space-y-2">
+            <h3 className="line-clamp-2 text-xl font-semibold tracking-tight text-foreground">
+              {blog.name}
+            </h3>
+            <div className="inline-flex max-w-full items-center rounded-full border border-white/10 bg-black/15 px-3 py-1 text-xs text-default-500">
+              <span className="truncate font-mono">/{blog.slug}</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-xs text-default-500 sm:max-w-[18rem]">
+            <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              <div className="mb-1 flex items-center gap-2 text-default-400">
+                <CalendarDays size={13} />
+                Created
+              </div>
+              <div className="font-medium text-foreground">{createdAt}</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              <div className="mb-1 flex items-center gap-2 text-default-400">
+                <ShieldCheck size={13} />
+                Updated
+              </div>
+              <div className="font-medium text-foreground">{updatedAt}</div>
+            </div>
+          </div>
         </div>
         <Dropdown>
           <DropdownTrigger>
-            <Button isIconOnly size="sm" variant="light">
+            <Button isIconOnly size="sm" variant="light" className="border border-white/10 bg-black/10">
               <MoreVertical size={18} />
             </Button>
           </DropdownTrigger>
@@ -86,25 +130,43 @@ export default function BlogCard({
         </Dropdown>
       </CardHeader>
 
-      <CardBody className="space-y-4">
-        {blog.description && (
-          <p className="text-sm text-default-600">{blog.description}</p>
-        )}
+      <CardBody className="flex flex-1 flex-col gap-5 px-5 py-5">
+        <div className="min-h-[72px] rounded-2xl border border-white/10 bg-black/10 p-4">
+          <div className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-default-400">
+            Description
+          </div>
+          {blog.description ? (
+            <p className="line-clamp-3 text-sm leading-relaxed text-default-600">
+              {blog.description}
+            </p>
+          ) : (
+            <p className="text-sm italic text-default-500">
+              No description yet. Add one to make this blog easier to identify across the CMS.
+            </p>
+          )}
+        </div>
 
         <BlogSecretKeyDisplay secretKey={blog.secret_key} />
       </CardBody>
 
-      <CardFooter className="flex justify-between items-center border-t border-border pt-4">
-        <div className="text-xs text-default-400">
-          Created {new Date(blog.created_at).toLocaleDateString()}
-        </div>
+      <CardFooter className="grid gap-2 border-t border-white/10 bg-black/10 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <Button
           size="sm"
           variant="flat"
           color="primary"
           onPress={onViewArticles}
+          className="w-full sm:w-auto"
         >
           Manage Articles
+        </Button>
+        <Button
+          size="sm"
+          variant="light"
+          onPress={onEdit}
+          startContent={<Edit size={16} />}
+          className="w-full border border-white/10 bg-white/5 sm:w-auto"
+        >
+          Quick Edit
         </Button>
       </CardFooter>
     </Card>

@@ -29,9 +29,9 @@ export default function BlogSecretKeyDisplay({
   // If no secret key, show message
   if (!secretKey) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-default-700">Secret Key:</span>
+          <span className="text-sm font-medium text-default-700">Secret key</span>
           <Chip
             size="sm"
             variant="flat"
@@ -40,7 +40,7 @@ export default function BlogSecretKeyDisplay({
             Not Available
           </Chip>
         </div>
-        <p className="text-xs text-default-500">
+        <p className="text-xs leading-relaxed text-default-500">
           Secret key is only shown once during blog creation. Regenerate if needed.
         </p>
       </div>
@@ -50,9 +50,9 @@ export default function BlogSecretKeyDisplay({
   const maskedKey = secretKey.slice(0, 8) + '•'.repeat(secretKey.length - 8);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-default-700">Secret Key:</span>
+        <span className="text-sm font-medium text-default-700">Secret key</span>
         <Chip
           size="sm"
           variant="flat"
@@ -63,7 +63,7 @@ export default function BlogSecretKeyDisplay({
         </Chip>
       </div>
 
-      <div className="flex items-center gap-2 p-3 bg-default-100 rounded-lg">
+      <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/10 p-3">
         <code className="flex-1 text-sm font-mono text-default-700 break-all">
           {isVisible ? secretKey : maskedKey}
         </code>
@@ -90,7 +90,7 @@ export default function BlogSecretKeyDisplay({
         </div>
       </div>
 
-      <p className="text-xs text-default-500">
+      <p className="text-xs leading-relaxed text-default-500">
         Use this key to authenticate public API requests for this blog.
       </p>
     </div>
