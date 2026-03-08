@@ -20,6 +20,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Switch,
 } from "@heroui/react";
 import {
   Plus,
@@ -30,8 +31,6 @@ import {
   Edit,
   Trash2,
   Eye,
-  Archive,
-  Send,
 } from "lucide-react";
 import type {
   Article,
@@ -49,8 +48,8 @@ interface ArticleListProps {
   onCreateClick: () => void;
   onEditClick: (article: Article) => void;
   onDeleteClick: (article: Article) => void;
-  onPublishClick: (article: Article) => void;
-  onArchiveClick: (article: Article) => void;
+  onTogglePublished: (article: Article, nextPublished: boolean) => void;
+  isStatusTogglePending?: boolean;
   onPreviewClick?: (article: Article) => void;
 }
 
@@ -71,8 +70,8 @@ export default function ArticleList({
   onCreateClick,
   onEditClick,
   onDeleteClick,
-  onPublishClick,
-  onArchiveClick,
+  onTogglePublished,
+  isStatusTogglePending = false,
   onPreviewClick,
 }: ArticleListProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -136,7 +135,32 @@ export default function ArticleList({
           </div>
         );
       case "status":
-        return <ArticleStatusBadge status={article.status} />;
+        return (
+          <div
+            className="flex min-w-[148px] flex-col gap-2"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <ArticleStatusBadge status={article.status} />
+            <div className="flex items-center gap-2">
+              <Switch
+                size="sm"
+                isSelected={article.status === "published"}
+                isDisabled={isStatusTogglePending || article.status === "archived"}
+                onValueChange={(nextPublished) => onTogglePublished(article, nextPublished)}
+                aria-label={
+                  article.status === "published" ? "Unpublish article" : "Publish article"
+                }
+              />
+              <span className="text-xs text-default-500">
+                {article.status === "archived"
+                  ? "Archived"
+                  : article.status === "published"
+                    ? "Published"
+                    : "Unpublished"}
+              </span>
+            </div>
+          </div>
+        );
       case "language":
         return (
           <Chip size="sm" variant="flat" color="default" className="uppercase">
@@ -156,8 +180,6 @@ export default function ArticleList({
           </span>
         );
       case "actions": {
-        const canPublish = article.status === "draft";
-        const canArchive = article.status === "published";
         const canDelete =
           article.status === "draft" || article.status === "archived";
 
@@ -184,42 +206,19 @@ export default function ArticleList({
                 <Eye size={16} />
               </Button>
             )}
-
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="light"
-                  aria-label="More actions"
-                >
-                  <MoreVertical size={16} />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Article actions">
-                {canPublish ? (
-                  <DropdownItem
-                    key="publish"
-                    startContent={<Send size={16} />}
-                    onPress={() => onPublishClick(article)}
-                    color="success"
-                    className="text-success"
+            {canDelete ? (
+              <Dropdown placement="bottom-end">
+                <DropdownTrigger>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    aria-label="More actions"
                   >
-                    Publish Article
-                  </DropdownItem>
-                ) : null}
-                {canArchive ? (
-                  <DropdownItem
-                    key="archive"
-                    startContent={<Archive size={16} />}
-                    onPress={() => onArchiveClick(article)}
-                    color="warning"
-                    className="text-warning"
-                  >
-                    Archive Article
-                  </DropdownItem>
-                ) : null}
-                {canDelete ? (
+                    <MoreVertical size={16} />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Article actions">
                   <DropdownItem
                     key="delete"
                     startContent={<Trash2 size={16} />}
@@ -229,9 +228,9 @@ export default function ArticleList({
                   >
                     Delete Article
                   </DropdownItem>
-                ) : null}
-              </DropdownMenu>
-            </Dropdown>
+                </DropdownMenu>
+              </Dropdown>
+            ) : null}
           </div>
         );
       }

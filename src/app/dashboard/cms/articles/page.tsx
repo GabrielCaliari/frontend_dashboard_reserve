@@ -44,8 +44,8 @@ function ArticlesPageContent() {
   const { data: articlesData, isLoading, error, isError } = useListArticles(selectedBlogId || undefined, 1, 50);
   
   const { mutate: deleteArticle } = useDeleteArticle();
-  const { mutate: publishArticle } = usePublishArticle();
-  const { mutate: archiveArticle } = useArchiveArticle();
+  const { mutate: publishArticle, isPending: isPublishingArticle } = usePublishArticle();
+  const { mutate: archiveArticle, isPending: isArchivingArticle } = useArchiveArticle();
 
   // fetchArticles returns Article[] directly, normalize for ArticleList
   const articles: Article[] = Array.isArray(articlesData)
@@ -98,9 +98,23 @@ function ArticlesPageContent() {
       toast.warning("Only published articles can be archived");
       return;
     }
-    if (confirm(`Archive "${article.title}"?`)) {
+    if (confirm(`Unpublish "${article.title}"?`)) {
       archiveArticle({ blogId: article.blog_id, articleId: article.id });
     }
+  };
+
+  const handleTogglePublished = (article: Article, nextPublished: boolean) => {
+    if (article.status === "archived") {
+      toast.warning("Archived articles cannot be toggled from this control");
+      return;
+    }
+
+    if (nextPublished) {
+      handlePublish(article);
+      return;
+    }
+
+    handleArchive(article);
   };
 
   // Show tenant selection warning
@@ -171,8 +185,8 @@ function ArticlesPageContent() {
               )
             }
             onDeleteClick={handleDelete}
-            onPublishClick={handlePublish}
-            onArchiveClick={handleArchive}
+            onTogglePublished={handleTogglePublished}
+            isStatusTogglePending={isPublishingArticle || isArchivingArticle}
             onPreviewClick={(article) =>
               router.push(
                 `/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`,
