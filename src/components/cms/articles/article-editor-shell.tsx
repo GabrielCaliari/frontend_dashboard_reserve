@@ -35,6 +35,8 @@ interface ArticleEditorShellProps {
   onDisplayTitleChange: (v: string) => void;
   slug: string;
   onSlugChange: (v: string) => void;
+  language: string;
+  onLanguageChange: (v: string) => void;
   selectedAuthorId: string;
   onAuthorChange: (v: string) => void;
   coverImageId: string;
@@ -67,6 +69,8 @@ export function ArticleEditorShell({
   onDisplayTitleChange,
   slug,
   onSlugChange,
+  language,
+  onLanguageChange,
   selectedAuthorId,
   onAuthorChange,
   coverImageId,
@@ -113,6 +117,8 @@ export function ArticleEditorShell({
             onDisplayTitleChange={onDisplayTitleChange}
             slug={slug}
             onSlugChange={onSlugChange}
+            language={language}
+            onLanguageChange={onLanguageChange}
             selectedAuthorId={selectedAuthorId}
             onAuthorChange={onAuthorChange}
             blogId={blogId}

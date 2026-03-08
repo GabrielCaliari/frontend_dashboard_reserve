@@ -72,6 +72,8 @@ interface SeoSidebarProps {
   onDisplayTitleChange?: (title: string) => void;
   slug?: string;
   onSlugChange?: (slug: string) => void;
+  language?: string;
+  onLanguageChange?: (language: string) => void;
   blogId?: string | number;
   selectedAuthorId?: string;
   onAuthorChange?: (authorId: string) => void;
@@ -95,6 +97,8 @@ export function SeoSidebar({
   onDisplayTitleChange,
   slug,
   onSlugChange,
+  language = 'en_us',
+  onLanguageChange,
   blogId,
   selectedAuthorId,
   onAuthorChange,
@@ -472,6 +476,23 @@ export function SeoSidebar({
               label: "text-muted-foreground",
             }}
             description={`${urlSlug.length} characters${urlTooLong ? " - aim for under 75" : ""}`}
+          />
+
+          <Input
+            label="Language"
+            placeholder="en_us"
+            value={language}
+            onChange={(e) => onLanguageChange?.(e.target.value.toLowerCase())}
+            isDisabled={isDisabled}
+            maxLength={5}
+            variant="bordered"
+            size="sm"
+            classNames={{
+              inputWrapper:
+                "border-border bg-default-50/70 data-[hover=true]:border-primary/50",
+              label: "text-muted-foreground",
+            }}
+            description="Use lowercase locale format like en_us or pt_br"
           />
         </div>
 

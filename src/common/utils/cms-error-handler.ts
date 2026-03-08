@@ -20,7 +20,6 @@ export const CMS_ERROR_MESSAGES = {
   ARTICLE_DELETE_FAILED: 'Failed to delete article. Please try again.',
   ARTICLE_PUBLISH_FAILED: 'Failed to publish article. Please try again.',
   ARTICLE_ARCHIVE_FAILED: 'Failed to archive article. Please try again.',
-  ARTICLE_REORDER_FAILED: 'Failed to reorder articles. Please try again.',
   ARTICLE_SLUG_EXISTS: 'An article with this title already exists.',
   ARTICLE_INVALID_STATUS_TRANSITION: 'Invalid status transition. Articles can only be published from draft status and archived from published status.',
   

@@ -108,11 +108,16 @@ const ArticleMetadata: React.FC<{
 const ArticleImageGallery: React.FC<{
   images: Article['images'];
   articleTitle: string;
-}> = ({ images, articleTitle }) => {
+  coverImageId?: string;
+}> = ({ images, articleTitle, coverImageId }) => {
   if (!images || images.length === 0) return null;
 
   // Sort images by display_order
-  const sortedImages = [...images].sort((a, b) => a.display_order - b.display_order);
+  const sortedImages = [...images]
+    .filter((image) => String(image.id) !== String(coverImageId ?? ''))
+    .sort((a, b) => a.display_order - b.display_order);
+
+  if (sortedImages.length === 0) return null;
 
   return (
     <div className="my-8 space-y-6">
@@ -145,6 +150,8 @@ const ArticleImageGallery: React.FC<{
 export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
   article,
 }) => {
+  const coverImage = article.coverImage ?? article.images[0] ?? null;
+
   return (
     <article className="max-w-4xl mx-auto px-4 py-8">
       {/* Article Header */}
@@ -157,6 +164,19 @@ export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
           publishedAt={article.published_at}
           updatedAt={article.updated_at}
         />
+
+        {coverImage && (
+          <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl bg-default-100">
+            <Image
+              src={coverImage.url}
+              alt={coverImage.alt_text || article.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+              priority
+            />
+          </div>
+        )}
       </header>
 
       {/* Article Content */}
@@ -177,7 +197,11 @@ export const PublicArticleContent: React.FC<PublicArticleContentProps> = ({
       />
 
       {/* Article Images Gallery */}
-      <ArticleImageGallery images={article.images} articleTitle={article.title} />
+      <ArticleImageGallery
+        images={article.images}
+        articleTitle={article.title}
+        coverImageId={coverImage?.id}
+      />
 
       {/* Back to Articles Link */}
       <div className="mt-12 pt-8 border-t border-border">

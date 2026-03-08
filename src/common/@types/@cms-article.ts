@@ -2,9 +2,17 @@ import { ArticleImage } from './@cms-image';
 
 export type ArticleStatus = 'draft' | 'published' | 'archived';
 
-export interface Article {
+export type ArticleLanguage = string;
+
+export interface ArticleCoverImage {
   id: string;
-  blog_id: string;
+  url: string;
+  alt_text: string | null;
+}
+
+export interface Article {
+  id: string | number;
+  blog_id: string | number;
   title: string;
   displayTitle: string;
   slug: string;
@@ -14,8 +22,9 @@ export interface Article {
   focusKeyword?: string;
   authorId?: string;
   coverImageId?: string;
+  coverImage?: ArticleCoverImage | null;
+  language?: ArticleLanguage;
   status: ArticleStatus;
-  display_order: number;
   published_at: string | null;
   created_at: string;
   updated_at: string;
@@ -32,6 +41,7 @@ export interface CreateArticleDto {
   blogId?: string;
   content: string;
   coverImageId?: string;
+  language: ArticleLanguage;
 }
 
 export interface UpdateArticleDto {
@@ -44,11 +54,7 @@ export interface UpdateArticleDto {
   blogId?: string;
   content?: string;
   coverImageId?: string;
-}
-
-export interface ReorderArticleDto {
-  id: string;
-  display_order: number;
+  language?: ArticleLanguage;
 }
 
 export interface ArticleListItem extends Omit<Article, 'content' | 'images'> {

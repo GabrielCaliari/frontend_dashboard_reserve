@@ -6,6 +6,7 @@ import { Button } from "@/src/components/ui/button";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { ArticleContentRenderer } from "@/src/components/cms/articles/article-content-renderer";
 import { ArrowLeft, Edit, Loader2, AlertCircle, Calendar, Clock } from "lucide-react";
+import Image from "next/image";
 import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 
@@ -107,6 +108,8 @@ export default function ArticlePreviewPage() {
     );
   }
 
+  const coverImage = article.coverImage ?? article.images[0] ?? null;
+
   return (
     <LayoutScopeRoot routeActive="articles">
       <div className="min-h-screen bg-background">
@@ -151,6 +154,9 @@ export default function ArticlePreviewPage() {
                 >
                   {article.status.charAt(0).toUpperCase() + article.status.slice(1)}
                 </span>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground uppercase">
+                  {article.language ?? "en_us"}
+                </span>
               </div>
 
               {/* Title */}
@@ -193,6 +199,19 @@ export default function ArticlePreviewPage() {
 
             {/* Divider */}
             <hr className="border-border" />
+
+            {coverImage && (
+              <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-muted">
+                <Image
+                  src={coverImage.url}
+                  alt={coverImage.alt_text || article.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1200px) 100vw, 1024px"
+                  priority
+                />
+              </div>
+            )}
 
             {/* Article Body */}
             <ArticleContentRenderer

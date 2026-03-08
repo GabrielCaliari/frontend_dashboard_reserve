@@ -5,7 +5,6 @@ import {
   deleteArticle,
   publishArticle,
   archiveArticle,
-  reorderArticles,
 } from '@/src/common/services/cms-article-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 import { ARTICLE_QUERY_KEYS } from './useArticles';
@@ -13,7 +12,6 @@ import { useCMSToast } from './use-cms-toast';
 import type {
   CreateArticleDto,
   UpdateArticleDto,
-  ReorderArticleDto,
   Article,
 } from '@/src/common/@types/@cms-article';
 
@@ -23,7 +21,6 @@ import type {
  * Features:
  * - Invalidates article list cache on success
  * - Creates article with default draft status
- * - Automatically sets display_order to position article last
  * 
  * @returns Mutation object with mutate/mutateAsync functions
  * 
@@ -109,41 +106,36 @@ export function useUpdateArticle() {
       data: UpdateArticleDto 
     }) => updateArticle(articleId, data),
     onMutate: async ({ blogId, articleId, data }) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ 
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId) 
+      await queryClient.cancelQueries({
+        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
       });
 
-      // Snapshot previous value
       const previousArticle = queryClient.getQueryData<Article>(
-        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId)
+        ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
       );
 
-      // Optimistically update the cache
       queryClient.setQueryData<Article>(
         ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
-        (old) => (old ? { ...old, ...data, updated_at: new Date().toISOString() } : old)
+        (old) => (old ? { ...old, ...data, updated_at: new Date().toISOString() } : old),
       );
 
       return { previousArticle };
     },
     onError: (error, { blogId, articleId }, context) => {
-      // Rollback on error
       if (context?.previousArticle) {
         queryClient.setQueryData(
           ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
-          context.previousArticle
+          context.previousArticle,
         );
       }
       toast.showError(error, 'Failed to update article');
     },
     onSuccess: (_data, { blogId, articleId }) => {
-      // Invalidate both list and detail queries
-      queryClient.invalidateQueries({ 
-        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, blogId) 
+      queryClient.invalidateQueries({
+        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, blogId),
       });
-      queryClient.invalidateQueries({ 
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId) 
+      queryClient.invalidateQueries({
+        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
       });
       toast.articleUpdated();
     },
@@ -152,26 +144,12 @@ export function useUpdateArticle() {
 
 /**
  * Hook to delete an article
- * 
+ *
  * Features:
  * - Invalidates article list cache on success
- * - Cascades to delete all associated images
- * - Removes physical image files from storage (S3)
- * 
+ * - Removes detail cache for the deleted article
+ *
  * @returns Mutation object with mutate/mutateAsync functions
- * 
- * @example
- * ```tsx
- * const deleteArticleMutation = useDeleteArticle();
- * 
- * const handleDelete = async (blogId: number, articleId: number) => {
- *   if (confirm('Delete this article and all its images?')) {
- *     await deleteArticleMutation.mutateAsync({ blogId, articleId });
- *   }
- * };
- * ```
- * 
- * **Validates: Requirements 15.1, 15.2, 15.3**
  */
 export function useDeleteArticle() {
   const queryClient = useQueryClient();
@@ -180,15 +158,13 @@ export function useDeleteArticle() {
 
   return useMutation({
     mutationFn: ({ blogId, articleId }: { blogId: number; articleId: number }) =>
-      deleteArticle(articleId),
-    onSuccess: (_data, variables) => {
-      // Invalidate the article list to remove deleted article
-      queryClient.invalidateQueries({ 
-        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, variables.blogId) 
+      deleteArticle(String(articleId)),
+    onSuccess: (_data, { blogId, articleId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, blogId),
       });
-      // Also remove the specific article from cache
-      queryClient.removeQueries({ 
-        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, variables.blogId, variables.articleId) 
+      queryClient.removeQueries({
+        queryKey: ARTICLE_QUERY_KEYS.detail(tenantId, blogId, articleId),
       });
       toast.articleDeleted();
     },
@@ -310,91 +286,3 @@ export function useArchiveArticle() {
   });
 }
 
-/**
- * Hook to reorder articles by updating display_order values
- * 
- * Features:
- * - Optimistic updates for immediate drag-and-drop feedback
- * - Updates all articles in a single transaction
- * - Does NOT validate uniqueness or sequence of display_order (gaps allowed)
- * - Rolls back on error
- * 
- * @returns Mutation object with mutate/mutateAsync functions
- * 
- * @example
- * ```tsx
- * const reorderArticlesMutation = useReorderArticles();
- * 
- * const handleReorder = async (blogId: number, newOrder: ReorderArticleDto[]) => {
- *   await reorderArticlesMutation.mutateAsync({ blogId, order: newOrder });
- * };
- * 
- * // Example order data:
- * const order = [
- *   { id: 1, display_order: 0 },
- *   { id: 2, display_order: 1 },
- *   { id: 3, display_order: 2 },
- * ];
- * ```
- * 
- * **Validates: Requirements 15.1, 15.2, 15.3**
- */
-export function useReorderArticles() {
-  const queryClient = useQueryClient();
-  const tenantId = useSelectedTenantId();
-  const toast = useCMSToast();
-
-  return useMutation({
-    mutationFn: ({ blogId, order }: { blogId: number; order: ReorderArticleDto[] }) =>
-      reorderArticles(blogId, order),
-    onMutate: async ({ blogId, order }) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ 
-        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, blogId) 
-      });
-
-      // Snapshot previous value
-      const previousArticles = queryClient.getQueryData(
-        ARTICLE_QUERY_KEYS.all(tenantId, blogId)
-      );
-
-      // Optimistically update the cache
-      // Create a map of new display orders
-      const orderMap = new Map(order.map(item => [item.id, item.display_order]));
-      
-      queryClient.setQueryData(
-        ARTICLE_QUERY_KEYS.all(tenantId, blogId),
-        (old: any) => {
-          if (!old) return old;
-          
-          // Update display_order for affected articles
-          return old.map((article: Article) => {
-            const newOrder = orderMap.get(article.id);
-            return newOrder !== undefined 
-              ? { ...article, display_order: newOrder }
-              : article;
-          }).sort((a: Article, b: Article) => a.display_order - b.display_order);
-        }
-      );
-
-      return { previousArticles };
-    },
-    onError: (error, { blogId }, context) => {
-      // Rollback on error
-      if (context?.previousArticles) {
-        queryClient.setQueryData(
-          ARTICLE_QUERY_KEYS.all(tenantId, blogId),
-          context.previousArticles
-        );
-      }
-      toast.showError(error, 'Failed to reorder articles');
-    },
-    onSuccess: (_data, { blogId }) => {
-      // Invalidate to ensure we have the latest data from server
-      queryClient.invalidateQueries({ 
-        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, blogId) 
-      });
-      toast.articlesReordered();
-    },
-  });
-}

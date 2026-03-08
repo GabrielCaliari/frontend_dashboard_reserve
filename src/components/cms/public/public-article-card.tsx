@@ -37,6 +37,7 @@ const formatDate = (dateString: string | null): string => {
  * Get featured image from article images (first image by display_order)
  */
 const getFeaturedImage = (article: Article): string | null => {
+  if (article.coverImage?.url) return article.coverImage.url;
   if (!article.images || article.images.length === 0) return null;
   
   // Sort by display_order and get first image
@@ -68,7 +69,7 @@ export const PublicArticleCard: React.FC<PublicArticleCardProps> = ({
         <div className="relative w-full h-48 overflow-hidden">
           <Image
             src={featuredImage}
-            alt={article.title}
+            alt={article.coverImage?.alt_text || article.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

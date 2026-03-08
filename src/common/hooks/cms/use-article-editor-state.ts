@@ -9,6 +9,7 @@ export interface ArticleEditorValues {
   metaTitle: string;
   metaDescription: string;
   slug: string;
+  language: string;
   selectedAuthorId: string;
   coverImageId: string;
   content: string;
@@ -22,6 +23,7 @@ export interface ArticleEditorState extends ArticleEditorValues {
   setMetaTitle: (v: string) => void;
   setMetaDescription: (v: string) => void;
   setSlug: (v: string) => void;
+  setLanguage: (v: string) => void;
   setSelectedAuthorId: (v: string) => void;
   setCoverImageId: (v: string) => void;
   setContent: (v: string) => void;
@@ -37,6 +39,7 @@ export function useArticleEditorState(): ArticleEditorState {
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [slug, setSlug] = useState("");
+  const [language, setLanguage] = useState("en_us");
   const [selectedAuthorId, setSelectedAuthorId] = useState("");
   const [coverImageId, setCoverImageId] = useState("");
   const [content, setContent] = useState("");
@@ -64,6 +67,7 @@ export function useArticleEditorState(): ArticleEditorState {
     if (values.metaTitle !== undefined) setMetaTitle(values.metaTitle);
     if (values.metaDescription !== undefined) setMetaDescription(values.metaDescription);
     if (values.slug !== undefined) setSlug(values.slug);
+    if (values.language !== undefined) setLanguage(values.language);
     if (values.selectedAuthorId !== undefined) setSelectedAuthorId(values.selectedAuthorId);
     if (values.coverImageId !== undefined) setCoverImageId(values.coverImageId);
     if (values.content !== undefined) setContent(values.content);
@@ -75,6 +79,7 @@ export function useArticleEditorState(): ArticleEditorState {
     metaTitle,
     metaDescription,
     slug,
+    language,
     selectedAuthorId,
     coverImageId,
     content,
@@ -85,6 +90,7 @@ export function useArticleEditorState(): ArticleEditorState {
     setMetaTitle,
     setMetaDescription,
     setSlug,
+    setLanguage,
     setSelectedAuthorId,
     setCoverImageId,
     setContent,

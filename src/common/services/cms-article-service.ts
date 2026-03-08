@@ -4,9 +4,111 @@ import {
   ArticleStatus,
   CreateArticleDto,
   UpdateArticleDto,
-  ReorderArticleDto,
+  ArticleCoverImage,
 } from '@/src/common/@types/@cms-article';
 import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
+
+interface ArticleApiResponse {
+  id: string | number;
+  blog_id: string | number;
+  title?: string;
+  displayTitle?: string;
+  display_title?: string;
+  slug: string;
+  content: string;
+  metaTitle?: string | null;
+  meta_title?: string | null;
+  metaDescription?: string | null;
+  meta_description?: string | null;
+  focusKeyword?: string | null;
+  focus_keyword?: string | null;
+  authorId?: string | number | null;
+  author_id?: string | number | null;
+  coverImageId?: string | number | null;
+  cover_image_id?: string | number | null;
+  coverImage?: ArticleCoverImage | null;
+  cover_image?: ArticleCoverImage | null;
+  language?: string | null;
+  status: ArticleStatus;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+  images?: Article['images'];
+}
+
+const defaultLanguage = 'en_us';
+
+const normalizeLanguage = (language?: string | null): string => {
+  const normalized = language?.trim().toLowerCase();
+  return normalized && /^[a-z]{2}_[a-z]{2}$/.test(normalized)
+    ? normalized
+    : defaultLanguage;
+};
+
+const normalizeCoverImage = (
+  coverImage?: ArticleCoverImage | null,
+): ArticleCoverImage | null => {
+  if (!coverImage) {
+    return null;
+  }
+
+  return {
+    id: String(coverImage.id),
+    url: coverImage.url,
+    alt_text: coverImage.alt_text ?? null,
+  };
+};
+
+const normalizeArticle = (article: ArticleApiResponse): Article => ({
+  id: String(article.id),
+  blog_id: String(article.blog_id),
+  title: article.title ?? article.displayTitle ?? article.display_title ?? '',
+  displayTitle: article.displayTitle ?? article.display_title ?? article.title ?? '',
+  slug: article.slug,
+  content: article.content,
+  metaTitle: article.metaTitle ?? article.meta_title ?? undefined,
+  metaDescription: article.metaDescription ?? article.meta_description ?? undefined,
+  focusKeyword: article.focusKeyword ?? article.focus_keyword ?? undefined,
+  authorId: article.authorId != null
+    ? String(article.authorId)
+    : article.author_id != null
+      ? String(article.author_id)
+      : undefined,
+  coverImageId: article.coverImageId != null
+    ? String(article.coverImageId)
+    : article.cover_image_id != null
+      ? String(article.cover_image_id)
+      : undefined,
+  coverImage: normalizeCoverImage(article.coverImage ?? article.cover_image),
+  language: normalizeLanguage(article.language),
+  status: article.status,
+  published_at: article.published_at,
+  created_at: article.created_at,
+  updated_at: article.updated_at,
+  images: article.images ?? [],
+});
+
+const normalizeArticles = (articles: ArticleApiResponse[]): Article[] =>
+  articles.map(normalizeArticle);
+
+const serializeArticlePayload = (data: CreateArticleDto | UpdateArticleDto) => {
+  const payload = {
+    display_title: data.displayTitle,
+    meta_title: data.metaTitle,
+    meta_description: data.metaDescription,
+    focus_keyword: data.focusKeyword,
+    slug: data.slug,
+    author_id: data.authorId,
+    blog_id: data.blogId,
+    content: data.content,
+    cover_image_id: data.coverImageId,
+    language: normalizeLanguage(data.language),
+  };
+
+  return Object.fromEntries(
+    Object.entries(payload).filter(([, value]) => value !== undefined && value !== ''),
+  );
+};
 
 /**
  * Fetch articles for a specific blog with optional status filter (AUTHENTICATED)
@@ -24,21 +126,18 @@ export const fetchArticles = async (
 ): Promise<Article[]> => {
   try {
     return await withRetry(async () => {
-      const params: Record<string, any> = { page, limit };
+      const params: Record<string, string | number> = { page, limit };
       if (blogId) params.blogId = blogId;
       if (status) params.status = status;
       
-      // Use authenticated endpoint: /api/cms/articles?blogId={blogId}
       const response = await cmsApiClient.get('cms/articles', { params });
       
-      // Handle paginated response format
       if (response.data && Array.isArray(response.data.data)) {
-        return response.data.data;
+        return normalizeArticles(response.data.data as ArticleApiResponse[]);
       }
       
-      // Fallback for direct array response
       if (Array.isArray(response.data)) {
-        return response.data;
+        return normalizeArticles(response.data as ArticleApiResponse[]);
       }
       
       return [];
@@ -58,9 +157,8 @@ export const fetchArticleById = async (
 ): Promise<Article> => {
   try {
     return await withRetry(async () => {
-      // Use authenticated endpoint: /api/cms/articles/{id}
       const response = await cmsApiClient.get(`cms/articles/${articleId}`);
-      return response.data;
+      return normalizeArticle(response.data as ArticleApiResponse);
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -76,14 +174,13 @@ export const createArticle = async (
   data: CreateArticleDto
 ): Promise<Article> => {
   try {
-    const payload = { 
+    const payload = serializeArticlePayload({
       ...data,
-      authorId: String(data.authorId)
-    };
-    
-    // Use authenticated endpoint: POST /api/cms/articles
+      authorId: String(data.authorId),
+    });
+
     const response = await cmsApiClient.post('cms/articles', payload);
-    return response.data;
+    return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -100,9 +197,11 @@ export const updateArticle = async (
   data: UpdateArticleDto
 ): Promise<Article> => {
   try {
-    // Use authenticated endpoint: PUT /api/cms/articles/{id}
-    const response = await cmsApiClient.put(`cms/articles/${articleId}`, data);
-    return response.data;
+    const response = await cmsApiClient.put(
+      `cms/articles/${articleId}`,
+      serializeArticlePayload(data),
+    );
+    return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -117,7 +216,6 @@ export const deleteArticle = async (
   articleId: string
 ): Promise<void> => {
   try {
-    // Use authenticated endpoint: DELETE /api/cms/articles/{id}
     await cmsApiClient.delete(`cms/articles/${articleId}`);
   } catch (error) {
     throw transformCMSError(error);
@@ -133,9 +231,8 @@ export const publishArticle = async (
   articleId: string
 ): Promise<Article> => {
   try {
-    // Use authenticated endpoint: POST /api/cms/articles/{id}/publish
     const response = await cmsApiClient.post(`cms/articles/${articleId}/publish`);
-    return response.data;
+    return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -150,27 +247,8 @@ export const archiveArticle = async (
   articleId: number
 ): Promise<Article> => {
   try {
-    // Use authenticated endpoint: POST /api/cms/articles/{id}/archive
     const response = await cmsApiClient.post(`cms/articles/${articleId}/archive`);
-    return response.data;
-  } catch (error) {
-    throw transformCMSError(error);
-  }
-};
-
-/**
- * Reorder articles by updating display_order values (AUTHENTICATED)
- * @param blogId - The blog ID
- * @param order - Array of article IDs with new display_order values
- * @returns Promise<void>
- */
-export const reorderArticles = async (
-  blogId: string | number,
-  order: ReorderArticleDto[]
-): Promise<void> => {
-  try {
-    // Use authenticated endpoint: PUT /api/cms/articles/reorder
-    await cmsApiClient.put('cms/articles/reorder', { blogId, order });
+    return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
   }

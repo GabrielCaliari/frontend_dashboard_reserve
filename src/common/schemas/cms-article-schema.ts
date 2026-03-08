@@ -1,5 +1,12 @@
 import { z } from 'zod';
 
+export const articleLanguagePattern = /^[a-z]{2}_[a-z]{2}$/;
+
+export const articleLanguageSchema = z.string()
+  .trim()
+  .toLowerCase()
+  .regex(articleLanguagePattern, 'Language must follow the xx_yy format in lowercase');
+
 export const createArticleSchema = z.object({
   displayTitle: z.string()
     .min(1, 'Article title is required')
@@ -27,6 +34,7 @@ export const createArticleSchema = z.object({
     .min(1, 'Author is required'),
   blogId: z.string().optional(),
   coverImageId: z.string().optional().or(z.literal('')),
+  language: articleLanguageSchema.default('en_us'),
 });
 
 export const updateArticleSchema = z.object({
@@ -57,15 +65,8 @@ export const updateArticleSchema = z.object({
   authorId: z.string().optional(),
   blogId: z.string().optional(),
   coverImageId: z.string().optional().or(z.literal('')),
+  language: articleLanguageSchema.optional(),
 });
-
-export const reorderArticlesSchema = z.array(
-  z.object({
-    id: z.number().positive(),
-    display_order: z.number().int().nonnegative(),
-  })
-).min(1, 'At least one article must be provided');
 
 export type CreateArticleInput = z.infer<typeof createArticleSchema>;
 export type UpdateArticleInput = z.infer<typeof updateArticleSchema>;
-export type ReorderArticlesInput = z.infer<typeof reorderArticlesSchema>;

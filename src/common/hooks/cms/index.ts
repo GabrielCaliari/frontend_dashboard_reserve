@@ -20,8 +20,6 @@ export { useListArticles } from './use-list-articles';
 export { useGetArticle } from './use-get-article';
 export { useCreateArticle } from './use-create-article';
 export { useDeleteArticle } from './use-delete-article';
-export { useGetPublicArticle } from './use-get-public-article';
-export { useListPublicArticles } from './use-list-public-articles';
 
 // New article hooks with React Query
 export { useArticles, useArticle, ARTICLE_QUERY_KEYS } from './useArticles';
@@ -31,7 +29,6 @@ export {
   useDeleteArticle as useDeleteArticleMutation,
   usePublishArticle,
   useArchiveArticle,
-  useReorderArticles,
 } from './useArticleMutations';
 
 // Public article hooks with React Query

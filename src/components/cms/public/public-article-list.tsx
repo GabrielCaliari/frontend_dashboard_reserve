@@ -161,6 +161,12 @@ export const PublicArticleList: React.FC<PublicArticleListProps> = ({
   pagination,
   layout = 'grid',
 }) => {
+  const sortedArticles = [...articles].sort((left, right) => {
+    const leftDate = new Date(left.published_at ?? left.updated_at).getTime();
+    const rightDate = new Date(right.published_at ?? right.updated_at).getTime();
+    return rightDate - leftDate;
+  });
+
   // Show loading skeleton
   if (isLoading) {
     return <ArticleListSkeleton />;
@@ -181,7 +187,7 @@ export const PublicArticleList: React.FC<PublicArticleListProps> = ({
             : 'flex flex-col gap-6'
         }
       >
-        {articles.map((article) => (
+        {sortedArticles.map((article) => (
           <PublicArticleCard key={article.id} article={article} />
         ))}
       </div>

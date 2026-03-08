@@ -35,7 +35,6 @@ import {
 } from "lucide-react";
 import type {
   Article,
-  ReorderArticleDto,
 } from "@/src/common/@types/@cms-article";
 import ArticleStatusBadge from "./article-status-badge";
 
@@ -53,12 +52,12 @@ interface ArticleListProps {
   onPublishClick: (article: Article) => void;
   onArchiveClick: (article: Article) => void;
   onPreviewClick?: (article: Article) => void;
-  onReorder: (reorderedArticles: ReorderArticleDto[]) => void;
 }
 
 const COLUMNS = [
   { key: "title", label: "Article" },
   { key: "status", label: "Status" },
+  { key: "language", label: "Language" },
   { key: "published_at", label: "Published" },
   { key: "updated_at", label: "Last Updated" },
   { key: "actions", label: "Actions" },
@@ -90,9 +89,12 @@ export default function ArticleList({
     return matchesStatus && matchesSearch;
   });
 
-  // Sort by display_order
   const sortedArticles = [...filteredArticles].sort(
-    (a, b) => a.display_order - b.display_order,
+    (a, b) => {
+      const leftDate = new Date(a.published_at ?? a.updated_at).getTime();
+      const rightDate = new Date(b.published_at ?? b.updated_at).getTime();
+      return rightDate - leftDate;
+    },
   );
 
   // Calculate counts for tabs
@@ -135,6 +137,12 @@ export default function ArticleList({
         );
       case "status":
         return <ArticleStatusBadge status={article.status} />;
+      case "language":
+        return (
+          <Chip size="sm" variant="flat" color="default" className="uppercase">
+            {article.language ?? 'en_us'}
+          </Chip>
+        );
       case "published_at":
         return (
           <span className="text-sm text-default-600 whitespace-nowrap">

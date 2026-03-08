@@ -178,7 +178,6 @@ function ArticlesPageContent() {
                 `/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`,
               )
             }
-            onReorder={() => {}}
           />
       </div>
     </LayoutScopeRoot>

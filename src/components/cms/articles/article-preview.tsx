@@ -17,7 +17,6 @@
  * **Validates: Requirements 18.6**
  */
 
-import { useMemo } from "react";
 import Image from "next/image";
 import { Card, CardBody, Chip } from "@heroui/react";
 import { Calendar, Clock, Info } from "lucide-react";
@@ -29,6 +28,11 @@ interface ArticlePreviewProps {
 }
 
 export default function ArticlePreview({ article }: ArticlePreviewProps) {
+  const coverImage = article.coverImage ?? article.images[0] ?? null;
+  const galleryImages = coverImage
+    ? article.images.filter((image) => String(image.id) !== String(coverImage.id))
+    : article.images;
+
   // Format dates
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Not published";
@@ -80,6 +84,9 @@ export default function ArticlePreview({ article }: ArticlePreviewProps) {
 
             {/* Metadata */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              <Chip size="sm" variant="flat" color="default" className="uppercase">
+                {article.language ?? "en_us"}
+              </Chip>
               <div className="flex items-center gap-2">
                 <Calendar size={16} />
                 <span>
@@ -104,11 +111,11 @@ export default function ArticlePreview({ article }: ArticlePreviewProps) {
           </div>
 
           {/* Featured image (first image if available) */}
-          {article.images.length > 0 && (
+          {coverImage && (
             <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
               <Image
-                src={article.images[0].url}
-                alt={article.images[0].alt_text || article.title}
+                src={coverImage.url}
+                alt={coverImage.alt_text || article.title}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
@@ -132,18 +139,18 @@ export default function ArticlePreview({ article }: ArticlePreviewProps) {
           />
 
           {/* Additional images gallery */}
-          {article.images.length > 1 && (
+          {galleryImages.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-foreground">Gallery</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {article.images.slice(1).map((image) => (
+                {galleryImages.map((image, index) => (
                   <div
                     key={image.id}
                     className="relative aspect-video rounded-lg overflow-hidden bg-muted"
                   >
                     <Image
                       src={image.url}
-                      alt={image.alt_text || `Image ${image.display_order + 1}`}
+                      alt={image.alt_text || `Image ${index + 1}`}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"

@@ -8,6 +8,7 @@ import { useCreateArticle } from "@/src/common/hooks/cms/use-create-article";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 import { useArticleEditorState } from "@/src/common/hooks/cms/use-article-editor-state";
+import { articleLanguagePattern } from "@/src/common/schemas/cms-article-schema";
 import { ArticleEditorShell } from "@/src/components/cms/articles/article-editor-shell";
 import { ArticleEditorGuard } from "@/src/components/cms/articles/article-editor-guard";
 import { toast } from "sonner";
@@ -44,6 +45,12 @@ export default function NewArticlePage() {
       toast.error("Content required", { description: "Please add some content before saving." });
       return;
     }
+    if (!articleLanguagePattern.test(editorState.language.trim().toLowerCase())) {
+      toast.error("Invalid language", {
+        description: "Use the lowercase locale format, for example en_us or pt_br.",
+      });
+      return;
+    }
     if (!blogId) {
       toast.error("Blog not selected", {
         description: "Blog ID is missing. Please go back and select a blog.",
@@ -62,6 +69,7 @@ export default function NewArticlePage() {
         content: editorState.content,
         focusKeyword: editorState.focusKeyword || undefined,
         coverImageId: editorState.coverImageId || undefined,
+        language: editorState.language.trim().toLowerCase(),
       },
       {
         onSuccess: () => {
@@ -84,6 +92,7 @@ export default function NewArticlePage() {
       editorState.content ||
       editorState.metaTitle ||
       editorState.slug ||
+      editorState.language !== "en_us" ||
       editorState.selectedAuthorId ||
       editorState.coverImageId;
     if (hasChanges) {
@@ -185,6 +194,8 @@ export default function NewArticlePage() {
         onDisplayTitleChange={editorState.handleTitleChange}
         slug={editorState.slug}
         onSlugChange={editorState.setSlug}
+        language={editorState.language}
+        onLanguageChange={editorState.setLanguage}
         selectedAuthorId={editorState.selectedAuthorId}
         onAuthorChange={editorState.setSelectedAuthorId}
         coverImageId={editorState.coverImageId}

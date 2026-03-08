@@ -10,6 +10,7 @@ import { useUpdateArticle } from "@/src/common/hooks/cms/use-update-article";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 import { useArticleEditorState } from "@/src/common/hooks/cms/use-article-editor-state";
+import { articleLanguagePattern } from "@/src/common/schemas/cms-article-schema";
 import { ArticleEditorShell } from "@/src/components/cms/articles/article-editor-shell";
 import { ArticleEditorGuard } from "@/src/components/cms/articles/article-editor-guard";
 import { toast } from "sonner";
@@ -28,7 +29,8 @@ export default function ArticleEditorPage() {
   const { data: article, isLoading } = useGetArticle(articleId, routeBlogId ?? undefined);
   const { data: authors, isLoading: isLoadingAuthors } = useGetAuthors();
   const effectiveBlogId = routeBlogId ?? article?.blog_id ?? "";
-  const { mutate: updateArticle, isPending } = useUpdateArticle(effectiveBlogId);
+  const effectiveBlogIdValue = effectiveBlogId ? String(effectiveBlogId) : "";
+  const { mutate: updateArticle, isPending } = useUpdateArticle(effectiveBlogIdValue);
 
   const editorState = useArticleEditorState();
 
@@ -40,6 +42,7 @@ export default function ArticleEditorPage() {
         metaTitle: article.metaTitle || "",
         metaDescription: article.metaDescription || "",
         slug: article.slug || "",
+        language: article.language || "en_us",
         selectedAuthorId: article.authorId || "",
         coverImageId: article.coverImageId || "",
         content: article.content || "",
@@ -58,6 +61,7 @@ export default function ArticleEditorPage() {
       editorState.metaTitle !== (article.metaTitle || "") ||
       editorState.metaDescription !== (article.metaDescription || "") ||
       editorState.slug !== (article.slug || "") ||
+      editorState.language !== (article.language || "en_us") ||
       editorState.selectedAuthorId !== (article.authorId || "") ||
       editorState.coverImageId !== (article.coverImageId || "") ||
       editorState.content !== (article.content || "");
@@ -67,6 +71,7 @@ export default function ArticleEditorPage() {
     editorState.metaTitle,
     editorState.metaDescription,
     editorState.slug,
+    editorState.language,
     editorState.selectedAuthorId,
     editorState.coverImageId,
     editorState.content,
@@ -94,6 +99,12 @@ export default function ArticleEditorPage() {
       toast.error("Slug required", { description: "Please enter a URL slug." });
       return;
     }
+    if (!articleLanguagePattern.test(editorState.language.trim().toLowerCase())) {
+      toast.error("Invalid language", {
+        description: "Use the lowercase locale format, for example en_us or pt_br.",
+      });
+      return;
+    }
 
     updateArticle(
       {
@@ -103,10 +114,11 @@ export default function ArticleEditorPage() {
         metaDescription: editorState.metaDescription.trim() || undefined,
         slug: editorState.slug.trim(),
         authorId: editorState.selectedAuthorId,
-        blogId: effectiveBlogId || undefined,
+        blogId: effectiveBlogIdValue || undefined,
         coverImageId: editorState.coverImageId || undefined,
         content: editorState.content || "",
         focusKeyword: editorState.focusKeyword || undefined,
+        language: editorState.language.trim().toLowerCase(),
       },
       {
         onSuccess: () => {
@@ -287,6 +299,8 @@ export default function ArticleEditorPage() {
         onDisplayTitleChange={editorState.handleTitleChange}
         slug={editorState.slug}
         onSlugChange={editorState.setSlug}
+        language={editorState.language}
+        onLanguageChange={editorState.setLanguage}
         selectedAuthorId={editorState.selectedAuthorId}
         onAuthorChange={editorState.setSelectedAuthorId}
         coverImageId={editorState.coverImageId}
