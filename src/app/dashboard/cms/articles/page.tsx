@@ -103,18 +103,24 @@ function ArticlesPageContent() {
     }
   };
 
-  const handleTogglePublished = (article: Article, nextPublished: boolean) => {
-    if (article.status === "archived") {
-      toast.warning("Archived articles cannot be toggled from this control");
+  const handleStatusSelect = (article: Article, nextStatus: ArticleStatus) => {
+    if (nextStatus === article.status) {
       return;
     }
 
-    if (nextPublished) {
+    if (nextStatus === "draft") {
+      toast.warning("Articles cannot be moved back to draft with the current API");
+      return;
+    }
+
+    if (nextStatus === "published") {
       handlePublish(article);
       return;
     }
 
-    handleArchive(article);
+    if (nextStatus === "archived") {
+      handleArchive(article);
+    }
   };
 
   // Show tenant selection warning
@@ -185,8 +191,8 @@ function ArticlesPageContent() {
               )
             }
             onDeleteClick={handleDelete}
-            onTogglePublished={handleTogglePublished}
-            isStatusTogglePending={isPublishingArticle || isArchivingArticle}
+            onStatusSelect={handleStatusSelect}
+            isStatusActionPending={isPublishingArticle || isArchivingArticle}
             onPreviewClick={(article) =>
               router.push(
                 `/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`,

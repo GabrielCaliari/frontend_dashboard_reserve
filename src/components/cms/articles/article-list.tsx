@@ -20,7 +20,6 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Switch,
 } from "@heroui/react";
 import {
   Plus,
@@ -31,6 +30,7 @@ import {
   Edit,
   Trash2,
   Eye,
+  ChevronDown,
 } from "lucide-react";
 import type {
   Article,
@@ -48,8 +48,8 @@ interface ArticleListProps {
   onCreateClick: () => void;
   onEditClick: (article: Article) => void;
   onDeleteClick: (article: Article) => void;
-  onTogglePublished: (article: Article, nextPublished: boolean) => void;
-  isStatusTogglePending?: boolean;
+  onStatusSelect: (article: Article, nextStatus: ArticleStatus) => void;
+  isStatusActionPending?: boolean;
   onPreviewClick?: (article: Article) => void;
 }
 
@@ -70,8 +70,8 @@ export default function ArticleList({
   onCreateClick,
   onEditClick,
   onDeleteClick,
-  onTogglePublished,
-  isStatusTogglePending = false,
+  onStatusSelect,
+  isStatusActionPending = false,
   onPreviewClick,
 }: ArticleListProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -141,24 +141,47 @@ export default function ArticleList({
             onClick={(event) => event.stopPropagation()}
           >
             <ArticleStatusBadge status={article.status} />
-            <div className="flex items-center gap-2">
-              <Switch
-                size="sm"
-                isSelected={article.status === "published"}
-                isDisabled={isStatusTogglePending || article.status === "archived"}
-                onValueChange={(nextPublished) => onTogglePublished(article, nextPublished)}
-                aria-label={
-                  article.status === "published" ? "Unpublish article" : "Publish article"
-                }
-              />
-              <span className="text-xs text-default-500">
-                {article.status === "archived"
-                  ? "Archived"
-                  : article.status === "published"
-                    ? "Published"
-                    : "Unpublished"}
-              </span>
-            </div>
+            <Dropdown placement="bottom-start">
+              <DropdownTrigger>
+                <Button
+                  size="sm"
+                  variant="flat"
+                  className="justify-between"
+                  endContent={<ChevronDown size={14} />}
+                  isDisabled={isStatusActionPending}
+                >
+                  Change status
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Change article status">
+                <DropdownItem
+                  key="draft"
+                  isDisabled
+                  className={article.status === "draft" ? "text-primary" : undefined}
+                  onPress={() => onStatusSelect(article, "draft")}
+                >
+                  Draft
+                </DropdownItem>
+                <DropdownItem
+                  key="published"
+                  isDisabled={article.status !== "draft"}
+                  className={article.status === "published" ? "text-success" : undefined}
+                  color="success"
+                  onPress={() => onStatusSelect(article, "published")}
+                >
+                  Published
+                </DropdownItem>
+                <DropdownItem
+                  key="archived"
+                  isDisabled={article.status !== "published"}
+                  className={article.status === "archived" ? "text-warning" : undefined}
+                  color="warning"
+                  onPress={() => onStatusSelect(article, "archived")}
+                >
+                  Archived
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
         );
       case "language":
