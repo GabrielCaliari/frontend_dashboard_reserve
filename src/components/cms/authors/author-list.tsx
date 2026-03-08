@@ -32,6 +32,24 @@ export function AuthorList({
   onDelete,
   onCreateClick,
 }: AuthorListProps) {
+  const getDisplayName = (author: Author) => {
+    const fullName = author.fullName?.trim();
+    if (fullName) {
+      return fullName;
+    }
+
+    const joinedName = [author.firstName, author.lastName]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+
+    return joinedName || "Unnamed author";
+  };
+
+  const getAvatarUrl = (author: Author) => {
+    return author.avatar_url ?? author.avatar?.url ?? undefined;
+  };
+
   return (
     <Table
       aria-label="Authors table"
@@ -77,13 +95,13 @@ export function AuthorList({
             <TableCell>
               <div className="flex items-center gap-3">
                 <Avatar
-                  src={author.avatar_url ?? undefined}
-                  name={`${author.firstName} ${author.lastName}`}
+                  src={getAvatarUrl(author)}
+                  name={getDisplayName(author)}
                   size="sm"
                   fallback={<UserIcon className="w-4 h-4 text-default-400" />}
                 />
                 <span className="font-medium text-foreground">
-                  {author.firstName} {author.lastName}
+                  {getDisplayName(author)}
                 </span>
               </div>
             </TableCell>

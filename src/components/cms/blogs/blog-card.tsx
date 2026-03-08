@@ -44,7 +44,7 @@ export default function BlogCard({
   const updatedAt = new Date(blog.updated_at).toLocaleDateString();
 
   return (
-    <Card className="flex h-full w-full flex-col overflow-hidden border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(77,171,247,0.14),_transparent_35%),linear-gradient(180deg,_rgba(255,255,255,0.03),_rgba(255,255,255,0.01))] shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+    <Card className="flex h-full w-full flex-col overflow-visible border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(77,171,247,0.14),_transparent_35%),linear-gradient(180deg,_rgba(255,255,255,0.03),_rgba(255,255,255,0.01))] shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
       <CardHeader className="relative flex items-start justify-between gap-4 border-b border-white/10 bg-black/10 px-5 pb-5 pt-5">
         <div className="min-w-0 flex-1 space-y-4">
           <div className="flex flex-wrap items-center gap-2">
@@ -66,7 +66,7 @@ export default function BlogCard({
               {blog.name}
             </h3>
             <div className="inline-flex max-w-full items-center rounded-full border border-white/10 bg-black/15 px-3 py-1 text-xs text-default-500">
-              <span className="truncate font-mono">/{blog.slug}</span>
+              <span className="truncate">Blog ID #{blog.id}</span>
             </div>
           </div>
 
@@ -87,7 +87,7 @@ export default function BlogCard({
             </div>
           </div>
         </div>
-        <Dropdown>
+        <Dropdown placement="bottom-end" shouldBlockScroll={false}>
           <DropdownTrigger>
             <Button isIconOnly size="sm" variant="light" className="border border-white/10 bg-black/10">
               <MoreVertical size={18} />

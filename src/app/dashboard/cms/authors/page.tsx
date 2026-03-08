@@ -7,15 +7,10 @@ import {
   Card,
   CardBody,
   Input,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  useDisclosure,
 } from "@heroui/react";
-import { Plus, Users, AlertCircle, Search } from "lucide-react";
+import { Plus, AlertCircle, Search } from "lucide-react";
 import { AuthorList } from "@/src/components/cms/authors/author-list";
-import { AuthorForm } from "@/src/components/cms/authors/author-form";
+import { AuthorDrawer } from "@/src/components/cms/authors/author-drawer";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import { useCreateAuthor } from "@/src/common/hooks/cms/use-create-author";
 import { useUpdateAuthor } from "@/src/common/hooks/cms/use-update-author";
@@ -26,11 +21,11 @@ import type { Author } from "@/src/common/@types/@cms-author";
 import type {
   CreateAuthorDto,
   UpdateAuthorDto,
-} from "@/src/common/services/cms-author-service";
+} from "@/src/common/@types/@cms-author";
 
 export default function AuthorsPage() {
   const hasSelectedTenant = useHasSelectedTenant();
-  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
   const [search, setSearch] = useState("");
 
@@ -41,26 +36,26 @@ export default function AuthorsPage() {
 
   const filteredAuthors = (authors || []).filter((author) =>
     search
-      ? `${author.firstName} ${author.lastName}`
+      ? `${author.fullName || `${author.firstName} ${author.lastName}`}`
           .toLowerCase()
           .includes(search.toLowerCase())
-      : true
+      : true,
   );
 
   const handleCreate = () => {
     setSelectedAuthor(null);
-    onOpen();
+    setDrawerOpen(true);
   };
 
   const handleEdit = (author: Author) => {
     setSelectedAuthor(author);
-    onOpen();
+    setDrawerOpen(true);
   };
 
   const handleDelete = (author: Author) => {
     if (
       confirm(
-        `Are you sure you want to delete "${author.firstName} ${author.lastName}"? This action cannot be undone.`
+        `Are you sure you want to delete "${author.firstName} ${author.lastName}"? This action cannot be undone.`,
       )
     ) {
       deleteAuthorMutation.mutate(author.id, {
@@ -96,7 +91,7 @@ export default function AuthorsPage() {
           description: "The author has been created successfully.",
         });
       }
-      onClose();
+      setDrawerOpen(false);
     } catch (error: any) {
       const message =
         error?.response?.data?.message || error.message || "Unknown error";
@@ -104,14 +99,9 @@ export default function AuthorsPage() {
         selectedAuthor ? "Failed to update author" : "Failed to create author",
         {
           description: Array.isArray(message) ? message.join(", ") : message,
-        }
+        },
       );
     }
-  };
-
-  const handleClose = () => {
-    setSelectedAuthor(null);
-    onClose();
   };
 
   if (!hasSelectedTenant) {
@@ -142,17 +132,12 @@ export default function AuthorsPage() {
     <LayoutScopeRoot routeActive="authors">
       <div className="p-8 space-y-6 max-w-7xl mx-auto">
         {/* Page Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
-              <Users className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Authors</h1>
-              <p className="text-default-500">
-                Manage content authors and contributors
-              </p>
-            </div>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Authors</h1>
+            <p className="text-default-500 mt-1">
+              Manage content authors and contributors
+            </p>
           </div>
           <Button
             color="primary"
@@ -190,36 +175,18 @@ export default function AuthorsPage() {
             />
           </CardBody>
         </Card>
-
-        {/* Create/Edit Modal */}
-        <Modal
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          size="2xl"
-          scrollBehavior="inside"
-        >
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  {selectedAuthor ? "Edit Author" : "Create Author"}
-                </ModalHeader>
-                <ModalBody className="pb-6">
-                  <AuthorForm
-                    author={selectedAuthor || undefined}
-                    onSubmit={handleSubmit}
-                    onCancel={handleClose}
-                    isSubmitting={
-                      createAuthorMutation.isPending ||
-                      updateAuthorMutation.isPending
-                    }
-                  />
-                </ModalBody>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
       </div>
+
+      {/* Author Drawer */}
+      <AuthorDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        author={selectedAuthor}
+        onSubmit={handleSubmit}
+        isSubmitting={
+          createAuthorMutation.isPending || updateAuthorMutation.isPending
+        }
+      />
     </LayoutScopeRoot>
   );
 }

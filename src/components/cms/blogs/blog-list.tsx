@@ -56,7 +56,7 @@ export default function BlogList({
         return true;
       }
 
-      const haystack = [blog.name, blog.slug, blog.description ?? ""]
+      const haystack = [blog.name, blog.description ?? ""]
         .join(" ")
         .toLowerCase();
 
@@ -133,7 +133,7 @@ export default function BlogList({
             <Input
               value={query}
               onValueChange={setQuery}
-              placeholder="Search by name, slug, or description"
+              placeholder="Search by name or description"
               startContent={<Search size={16} className="text-default-400" />}
               classNames={{
                 inputWrapper: "border border-white/10 bg-white/5 shadow-none",

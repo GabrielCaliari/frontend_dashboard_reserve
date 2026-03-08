@@ -1,6 +1,7 @@
 import { cmsApiClient } from '@/src/common/config/api';
 import type {
   Author,
+  AuthorApiResponse,
   CreateAuthorDto,
   UpdateAuthorDto,
   AssignAvatarDto,
@@ -10,16 +11,44 @@ import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handl
 export type { CreateAuthorDto, UpdateAuthorDto, AssignAvatarDto };
 
 /**
+ * Normalize a raw API response into the UI Author shape.
+ * The backend has returned both snake_case and camelCase fields across endpoints.
+ */
+function normalizeAuthor(raw: AuthorApiResponse | Record<string, any>): Author {
+  const firstName = raw.first_name ?? raw.firstName ?? '';
+  const lastName = raw.last_name ?? raw.lastName ?? '';
+  const avatar = raw.avatar ?? undefined;
+  const avatarId = raw.avatar_id ?? raw.avatarId ?? avatar?.id ?? undefined;
+  const avatarUrl = raw.avatar_url ?? raw.avatarUrl ?? avatar?.url ?? undefined;
+  const fullName =
+    raw.full_name ??
+    raw.fullName ??
+    `${firstName} ${lastName}`.trim() ??
+    '';
+
+  return {
+    id: raw.id,
+    tenant_id: raw.tenant_id,
+    firstName,
+    lastName,
+    fullName,
+    biography: raw.biography ?? undefined,
+    avatarId,
+    avatar_url: avatarUrl,
+    avatar,
+    active: raw.active ?? true,
+    created_at: raw.created_at,
+    updated_at: raw.updated_at,
+  };
+}
+
+/**
  * Fetch all authors for the current tenant (AUTHENTICATED)
- * @param active - Optional filter by active status
- * @param page - Page number (default: 1)
- * @param limit - Items per page (default: 30)
- * @returns Promise<Author[]>
  */
 export const fetchAuthors = async (
   active?: boolean,
   page: number = 1,
-  limit: number = 30
+  limit: number = 30,
 ): Promise<Author[]> => {
   try {
     return await withRetry(async () => {
@@ -29,17 +58,25 @@ export const fetchAuthors = async (
       }
 
       const response = await cmsApiClient.get('cms/authors', { params });
-      
-      // Handle paginated response format
+
+      // { data: AuthorApiResponse[], pagination: {...} }
       if (response.data && Array.isArray(response.data.data)) {
-        return response.data.data;
+        return response.data.data.map(normalizeAuthor);
       }
-      
+
+      if (response.data && Array.isArray(response.data.items)) {
+        return response.data.items.map(normalizeAuthor);
+      }
+
+      if (response.data && Array.isArray(response.data.results)) {
+        return response.data.results.map(normalizeAuthor);
+      }
+
       // Fallback for direct array response
       if (Array.isArray(response.data)) {
-        return response.data;
+        return response.data.map(normalizeAuthor);
       }
-      
+
       return [];
     });
   } catch (error) {
@@ -49,15 +86,12 @@ export const fetchAuthors = async (
 
 /**
  * Fetch a single author by ID (AUTHENTICATED)
- * @param authorId - The author ID
- * @returns Promise<Author>
  */
 export const fetchAuthorById = async (authorId: string): Promise<Author> => {
   try {
     return await withRetry(async () => {
-      // Use authenticated endpoint: GET /api/cms/authors/{id}
       const response = await cmsApiClient.get(`cms/authors/${authorId}`);
-      return response.data;
+      return normalizeAuthor(response.data);
     });
   } catch (error) {
     throw transformCMSError(error);
@@ -66,16 +100,12 @@ export const fetchAuthorById = async (authorId: string): Promise<Author> => {
 
 /**
  * Create a new author (AUTHENTICATED)
- * @param data - Author creation data
- * @returns Promise<Author>
+ * Body stays in camelCase — the backend accepts firstName/lastName.
  */
-export const createAuthor = async (
-  data: CreateAuthorDto
-): Promise<Author> => {
+export const createAuthor = async (data: CreateAuthorDto): Promise<Author> => {
   try {
-    // Use authenticated endpoint: POST /api/cms/authors
     const response = await cmsApiClient.post('cms/authors', data);
-    return response.data;
+    return normalizeAuthor(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -83,18 +113,14 @@ export const createAuthor = async (
 
 /**
  * Update an existing author (AUTHENTICATED)
- * @param authorId - The author ID
- * @param data - Author update data
- * @returns Promise<Author>
  */
 export const updateAuthor = async (
   authorId: string,
-  data: UpdateAuthorDto
+  data: UpdateAuthorDto,
 ): Promise<Author> => {
   try {
-    // Use authenticated endpoint: PUT /api/cms/authors/{id}
     const response = await cmsApiClient.put(`cms/authors/${authorId}`, data);
-    return response.data;
+    return normalizeAuthor(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -102,12 +128,10 @@ export const updateAuthor = async (
 
 /**
  * Delete an author (AUTHENTICATED)
- * @param authorId - The author ID
- * @returns Promise<void>
+ * Returns 400 if the author has published articles.
  */
 export const deleteAuthor = async (authorId: string): Promise<void> => {
   try {
-    // Use authenticated endpoint: DELETE /api/cms/authors/{id}
     await cmsApiClient.delete(`cms/authors/${authorId}`);
   } catch (error) {
     throw transformCMSError(error);
@@ -115,22 +139,18 @@ export const deleteAuthor = async (authorId: string): Promise<void> => {
 };
 
 /**
- * Assign an avatar to an author (AUTHENTICATED)
- * Uses an existing MediaAsset ID from the storage system.
- * Upload the file first via POST /api/cms/assets, then reference by ID.
- * @param authorId - The author ID
- * @param avatarId - The UUID of an existing MediaAsset
- * @returns Promise<Author>
+ * Assign an existing media asset as the author's avatar (AUTHENTICATED)
+ * POST /api/cms/authors/:id/avatar
  */
 export const assignAuthorAvatar = async (
   authorId: string,
-  avatarId: string
+  avatarId: string,
 ): Promise<Author> => {
   try {
     const response = await cmsApiClient.post(`cms/authors/${authorId}/avatar`, {
       avatarId,
     });
-    return response.data;
+    return normalizeAuthor(response.data);
   } catch (error) {
     throw transformCMSError(error);
   }
