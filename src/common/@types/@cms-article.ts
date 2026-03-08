@@ -3,8 +3,8 @@ import { ArticleImage } from './@cms-image';
 export type ArticleStatus = 'draft' | 'published' | 'archived';
 
 export interface Article {
-  id: number;
-  blog_id: number;
+  id: string;
+  blog_id: string;
   title: string;
   displayTitle: string;
   slug: string;
@@ -47,7 +47,7 @@ export interface UpdateArticleDto {
 }
 
 export interface ReorderArticleDto {
-  id: number;
+  id: string;
   display_order: number;
 }
 

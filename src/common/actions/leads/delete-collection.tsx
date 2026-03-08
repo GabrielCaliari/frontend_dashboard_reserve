@@ -2,7 +2,7 @@
 
 import { deleteCollectionService } from '@/src/common/services/leads/delete-collection-service';
 
-export async function deleteCollectionAction(id: number): Promise<void> {
+export async function deleteCollectionAction(id: string): Promise<void> {
   try {
     await deleteCollectionService(id);
   } catch (error: any) {

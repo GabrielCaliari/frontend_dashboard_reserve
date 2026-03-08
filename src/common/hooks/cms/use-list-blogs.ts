@@ -9,5 +9,6 @@ export function useListBlogs(page = 1, limit = 10) {
     queryKey: ['blogs', tenantId, page, limit],
     queryFn: () => blogService.listBlogs(page, limit),
     enabled: !!tenantId,
+    staleTime: 5 * 60 * 1000, // 5 min - blogs change rarely
   });
 }

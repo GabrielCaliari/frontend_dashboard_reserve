@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchBlogs, fetchBlogById } from '@/src/common/services/cms-blog-service';
 import type { Blog } from '@/src/common/@types/@cms-blog';
+import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 
 /**
  * Query keys for blog-related queries
@@ -22,9 +23,11 @@ export const BLOG_QUERY_KEYS = {
  * ```
  */
 export const useBlogs = () => {
+  const tenantId = useSelectedTenantId();
   return useQuery<Blog[], Error>({
-    queryKey: BLOG_QUERY_KEYS.all,
+    queryKey: [...BLOG_QUERY_KEYS.all, tenantId],
     queryFn: fetchBlogs,
+    enabled: !!tenantId,
     staleTime: 5 * 60 * 1000, // 5 minutes - blogs don't change frequently
   });
 };

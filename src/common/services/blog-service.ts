@@ -50,10 +50,12 @@ export const blogService = {
     };
   },
 
-  // Get single blog
+  // Get single blog by deriving from list (GET /api/cms/blogs/:blogId does not exist)
   async getBlog(blogId: number): Promise<Blog> {
-    const response = await api.get(`/cms/blogs/${blogId}`);
-    return response.data;
+    const listResponse = await this.listBlogs(1, 200);
+    const blog = listResponse.data.find(b => b.id === blogId);
+    if (!blog) throw new Error(`Blog not found: ${blogId}`);
+    return blog;
   },
 
   // Create blog

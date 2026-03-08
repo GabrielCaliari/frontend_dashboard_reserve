@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useListBlogs } from "@/src/common/hooks/cms/use-list-blogs";
 import { Select, SelectItem, Spinner } from "@heroui/react";
 import { Globe } from "lucide-react";
@@ -8,10 +9,25 @@ interface BlogSelectorProps {
   value?: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
+  autoSelect?: boolean;
 }
 
-export function BlogSelector({ value, onValueChange, placeholder = "Select a blog" }: BlogSelectorProps) {
+export function BlogSelector({
+  value,
+  onValueChange,
+  placeholder = "Select a blog",
+  autoSelect = true,
+}: BlogSelectorProps) {
   const { data: blogsData, isLoading } = useListBlogs(1, 50);
+
+  const blogs = blogsData?.data ?? [];
+
+  // Auto-seleciona o primeiro blog quando os dados carregam e nenhum esta selecionado
+  useEffect(() => {
+    if (autoSelect && !value && blogs.length > 0) {
+      onValueChange(blogs[0].id.toString());
+    }
+  }, [autoSelect, value, blogs, onValueChange]);
 
   return (
     <Select
@@ -29,11 +45,11 @@ export function BlogSelector({ value, onValueChange, placeholder = "Select a blo
         value: "text-foreground",
       }}
     >
-      {blogsData?.data?.map((blog) => (
-        <SelectItem key={blog.id.toString()} value={blog.id.toString()}>
+      {blogs.map((blog) => (
+        <SelectItem key={blog.id.toString()}>
           {blog.name}
         </SelectItem>
-      )) || []}
+      ))}
     </Select>
   );
 }

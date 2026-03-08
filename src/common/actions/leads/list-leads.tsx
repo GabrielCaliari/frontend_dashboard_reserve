@@ -8,6 +8,7 @@ interface ListLeadsParams {
   limit?: number;
   status?: number;
   origin?: number;
+  tenantId?: number;
 }
 
 export async function listLeadsAction(

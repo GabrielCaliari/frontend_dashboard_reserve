@@ -4,7 +4,7 @@ import { updateCollectionService } from '@/src/common/services/leads/update-coll
 import type { UpdateCollectionDto, CollectionDetailResponse } from '@/src/common/@types/@lead';
 
 export async function updateCollectionAction(
-  id: number,
+  id: string,
   data: UpdateCollectionDto
 ): Promise<CollectionDetailResponse> {
   try {

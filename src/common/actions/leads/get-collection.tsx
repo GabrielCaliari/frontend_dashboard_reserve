@@ -3,7 +3,7 @@
 import { getCollectionService } from '@/src/common/services/leads/get-collection-service';
 import type { CollectionDetailResponse } from '@/src/common/@types/@lead';
 
-export async function getCollectionAction(id: number): Promise<CollectionDetailResponse> {
+export async function getCollectionAction(id: string): Promise<CollectionDetailResponse> {
   try {
     return await getCollectionService(id);
   } catch (error: any) {

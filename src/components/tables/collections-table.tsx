@@ -67,7 +67,7 @@ export function CollectionsTable() {
     toast.success("Endpoint URL copied to clipboard");
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to deactivate this collection?")) {
       deleteCollection.mutate(id);
     }

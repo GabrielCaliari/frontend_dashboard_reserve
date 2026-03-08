@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
-import { AlertCircle, FileText } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { Card, CardBody } from "@heroui/react";
 import { BlogSelector } from "@/src/components/cms/blog-selector";
 import { ArticleList } from "@/src/components/cms/articles";
@@ -12,7 +12,6 @@ import { useDeleteArticle } from "@/src/common/hooks/cms/use-delete-article";
 import {
   usePublishArticle,
   useArchiveArticle,
-  useReorderArticles,
 } from "@/src/common/hooks/cms/useArticleMutations";
 import {
   useHasSelectedTenant,
@@ -20,7 +19,6 @@ import {
 } from "@/src/common/stores/tenant-store";
 import type {
   Article,
-  ReorderArticleDto,
 } from "@/src/common/@types/@cms-article";
 import { toast } from "sonner";
 
@@ -36,17 +34,18 @@ function ArticlesPageContent() {
     undefined,
   );
 
+  const handleBlogChange = useCallback((value: string) => {
+    setSelectedBlogId(value);
+  }, []);
+
   const hasSelectedTenant = useHasSelectedTenant();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
 
-  const blogIdNum = selectedBlogId ? parseInt(selectedBlogId) : 0;
-
-  const { data: articlesData, isLoading, error, isError } = useListArticles(blogIdNum, 1, 50);
+  const { data: articlesData, isLoading, error, isError } = useListArticles(selectedBlogId || undefined, 1, 50);
   
-  const { mutate: deleteArticle } = useDeleteArticle(blogIdNum);
+  const { mutate: deleteArticle } = useDeleteArticle();
   const { mutate: publishArticle } = usePublishArticle();
   const { mutate: archiveArticle } = useArchiveArticle();
-  const { mutate: reorderArticles } = useReorderArticles();
 
   // fetchArticles returns Article[] directly, normalize for ArticleList
   const articles: Article[] = Array.isArray(articlesData)
@@ -54,7 +53,7 @@ function ArticlesPageContent() {
     : ((articlesData as any)?.data ?? []);
 
   // Show error state
-  if (isError && selectedBlogId) {
+  if (isError) {
     return (
       <LayoutScopeRoot routeActive="articles">
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
@@ -90,7 +89,7 @@ function ArticlesPageContent() {
       return;
     }
     if (confirm(`Publish "${article.title}"?`)) {
-      publishArticle({ blogId: blogIdNum, articleId: article.id });
+      publishArticle({ blogId: article.blog_id, articleId: article.id });
     }
   };
 
@@ -100,12 +99,8 @@ function ArticlesPageContent() {
       return;
     }
     if (confirm(`Archive "${article.title}"?`)) {
-      archiveArticle({ blogId: blogIdNum, articleId: article.id });
+      archiveArticle({ blogId: article.blog_id, articleId: article.id });
     }
-  };
-
-  const handleReorder = (reorderedArticles: ReorderArticleDto[]) => {
-    reorderArticles({ blogId: blogIdNum, order: reorderedArticles });
   };
 
   // Show tenant selection warning
@@ -143,8 +138,9 @@ function ArticlesPageContent() {
               <div className="flex-1 max-w-md">
                 <BlogSelector
                   value={selectedBlogId}
-                  onValueChange={setSelectedBlogId}
-                  placeholder="Select a blog to manage articles"
+                  onValueChange={handleBlogChange}
+                  autoSelect={false}
+                  placeholder="All blogs"
                 />
               </div>
               {selectedTenant && (
@@ -159,38 +155,19 @@ function ArticlesPageContent() {
           </CardBody>
         </Card>
 
-        {!selectedBlogId ? (
-          <Card className="border-none shadow-sm">
-            <CardBody className="p-16">
-              <div className="text-center">
-                <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-10 h-10 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">
-                  Select a blog
-                </h3>
-                <p className="text-muted-foreground">
-                  Choose a blog from the dropdown above to view and manage its
-                  articles
-                </p>
-              </div>
-            </CardBody>
-          </Card>
-        ) : (
-          <ArticleList
-            blogId={blogIdNum}
+        <ArticleList
             articles={articles}
             isLoading={isLoading}
             currentStatus={currentStatus}
             onStatusChange={setCurrentStatus}
             onCreateClick={() =>
               router.push(
-                `/dashboard/cms/articles/new?blogId=${selectedBlogId}`,
+                `/dashboard/cms/articles/new${selectedBlogId ? `?blogId=${selectedBlogId}` : ''}`,
               )
             }
             onEditClick={(article) =>
               router.push(
-                `/dashboard/cms/articles/${article.id}?blogId=${selectedBlogId}`,
+                `/dashboard/cms/articles/${article.id}?blogId=${article.blog_id}`,
               )
             }
             onDeleteClick={handleDelete}
@@ -198,12 +175,11 @@ function ArticlesPageContent() {
             onArchiveClick={handleArchive}
             onPreviewClick={(article) =>
               router.push(
-                `/dashboard/cms/articles/${article.id}/preview?blogId=${selectedBlogId}`,
+                `/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`,
               )
             }
-            onReorder={handleReorder}
+            onReorder={() => {}}
           />
-        )}
       </div>
     </LayoutScopeRoot>
   );

@@ -34,7 +34,7 @@ export default function LeadsPage() {
   const [showCreate, setShowCreate] = useState(false);
 
   const hasCollectionFilter = collectionFilter !== "";
-  const collectionIdNum = hasCollectionFilter ? Number(collectionFilter) : 0;
+  const collectionIdStr = collectionFilter;
 
   const { data: collectionsData } = useListCollections({ limit: 100 });
   const collections = collectionsData?.data?.collections ?? [];
@@ -50,7 +50,7 @@ export default function LeadsPage() {
 
   // When a collection is selected, use the collection leads endpoint
   const { data: collectionLeadsData, isLoading: isLoadingCollection, refetch: refetchCollection } = useGetCollectionLeads({
-    collectionId: collectionIdNum,
+    collectionId: collectionIdStr,
     page,
     limit,
     enabled: hasCollectionFilter,
@@ -365,7 +365,7 @@ export default function LeadsPage() {
       <CreateLeadDialog
         open={showCreate}
         onClose={() => setShowCreate(false)}
-        collectionId={hasCollectionFilter ? collectionIdNum : undefined}
+        collectionId={hasCollectionFilter ? collectionIdStr : undefined}
       />
     </LayoutScopeRoot>
   );

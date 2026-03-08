@@ -4,12 +4,15 @@ import { addLeadAttachmentAction } from '@/src/common/actions/leads/add-lead-att
 import { removeLeadAttachmentAction } from '@/src/common/actions/leads/remove-lead-attachment';
 import type { LeadAttachment, AddAttachmentDto } from '@/src/common/@types/@lead';
 import { toast } from 'react-hot-toast';
+import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 
 export function useLeadAttachments(leadId: string) {
+  const tenantId = useSelectedTenantId();
+
   return useQuery<{ data: LeadAttachment[] }>({
-    queryKey: ['leads', 'attachments', leadId],
+    queryKey: ['leads', 'attachments', tenantId, leadId],
     queryFn: () => listLeadAttachmentsAction(leadId),
-    enabled: !!leadId,
+    enabled: !!tenantId && !!leadId,
     staleTime: 30000,
   });
 }

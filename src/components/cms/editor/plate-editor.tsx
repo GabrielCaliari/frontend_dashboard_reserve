@@ -809,6 +809,82 @@ function analyzeContent(
   };
 }
 
+function stripMarkdown(md: string): string {
+  return md
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, "$1")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^>\s?/gm, "")
+    .replace(/^[-*+]\s+/gm, "")
+    .replace(/^\d+\.\s+/gm, "")
+    .replace(/\*\*|__|~~|[*_]/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function analyzeMarkdownFallback(md: string, keyword: string): ContentStats {
+  const keywordLower = keyword.toLowerCase().trim();
+  const plainText = stripMarkdown(md);
+  const words = plainText.split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+  const keywordRegex = keywordLower ? new RegExp(keywordLower, "gi") : null;
+  const keywordCount = keywordRegex
+    ? (plainText.toLowerCase().match(keywordRegex) || []).length
+    : 0;
+  const keywordDensity = wordCount > 0 ? (keywordCount / wordCount) * 100 : 0;
+  const firstTenPercent = words
+    .slice(0, Math.ceil(wordCount * 0.1))
+    .join(" ")
+    .toLowerCase();
+  const headings = md
+    .split("\n")
+    .map((line) => {
+      const match = /^(#{1,3})\s+(.*)$/.exec(line.trim());
+
+      if (!match) return null;
+
+      return {
+        type: `h${match[1].length}`,
+        text: match[2].trim(),
+      };
+    })
+    .filter((heading): heading is { type: string; text: string } => !!heading);
+
+  const paragraphs = plainText
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+  return {
+    wordCount,
+    headings,
+    hasImages: /!\[[^\]]*\]\([^)]+\)/.test(md),
+    hasExternalLinks: /\[[^\]]+\]\(https?:\/\/[^)]+\)/i.test(md),
+    hasInternalLinks: /\[[^\]]+\]\((?!https?:\/\/)[^)]+\)/i.test(md),
+    keywordCount,
+    keywordDensity: Math.round(keywordDensity * 100) / 100,
+    keywordInFirstTenPercent: keywordLower
+      ? firstTenPercent.includes(keywordLower)
+      : false,
+    keywordInSubheadings: headings.some(
+      (heading) =>
+        (heading.type === "h2" || heading.type === "h3") &&
+        heading.text.toLowerCase().includes(keywordLower),
+    ),
+    keywordInImageAlt: keywordLower
+      ? new RegExp(`!\\[[^\\]]*${keywordLower}[^\\]]*\\]`, "i").test(md)
+      : false,
+    shortParagraphs: paragraphs.every(
+      (paragraph) => paragraph.split(/\s+/).length < 120,
+    ),
+    plainText,
+    metaDescription: plainText.slice(0, 160),
+    content: md,
+  };
+}
+
 const emptyValue: Value = [
   {
     type: "p",
@@ -847,6 +923,11 @@ export function PlateEditor({
     return emptyValue;
   }, [initialContent]);
 
+  const initialSlateValue = React.useMemo<Value>(
+    () => (Array.isArray(parsedInitial) ? (parsedInitial as Value) : emptyValue),
+    [parsedInitial],
+  );
+
   // --- View mode state ---
   const [viewMode, setViewMode] = React.useState<ViewMode>(() => {
     if (typeof window !== "undefined") {
@@ -864,12 +945,14 @@ export function PlateEditor({
   );
 
   const [chapters, setChapters] = React.useState<Chapter[]>(() =>
-    extractChapters(parsedInitial),
+    extractChapters(initialSlateValue),
   );
   const [activeChapter, setActiveChapter] = React.useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
   const liveRegionRef = React.useRef<HTMLDivElement>(null);
+  const lastInitializedContentRef = React.useRef<string | null>(null);
+  const lastValidMarkdownRef = React.useRef<string>("");
 
   const editor = usePlateEditor({
     plugins: [
@@ -888,20 +971,71 @@ export function PlateEditor({
     value:
       typeof parsedInitial === "string"
         ? undefined // Let MarkdownPlugin handle deserialization
-        : parsedInitial,
+        : initialSlateValue,
   });
 
-  // Deserialize markdown content on mount if needed
+  const publishParsedState = React.useCallback(
+    (value: Value, markdown: string) => {
+      lastValidMarkdownRef.current = markdown;
+      setChapters(extractChapters(value));
+      onContentChange?.(analyzeContent(value, focusKeyword, markdown));
+    },
+    [focusKeyword, onContentChange],
+  );
+
+  const publishMarkdownFallback = React.useCallback(
+    (md: string, warning?: string) => {
+      onContentChange?.(analyzeMarkdownFallback(md, focusKeyword));
+
+      if (warning) {
+        setMarkdownWarning(warning);
+      }
+    },
+    [focusKeyword, onContentChange],
+  );
+
+  // Initialize content and keep markdown source in sync with incoming content
   React.useEffect(() => {
-    if (typeof parsedInitial === "string" && parsedInitial && editor) {
+    if (!editor) return;
+
+    const contentKey = initialContent ?? "__empty__";
+
+    if (lastInitializedContentRef.current === contentKey) {
+      return;
+    }
+
+    lastInitializedContentRef.current = contentKey;
+
+    if (typeof parsedInitial === "string" && parsedInitial) {
+      setMarkdownContent(parsedInitial);
+
       try {
         const slateValue = editor.api.markdown.deserialize(parsedInitial);
         editor.tf.setValue(slateValue);
+        publishParsedState(slateValue, parsedInitial);
       } catch (error) {
         console.error("[PlateEditor] Failed to deserialize markdown:", error);
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Invalid markdown detected in the initial content.";
+
+        publishMarkdownFallback(parsedInitial, message);
+        setViewMode("markdown");
+        localStorage.setItem("plate-editor-view-mode", "markdown");
       }
+
+      return;
     }
-  }, []);
+
+    const serializedInitial = editor.api.markdown.serialize({
+      value: initialSlateValue,
+    });
+
+    setMarkdownContent(serializedInitial);
+    lastValidMarkdownRef.current = serializedInitial;
+    publishParsedState(initialSlateValue, serializedInitial);
+  }, [editor, initialContent, initialSlateValue, parsedInitial, publishMarkdownFallback, publishParsedState]);
 
   const analyzeTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -911,14 +1045,12 @@ export function PlateEditor({
       try {
         const value = editor.children as Value;
         const md = editor.api.markdown.serialize();
-        const stats = analyzeContent(value, focusKeyword, md);
-        setChapters(extractChapters(value));
-        onContentChange?.(stats);
-      } catch {
-        // editor not ready
+        publishParsedState(value, md);
+      } catch (error) {
+        console.error("[PlateEditor] Failed to analyze formatted content:", error);
       }
     }, 300);
-  }, [editor, onContentChange, focusKeyword]);
+  }, [editor, publishParsedState]);
 
   React.useEffect(() => {
     triggerAnalysis();
@@ -1007,19 +1139,20 @@ export function PlateEditor({
             // Serialize current Slate value to markdown using MarkdownPlugin
             const md = editor.api.markdown.serialize();
             setMarkdownContent(md);
+            lastValidMarkdownRef.current = md;
             announce("Switched to markdown source view");
           } else {
             // Validate markdown before switching
             const warning = validateMarkdown(markdownContent);
             if (warning) {
               setMarkdownWarning(warning);
-              // Still allow switching -- just warn
             }
 
             // Deserialize markdown to Slate value using MarkdownPlugin
             const slateValue = editor.api.markdown.deserialize(markdownContent);
             // Replace editor content
             editor.tf.setValue(slateValue);
+            publishParsedState(slateValue, markdownContent);
             // Re-analyze after switching back
             setTimeout(() => triggerAnalysis(), 100);
             announce("Switched to formatted view");
@@ -1029,11 +1162,23 @@ export function PlateEditor({
           localStorage.setItem("plate-editor-view-mode", newMode);
         } catch (err) {
           console.error("[PlateEditor] View switch error:", err);
-          setMarkdownWarning(
-            "Failed to convert content. Some formatting may be lost.",
-          );
-          // Still switch the view so the user isn't stuck
-          setViewMode(newMode);
+
+          if (newMode === "formatted") {
+            const message =
+              err instanceof Error
+                ? err.message
+                : "Failed to convert markdown back to formatted mode.";
+
+            setMarkdownWarning(message);
+            publishMarkdownFallback(markdownContent, message);
+            announce("Markdown contains errors. Fix them before leaving source view.");
+          } else {
+            setMarkdownWarning(
+              "Failed to convert content. Keeping the latest markdown source.",
+            );
+            setMarkdownContent(lastValidMarkdownRef.current || markdownContent);
+            setViewMode("markdown");
+          }
         } finally {
           // End transition after content settles
           setTimeout(() => setIsTransitioning(false), transitionMs);
@@ -1045,6 +1190,8 @@ export function PlateEditor({
       isTransitioning,
       editor,
       markdownContent,
+      publishMarkdownFallback,
+      publishParsedState,
       triggerAnalysis,
       announce,
       validateMarkdown,
@@ -1067,15 +1214,18 @@ export function PlateEditor({
           const mdContent = editor.api.markdown.serialize({
             value: slateValue,
           });
-          const stats = analyzeContent(slateValue, focusKeyword, mdContent);
-          setChapters(extractChapters(slateValue));
-          onContentChange?.(stats);
-        } catch {
-          // ignore parse errors during typing
+          publishParsedState(slateValue, mdContent);
+        } catch (error) {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Markdown syntax is currently invalid.";
+
+          publishMarkdownFallback(md, validateMarkdown(md) ?? message);
         }
       }, 500);
     },
-    [editor, focusKeyword, onContentChange, validateMarkdown],
+    [editor, publishMarkdownFallback, publishParsedState, validateMarkdown],
   );
 
   // --- Keyboard shortcut: Ctrl+Shift+M ---
@@ -1173,7 +1323,7 @@ export function PlateEditor({
       />
 
       {/* Main Editor Area */}
-      <div className="flex-1 min-w-0 flex flex-col h-full bg-content1 relative">
+      <div className="flex-1 min-w-0 min-h-0 flex flex-col h-full bg-content1 relative">
         <Plate
           editor={editor}
           onChange={() => {
@@ -1205,20 +1355,20 @@ export function PlateEditor({
           {viewMode === "formatted" && (
             <div
               className={cn(
-                "flex-1 flex flex-col transition-opacity duration-200",
+                "flex-1 min-h-0 flex flex-col transition-opacity duration-200",
                 isTransitioning ? "opacity-0" : "opacity-100",
               )}
             >
-              <div className="flex-1 overflow-y-auto bg-content1">
+              <div className="flex-1 min-h-0 overflow-y-auto bg-content1">
                 <div
                   className={cn(
-                    "max-w-3xl mx-auto px-6 sm:px-8 py-8 min-h-full transition-all duration-200 slate-editor bg-content1",
+                    "max-w-3xl mx-auto px-6 sm:px-8 py-8 transition-all duration-200 slate-editor bg-content1",
                     highlightedSection === "content" &&
                       "ring-2 ring-primary/30",
                   )}
                 >
                   <PlateContent
-                    className="outline-none h-full text-foreground bg-content1 [&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:opacity-50"
+                    className="outline-none min-h-[200px] text-foreground bg-content1 [&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:opacity-50"
                     placeholder="Start writing your article content..."
                     renderElement={({ attributes, children, element }) => {
                       if (!element.type || element.type === "p") {
@@ -1268,7 +1418,7 @@ export function PlateEditor({
           {viewMode === "markdown" && (
             <div
               className={cn(
-                "flex-1 flex flex-col transition-opacity duration-200",
+                "flex-1 min-h-0 flex flex-col transition-opacity duration-200",
                 isTransitioning ? "opacity-0" : "opacity-100",
               )}
             >

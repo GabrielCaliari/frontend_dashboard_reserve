@@ -57,7 +57,6 @@ export default function CollectionLeadsPage({
   params: Promise<{ collectionId: string }>;
 }) {
   const { collectionId } = use(params);
-  const collectionIdNum = Number(collectionId);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -68,10 +67,10 @@ export default function CollectionLeadsPage({
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
 
-  const { data: collectionData } = useGetCollection({ id: collectionIdNum });
+  const { data: collectionData } = useGetCollection({ id: collectionId });
   const { data: collectionsData } = useListCollections({ limit: 100 });
   const { data, isLoading, refetch } = useGetCollectionLeads({
-    collectionId: collectionIdNum,
+    collectionId: collectionId,
     page,
     limit,
   });
@@ -293,7 +292,7 @@ export default function CollectionLeadsPage({
       <CreateLeadDialog
         open={showCreate}
         onClose={() => setShowCreate(false)}
-        collectionId={collectionIdNum}
+        collectionId={collectionId}
       />
     </LayoutScopeRoot>
   );

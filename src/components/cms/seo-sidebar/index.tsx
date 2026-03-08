@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Avatar, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import { TooltipProvider } from "@/src/components/ui/tooltip";
 import {
   Accordion,
@@ -11,8 +12,9 @@ import {
 import { ScoreCard } from "./score-card";
 import { SectionBadge } from "./section-badge";
 import { SeoAnalysisItem } from "./seo-analysis-item";
-import { Link2, Plus, ExternalLink, Type, BarChart3 } from "lucide-react";
+import { Link2, Plus, ExternalLink, Type, BarChart3, FileText, User } from "lucide-react";
 import type { ContentStats } from "@/src/types/cms";
+import type { Author } from "@/src/common/@types/@cms-author";
 
 const POWER_WORDS = [
   "ultimate",
@@ -60,6 +62,19 @@ interface SeoSidebarProps {
   contentStats?: ContentStats;
   focusKeyword?: string;
   onFocusKeywordChange?: (keyword: string) => void;
+  metaTitle?: string;
+  onMetaTitleChange?: (title: string) => void;
+  metaDescription?: string;
+  onMetaDescriptionChange?: (description: string) => void;
+  displayTitle?: string;
+  onDisplayTitleChange?: (title: string) => void;
+  slug?: string;
+  onSlugChange?: (slug: string) => void;
+  selectedAuthorId?: string;
+  onAuthorChange?: (authorId: string) => void;
+  authors?: Author[];
+  isLoadingAuthors?: boolean;
+  isDisabled?: boolean;
 }
 
 export function SeoSidebar({
@@ -67,10 +82,55 @@ export function SeoSidebar({
   contentStats,
   focusKeyword = "",
   onFocusKeywordChange,
+  metaTitle,
+  onMetaTitleChange,
+  metaDescription,
+  onMetaDescriptionChange,
+  displayTitle,
+  onDisplayTitleChange,
+  slug,
+  onSlugChange,
+  selectedAuthorId,
+  onAuthorChange,
+  authors,
+  isLoadingAuthors,
+  isDisabled,
 }: SeoSidebarProps) {
-  const [urlSlug, setUrlSlug] = useState("");
-  const [seoTitle, setSeoTitle] = useState("");
-  const [metaDesc, setMetaDesc] = useState("");
+  const [localUrlSlug, setLocalUrlSlug] = useState("");
+  const [localSeoTitle, setLocalSeoTitle] = useState("");
+  const [localMetaDesc, setLocalMetaDesc] = useState("");
+
+  // Use parent-controlled metaTitle if provided, otherwise local state
+  const seoTitle = metaTitle !== undefined ? metaTitle : localSeoTitle;
+  const setSeoTitle = (value: string) => {
+    if (onMetaTitleChange) {
+      onMetaTitleChange(value);
+    } else {
+      setLocalSeoTitle(value);
+    }
+  };
+
+  // Use parent-controlled slug if provided, otherwise local state
+  const urlSlug = slug !== undefined ? slug : localUrlSlug;
+  const setUrlSlug = (value: string) => {
+    if (onSlugChange) {
+      onSlugChange(value);
+    } else {
+      setLocalUrlSlug(value);
+    }
+  };
+
+  // Use parent-controlled metaDescription if provided, otherwise local state
+  const metaDesc = metaDescription !== undefined ? metaDescription : localMetaDesc;
+  const setMetaDesc = (value: string) => {
+    if (onMetaDescriptionChange) {
+      onMetaDescriptionChange(value);
+    } else {
+      setLocalMetaDesc(value);
+    }
+  };
+
+  const authorOptions = authors ?? [];
 
   // Check if we have any content
   const hasContent = (contentStats?.wordCount ?? 0) > 0;
@@ -210,6 +270,144 @@ export function SeoSidebar({
           />
         </div>
 
+        <div className="shrink-0 p-3 space-y-2.5 border-b border-border bg-content1/70">
+          <Input
+            label="Display Title"
+            placeholder="Enter article title..."
+            value={displayTitle ?? ""}
+            onChange={(e) => onDisplayTitleChange?.(e.target.value)}
+            isDisabled={isDisabled}
+            maxLength={255}
+            variant="bordered"
+            size="sm"
+            startContent={<FileText className="w-4 h-4 text-default-400" />}
+            classNames={{
+              input: "font-semibold",
+              inputWrapper:
+                "border-border bg-default-50/70 data-[hover=true]:border-primary/50",
+              label: "text-muted-foreground",
+            }}
+            description={`${(displayTitle ?? "").length}/255`}
+          />
+
+          <Select
+            label="Author"
+            placeholder="Select an author"
+            selectedKeys={selectedAuthorId ? [selectedAuthorId] : []}
+            onSelectionChange={(keys) => {
+              const selected = Array.from(keys)[0]?.toString() ?? "";
+              onAuthorChange?.(selected);
+            }}
+            isDisabled={isDisabled || isLoadingAuthors}
+            isLoading={isLoadingAuthors}
+            variant="bordered"
+            size="sm"
+            startContent={<User className="w-4 h-4 text-default-400" />}
+            classNames={{
+              trigger:
+                "border-border bg-default-50/70 data-[hover=true]:border-primary/50",
+              value: "text-foreground",
+              label: "text-muted-foreground",
+              popoverContent: "bg-content1 border border-border",
+            }}
+            renderValue={(items) =>
+              items.map((item) => {
+                const author = authorOptions.find((entry) => entry.id === item.key);
+
+                if (!author) {
+                  return <span key={item.key}>{item.textValue}</span>;
+                }
+
+                return (
+                  <div key={author.id} className="flex items-center gap-2">
+                    <Avatar
+                      name={`${author.firstName} ${author.lastName}`}
+                      className="h-6 w-6 text-[10px]"
+                    />
+                    <span>{author.firstName} {author.lastName}</span>
+                  </div>
+                );
+              })
+            }
+          >
+            {authorOptions.map((author) => (
+              <SelectItem
+                key={author.id}
+                textValue={`${author.firstName} ${author.lastName}`}
+              >
+                <div className="flex items-center gap-2">
+                  <Avatar
+                    name={`${author.firstName} ${author.lastName}`}
+                    className="h-7 w-7 text-xs"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm text-foreground">
+                      {author.firstName} {author.lastName}
+                    </span>
+                    <span className="text-xs text-default-500">
+                      {author.biography?.trim() || "Author profile"}
+                    </span>
+                  </div>
+                </div>
+              </SelectItem>
+            ))}
+          </Select>
+
+          <Input
+            label="SEO Title"
+            placeholder="SEO-optimized title..."
+            value={seoTitle}
+            onChange={(e) => setSeoTitle(e.target.value)}
+            isDisabled={isDisabled}
+            maxLength={60}
+            variant="bordered"
+            size="sm"
+            startContent={<Type className="w-4 h-4 text-default-400" />}
+            classNames={{
+              inputWrapper:
+                "border-border bg-default-50/70 data-[hover=true]:border-primary/50",
+              label: "text-muted-foreground",
+            }}
+            description={`${titleLength}/60${titleLength > 60 ? " - too long" : titleLength > 0 && titleLength < 30 ? " - too short" : ""}`}
+          />
+
+          <Textarea
+            label="Meta Description"
+            placeholder="Write a compelling meta description..."
+            value={metaDesc}
+            onChange={(e) => setMetaDesc(e.target.value)}
+            isDisabled={isDisabled}
+            minRows={3}
+            maxRows={5}
+            variant="bordered"
+            size="sm"
+            classNames={{
+              inputWrapper:
+                "border-border bg-default-50/70 data-[hover=true]:border-primary/50",
+              label: "text-muted-foreground",
+            }}
+            description={`${metaDesc.length}/160${metaDesc.length > 160 ? " - too long" : ""}`}
+          />
+
+          <Input
+            label="URL Slug"
+            placeholder="article-url-slug"
+            value={urlSlug}
+            onChange={(e) => setUrlSlug(e.target.value)}
+            isDisabled={isDisabled}
+            maxLength={255}
+            variant="bordered"
+            size="sm"
+            startContent={<Link2 className="w-4 h-4 text-default-400" />}
+            classNames={{
+              inputWrapper:
+                "border-border bg-default-50/70 data-[hover=true]:border-primary/50",
+              label: "text-muted-foreground",
+            }}
+            description={`${urlSlug.length} characters${urlTooLong ? " - aim for under 75" : ""}`}
+          />
+        </div>
+
         {/* Empty State */}
         {isEmpty && (
           <div className="flex-1 flex items-center justify-center p-8">
@@ -257,71 +455,6 @@ export function SeoSidebar({
                   density
                 </span>
               </div>
-            </div>
-
-            {/* SEO Title input section */}
-            <div className="p-3 bg-default-100 border border-border rounded-lg">
-              <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
-                <Type className="h-3 w-3" />
-                SEO Title (H1)
-              </label>
-              <input
-                type="text"
-                value={seoTitle}
-                onChange={(e) => setSeoTitle(e.target.value)}
-                className="w-full mt-2 px-2 py-1.5 text-sm bg-default-50 border border-border rounded text-foreground outline-none focus:border-primary/50 transition-colors font-medium"
-              />
-              <p
-                className={`mt-1.5 text-xs ${titleLength > 60 ? "text-yellow-500" : titleLength < 30 ? "text-yellow-500" : "text-muted-foreground"}`}
-              >
-                {titleLength}/60 characters
-                {titleLength > 60 && " - too long"}
-                {titleLength < 30 && titleLength > 0 && " - too short"}
-              </p>
-            </div>
-
-            {/* Meta Description */}
-            <div className="p-3 bg-default-100 border border-border rounded-lg">
-              <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
-                Meta Description
-              </label>
-              <textarea
-                value={metaDesc}
-                onChange={(e) => setMetaDesc(e.target.value)}
-                rows={3}
-                className="w-full mt-2 px-2 py-1.5 text-xs bg-default-50 border border-border rounded text-foreground outline-none focus:border-primary/50 transition-colors resize-none leading-relaxed"
-              />
-              <p
-                className={`mt-1.5 text-xs ${metaDesc.length > 160 ? "text-yellow-500" : metaDesc.length < 120 ? "text-muted-foreground" : "text-green-500"}`}
-              >
-                {metaDesc.length}/160 characters
-                {metaDesc.length > 160 && " - too long"}
-              </p>
-            </div>
-
-            {/* URL Slug input section */}
-            <div className="p-3 bg-default-100 border border-border rounded-lg">
-              <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
-                <Link2 className="h-3 w-3" />
-                URL Slug
-              </label>
-              <div className="mt-2 flex items-center gap-1">
-                <span className="text-xs text-muted-foreground truncate">
-                  yourdomain.com/blog/
-                </span>
-              </div>
-              <input
-                type="text"
-                value={urlSlug}
-                onChange={(e) => setUrlSlug(e.target.value)}
-                className="w-full mt-1 px-2 py-1.5 text-xs bg-default-50 border border-border rounded text-foreground outline-none focus:border-primary/50 transition-colors"
-              />
-              <p
-                className={`mt-1.5 text-xs ${urlTooLong ? "text-red-500" : "text-muted-foreground"}`}
-              >
-                {urlSlug.length} characters
-                {urlTooLong ? " - aim for under 75" : ""}
-              </p>
             </div>
 
             {/* Internal Links manager section */}

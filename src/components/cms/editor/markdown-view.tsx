@@ -199,6 +199,8 @@ export function MarkdownView({
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const highlightRef = React.useRef<HTMLDivElement>(null);
   const [copied, setCopied] = React.useState(false);
+  const editorTextClasses =
+    "font-mono text-sm leading-[1.7rem] whitespace-pre [tab-size:2]";
 
   // Sync scrolling between textarea and highlight overlay
   const handleScroll = React.useCallback(() => {
@@ -338,7 +340,10 @@ export function MarkdownView({
         {/* Syntax-highlighted overlay */}
         <div
           ref={highlightRef}
-          className="absolute inset-0 pl-14 pr-4 py-4 overflow-hidden pointer-events-none select-none font-mono text-sm leading-[1.7rem] whitespace-pre-wrap break-words"
+          className={cn(
+            "absolute inset-0 pl-14 pr-4 py-4 overflow-hidden pointer-events-none select-none min-w-max",
+            editorTextClasses,
+          )}
           aria-hidden="true"
         >
           {highlightedLines.map((node, i) => (
@@ -357,9 +362,10 @@ export function MarkdownView({
           onKeyDown={handleKeyDown}
           readOnly={readOnly}
           spellCheck={false}
+          wrap="off"
           className={cn(
-            "absolute inset-0 w-full h-full pl-14 pr-4 py-4 resize-none bg-transparent",
-            "font-mono text-sm leading-[1.7rem] whitespace-pre-wrap break-words",
+            "absolute inset-0 w-full h-full min-w-max pl-14 pr-4 py-4 resize-none overflow-auto bg-transparent",
+            editorTextClasses,
             "text-transparent caret-foreground",
             "focus:outline-none focus:ring-0",
             "selection:bg-primary/20",

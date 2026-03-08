@@ -3,14 +3,13 @@ import { deleteArticle } from '@/src/common/services/cms-article-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 import { ARTICLE_QUERY_KEYS } from './useArticles';
 
-export function useDeleteArticle(blogId: number) {
+export function useDeleteArticle() {
   const queryClient = useQueryClient();
-  const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (articleId: number) => deleteArticle(articleId),
+    mutationFn: (articleId: string) => deleteArticle(articleId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ARTICLE_QUERY_KEYS.all(tenantId, blogId) });
+      queryClient.invalidateQueries({ queryKey: ['cms', 'articles'] });
     },
   });
 }

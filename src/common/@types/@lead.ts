@@ -31,8 +31,8 @@ export interface Lead {
   description?: string;
   status: ELeadStatus;
   data?: Record<string, any>;
-  collection_id?: number;
-  tenant_id?: number;
+  collection_id?: string;
+  tenant_id?: string;
   ip_address?: string;
   user_agent?: string;
   country?: string;
@@ -58,7 +58,7 @@ export interface CreateLeadDto {
   origin_font?: string;
   description?: string;
   data?: Record<string, any>;
-  collection_id?: number;
+  collection_id?: string;
 }
 
 export interface UpdateLeadStatusDto {
@@ -103,12 +103,12 @@ export interface LeadDetailResponse {
  */
 
 export interface LeadCollection {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   source: string;
   active: boolean;
-  tenant_id?: number;
+  tenant_id?: string;
   secret_key?: string;
   created_at: string;
   updated_at: string;

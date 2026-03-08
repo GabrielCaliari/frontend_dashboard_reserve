@@ -4,7 +4,7 @@ import type { UpdateCollectionDto, CollectionDetailResponse } from '@/src/common
 import { toast } from 'react-hot-toast';
 
 interface UpdateCollectionParams {
-  id: number;
+  id: string;
   data: UpdateCollectionDto;
 }
 

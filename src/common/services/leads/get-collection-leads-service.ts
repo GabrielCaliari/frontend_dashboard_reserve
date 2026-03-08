@@ -7,7 +7,7 @@ interface GetCollectionLeadsParams {
 }
 
 export async function getCollectionLeadsService(
-  collectionId: number,
+  collectionId: string,
   params: GetCollectionLeadsParams = {}
 ): Promise<LeadListResponse> {
   const { page = 1, limit = 30 } = params;

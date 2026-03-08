@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Smartphone, Monitor, HelpCircle } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
@@ -16,8 +15,6 @@ interface ScoreCardProps {
   score: number;
   focusKeyword: string;
   onKeywordChange: (keyword: string) => void;
-  onPreviewMobile?: () => void;
-  onPreviewDesktop?: () => void;
 }
 
 function getScoreColor(score: number) {
@@ -42,13 +39,7 @@ export function ScoreCard({
   score,
   focusKeyword,
   onKeywordChange,
-  onPreviewMobile,
-  onPreviewDesktop,
 }: ScoreCardProps) {
-  const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">(
-    "desktop",
-  );
-
   const circumference = 2 * Math.PI * 28;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
@@ -107,57 +98,15 @@ export function ScoreCard({
             </div>
           </div>
 
-          {/* Preview Icons */}
-          <div className="flex items-center gap-0.5">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => {
-                    setPreviewMode("mobile");
-                    onPreviewMobile?.();
-                  }}
-                  className={cn(
-                    "p-1.5 rounded transition-colors",
-                    previewMode === "mobile"
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
-                  )}
-                >
-                  <Smartphone className="h-3.5 w-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Preview Mobile Snippet</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => {
-                    setPreviewMode("desktop");
-                    onPreviewDesktop?.();
-                  }}
-                  className={cn(
-                    "p-1.5 rounded transition-colors",
-                    previewMode === "desktop"
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
-                  )}
-                >
-                  <Monitor className="h-3.5 w-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Preview Desktop Snippet</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
-                  <HelpCircle className="h-3.5 w-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>SEO Analysis Help</TooltipContent>
-            </Tooltip>
-          </div>
+          {/* Help */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
+                <HelpCircle className="h-3.5 w-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>SEO Analysis Help</TooltipContent>
+          </Tooltip>
         </div>
 
         {/* Focus Keyword Input */}

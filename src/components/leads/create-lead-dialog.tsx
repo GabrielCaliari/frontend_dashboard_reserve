@@ -21,7 +21,7 @@ const ORIGIN_OPTIONS = [
 interface CreateLeadDialogProps {
   open: boolean;
   onClose: () => void;
-  collectionId?: number;
+  collectionId?: string;
 }
 
 type FormValues = {

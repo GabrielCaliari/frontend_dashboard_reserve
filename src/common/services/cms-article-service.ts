@@ -17,22 +17,16 @@ import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handl
  * @returns Promise<Article[]>
  */
 export const fetchArticles = async (
-  blogId: string | number,
+  blogId?: string | number,
   status?: ArticleStatus,
   page: number = 1,
   limit: number = 30
 ): Promise<Article[]> => {
   try {
     return await withRetry(async () => {
-      const params: Record<string, any> = { 
-        blogId,
-        page,
-        limit
-      };
-      
-      if (status) {
-        params.status = status;
-      }
+      const params: Record<string, any> = { page, limit };
+      if (blogId) params.blogId = blogId;
+      if (status) params.status = status;
       
       // Use authenticated endpoint: /api/cms/articles?blogId={blogId}
       const response = await cmsApiClient.get('cms/articles', { params });
@@ -60,7 +54,7 @@ export const fetchArticles = async (
  * @returns Promise<Article>
  */
 export const fetchArticleById = async (
-  articleId: number
+  articleId: string
 ): Promise<Article> => {
   try {
     return await withRetry(async () => {
@@ -102,7 +96,7 @@ export const createArticle = async (
  * @returns Promise<Article>
  */
 export const updateArticle = async (
-  articleId: number,
+  articleId: string,
   data: UpdateArticleDto
 ): Promise<Article> => {
   try {
@@ -120,7 +114,7 @@ export const updateArticle = async (
  * @returns Promise<void>
  */
 export const deleteArticle = async (
-  articleId: number
+  articleId: string
 ): Promise<void> => {
   try {
     // Use authenticated endpoint: DELETE /api/cms/articles/{id}
@@ -136,7 +130,7 @@ export const deleteArticle = async (
  * @returns Promise<Article>
  */
 export const publishArticle = async (
-  articleId: number
+  articleId: string
 ): Promise<Article> => {
   try {
     // Use authenticated endpoint: POST /api/cms/articles/{id}/publish

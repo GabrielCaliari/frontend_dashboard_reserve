@@ -33,10 +33,10 @@ export const fetchBlogs = async (): Promise<Blog[]> => {
  */
 export const fetchBlogById = async (blogId: number): Promise<Blog> => {
   try {
-    return await withRetry(async () => {
-      const response = await cmsApiClient.get(`cms/blogs/${blogId}`);
-      return response.data;
-    });
+    const blogs = await fetchBlogs();
+    const blog = blogs.find(b => b.id === blogId);
+    if (!blog) throw new Error(`Blog not found: ${blogId}`);
+    return blog;
   } catch (error) {
     throw transformCMSError(error);
   }

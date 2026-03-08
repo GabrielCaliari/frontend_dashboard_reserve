@@ -9,7 +9,7 @@ interface GetCollectionLeadsParams {
 }
 
 export async function getCollectionLeadsAction(
-  collectionId: number,
+  collectionId: string,
   params: GetCollectionLeadsParams = {}
 ): Promise<LeadListResponse> {
   try {

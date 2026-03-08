@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 export function useDeleteCollection() {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, number>({
+  return useMutation<void, Error, string>({
     mutationFn: deleteCollectionAction,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lead-collections', 'list'] });

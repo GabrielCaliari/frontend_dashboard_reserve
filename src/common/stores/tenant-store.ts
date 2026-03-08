@@ -8,31 +8,47 @@ interface TenantState {
   clearSelectedTenant: () => void;
 }
 
+const COOKIE_MAX_AGE = 86400; // 24h
+
+/**
+ * Storage adapter que persiste o state do Zustand diretamente em cookie.
+ * Unica fonte de verdade -- client e server leem o mesmo cookie.
+ */
+const cookieStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> = {
+  getItem(name) {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith(`${name}=`));
+    if (!match) return null;
+    try {
+      return decodeURIComponent(match.split('=').slice(1).join('='));
+    } catch {
+      return null;
+    }
+  },
+  setItem(name, value) {
+    if (typeof document === 'undefined') return;
+    const isSecure = window.location.protocol === 'https:';
+    const flags = `path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
+    document.cookie = `${name}=${encodeURIComponent(value)}; ${flags}`;
+  },
+  removeItem(name) {
+    if (typeof document === 'undefined') return;
+    document.cookie = `${name}=; path=/; max-age=0`;
+  },
+};
+
 export const useTenantStore = create<TenantState>()(
   persist(
     (set) => ({
       selectedTenant: null,
-      setSelectedTenant: (tenant) => {
-        set({ selectedTenant: tenant });
-        // Sincroniza com cookie para que Server Actions tenham acesso ao tenant
-        if (typeof document !== 'undefined') {
-          if (tenant?.id) {
-            document.cookie = `x-tenant-id=${tenant.id}; path=/; max-age=86400; SameSite=Lax`;
-          } else {
-            document.cookie = 'x-tenant-id=; path=/; max-age=0';
-          }
-        }
-      },
-      clearSelectedTenant: () => {
-        set({ selectedTenant: null });
-        if (typeof document !== 'undefined') {
-          document.cookie = 'x-tenant-id=; path=/; max-age=0';
-        }
-      },
+      setSelectedTenant: (tenant) => set({ selectedTenant: tenant }),
+      clearSelectedTenant: () => set({ selectedTenant: null }),
     }),
     {
       name: 'tenant-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => cookieStorage),
     }
   )
 );

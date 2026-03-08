@@ -13,13 +13,13 @@ export default function ArticlePreviewPage() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const articleId = Number(params.id);
+  const articleId = params.id as string;
   const blogId = searchParams.get("blogId");
   const hasSelectedTenant = useHasSelectedTenant();
 
   const { data: article, isLoading } = useGetArticle(
-    blogId ? parseInt(blogId) : 0,
-    articleId
+    articleId,
+    blogId ?? undefined,
   );
 
   const handleEdit = () => {
