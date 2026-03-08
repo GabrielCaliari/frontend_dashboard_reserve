@@ -49,6 +49,8 @@ export {
   useReorderImages,
 } from './useImageMutations';
 
+export { useBlogAssets, useUploadBlogAsset, blogAssetKeys } from './use-blog-assets';
+
 // Collection hooks (Media Storage)
 export {
   useCollections,

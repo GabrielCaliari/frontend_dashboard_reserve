@@ -1,10 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchAssets,
+  fetchCollectionAssets,
   fetchAssetById,
   uploadAsset,
   updateAsset,
   deleteAsset,
+  deleteCollectionAsset,
   type PaginationParams,
   type AssetFilters,
   type UploadAssetDto,
@@ -23,21 +25,42 @@ export const assetKeys = {
   lists: (tenantId: string | null) => [...assetKeys.all(tenantId), 'list'] as const,
   list: (tenantId: string | null, filters?: AssetFilters, params?: PaginationParams) =>
     [...assetKeys.lists(tenantId), filters, params] as const,
+  collection: (tenantId: string | null, collectionId: CmsMediaId, params?: PaginationParams) =>
+    [...assetKeys.lists(tenantId), 'collection', collectionId, params] as const,
   details: (tenantId: string | null) => [...assetKeys.all(tenantId), 'detail'] as const,
   detail: (tenantId: string | null, id: CmsMediaId) =>
     [...assetKeys.details(tenantId), id] as const,
 };
 
+interface UseAssetsOptions {
+  enabled?: boolean;
+}
+
 /**
  * Hook to fetch paginated list of assets with optional filters
  */
-export function useAssets(filters?: AssetFilters, params?: PaginationParams) {
+export function useAssets(
+  filters?: AssetFilters,
+  params?: PaginationParams,
+  options?: UseAssetsOptions,
+) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
     queryKey: assetKeys.list(tenantId, filters, params),
     queryFn: () => fetchAssets(filters, params),
-    enabled: !!tenantId,
+    enabled: !!tenantId && (options?.enabled ?? true),
+    staleTime: 30 * 1000,
+  });
+}
+
+export function useCollectionAssets(collectionId: CmsMediaId, params?: PaginationParams) {
+  const tenantId = useSelectedTenantId();
+
+  return useQuery({
+    queryKey: assetKeys.collection(tenantId, collectionId, params),
+    queryFn: () => fetchCollectionAssets(collectionId, params),
+    enabled: !!tenantId && !!collectionId,
     staleTime: 30 * 1000,
   });
 }
@@ -100,7 +123,7 @@ export function useUpdateAsset() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateAssetDto }) =>
+    mutationFn: ({ id, data }: { id: CmsMediaId; data: UpdateAssetDto }) =>
       updateAsset(id, data),
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({
@@ -131,6 +154,60 @@ export function useUpdateAsset() {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: assetKeys.detail(tenantId, variables.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: assetKeys.lists(tenantId),
+      });
+    },
+  });
+}
+
+export function useDeleteCollectionAsset(collectionId: CmsMediaId) {
+  const queryClient = useQueryClient();
+  const tenantId = useSelectedTenantId();
+
+  return useMutation({
+    mutationFn: (assetId: CmsMediaId) => deleteCollectionAsset(collectionId, assetId),
+    onMutate: async (assetId) => {
+      await queryClient.cancelQueries({
+        queryKey: assetKeys.collection(tenantId, collectionId),
+      });
+
+      const previousCollectionQueries = queryClient.getQueriesData({
+        queryKey: assetKeys.collection(tenantId, collectionId),
+      });
+
+      queryClient.setQueriesData(
+        { queryKey: assetKeys.collection(tenantId, collectionId) },
+        (old: PaginatedResponse<MediaAsset> | undefined) => {
+          if (!old?.data) return old;
+
+          return {
+            ...old,
+            data: old.data.filter((asset) => asset.id !== assetId),
+            meta: {
+              ...old.meta,
+              total: Math.max(old.meta.total - 1, 0),
+            },
+          };
+        }
+      );
+
+      return { previousCollectionQueries };
+    },
+    onError: (_error, _assetId, context) => {
+      if (context?.previousCollectionQueries) {
+        context.previousCollectionQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSuccess: (_data, assetId) => {
+      queryClient.removeQueries({
+        queryKey: assetKeys.detail(tenantId, assetId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: assetKeys.collection(tenantId, collectionId),
       });
       queryClient.invalidateQueries({
         queryKey: assetKeys.lists(tenantId),

@@ -21,7 +21,13 @@ const api = axios.create({
 
 // Request interceptor - Adiciona headers de autenticação e tenant (client + server)
 api.interceptors.request.use(
-  (config) => injectAuthHeaders(config),
+  (config) => {
+    if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    }
+
+    return injectAuthHeaders(config);
+  },
   (error) => Promise.reject(error),
 );
 
@@ -51,7 +57,13 @@ const cmsApi = axios.create({
 
 // Request interceptor for CMS API - Same auth logic via shared helper
 cmsApi.interceptors.request.use(
-  (config) => injectAuthHeaders(config),
+  (config) => {
+    if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    }
+
+    return injectAuthHeaders(config);
+  },
   (error) => Promise.reject(error),
 );
 

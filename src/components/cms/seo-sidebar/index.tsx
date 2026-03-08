@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Avatar, Input, Select, SelectItem, Textarea } from "@heroui/react";
+import { Avatar, Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import { TooltipProvider } from "@/src/components/ui/tooltip";
 import {
   Accordion,
@@ -12,9 +12,11 @@ import {
 import { ScoreCard } from "./score-card";
 import { SectionBadge } from "./section-badge";
 import { SeoAnalysisItem } from "./seo-analysis-item";
-import { Link2, Plus, ExternalLink, Type, BarChart3, FileText, User } from "lucide-react";
+import { Link2, Plus, ExternalLink, Type, BarChart3, FileText, User, Image as ImageIcon, Trash2 } from "lucide-react";
 import type { ContentStats } from "@/src/types/cms";
 import type { Author } from "@/src/common/@types/@cms-author";
+import { useAsset } from "@/src/common/hooks/cms/use-assets";
+import { BlogImageInsertDialog } from "@/src/components/cms/editor/blog-image-insert-dialog";
 
 const POWER_WORDS = [
   "ultimate",
@@ -70,8 +72,11 @@ interface SeoSidebarProps {
   onDisplayTitleChange?: (title: string) => void;
   slug?: string;
   onSlugChange?: (slug: string) => void;
+  blogId?: string | number;
   selectedAuthorId?: string;
   onAuthorChange?: (authorId: string) => void;
+  coverImageId?: string;
+  onCoverImageChange?: (assetId: string) => void;
   authors?: Author[];
   isLoadingAuthors?: boolean;
   isDisabled?: boolean;
@@ -90,8 +95,11 @@ export function SeoSidebar({
   onDisplayTitleChange,
   slug,
   onSlugChange,
+  blogId,
   selectedAuthorId,
   onAuthorChange,
+  coverImageId,
+  onCoverImageChange,
   authors,
   isLoadingAuthors,
   isDisabled,
@@ -99,6 +107,7 @@ export function SeoSidebar({
   const [localUrlSlug, setLocalUrlSlug] = useState("");
   const [localSeoTitle, setLocalSeoTitle] = useState("");
   const [localMetaDesc, setLocalMetaDesc] = useState("");
+  const [coverPickerOpen, setCoverPickerOpen] = useState(false);
 
   // Use parent-controlled metaTitle if provided, otherwise local state
   const seoTitle = metaTitle !== undefined ? metaTitle : localSeoTitle;
@@ -131,6 +140,7 @@ export function SeoSidebar({
   };
 
   const authorOptions = authors ?? [];
+  const { data: coverAsset, isLoading: isLoadingCoverAsset } = useAsset(coverImageId ?? "");
 
   // Check if we have any content
   const hasContent = (contentStats?.wordCount ?? 0) > 0;
@@ -352,6 +362,63 @@ export function SeoSidebar({
               </SelectItem>
             ))}
           </Select>
+
+          <div className="rounded-lg border border-border bg-default-50/70 p-3 space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-sm font-medium text-foreground">Cover Image</div>
+                <div className="text-xs text-muted-foreground">
+                  Associates coverImageId on the article payload using the same blog collection.
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="flat"
+                  startContent={<ImageIcon className="h-4 w-4" />}
+                  onPress={() => setCoverPickerOpen(true)}
+                  isDisabled={isDisabled || !blogId}
+                >
+                  {coverImageId ? "Change" : "Select"}
+                </Button>
+                {coverImageId && (
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    color="danger"
+                    onPress={() => onCoverImageChange?.("")}
+                    isDisabled={isDisabled}
+                    aria-label="Remove cover image"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {coverAsset ? (
+              <div className="space-y-2">
+                <img
+                  src={coverAsset.url}
+                  alt={coverAsset.alt_text || coverAsset.filename}
+                  className="h-36 w-full rounded-md object-cover"
+                />
+                <div className="text-xs text-muted-foreground">
+                  <div className="font-medium text-foreground truncate">{coverAsset.filename}</div>
+                  <div>{coverAsset.id}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex h-28 items-center justify-center rounded-md border border-dashed border-border text-xs text-muted-foreground">
+                {isLoadingCoverAsset && coverImageId
+                  ? "Loading cover image..."
+                  : blogId
+                    ? "No cover image selected"
+                    : "Select a blog first to use the blog media library"}
+              </div>
+            )}
+          </div>
 
           <Input
             label="SEO Title"
@@ -834,6 +901,16 @@ export function SeoSidebar({
           </div>
         )}
       </div>
+
+      <BlogImageInsertDialog
+        open={coverPickerOpen}
+        onOpenChange={setCoverPickerOpen}
+        onSelectAsset={(asset) => onCoverImageChange?.(asset.id)}
+        blogId={blogId}
+        title="Select Cover Image"
+        insertLabel="Use as Cover"
+        allowExternalUrl={false}
+      />
     </TooltipProvider>
   );
 }

@@ -321,6 +321,23 @@ export const fetchAssets = async (
   }
 };
 
+export const fetchCollectionAssets = async (
+  collectionId: CmsMediaId,
+  params?: PaginationParams,
+): Promise<PaginatedResponse<MediaAsset>> => {
+  try {
+    return await withRetry(async () => {
+      const response = await cmsApiClient.get(`cms/collections/${collectionId}/assets`, {
+        params,
+      });
+
+      return normalizePaginatedResponse<MediaAsset>(response.data, params);
+    });
+  } catch (error) {
+    throw transformCMSError(error);
+  }
+};
+
 /**
  * Fetch a single asset by ID
  * @param id - Asset ID
@@ -361,9 +378,6 @@ export const uploadAsset = async (
     }
 
     const response = await cmsApiClient.post('cms/assets', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
       onUploadProgress: (progressEvent) => {
         if (onProgress && progressEvent.total) {
           const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -404,6 +418,17 @@ export const updateAsset = async (
 export const deleteAsset = async (id: CmsMediaId): Promise<void> => {
   try {
     await cmsApiClient.delete(`cms/assets/${id}`);
+  } catch (error) {
+    throw transformCMSError(error);
+  }
+};
+
+export const deleteCollectionAsset = async (
+  collectionId: CmsMediaId,
+  assetId: CmsMediaId,
+): Promise<void> => {
+  try {
+    await cmsApiClient.delete(`cms/collections/${collectionId}/assets/${assetId}`);
   } catch (error) {
     throw transformCMSError(error);
   }

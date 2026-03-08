@@ -25,7 +25,7 @@ import {
   ChevronUp,
   ExternalLink,
 } from "lucide-react";
-import { useUpdateAsset, useDeleteAsset } from "@/src/common/hooks/cms/use-assets";
+import { useUpdateAsset, useDeleteAsset, useDeleteCollectionAsset } from "@/src/common/hooks/cms/use-assets";
 import { formatFileSize } from "@/src/common/utils/format-file-size";
 import { toast } from "sonner";
 import type { CmsMediaId, MediaAsset } from "@/src/common/@types/@cms-media";
@@ -35,6 +35,7 @@ interface AssetDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onDeleted: (id: CmsMediaId) => void;
+  collectionId?: CmsMediaId;
 }
 
 function getFilePreviewIcon(mimeType: string) {
@@ -45,7 +46,7 @@ function getFilePreviewIcon(mimeType: string) {
   return <File className="w-16 h-16 text-gray-400" />;
 }
 
-export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerProps) {
+export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }: AssetDrawerProps) {
   const t = useTranslations("cms.media");
   const tCommon = useTranslations("common");
 
@@ -60,6 +61,7 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
 
   const updateMutation = useUpdateAsset();
   const deleteMutation = useDeleteAsset();
+  const deleteCollectionMutation = useDeleteCollectionAsset(collectionId ?? "");
 
   // Sync form state when asset changes
   useEffect(() => {
@@ -122,7 +124,11 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
   const handleDelete = useCallback(async () => {
     if (!asset) return;
     try {
-      await deleteMutation.mutateAsync(asset.id);
+      if (collectionId) {
+        await deleteCollectionMutation.mutateAsync(asset.id);
+      } else {
+        await deleteMutation.mutateAsync(asset.id);
+      }
       toast.success(t("deleteSuccess"));
       closeDelete();
       onClose();
@@ -130,7 +136,7 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
     } catch {
       toast.error(t("deleteError"));
     }
-  }, [asset, deleteMutation, closeDelete, onClose, onDeleted, t]);
+  }, [asset, collectionId, deleteCollectionMutation, deleteMutation, closeDelete, onClose, onDeleted, t]);
 
   if (!isOpen) return null;
 
@@ -395,8 +401,8 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted }: AssetDrawerPr
             <Button
               color="danger"
               onPress={handleDelete}
-              isLoading={deleteMutation.isPending}
-              startContent={!deleteMutation.isPending && <Trash2 className="w-4 h-4" />}
+              isLoading={deleteMutation.isPending || deleteCollectionMutation.isPending}
+              startContent={!(deleteMutation.isPending || deleteCollectionMutation.isPending) && <Trash2 className="w-4 h-4" />}
             >
               {tCommon("delete")}
             </Button>

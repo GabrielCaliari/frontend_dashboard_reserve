@@ -78,7 +78,7 @@ export const useUpdateBlog = () => {
   return useMutation<
     Blog,
     Error,
-    { blogId: number; data: UpdateBlogDto }
+    { blogId: string | number; data: UpdateBlogDto }
   >({
     mutationFn: ({ blogId, data }) => updateBlog(blogId, data),
     onSuccess: (updatedBlog, variables) => {

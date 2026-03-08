@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useCollection, useDeleteCollection } from "@/src/common/hooks/cms/use-collections";
-import { useAssets } from "@/src/common/hooks/cms/use-assets";
+import { useCollectionAssets } from "@/src/common/hooks/cms/use-assets";
 import { AssetGrid } from "@/src/components/cms/asset-grid";
 import { AssetDrawer } from "@/src/components/cms/asset-drawer";
 import { CollectionModal } from "@/src/components/cms/collection-modal";
@@ -80,10 +80,7 @@ export default function CollectionAssetBrowserPage() {
   const {
     data: assetsData,
     isLoading: assetsLoading,
-  } = useAssets(
-    { collection_id: collectionId },
-    { page, limit: 20 }
-  );
+  } = useCollectionAssets(collectionId, { page, limit: 20 });
 
   const deleteCollectionMutation = useDeleteCollection();
 
@@ -289,6 +286,7 @@ export default function CollectionAssetBrowserPage() {
         isOpen={drawerOpen}
         onClose={handleCloseDrawer}
         onDeleted={handleAssetDeleted}
+        collectionId={collectionId}
       />
 
       {/* Upload modal */}

@@ -10,6 +10,7 @@ export interface ArticleEditorValues {
   metaDescription: string;
   slug: string;
   selectedAuthorId: string;
+  coverImageId: string;
   content: string;
   focusKeyword: string;
 }
@@ -22,6 +23,7 @@ export interface ArticleEditorState extends ArticleEditorValues {
   setMetaDescription: (v: string) => void;
   setSlug: (v: string) => void;
   setSelectedAuthorId: (v: string) => void;
+  setCoverImageId: (v: string) => void;
   setContent: (v: string) => void;
   setFocusKeyword: (v: string) => void;
   setContentStats: (stats: ContentStats | undefined) => void;
@@ -36,6 +38,7 @@ export function useArticleEditorState(): ArticleEditorState {
   const [metaDescription, setMetaDescription] = useState("");
   const [slug, setSlug] = useState("");
   const [selectedAuthorId, setSelectedAuthorId] = useState("");
+  const [coverImageId, setCoverImageId] = useState("");
   const [content, setContent] = useState("");
   const [focusKeyword, setFocusKeyword] = useState("");
   const [contentStats, setContentStats] = useState<ContentStats | undefined>(undefined);
@@ -62,6 +65,7 @@ export function useArticleEditorState(): ArticleEditorState {
     if (values.metaDescription !== undefined) setMetaDescription(values.metaDescription);
     if (values.slug !== undefined) setSlug(values.slug);
     if (values.selectedAuthorId !== undefined) setSelectedAuthorId(values.selectedAuthorId);
+    if (values.coverImageId !== undefined) setCoverImageId(values.coverImageId);
     if (values.content !== undefined) setContent(values.content);
     if (values.focusKeyword !== undefined) setFocusKeyword(values.focusKeyword);
   }, []);
@@ -72,6 +76,7 @@ export function useArticleEditorState(): ArticleEditorState {
     metaDescription,
     slug,
     selectedAuthorId,
+    coverImageId,
     content,
     focusKeyword,
     contentStats,
@@ -81,6 +86,7 @@ export function useArticleEditorState(): ArticleEditorState {
     setMetaDescription,
     setSlug,
     setSelectedAuthorId,
+    setCoverImageId,
     setContent,
     setFocusKeyword,
     setContentStats,

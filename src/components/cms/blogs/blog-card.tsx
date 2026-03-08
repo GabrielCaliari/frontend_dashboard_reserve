@@ -6,6 +6,7 @@ import {
   CardBody,
   CardFooter,
   Button,
+  Chip,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
@@ -34,7 +35,12 @@ export default function BlogCard({
     <Card className="w-full">
       <CardHeader className="flex justify-between items-start">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold">{blog.name}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold">{blog.name}</h3>
+            <Chip size="sm" variant="flat" color={blog.active ? "success" : "default"}>
+              {blog.active ? 'Active' : 'Inactive'}
+            </Chip>
+          </div>
           <p className="text-sm text-default-500 mt-1">/{blog.slug}</p>
         </div>
         <Dropdown>

@@ -42,11 +42,7 @@ export const uploadImages = async (
     const response = await cmsApiClient.post(
       `cms/articles/${articleId}/images`,
       formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+      {}
     );
     
     if (Array.isArray(response.data)) {

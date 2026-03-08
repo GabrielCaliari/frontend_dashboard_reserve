@@ -19,15 +19,16 @@ export default function ArticleEditorPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const articleId = params.id as string;
-  const blogId = searchParams.get("blogId");
+  const routeBlogId = searchParams.get("blogId");
   const hasSelectedTenant = useHasSelectedTenant();
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
-  const { data: article, isLoading } = useGetArticle(articleId, blogId ?? undefined);
+  const { data: article, isLoading } = useGetArticle(articleId, routeBlogId ?? undefined);
   const { data: authors, isLoading: isLoadingAuthors } = useGetAuthors();
-  const { mutate: updateArticle, isPending } = useUpdateArticle(blogId || "");
+  const effectiveBlogId = routeBlogId ?? article?.blog_id ?? "";
+  const { mutate: updateArticle, isPending } = useUpdateArticle(effectiveBlogId);
 
   const editorState = useArticleEditorState();
 
@@ -40,6 +41,7 @@ export default function ArticleEditorPage() {
         metaDescription: article.metaDescription || "",
         slug: article.slug || "",
         selectedAuthorId: article.authorId || "",
+        coverImageId: article.coverImageId || "",
         content: article.content || "",
         focusKeyword: article.focusKeyword || "",
       });
@@ -57,6 +59,7 @@ export default function ArticleEditorPage() {
       editorState.metaDescription !== (article.metaDescription || "") ||
       editorState.slug !== (article.slug || "") ||
       editorState.selectedAuthorId !== (article.authorId || "") ||
+      editorState.coverImageId !== (article.coverImageId || "") ||
       editorState.content !== (article.content || "");
     setHasUnsavedChanges(isDirty);
   }, [
@@ -65,6 +68,7 @@ export default function ArticleEditorPage() {
     editorState.metaDescription,
     editorState.slug,
     editorState.selectedAuthorId,
+    editorState.coverImageId,
     editorState.content,
     article,
   ]);
@@ -99,6 +103,8 @@ export default function ArticleEditorPage() {
         metaDescription: editorState.metaDescription.trim() || undefined,
         slug: editorState.slug.trim(),
         authorId: editorState.selectedAuthorId,
+        blogId: effectiveBlogId || undefined,
+        coverImageId: editorState.coverImageId || undefined,
         content: editorState.content || "",
         focusKeyword: editorState.focusKeyword || undefined,
       },
@@ -126,22 +132,22 @@ export default function ArticleEditorPage() {
           label: "Save & Preview",
           onClick: () => {
             handleSave();
-            router.push(`/dashboard/cms/articles/${articleId}/preview?blogId=${blogId}`);
+            router.push(`/dashboard/cms/articles/${articleId}/preview?blogId=${effectiveBlogId}`);
           },
         },
       });
       return;
     }
-    router.push(`/dashboard/cms/articles/${articleId}/preview?blogId=${blogId}`);
+    router.push(`/dashboard/cms/articles/${articleId}/preview?blogId=${effectiveBlogId}`);
   };
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
       if (confirm("You have unsaved changes. Are you sure you want to leave?")) {
-        router.push(`/dashboard/cms/articles?blogId=${blogId}`);
+        router.push(`/dashboard/cms/articles?blogId=${effectiveBlogId}`);
       }
     } else {
-      router.push(`/dashboard/cms/articles?blogId=${blogId}`);
+      router.push(`/dashboard/cms/articles?blogId=${effectiveBlogId}`);
     }
   };
 
@@ -157,13 +163,13 @@ export default function ArticleEditorPage() {
     );
   }
 
-  if (!blogId) {
+  if (!isLoading && !article?.blog_id && !routeBlogId) {
     return (
       <ArticleEditorGuard
         icon={<FileText className="w-8 h-8 text-destructive" />}
         iconColor="destructive"
         title="Blog Not Selected"
-        description="Blog ID is missing from the URL."
+        description="This article does not have a blog associated."
         backHref="/dashboard/cms/articles"
       />
     );
@@ -187,7 +193,7 @@ export default function ArticleEditorPage() {
         iconColor="destructive"
         title="Article Not Found"
         description="The article you're looking for doesn't exist or has been deleted."
-        backHref={`/dashboard/cms/articles?blogId=${blogId}`}
+        backHref={`/dashboard/cms/articles?blogId=${effectiveBlogId}`}
       />
     );
   }
@@ -268,8 +274,8 @@ export default function ArticleEditorPage() {
         }}
         focusKeyword={editorState.focusKeyword}
         initialContent={article.content}
-        blogId={blogId ? Number(blogId) : undefined}
-        articleId={Number(articleId)}
+        blogId={effectiveBlogId}
+        articleId={articleId}
         contentStats={editorState.contentStats}
         onHighlightEditorSection={editorState.setHighlightedSection}
         onFocusKeywordChange={editorState.setFocusKeyword}
@@ -283,6 +289,8 @@ export default function ArticleEditorPage() {
         onSlugChange={editorState.setSlug}
         selectedAuthorId={editorState.selectedAuthorId}
         onAuthorChange={editorState.setSelectedAuthorId}
+        coverImageId={editorState.coverImageId}
+        onCoverImageChange={editorState.setCoverImageId}
         authors={authors ?? []}
         isLoadingAuthors={isLoadingAuthors}
         isDisabled={isPending}

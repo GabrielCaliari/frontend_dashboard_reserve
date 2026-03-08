@@ -23,17 +23,17 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { formatFileSize } from "@/src/common/utils/format-file-size";
-import type { MediaAsset } from "@/src/common/@types/@cms-media";
+import type { CmsMediaId, MediaAsset } from "@/src/common/@types/@cms-media";
 
 interface AssetGridProps {
   assets: MediaAsset[];
   isLoading?: boolean;
   onSelect?: (asset: MediaAsset) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (id: CmsMediaId) => void;
   onEdit?: (asset: MediaAsset) => void;
   onView?: (asset: MediaAsset) => void;
   selectable?: boolean;
-  selectedIds?: number[];
+  selectedIds?: CmsMediaId[];
   emptyMessage?: string;
 }
 
@@ -72,9 +72,9 @@ export function AssetGrid({
   selectedIds = [],
   emptyMessage = "No assets found",
 }: AssetGridProps) {
-  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+  const [imageErrors, setImageErrors] = useState<Set<CmsMediaId>>(new Set());
 
-  const handleImageError = (assetId: number) => {
+  const handleImageError = (assetId: CmsMediaId) => {
     setImageErrors((prev) => new Set(prev).add(assetId));
   };
 

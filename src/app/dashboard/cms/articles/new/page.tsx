@@ -61,6 +61,7 @@ export default function NewArticlePage() {
         blogId,
         content: editorState.content,
         focusKeyword: editorState.focusKeyword || undefined,
+        coverImageId: editorState.coverImageId || undefined,
       },
       {
         onSuccess: () => {
@@ -83,7 +84,8 @@ export default function NewArticlePage() {
       editorState.content ||
       editorState.metaTitle ||
       editorState.slug ||
-      editorState.selectedAuthorId;
+      editorState.selectedAuthorId ||
+      editorState.coverImageId;
     if (hasChanges) {
       if (confirm("You have unsaved changes. Are you sure you want to leave?")) {
         router.push(`/dashboard/cms/articles${blogId ? `?blogId=${blogId}` : ""}`);
@@ -171,6 +173,7 @@ export default function NewArticlePage() {
           editorState.setContent(stats.content || "");
         }}
         focusKeyword={editorState.focusKeyword}
+        blogId={blogId}
         contentStats={editorState.contentStats}
         onHighlightEditorSection={editorState.setHighlightedSection}
         onFocusKeywordChange={editorState.setFocusKeyword}
@@ -184,6 +187,8 @@ export default function NewArticlePage() {
         onSlugChange={editorState.setSlug}
         selectedAuthorId={editorState.selectedAuthorId}
         onAuthorChange={editorState.setSelectedAuthorId}
+        coverImageId={editorState.coverImageId}
+        onCoverImageChange={editorState.setCoverImageId}
         authors={authors ?? []}
         isLoadingAuthors={isLoadingAuthors}
         isDisabled={isPending}

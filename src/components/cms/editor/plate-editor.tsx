@@ -39,6 +39,8 @@ import {
   Heading3,
   Quote,
   ImageIcon,
+  Search,
+  Upload,
   History,
   Undo,
   Redo,
@@ -49,6 +51,7 @@ import {
   X,
 } from "lucide-react";
 import { MarkdownView } from "@/src/components/cms/editor/markdown-view";
+import { BlogImageInsertDialog } from "@/src/components/cms/editor/blog-image-insert-dialog";
 import {
   ViewModeToggle,
   type ViewMode,
@@ -65,16 +68,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { useUploadImages } from "@/src/common/hooks/cms/useImageMutations";
 import type { ContentStats } from "@/src/types/cms";
 
 // Utility: Serialize Slate value to HTML string
@@ -249,139 +243,6 @@ function ToolbarButton({
         )}
       </TooltipContent>
     </Tooltip>
-  );
-}
-
-// Image Insert Dialog
-interface ImageInsertDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onInsert: (url: string, alt: string) => void;
-  blogId?: string | number;
-  articleId?: string;
-}
-
-function ImageInsertDialog({
-  open,
-  onOpenChange,
-  onInsert,
-  blogId,
-  articleId,
-}: ImageInsertDialogProps) {
-  const [imageUrl, setImageUrl] = React.useState("");
-  const [altText, setAltText] = React.useState("");
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
-  const [uploadMode, setUploadMode] = React.useState<"url" | "upload">("url");
-  const uploadImagesMutation = useUploadImages();
-
-  const handleInsert = async () => {
-    if (uploadMode === "url" && imageUrl) {
-      onInsert(imageUrl, altText);
-      setImageUrl("");
-      setAltText("");
-      onOpenChange(false);
-    } else if (uploadMode === "upload" && selectedFile && blogId && articleId) {
-      try {
-        const result = await uploadImagesMutation.mutateAsync({
-          articleId,
-          files: [selectedFile],
-          altTexts: [altText || null],
-        });
-        if (result && result[0]) {
-          onInsert(result[0].url, altText);
-          setSelectedFile(null);
-          setAltText("");
-          onOpenChange(false);
-        }
-      } catch (error) {
-        console.error("Upload failed:", error);
-      }
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Insert Image</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="flex gap-2">
-            <Button
-              variant={uploadMode === "url" ? "default" : "outline"}
-              onClick={() => setUploadMode("url")}
-              size="sm"
-            >
-              Image URL
-            </Button>
-            {blogId && articleId && (
-              <Button
-                variant={uploadMode === "upload" ? "default" : "outline"}
-                onClick={() => setUploadMode("upload")}
-                size="sm"
-              >
-                Upload File
-              </Button>
-            )}
-          </div>
-
-          {uploadMode === "url" ? (
-            <div className="space-y-3">
-              <div>
-                <label className="text-sm font-medium">Image URL</label>
-                <Input
-                  placeholder="https://example.com/image.jpg"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Alt Text</label>
-                <Input
-                  placeholder="Describe the image"
-                  value={altText}
-                  onChange={(e) => setAltText(e.target.value)}
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <div>
-                <label className="text-sm font-medium">Select Image</label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Alt Text</label>
-                <Input
-                  placeholder="Describe the image"
-                  value={altText}
-                  onChange={(e) => setAltText(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleInsert}
-            disabled={
-              (uploadMode === "url" && !imageUrl) ||
-              (uploadMode === "upload" && !selectedFile) ||
-              uploadImagesMutation.isPending
-            }
-          >
-            {uploadImagesMutation.isPending ? "Uploading..." : "Insert"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 }
 
@@ -1432,12 +1293,11 @@ export function PlateEditor({
       </div>
 
       {/* Image Insert Dialog */}
-      <ImageInsertDialog
+      <BlogImageInsertDialog
         open={imageDialogOpen}
         onOpenChange={setImageDialogOpen}
         onInsert={handleInsertImage}
         blogId={blogId}
-        articleId={articleId}
       />
     </div>
   );

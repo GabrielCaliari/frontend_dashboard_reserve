@@ -9,7 +9,7 @@ import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
  */
 export const BLOG_QUERY_KEYS = {
   all: ['cms', 'blogs'] as const,
-  detail: (id: number) => ['cms', 'blogs', id] as const,
+  detail: (id: string | number) => ['cms', 'blogs', id] as const,
 };
 
 /**
@@ -43,7 +43,7 @@ export const useBlogs = () => {
  * const { data: blog, isLoading, error } = useBlog(blogId);
  * ```
  */
-export const useBlog = (blogId: number) => {
+export const useBlog = (blogId: string | number) => {
   return useQuery<Blog, Error>({
     queryKey: BLOG_QUERY_KEYS.detail(blogId),
     queryFn: () => fetchBlogById(blogId),

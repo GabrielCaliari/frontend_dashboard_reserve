@@ -20,8 +20,8 @@ interface ArticleEditorShellProps {
   onContentChange: (stats: ContentStats) => void;
   focusKeyword: string;
   initialContent?: string;
-  blogId?: number;
-  articleId?: number;
+  blogId?: string | number;
+  articleId?: string;
 
   // Sidebar
   contentStats: ContentStats | undefined;
@@ -37,6 +37,8 @@ interface ArticleEditorShellProps {
   onSlugChange: (v: string) => void;
   selectedAuthorId: string;
   onAuthorChange: (v: string) => void;
+  coverImageId: string;
+  onCoverImageChange: (v: string) => void;
   authors: Author[];
   isLoadingAuthors: boolean;
   isDisabled?: boolean;
@@ -67,6 +69,8 @@ export function ArticleEditorShell({
   onSlugChange,
   selectedAuthorId,
   onAuthorChange,
+  coverImageId,
+  onCoverImageChange,
   authors,
   isLoadingAuthors,
   isDisabled,
@@ -111,6 +115,9 @@ export function ArticleEditorShell({
             onSlugChange={onSlugChange}
             selectedAuthorId={selectedAuthorId}
             onAuthorChange={onAuthorChange}
+            blogId={blogId}
+            coverImageId={coverImageId}
+            onCoverImageChange={onCoverImageChange}
             authors={authors}
             isLoadingAuthors={isLoadingAuthors}
             isDisabled={isDisabled}
