@@ -7,19 +7,21 @@ import { AlertCircle } from "lucide-react";
 import { Card, CardBody } from "@heroui/react";
 import { BlogSelector } from "@/src/components/cms/blog-selector";
 import { ArticleList } from "@/src/components/cms/articles";
+import { ArticleQuickEditDrawer } from "@/src/components/cms/articles/article-quick-edit-drawer";
 import { useListArticles } from "@/src/common/hooks/cms/use-list-articles";
 import { useDeleteArticle } from "@/src/common/hooks/cms/use-delete-article";
 import {
   usePublishArticle,
   useArchiveArticle,
+  useUnarchiveArticle,
+  useUpdateArticle,
 } from "@/src/common/hooks/cms/useArticleMutations";
+import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import {
   useHasSelectedTenant,
   useTenantStore,
 } from "@/src/common/stores/tenant-store";
-import type {
-  Article,
-} from "@/src/common/@types/@cms-article";
+import type { Article } from "@/src/common/@types/@cms-article";
 import { toast } from "sonner";
 
 type ArticleStatus = "draft" | "published" | "archived";
@@ -30,9 +32,8 @@ function ArticlesPageContent() {
   const [selectedBlogId, setSelectedBlogId] = useState<string>(
     searchParams.get("blogId") || "",
   );
-  const [currentStatus, setCurrentStatus] = useState<ArticleStatus | undefined>(
-    undefined,
-  );
+  const [currentStatus, setCurrentStatus] = useState<ArticleStatus | undefined>(undefined);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
   const handleBlogChange = useCallback((value: string) => {
     setSelectedBlogId(value);
@@ -42,17 +43,23 @@ function ArticlesPageContent() {
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
 
   const { data: articlesData, isLoading, error, isError } = useListArticles(selectedBlogId || undefined, 1, 50);
-  
+  const { data: authorsData } = useGetAuthors();
+
   const { mutate: deleteArticle } = useDeleteArticle();
   const { mutate: publishArticle, isPending: isPublishingArticle } = usePublishArticle();
   const { mutate: archiveArticle, isPending: isArchivingArticle } = useArchiveArticle();
+  const { mutate: unarchiveArticle, isPending: isUnarchivingArticle } = useUnarchiveArticle();
+  const { mutate: updateArticle, isPending: isUpdatingArticle } = useUpdateArticle();
 
-  // fetchArticles returns Article[] directly, normalize for ArticleList
   const articles: Article[] = Array.isArray(articlesData)
     ? articlesData
     : ((articlesData as any)?.data ?? []);
+  
+  const authors = Array.isArray(authorsData) ? authorsData : [];
+  
+  // Debug temporário
+  console.log('Authors loaded:', authors.length, authors.slice(0, 2));
 
-  // Show error state
   if (isError) {
     return (
       <LayoutScopeRoot routeActive="articles">
@@ -67,7 +74,7 @@ function ArticlesPageContent() {
                   Error Loading Articles
                 </h3>
                 <p className="text-muted-foreground">
-                  {error instanceof Error ? error.message : 'Failed to load articles. Please try again.'}
+                  {error instanceof Error ? error.message : "Failed to load articles. Please try again."}
                 </p>
               </CardBody>
             </Card>
@@ -88,9 +95,8 @@ function ArticlesPageContent() {
       toast.warning("Only draft articles can be published");
       return;
     }
-    if (confirm(`Publish "${article.title}"?`)) {
-      publishArticle({ blogId: article.blog_id, articleId: article.id });
-    }
+    publishArticle({ blogId: article.blog_id, articleId: article.id });
+    setSelectedArticle(null);
   };
 
   const handleArchive = (article: Article) => {
@@ -98,32 +104,30 @@ function ArticlesPageContent() {
       toast.warning("Only published articles can be archived");
       return;
     }
-    if (confirm(`Unpublish "${article.title}"?`)) {
-      archiveArticle({ blogId: article.blog_id, articleId: article.id });
-    }
+    archiveArticle({ blogId: article.blog_id, articleId: article.id });
+    setSelectedArticle(null);
   };
 
-  const handleStatusSelect = (article: Article, nextStatus: ArticleStatus) => {
-    if (nextStatus === article.status) {
+  const handleUnarchive = (article: Article) => {
+    if (article.status !== "archived") {
+      toast.warning("Only archived articles can be restored");
       return;
     }
-
-    if (nextStatus === "draft") {
-      toast.warning("Articles cannot be moved back to draft with the current API");
-      return;
-    }
-
-    if (nextStatus === "published") {
-      handlePublish(article);
-      return;
-    }
-
-    if (nextStatus === "archived") {
-      handleArchive(article);
-    }
+    unarchiveArticle({ blogId: article.blog_id, articleId: article.id });
+    setSelectedArticle(null);
   };
 
-  // Show tenant selection warning
+  const handleQuickUpdate = (articleId: number, blogId: number, data: any) => {
+    updateArticle(
+      { blogId, articleId, data },
+      {
+        onSuccess: () => {
+          setSelectedArticle(null);
+        },
+      }
+    );
+  };
+
   if (!hasSelectedTenant) {
     return (
       <LayoutScopeRoot routeActive="articles">
@@ -150,12 +154,12 @@ function ArticlesPageContent() {
 
   return (
     <LayoutScopeRoot routeActive="articles">
-      <div className="p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="p-4 sm:p-8 space-y-6 max-w-7xl mx-auto">
         {/* Blog Selector Card */}
         <Card className="border-none shadow-sm">
-          <CardBody className="p-6">
-            <div className="flex items-center gap-6">
-              <div className="flex-1 max-w-md">
+          <CardBody className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+              <div className="flex-1 sm:max-w-md">
                 <BlogSelector
                   value={selectedBlogId}
                   onValueChange={handleBlogChange}
@@ -166,9 +170,7 @@ function ArticlesPageContent() {
               {selectedTenant && (
                 <div className="text-sm text-muted-foreground">
                   Managing content for{" "}
-                  <span className="font-semibold text-primary">
-                    {selectedTenant.name}
-                  </span>
+                  <span className="font-semibold text-primary">{selectedTenant.name}</span>
                 </div>
               )}
             </div>
@@ -176,29 +178,38 @@ function ArticlesPageContent() {
         </Card>
 
         <ArticleList
-            articles={articles}
-            isLoading={isLoading}
-            currentStatus={currentStatus}
-            onStatusChange={setCurrentStatus}
-            onCreateClick={() =>
-              router.push(
-                `/dashboard/cms/articles/new${selectedBlogId ? `?blogId=${selectedBlogId}` : ''}`,
-              )
-            }
-            onEditClick={(article) =>
-              router.push(
-                `/dashboard/cms/articles/${article.id}?blogId=${article.blog_id}`,
-              )
-            }
-            onDeleteClick={handleDelete}
-            onStatusSelect={handleStatusSelect}
-            isStatusActionPending={isPublishingArticle || isArchivingArticle}
-            onPreviewClick={(article) =>
-              router.push(
-                `/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`,
-              )
-            }
-          />
+          articles={articles}
+          authors={authors}
+          isLoading={isLoading}
+          currentStatus={currentStatus}
+          onStatusChange={setCurrentStatus}
+          onCreateClick={() =>
+            router.push(
+              `/dashboard/cms/articles/new${selectedBlogId ? `?blogId=${selectedBlogId}` : ""}`,
+            )
+          }
+          onRowClick={setSelectedArticle}
+        />
+
+        <ArticleQuickEditDrawer
+          article={selectedArticle}
+          authors={authors}
+          isOpen={selectedArticle !== null}
+          onClose={() => setSelectedArticle(null)}
+          onEditClick={(article) =>
+            router.push(`/dashboard/cms/articles/${article.id}?blogId=${article.blog_id}`)
+          }
+          onPreviewClick={(article) =>
+            router.push(`/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`)
+          }
+          onPublish={handlePublish}
+          onArchive={handleArchive}
+          onUnarchive={handleUnarchive}
+          onDelete={handleDelete}
+          onSave={handleQuickUpdate}
+          isStatusActionPending={isPublishingArticle || isArchivingArticle || isUnarchivingArticle}
+          isSaving={isUpdatingArticle}
+        />
       </div>
     </LayoutScopeRoot>
   );

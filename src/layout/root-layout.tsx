@@ -20,7 +20,7 @@ export function LayoutScopeRoot({ children, routeActive }: RootLayoutProps) {
         />
 
         <div className="flex-1 h-full overflow-y-auto custom-scrollbar">
-          <main className="mt-6 mx-auto">{children}</main>
+          <main className="mt-6 mx-auto pb-10">{children}</main>
         </div>
       </div>
     </>

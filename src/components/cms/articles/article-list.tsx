@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Button,
-  Card,
-  CardBody,
   Tabs,
   Tab,
   Skeleton,
@@ -16,25 +14,17 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
+  Pagination,
 } from "@heroui/react";
 import {
   Plus,
   Search,
   FileText,
   Sparkles,
-  MoreVertical,
   Edit,
-  Trash2,
-  Eye,
-  ChevronDown,
 } from "lucide-react";
-import type {
-  Article,
-} from "@/src/common/@types/@cms-article";
+import type { Article } from "@/src/common/@types/@cms-article";
+import type { Author } from "@/src/common/@types/@cms-author";
 import ArticleStatusBadge from "./article-status-badge";
 
 type ArticleStatus = "draft" | "published" | "archived";
@@ -42,74 +32,93 @@ type ArticleStatus = "draft" | "published" | "archived";
 interface ArticleListProps {
   blogId?: number;
   articles: Article[];
+  authors: Author[];
   isLoading: boolean;
   currentStatus?: ArticleStatus;
   onStatusChange: (status?: ArticleStatus) => void;
   onCreateClick: () => void;
-  onEditClick: (article: Article) => void;
-  onDeleteClick: (article: Article) => void;
-  onStatusSelect: (article: Article, nextStatus: ArticleStatus) => void;
-  isStatusActionPending?: boolean;
-  onPreviewClick?: (article: Article) => void;
+  onRowClick: (article: Article) => void;
 }
 
 const COLUMNS = [
   { key: "title", label: "Article" },
-  { key: "status", label: "Status" },
+  { key: "author", label: "Author" },
   { key: "language", label: "Language" },
-  { key: "published_at", label: "Published" },
+  { key: "status", label: "Status" },
   { key: "updated_at", label: "Last Updated" },
-  { key: "actions", label: "Actions" },
+  { key: "actions", label: "" },
 ];
+
+const PAGE_SIZE = 15;
 
 export default function ArticleList({
   articles,
+  authors,
   isLoading,
   currentStatus,
   onStatusChange,
   onCreateClick,
-  onEditClick,
-  onDeleteClick,
-  onStatusSelect,
-  isStatusActionPending = false,
-  onPreviewClick,
+  onRowClick,
 }: ArticleListProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
 
-  // Filter articles by status and search
-  const filteredArticles = articles.filter((article) => {
-    const matchesStatus = currentStatus
-      ? article.status === currentStatus
-      : true;
-    const matchesSearch = searchQuery
-      ? article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        article.slug.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
-    return matchesStatus && matchesSearch;
-  });
+  // Helper to get author name by ID
+  const getAuthorName = (authorId?: string) => {
+    if (!authorId) return "—";
+    const author = authors.find((a) => String(a.id) === String(authorId));
+    
+    // Debug temporário
+    if (!author && authorId) {
+      console.log('Author not found:', {
+        authorId,
+        availableAuthors: authors.map(a => ({ id: a.id, name: a.firstName }))
+      });
+    }
+    
+    return author ? author.firstName : "—";
+  };
 
-  const sortedArticles = [...filteredArticles].sort(
-    (a, b) => {
+  const filteredArticles = useMemo(() => {
+    const filtered = articles.filter((article) => {
+      const matchesStatus = currentStatus ? article.status === currentStatus : true;
+      const matchesSearch = searchQuery
+        ? article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          article.slug.toLowerCase().includes(searchQuery.toLowerCase())
+        : true;
+      return matchesStatus && matchesSearch;
+    });
+
+    return [...filtered].sort((a, b) => {
       const leftDate = new Date(a.published_at ?? a.updated_at).getTime();
       const rightDate = new Date(b.published_at ?? b.updated_at).getTime();
       return rightDate - leftDate;
-    },
-  );
+    });
+  }, [articles, currentStatus, searchQuery]);
 
-  // Calculate counts for tabs
-  const counts = {
-    all: articles.length,
-    draft: articles.filter((a) => a.status === "draft").length,
-    published: articles.filter((a) => a.status === "published").length,
-    archived: articles.filter((a) => a.status === "archived").length,
-  };
+  const totalPages = Math.ceil(filteredArticles.length / PAGE_SIZE);
+  const pagedArticles = filteredArticles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  // Reset page when filters change
   const handleTabChange = (key: string | number) => {
+    setPage(1);
     if (key === "all") {
       onStatusChange(undefined);
     } else {
       onStatusChange(key as ArticleStatus);
     }
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setPage(1);
+  };
+
+  const counts = {
+    all: articles.length,
+    draft: articles.filter((a) => a.status === "draft").length,
+    published: articles.filter((a) => a.status === "published").length,
+    archived: articles.filter((a) => a.status === "archived").length,
   };
 
   const formatDate = (dateString?: string | null) => {
@@ -134,68 +143,20 @@ export default function ArticleList({
             </span>
           </div>
         );
-      case "status":
+      case "author":
         return (
-          <div
-            className="flex min-w-[148px] flex-col gap-2"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <ArticleStatusBadge status={article.status} />
-            <Dropdown placement="bottom-start">
-              <DropdownTrigger>
-                <Button
-                  size="sm"
-                  variant="flat"
-                  className="justify-between"
-                  endContent={<ChevronDown size={14} />}
-                  isDisabled={isStatusActionPending}
-                >
-                  Change status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Change article status">
-                <DropdownItem
-                  key="draft"
-                  isDisabled
-                  className={article.status === "draft" ? "text-primary" : undefined}
-                  onPress={() => onStatusSelect(article, "draft")}
-                >
-                  Draft
-                </DropdownItem>
-                <DropdownItem
-                  key="published"
-                  isDisabled={article.status !== "draft"}
-                  className={article.status === "published" ? "text-success" : undefined}
-                  color="success"
-                  onPress={() => onStatusSelect(article, "published")}
-                >
-                  Published
-                </DropdownItem>
-                <DropdownItem
-                  key="archived"
-                  isDisabled={article.status !== "published"}
-                  className={article.status === "archived" ? "text-warning" : undefined}
-                  color="warning"
-                  onPress={() => onStatusSelect(article, "archived")}
-                >
-                  Archived
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
+          <span className="text-sm text-default-600">
+            {getAuthorName(article.authorId)}
+          </span>
         );
       case "language":
         return (
           <Chip size="sm" variant="flat" color="default" className="uppercase">
-            {article.language ?? 'en_us'}
+            {article.language ?? "en_us"}
           </Chip>
         );
-      case "published_at":
-        return (
-          <span className="text-sm text-default-600 whitespace-nowrap">
-            {formatDate(article.published_at)}
-          </span>
-        );
+      case "status":
+        return <ArticleStatusBadge status={article.status} />;
       case "updated_at":
         return (
           <span className="text-sm text-default-600 whitespace-nowrap">
@@ -203,57 +164,23 @@ export default function ArticleList({
           </span>
         );
       case "actions": {
-        const canDelete =
-          article.status === "draft" || article.status === "archived";
-
         return (
-          <div className="flex items-center gap-1 justify-end">
+          <div
+            className="flex items-center justify-end"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Button
               isIconOnly
               size="sm"
               variant="light"
-              onPress={() => onEditClick(article)}
               aria-label="Edit article"
+              onPress={() => {
+                // Navigate to edit page instead of opening dropdown
+                window.location.href = `/dashboard/cms/articles/${article.id}?blogId=${article.blog_id}`;
+              }}
             >
               <Edit size={16} />
             </Button>
-
-            {onPreviewClick && (
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                onPress={() => onPreviewClick(article)}
-                aria-label="Preview article"
-              >
-                <Eye size={16} />
-              </Button>
-            )}
-            {canDelete ? (
-              <Dropdown placement="bottom-end">
-                <DropdownTrigger>
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="light"
-                    aria-label="More actions"
-                  >
-                    <MoreVertical size={16} />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Article actions">
-                  <DropdownItem
-                    key="delete"
-                    startContent={<Trash2 size={16} />}
-                    onPress={() => onDeleteClick(article)}
-                    color="danger"
-                    className="text-danger"
-                  >
-                    Delete Article
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            ) : null}
           </div>
         );
       }
@@ -263,7 +190,7 @@ export default function ArticleList({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-start">
@@ -292,10 +219,10 @@ export default function ArticleList({
         <Input
           placeholder="Search articles by title or slug..."
           value={searchQuery}
-          onValueChange={setSearchQuery}
+          onValueChange={handleSearch}
           startContent={<Search className="w-4 h-4 text-default-400" />}
           isClearable
-          onClear={() => setSearchQuery("")}
+          onClear={() => handleSearch("")}
           size="sm"
           classNames={{
             base: "max-w-md",
@@ -312,8 +239,7 @@ export default function ArticleList({
         variant="underlined"
         color="primary"
         classNames={{
-          tabList:
-            "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+          tabList: "gap-4 sm:gap-6 w-full relative rounded-none p-0 border-b border-divider",
           cursor: "w-full bg-primary",
           tab: "max-w-fit px-0 h-12",
           tabContent: "group-data-[selected=true]:text-primary",
@@ -322,121 +248,133 @@ export default function ArticleList({
         <Tab
           key="all"
           title={
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="font-medium">All</span>
-              <Chip size="sm" variant="flat" color="default">
-                {counts.all}
-              </Chip>
+              <Chip size="sm" variant="flat" color="default">{counts.all}</Chip>
             </div>
           }
         />
         <Tab
           key="draft"
           title={
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="font-medium">Drafts</span>
-              <Chip size="sm" variant="flat" color="warning">
-                {counts.draft}
-              </Chip>
+              <Chip size="sm" variant="flat" color="warning">{counts.draft}</Chip>
             </div>
           }
         />
         <Tab
           key="published"
           title={
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="font-medium">Published</span>
-              <Chip size="sm" variant="flat" color="success">
-                {counts.published}
-              </Chip>
+              <Chip size="sm" variant="flat" color="success">{counts.published}</Chip>
             </div>
           }
         />
         <Tab
           key="archived"
           title={
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="font-medium">Archived</span>
-              <Chip size="sm" variant="flat" color="default">
-                {counts.archived}
-              </Chip>
+              <Chip size="sm" variant="flat" color="default">{counts.archived}</Chip>
             </div>
           }
         />
       </Tabs>
 
       {/* Articles Table */}
-      <div className="overflow-x-auto w-full">
-        <Table
-          aria-label="Articles table"
-          classNames={{
-            wrapper: "rounded-xl border border-divider",
-            th: "bg-default-100 text-xs font-semibold uppercase tracking-wider",
-            tr: "cursor-pointer hover:bg-default-50 transition-colors",
-          }}
-        >
-          <TableHeader columns={COLUMNS}>
-            {(col) => (
-              <TableColumn
-                key={col.key}
-                align={col.key === "actions" ? "end" : "start"}
-              >
-                {col.label}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            items={sortedArticles}
-            isLoading={isLoading}
-            loadingContent={
-              <div className="p-4 space-y-3">
-                {[...Array(5)].map((_, i) => (
-                  <Skeleton key={i} className="h-10 w-full rounded-lg" />
-                ))}
+      <Table
+        aria-label="Articles table"
+        classNames={{
+          wrapper: "rounded-xl border border-divider",
+          th: "bg-default-100 text-xs font-semibold uppercase tracking-wider",
+          tr: "cursor-pointer hover:bg-default-50 transition-colors",
+        }}
+      >
+        <TableHeader columns={COLUMNS}>
+          {(col) => (
+            <TableColumn
+              key={col.key}
+              align={col.key === "actions" ? "end" : "start"}
+              className={
+                col.key === "updated_at" || col.key === "author" || col.key === "language"
+                  ? "hidden md:table-cell"
+                  : undefined
+              }
+            >
+              {col.label}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          items={pagedArticles}
+          isLoading={isLoading}
+          loadingContent={
+            <div className="p-4 space-y-3">
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full rounded-lg" />
+              ))}
+            </div>
+          }
+          emptyContent={
+            searchQuery ? (
+              <div className="py-12 text-center">
+                <Search className="w-10 h-10 text-default-300 mx-auto mb-3" />
+                <p className="text-default-500">
+                  No articles match &quot;{searchQuery}&quot;
+                </p>
               </div>
-            }
-            emptyContent={
-              searchQuery ? (
-                <div className="py-12 text-center">
-                  <Search className="w-10 h-10 text-default-300 mx-auto mb-3" />
-                  <p className="text-default-500">
-                    No articles match &quot;{searchQuery}&quot;
-                  </p>
-                </div>
-              ) : (
-                <div className="py-12 text-center">
-                  <FileText className="w-10 h-10 text-default-300 mx-auto mb-3" />
-                  <p className="font-medium text-foreground mb-1">
-                    No articles yet
-                  </p>
-                  <p className="text-sm text-default-500 mb-4">
-                    Create your first article to get started
-                  </p>
-                  <Button
-                    color="primary"
-                    size="sm"
-                    onPress={onCreateClick}
-                    startContent={<Sparkles size={16} />}
-                  >
-                    Create Article
-                  </Button>
-                </div>
-              )
-            }
-          >
-            {(article) => (
-              <TableRow
-                key={article.id}
-                onClick={() => onEditClick(article)}
-              >
-                {(col) => (
-                  <TableCell>{renderCell(article, col as string)}</TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ) : (
+              <div className="py-12 text-center">
+                <FileText className="w-10 h-10 text-default-300 mx-auto mb-3" />
+                <p className="font-medium text-foreground mb-1">No articles yet</p>
+                <p className="text-sm text-default-500 mb-4">
+                  Create your first article to get started
+                </p>
+                <Button
+                  color="primary"
+                  size="sm"
+                  onPress={onCreateClick}
+                  startContent={<Sparkles size={16} />}
+                >
+                  Create Article
+                </Button>
+              </div>
+            )
+          }
+        >
+          {(article) => (
+            <TableRow key={article.id} onClick={() => onRowClick(article)}>
+              {(col) => (
+                <TableCell
+                  className={
+                    col === "updated_at" || col === "author" || col === "language"
+                      ? "hidden md:table-cell"
+                      : undefined
+                  }
+                >
+                  {renderCell(article, col as string)}
+                </TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center pt-2">
+          <Pagination
+            total={totalPages}
+            page={page}
+            onChange={setPage}
+            showControls
+            color="primary"
+            variant="flat"
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -97,6 +97,7 @@ export function useCMSToast() {
   const articleDeleted = () => showSuccess('Article deleted successfully');
   const articlePublished = () => showSuccess('Article published successfully', 'Your article is now visible to the public.');
   const articleArchived = () => showSuccess('Article archived successfully', 'The article is no longer visible to the public.');
+  const articleUnarchived = () => showSuccess('Article restored successfully', 'The article is visible to the public again.');
   const articlesReordered = () => showSuccess('Articles reordered successfully');
 
   // Image operation toasts
@@ -128,6 +129,7 @@ export function useCMSToast() {
     articleDeleted,
     articlePublished,
     articleArchived,
+    articleUnarchived,
     articlesReordered,
     
     // Image operations

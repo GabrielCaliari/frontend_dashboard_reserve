@@ -15,6 +15,7 @@ import {
   StatGroupCard,
   DateRangePicker,
   StatsTimeseriesCard,
+  CmsOverviewCards,
 } from "@/src/components/stats";
 
 function getDefaultRange() {
@@ -60,8 +61,7 @@ export default function DashboardPage() {
     [timeseriesModules],
   );
   const groupByModuleKey = useMemo(
-    () =>
-      new Map((data?.groups ?? []).map((group) => [group.moduleKey, group])),
+    () => new Map((data?.groups ?? []).map((group) => [group.moduleKey, group])),
     [data?.groups],
   );
 
@@ -87,26 +87,25 @@ export default function DashboardPage() {
 
   return (
     <LayoutScopeRoot routeActive="dashboard">
-      <div className="mx-auto space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="mx-auto space-y-8 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl">
+
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <h1 className="text-2xl font-bold text-gray-100">{t("title")}</h1>
             {data?.generatedAt && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 {t("updatedAt", {
                   date: new Date(data.generatedAt).toLocaleString(),
                 })}
               </p>
             )}
           </div>
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+          <div className="flex flex-wrap items-center gap-2">
             <DateRangePicker
               from={from}
               to={to}
-              onChange={(f, tVal) => {
-                setFrom(f);
-                setTo(tVal);
-              }}
+              onChange={(f, tVal) => { setFrom(f); setTo(tVal); }}
             />
             <Button
               as={Link}
@@ -114,71 +113,93 @@ export default function DashboardPage() {
               variant="bordered"
               size="sm"
               startContent={<Plug className="h-4 w-4" />}
-              className="w-full border-gray-700 text-gray-300 sm:w-auto"
+              className="border-gray-700 text-gray-300 whitespace-nowrap"
             >
               {t("integrationsLabel")}
             </Button>
           </div>
         </div>
 
-        {isLoading && (
-          <div className="flex justify-center py-16">
-            <Spinner size="lg" />
-          </div>
-        )}
+        {/* CMS Overview — always visible */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+            CMS Overview
+          </h2>
+          <CmsOverviewCards />
+        </section>
 
-        {isError && (
-          <Card className="border-red-500/20 bg-red-500/5">
-            <CardBody className="p-8 text-center">
-              <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-              <p className="text-sm text-red-400">{t("errorLoading")}</p>
-            </CardBody>
-          </Card>
-        )}
+        {/* Stats Integrations */}
+        <section className="space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+            Analytics
+          </h2>
 
-        {data && data.groups.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <BarChart3 className="h-12 w-12 text-gray-600 mb-3" />
-            <p className="text-gray-400">{t("emptyState")}</p>
-            <Button
-              as={Link}
-              href="/dashboard/stats/integrations"
-              color="primary"
-              variant="flat"
-              size="sm"
-              className="mt-4"
-            >
-              {t("addIntegration")}
-            </Button>
-          </div>
-        )}
+          {isLoading && (
+            <div className="flex justify-center py-10">
+              <Spinner size="lg" />
+            </div>
+          )}
 
-        {data && data.groups.length > 0 && (
-          <div className="space-y-6">
-            {visibleTimeseriesModules.length > 0 ? (
-              <div className="grid gap-6 xl:grid-cols-2 2xl:grid-cols-3">
-                {visibleTimeseriesModules.map((module) => {
-                  const group = groupByModuleKey.get(module.moduleKey);
+          {isError && (
+            <Card className="border-red-500/20 bg-red-500/5">
+              <CardBody className="p-6 text-center">
+                <AlertCircle className="w-7 h-7 text-red-400 mx-auto mb-2" />
+                <p className="text-sm text-red-400">{t("errorLoading")}</p>
+              </CardBody>
+            </Card>
+          )}
 
-                  return (
-                    <StatsTimeseriesCard
-                      key={module.moduleKey}
-                      title={group?.label ?? module.seriesItem?.label ?? module.moduleKey}
-                      description={group?.description}
-                      seriesItem={module.seriesItem}
-                      isLoading={module.isLoading}
-                      error={module.isError ? t("timeseriesError") : undefined}
-                    />
-                  );
-                })}
+          {!isLoading && !isError && data && data.groups.length === 0 && (
+            <Card className="border-gray-800 bg-[#111125]">
+              <CardBody className="flex flex-col items-center justify-center py-12 text-center">
+                <BarChart3 className="h-10 w-10 text-gray-600 mb-3" />
+                <p className="text-gray-400 mb-1">{t("emptyState")}</p>
+                <p className="text-sm text-gray-600 mb-4">
+                  Connect an analytics provider to see metrics here.
+                </p>
+                <Button
+                  as={Link}
+                  href="/dashboard/stats/integrations"
+                  color="primary"
+                  variant="flat"
+                  size="sm"
+                  startContent={<Plug className="h-4 w-4" />}
+                >
+                  {t("addIntegration")}
+                </Button>
+              </CardBody>
+            </Card>
+          )}
+
+          {data && data.groups.length > 0 && (
+            <div className="space-y-6">
+              {visibleTimeseriesModules.length > 0 && (
+                <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                  {visibleTimeseriesModules.map((module) => {
+                    const group = groupByModuleKey.get(module.moduleKey);
+                    return (
+                      <StatsTimeseriesCard
+                        key={module.moduleKey}
+                        title={group?.label ?? module.seriesItem?.label ?? module.moduleKey}
+                        description={group?.description}
+                        seriesItem={module.seriesItem}
+                        isLoading={module.isLoading}
+                        error={module.isError ? t("timeseriesError") : undefined}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                {data.groups.map((group) => (
+                  <StatGroupCard key={group.moduleKey} group={group} />
+                ))}
               </div>
-            ) : null}
+            </div>
+          )}
+        </section>
 
-            {data.groups.map((group) => (
-              <StatGroupCard key={group.moduleKey} group={group} />
-            ))}
-          </div>
-        )}
       </div>
     </LayoutScopeRoot>
   );

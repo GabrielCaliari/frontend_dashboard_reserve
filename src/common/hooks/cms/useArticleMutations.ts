@@ -5,6 +5,7 @@ import {
   deleteArticle,
   publishArticle,
   archiveArticle,
+  unarchiveArticle,
 } from '@/src/common/services/cms-article-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 import { ARTICLE_QUERY_KEYS } from './useArticles';
@@ -286,3 +287,30 @@ export function useArchiveArticle() {
   });
 }
 
+/**
+ * Hook to unarchive an article (transition from archived to published)
+ * Restores the article to published state, maintaining the original publishedAt.
+ */
+export function useUnarchiveArticle() {
+  const queryClient = useQueryClient();
+  const tenantId = useSelectedTenantId();
+  const toast = useCMSToast();
+
+  return useMutation({
+    mutationFn: ({ blogId, articleId }: { blogId: number; articleId: number }) =>
+      unarchiveArticle(articleId),
+    onSuccess: (updatedArticle, variables) => {
+      queryClient.setQueryData<Article>(
+        ARTICLE_QUERY_KEYS.detail(tenantId, variables.blogId, variables.articleId),
+        updatedArticle,
+      );
+      queryClient.invalidateQueries({
+        queryKey: ARTICLE_QUERY_KEYS.all(tenantId, variables.blogId),
+      });
+      toast.articleUnarchived();
+    },
+    onError: (error) => {
+      toast.showError(error, 'Failed to unarchive article');
+    },
+  });
+}

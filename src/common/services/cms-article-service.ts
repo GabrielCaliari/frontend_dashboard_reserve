@@ -253,3 +253,19 @@ export const archiveArticle = async (
     throw transformCMSError(error);
   }
 };
+
+/**
+ * Unarchive an article (transition from archived to published) (AUTHENTICATED)
+ * @param articleId - The article ID
+ * @returns Promise<Article>
+ */
+export const unarchiveArticle = async (
+  articleId: number
+): Promise<Article> => {
+  try {
+    const response = await cmsApiClient.post(`cms/articles/${articleId}/unarchive`);
+    return normalizeArticle(response.data as ArticleApiResponse);
+  } catch (error) {
+    throw transformCMSError(error);
+  }
+};

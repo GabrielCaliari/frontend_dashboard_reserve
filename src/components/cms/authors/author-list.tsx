@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import {
   Table,
   TableHeader,
@@ -11,9 +12,12 @@ import {
   Button,
   Spinner,
   Chip,
+  Pagination,
 } from "@heroui/react";
 import { Edit, Trash2, User as UserIcon } from "lucide-react";
 import type { Author } from "@/src/common/@types/@cms-author";
+
+const PAGE_SIZE = 15;
 
 interface AuthorListProps {
   authors: Author[];
@@ -32,25 +36,26 @@ export function AuthorList({
   onDelete,
   onCreateClick,
 }: AuthorListProps) {
+  const [page, setPage] = useState(1);
+
   const getDisplayName = (author: Author) => {
     const fullName = author.fullName?.trim();
-    if (fullName) {
-      return fullName;
-    }
-
-    const joinedName = [author.firstName, author.lastName]
-      .filter(Boolean)
-      .join(" ")
-      .trim();
-
-    return joinedName || "Unnamed author";
+    if (fullName) return fullName;
+    return [author.firstName, author.lastName].filter(Boolean).join(" ").trim() || "Unnamed author";
   };
 
   const getAvatarUrl = (author: Author) => {
     return author.avatar_url ?? author.avatar?.url ?? undefined;
   };
 
+  const totalPages = Math.ceil(authors.length / PAGE_SIZE);
+  const pagedAuthors = useMemo(
+    () => authors.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [authors, page],
+  );
+
   return (
+    <div>
     <Table
       aria-label="Authors table"
       removeWrapper
@@ -60,13 +65,13 @@ export function AuthorList({
     >
       <TableHeader>
         <TableColumn>AUTHOR</TableColumn>
-        <TableColumn>BIOGRAPHY</TableColumn>
+        <TableColumn className="hidden sm:table-cell">BIOGRAPHY</TableColumn>
         <TableColumn>STATUS</TableColumn>
-        <TableColumn>CREATED</TableColumn>
+        <TableColumn className="hidden md:table-cell">CREATED</TableColumn>
         <TableColumn align="center">ACTIONS</TableColumn>
       </TableHeader>
       <TableBody
-        items={authors}
+        items={pagedAuthors}
         isLoading={isLoading}
         loadingContent={<Spinner />}
         emptyContent={
@@ -105,7 +110,7 @@ export function AuthorList({
                 </span>
               </div>
             </TableCell>
-            <TableCell>
+            <TableCell className="hidden sm:table-cell">
               <p className="text-sm text-default-500 max-w-xs truncate">
                 {author.biography || (
                   <span className="text-default-300 italic">No biography</span>
@@ -121,7 +126,7 @@ export function AuthorList({
                 {author.active !== false ? "Active" : "Inactive"}
               </Chip>
             </TableCell>
-            <TableCell>
+            <TableCell className="hidden md:table-cell">
               <span className="text-sm text-default-400">
                 {author.created_at
                   ? new Date(author.created_at).toLocaleDateString("pt-BR")
@@ -130,12 +135,7 @@ export function AuthorList({
             </TableCell>
             <TableCell>
               <div className="flex gap-2 justify-center">
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="light"
-                  onPress={() => onEdit(author)}
-                >
+                <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(author)}>
                   <Edit className="w-4 h-4" />
                 </Button>
                 <Button
@@ -153,5 +153,19 @@ export function AuthorList({
         )}
       </TableBody>
     </Table>
+
+    {totalPages > 1 && (
+      <div className="flex justify-center py-4 border-t border-divider">
+        <Pagination
+          total={totalPages}
+          page={page}
+          onChange={setPage}
+          showControls
+          color="primary"
+          variant="flat"
+        />
+      </div>
+    )}
+    </div>
   );
 }
