@@ -4,6 +4,7 @@ export {
   useStatsModule,
   useStatsTenantDashboard,
   useStatsTimeseries,
+  useStatsTimeseriesModules,
 } from './use-stats-dashboard';
 export {
   useStatsIntegrations,

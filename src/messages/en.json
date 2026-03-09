@@ -34,19 +34,33 @@
 
   "sidebar": {
     "workspace": "Admin workspace",
+    "defaultWorkspace": "Admin workspace",
     "globalWorkspace": "Platform global workspace",
     "dashboard": "Dashboard",
     "globalDashboard": "Global View",
+    "tenantLabel": "Tenant",
+    "tenantLoading": "Loading...",
+    "noTenantsAvailable": "No tenants available",
+    "noTenants": "No tenants",
+    "selectTenantPlaceholder": "Select tenant",
+    "globalViewOption": "Global View",
     "accessManagement": "Access Management",
     "admins": "Admins",
     "tenants": "Tenants",
     "users": "Users",
+    "userLabel": "User",
     "leads": "Leads",
     "allLeads": "All leads",
     "leadCollections": "Collections",
     "abandonedCarts": "Abandoned carts",
     "emailCampaigns": "Email Campaigns",
     "profile": "My Profile",
+    "cms": "CMS",
+    "blogs": "Blogs",
+    "articles": "Articles",
+    "authors": "Authors",
+    "cmsCollections": "Collections",
+    "media": "Media",
     "stats": "Stats",
     "statsOverview": "Overview",
     "statsIntegrations": "Integrations",
@@ -1075,6 +1089,9 @@
   },
   "stats": {
     "title": "Overview",
+    "topBlogs": "Top Blogs",
+    "topLeadCollections": "Top lead collections",
+    "noTimeseriesData": "No time series is available for this period.",
     "globalTitle": "Platform Global Overview",
     "globalDescription": "Consolidated metrics across all active tenants in the platform.",
     "globalEmptyState": "No global metrics are available right now.",
@@ -1126,5 +1143,8 @@
       "secretPlaceholder": "Leave blank to keep",
       "invalidJson": "Invalid JSON"
     }
+  },
+  "accessManagementTenantDetail": {
+    "openStatsDrilldown": "Open stats drill-down"
   }
 }

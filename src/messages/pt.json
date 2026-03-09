@@ -33,19 +33,33 @@
   },
   "sidebar": {
     "workspace": "Espaço de trabalho admin",
+    "defaultWorkspace": "Espaço de trabalho admin",
     "globalWorkspace": "Workspace global da plataforma",
     "dashboard": "Dashboard",
     "globalDashboard": "Visão Global",
+    "tenantLabel": "Tenant",
+    "tenantLoading": "Carregando...",
+    "noTenantsAvailable": "Nenhum tenant disponível",
+    "noTenants": "Sem tenants",
+    "selectTenantPlaceholder": "Selecione um tenant",
+    "globalViewOption": "Visão Global",
     "accessManagement": "Gestão de Acessos",
     "admins": "Administradores",
     "tenants": "Tenants",
     "users": "Usuários",
+    "userLabel": "Usuário",
     "leads": "Leads",
     "allLeads": "Todos os leads",
     "leadCollections": "Coleções",
     "abandonedCarts": "Carrinhos abandonados",
     "emailCampaigns": "Campanhas de Email",
     "profile": "Meu Perfil",
+    "cms": "CMS",
+    "blogs": "Blogs",
+    "articles": "Artigos",
+    "authors": "Autores",
+    "cmsCollections": "Coleções",
+    "media": "Mídia",
     "stats": "Stats",
     "statsOverview": "Visão Geral",
     "statsIntegrations": "Integrações",
@@ -1042,6 +1056,9 @@
   },
   "stats": {
     "title": "Visão Geral",
+    "topBlogs": "Top Blogs",
+    "topLeadCollections": "Top coleções de leads",
+    "noTimeseriesData": "Nenhuma série temporal disponível para este período.",
     "globalTitle": "Visão Global da Plataforma",
     "globalDescription": "Métricas consolidadas de todos os tenants ativos da plataforma.",
     "globalEmptyState": "Nenhuma métrica global disponível no momento.",
@@ -1093,5 +1110,8 @@
       "secretPlaceholder": "Deixe em branco para manter",
       "invalidJson": "JSON inválido"
     }
+  },
+  "accessManagementTenantDetail": {
+    "openStatsDrilldown": "Abrir drill-down de stats"
   }
 }

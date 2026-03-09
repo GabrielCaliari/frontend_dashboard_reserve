@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import {
   Button,
   Card,
@@ -55,6 +56,7 @@ import { toast } from "react-hot-toast";
  * Validates: Requirements 10.1, 10.2, 10.3, 10.4, 10.5
  */
 export default function TenantDetailPage() {
+  const t = useTranslations("accessManagementTenantDetail");
   const params = useParams();
   const router = useRouter();
   const tenantId = params.id as string;
@@ -254,7 +256,7 @@ export default function TenantDetailPage() {
               variant="flat"
               startContent={<BarChart3 className="w-4 h-4" />}
             >
-              Open Stats Drill-down
+              {t("openStatsDrilldown")}
             </Button>
           </div>
         </div>

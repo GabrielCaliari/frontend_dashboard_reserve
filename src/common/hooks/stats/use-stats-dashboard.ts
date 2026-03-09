@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { statsService } from '@/src/common/services/stats-service';
 import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
 import type {
+  StatsTimeseriesItem,
   StatsDashboardQuery,
   StatsTimeseriesQuery,
 } from '@/src/common/@types/@stats';
@@ -48,6 +49,40 @@ export function useStatsTimeseries(query: StatsTimeseriesQuery = {}) {
     ],
     queryFn: () => statsService.getTimeseries(query),
     enabled: !!tenantId,
+  });
+}
+
+export function useStatsTimeseriesModules(
+  modules: string[],
+  query: StatsTimeseriesQuery = {},
+) {
+  const tenantId = useSelectedTenantId();
+
+  return useQueries({
+    queries: modules.map((moduleKey) => ({
+      queryKey: [
+        'stats-timeseries',
+        tenantId,
+        moduleKey,
+        query.granularity,
+        query.from,
+        query.to,
+      ],
+      queryFn: () => statsService.getTimeseries({
+        ...query,
+        module: moduleKey,
+      }),
+      enabled: !!tenantId && !!moduleKey,
+    })),
+    combine: (results) =>
+      results.map((result, index) => ({
+        moduleKey: modules[index],
+        data: result.data,
+        error: result.error,
+        isLoading: result.isLoading,
+        isError: result.isError,
+        seriesItem: result.data?.series[0] as StatsTimeseriesItem | undefined,
+      })),
   });
 }
 

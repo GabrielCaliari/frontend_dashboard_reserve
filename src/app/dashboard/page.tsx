@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle, BarChart3, Plug } from "lucide-react";
 import { Card, CardBody, Spinner, Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
-import { useStatsDashboard, useStatsTimeseries } from "@/src/common/hooks/stats";
+import {
+  useStatsDashboard,
+  useStatsTimeseriesModules,
+} from "@/src/common/hooks/stats";
 import {
   StatGroupCard,
   DateRangePicker,
@@ -41,13 +44,31 @@ export default function DashboardPage() {
   const range = useMemo(() => buildIsoRange(from, to), [from, to]);
 
   const { data, isLoading, isError } = useStatsDashboard(range);
-  const leadsTimeseries = useStatsTimeseries({ ...range, module: "leads", granularity: "day" });
-  const cmsTimeseries = useStatsTimeseries({ ...range, module: "cms", granularity: "day" });
+  const modules = useMemo(
+    () => data?.groups.map((group) => group.moduleKey) ?? [],
+    [data?.groups],
+  );
+  const timeseriesModules = useStatsTimeseriesModules(modules, {
+    ...range,
+    granularity: "day",
+  });
+  const visibleTimeseriesModules = useMemo(
+    () =>
+      timeseriesModules.filter(
+        (module) => module.isLoading || module.seriesItem || (!module.isError && module.data?.series.length),
+      ),
+    [timeseriesModules],
+  );
+  const groupByModuleKey = useMemo(
+    () =>
+      new Map((data?.groups ?? []).map((group) => [group.moduleKey, group])),
+    [data?.groups],
+  );
 
   if (!hasSelectedTenant) {
     return (
       <LayoutScopeRoot routeActive="dashboard">
-        <div className="flex flex-col items-center justify-center py-16">
+        <div className="mx-auto flex flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
           <Card className="max-w-md border-warning/20 bg-warning/5">
             <CardBody className="p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center mx-auto mb-4">
@@ -66,9 +87,9 @@ export default function DashboardPage() {
 
   return (
     <LayoutScopeRoot routeActive="dashboard">
-      <div className="space-y-6">
+      <div className="mx-auto space-y-6 px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-bold text-gray-100">{t("title")}</h1>
             {data?.generatedAt && (
               <p className="text-xs text-gray-400 mt-1">
@@ -78,7 +99,7 @@ export default function DashboardPage() {
               </p>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
             <DateRangePicker
               from={from}
               to={to}
@@ -93,7 +114,7 @@ export default function DashboardPage() {
               variant="bordered"
               size="sm"
               startContent={<Plug className="h-4 w-4" />}
-              className="border-gray-700 text-gray-300"
+              className="w-full border-gray-700 text-gray-300 sm:w-auto"
             >
               {t("integrationsLabel")}
             </Button>
@@ -134,22 +155,24 @@ export default function DashboardPage() {
 
         {data && data.groups.length > 0 && (
           <div className="space-y-6">
-            <div className="grid gap-6 xl:grid-cols-2">
-              <StatsTimeseriesCard
-                title={t("leadsSeriesTitle")}
-                description={t("leadsSeriesDescription")}
-                seriesItem={leadsTimeseries.data?.series[0]}
-                isLoading={leadsTimeseries.isLoading}
-                error={leadsTimeseries.isError ? t("timeseriesError") : undefined}
-              />
-              <StatsTimeseriesCard
-                title={t("cmsSeriesTitle")}
-                description={t("cmsSeriesDescription")}
-                seriesItem={cmsTimeseries.data?.series[0]}
-                isLoading={cmsTimeseries.isLoading}
-                error={cmsTimeseries.isError ? t("timeseriesError") : undefined}
-              />
-            </div>
+            {visibleTimeseriesModules.length > 0 ? (
+              <div className="grid gap-6 xl:grid-cols-2 2xl:grid-cols-3">
+                {visibleTimeseriesModules.map((module) => {
+                  const group = groupByModuleKey.get(module.moduleKey);
+
+                  return (
+                    <StatsTimeseriesCard
+                      key={module.moduleKey}
+                      title={group?.label ?? module.seriesItem?.label ?? module.moduleKey}
+                      description={group?.description}
+                      seriesItem={module.seriesItem}
+                      isLoading={module.isLoading}
+                      error={module.isError ? t("timeseriesError") : undefined}
+                    />
+                  );
+                })}
+              </div>
+            ) : null}
 
             {data.groups.map((group) => (
               <StatGroupCard key={group.moduleKey} group={group} />

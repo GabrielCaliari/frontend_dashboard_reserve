@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Select, SelectItem } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import useAdminDetails from "@/src/common/hooks/useUserDatails";
 import usePermissions from "@/src/common/hooks/use-permissions";
 import { useRouter } from "nextjs-toploader/app";
@@ -14,6 +15,7 @@ const GLOBAL_VIEW_KEY = "__global_view__";
 
 export default function TenantSelector() {
   const { push } = useRouter();
+  const t = useTranslations("sidebar");
   const [isMounted, setIsMounted] = useState(false);
   const { data: adminData, isLoading } = useAdminDetails();
   const { isSuperAdmin } = usePermissions();
@@ -58,8 +60,8 @@ export default function TenantSelector() {
   if (!isMounted || isLoading) {
     return (
       <Select
-        label="Tenant"
-        placeholder="Loading..."
+        label={t("tenantLabel")}
+        placeholder={t("tenantLoading")}
         isLoading={true}
         isDisabled={true}
         className="max-w-xs"
@@ -68,7 +70,7 @@ export default function TenantSelector() {
           label: "text-gray-400",
         }}
       >
-        <SelectItem key="loading">Loading...</SelectItem>
+        <SelectItem key="loading">{t("tenantLoading")}</SelectItem>
       </Select>
     );
   }
@@ -76,8 +78,8 @@ export default function TenantSelector() {
   if (tenants.length === 0 && !isSuperAdmin) {
     return (
       <Select
-        label="Tenant"
-        placeholder="No tenants available"
+        label={t("tenantLabel")}
+        placeholder={t("noTenantsAvailable")}
         isDisabled={true}
         className="max-w-xs"
         classNames={{
@@ -85,15 +87,15 @@ export default function TenantSelector() {
           label: "text-gray-400",
         }}
       >
-        <SelectItem key="empty">No tenants</SelectItem>
+        <SelectItem key="empty">{t("noTenants")}</SelectItem>
       </Select>
     );
   }
 
   return (
     <Select
-      label="Tenant"
-      placeholder="Select Tenant"
+      label={t("tenantLabel")}
+      placeholder={t("selectTenantPlaceholder")}
       selectedKeys={
         dashboardScope === "global"
           ? new Set([GLOBAL_VIEW_KEY])
@@ -125,9 +127,9 @@ export default function TenantSelector() {
         <SelectItem
           key={GLOBAL_VIEW_KEY}
           value={GLOBAL_VIEW_KEY}
-          textValue="Visão Global"
+          textValue={t("globalViewOption")}
         >
-          Visão Global
+          {t("globalViewOption")}
         </SelectItem>
       )}
       {tenants.map((tenant) => (

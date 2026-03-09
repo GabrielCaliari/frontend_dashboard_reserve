@@ -122,7 +122,7 @@ export function Sidebar({
         return [
           {
             id: "dashboard-global",
-            label: t("globalDashboard") || "Visão Global",
+            label: t("globalDashboard"),
             icon: LayoutDashboardIcon,
             path: "/dashboard/global",
           },
@@ -153,7 +153,7 @@ export function Sidebar({
           },
           {
             id: "profile",
-            label: t("profile") || "My Profile",
+            label: t("profile"),
             icon: Settings,
             path: "/dashboard/profile",
           },
@@ -200,36 +200,36 @@ export function Sidebar({
         },
         {
           id: "cms",
-          label: "CMS",
+          label: t("cms"),
           icon: LayoutTemplate,
           subItems: [
             {
               id: "blogs",
-              label: "Blogs",
+              label: t("blogs"),
               icon: FileText,
               path: "/dashboard/cms/blogs",
             },
             {
               id: "articles",
-              label: "Articles",
+              label: t("articles"),
               icon: FileText,
               path: "/dashboard/cms/articles",
             },
             {
               id: "authors",
-              label: "Authors",
+              label: t("authors"),
               icon: UserCircle,
               path: "/dashboard/cms/authors",
             },
             {
               id: "collections",
-              label: "Collections",
+              label: t("cmsCollections"),
               icon: FolderOpen,
               path: "/dashboard/cms/collections",
             },
             {
               id: "media",
-              label: "Media",
+              label: t("media"),
               icon: Image,
               path: "/dashboard/cms/media",
             },
@@ -237,7 +237,7 @@ export function Sidebar({
         },
         {
           id: "profile",
-          label: t("profile") || "My Profile",
+          label: t("profile"),
           icon: Settings,
           path: "/dashboard/profile",
         },
@@ -376,12 +376,12 @@ export function Sidebar({
                 </div>
                 <div className="flex flex-col w-full min-w-0">
                   <h1 className="flex items-center font-bold text-sm text-gray-100 capitalize tracking-wide truncate">
-                    {userName || "User"}
+                    {userName || t("userLabel")}
                   </h1>
                   <p className="text-xs text-gray-500 truncate">
                     {dashboardScope === "global" && isSuperAdmin
-                      ? t("globalWorkspace") || "Workspace global"
-                      : selectedTenant?.name || t("workspace")}
+                      ? t("globalWorkspace")
+                      : selectedTenant?.name || t("defaultWorkspace")}
                   </p>
                 </div>
               </div>
@@ -425,12 +425,12 @@ export function Sidebar({
                 </div>
                 <div className="flex flex-col min-w-0">
                   <span className="text-sm font-bold text-gray-100 capitalize truncate">
-                    {userName || "User"}
+                    {userName || t("userLabel")}
                   </span>
                   <span className="text-xs text-gray-500">
                     {dashboardScope === "global" && isSuperAdmin
-                      ? t("globalWorkspace") || "Workspace global"
-                      : selectedTenant?.name || t("workspace")}
+                      ? t("globalWorkspace")
+                      : selectedTenant?.name || t("defaultWorkspace")}
                   </span>
                 </div>
               </div>
@@ -439,7 +439,7 @@ export function Sidebar({
                 size="sm"
                 variant="light"
                 onPress={closeMobileDrawer}
-                aria-label={t("closeMenu") || "Close menu"}
+                aria-label={t("closeMenu")}
               >
                 <X className="w-5 h-5 text-gray-400" />
               </Button>

@@ -16,8 +16,10 @@ export function StatKpiCard({ metric }: StatKpiCardProps) {
     <Card className="bg-[#16162a] border-gray-800">
       <CardContent className="p-4">
         <p className="text-xs text-gray-400 truncate">{metric.label}</p>
-        <div className="mt-1 flex items-end justify-between gap-2">
-          <span className="text-2xl font-bold text-gray-100">{formattedValue}</span>
+        <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <span className="min-w-0 break-words text-xl font-bold text-gray-100 sm:text-2xl">
+            {formattedValue}
+          </span>
           <TrendBadge trend={metric.trend} />
         </div>
       </CardContent>
