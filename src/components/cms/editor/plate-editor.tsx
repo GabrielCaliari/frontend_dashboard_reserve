@@ -255,6 +255,7 @@ interface EditorToolbarProps {
   isTransitioning?: boolean;
   markdownWarning?: string | null;
   onDismissWarning?: () => void;
+  topSlot?: React.ReactNode;
 }
 
 function EditorToolbar({
@@ -265,6 +266,7 @@ function EditorToolbar({
   isTransitioning,
   markdownWarning,
   onDismissWarning,
+  topSlot,
 }: EditorToolbarProps) {
   const editor = useEditorRef();
   const isFormatted = viewMode === "formatted";
@@ -305,7 +307,14 @@ function EditorToolbar({
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className="sticky top-0 z-40 border-b border-border bg-content1 overflow-x-auto">
+      <div className="sticky top-0 z-40 border-b border-border bg-content1/95 backdrop-blur-sm shadow-sm">
+        {topSlot && (
+          <>
+            {topSlot}
+            <div className="h-px bg-border/60 mx-0" />
+          </>
+        )}
+        <div className="overflow-x-auto">
         <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2">
           {/* Format buttons -- only visible in formatted mode */}
           {isFormatted && (
@@ -434,6 +443,7 @@ function EditorToolbar({
             onModeChange={onViewModeChange}
             disabled={disabled || isTransitioning}
           />
+        </div>
         </div>
 
         {/* Markdown validation warning banner */}
@@ -760,6 +770,7 @@ interface PlateEditorProps {
   initialContent?: string;
   blogId?: string | number;
   articleId?: string;
+  topSlot?: React.ReactNode;
 }
 
 export function PlateEditor({
@@ -769,6 +780,7 @@ export function PlateEditor({
   initialContent,
   blogId,
   articleId,
+  topSlot,
 }: PlateEditorProps) {
   // Parse initial content using Plate's markdown plugin
   const parsedInitial = React.useMemo(() => {
@@ -1197,6 +1209,7 @@ export function PlateEditor({
             isTransitioning={isTransitioning}
             markdownWarning={markdownWarning}
             onDismissWarning={() => setMarkdownWarning(null)}
+            topSlot={topSlot}
           />
 
           {/* Transition overlay */}

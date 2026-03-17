@@ -27,6 +27,17 @@ export function LayoutScopeRoot({ children, routeActive }: RootLayoutProps) {
   );
 }
 
-export function LayoutScopeEditor(props: RootLayoutProps) {
-  return <LayoutScopeRoot {...props} />;
+export function LayoutScopeEditor({ children, routeActive }: RootLayoutProps) {
+  return (
+    <div className="inline-flex h-screen w-screen overflow-hidden">
+      <Sidebar
+        activeTab={routeActive}
+        disabledTabs={[]}
+        mobileStyle="footer"
+      />
+      <div className="flex-1 h-full overflow-hidden flex flex-col">
+        {children}
+      </div>
+    </div>
+  );
 }

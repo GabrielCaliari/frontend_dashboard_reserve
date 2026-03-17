@@ -93,15 +93,15 @@ const normalizeArticles = (articles: ArticleApiResponse[]): Article[] =>
 
 const serializeArticlePayload = (data: CreateArticleDto | UpdateArticleDto) => {
   const payload = {
-    display_title: data.displayTitle,
-    meta_title: data.metaTitle,
-    meta_description: data.metaDescription,
-    focus_keyword: data.focusKeyword,
+    displayTitle: data.displayTitle,
+    metaTitle: data.metaTitle,
+    metaDescription: data.metaDescription,
+    focusKeyword: data.focusKeyword,
     slug: data.slug,
-    author_id: data.authorId,
-    blog_id: data.blogId,
+    authorId: data.authorId,
+    blogId: data.blogId,
     content: data.content,
-    cover_image_id: data.coverImageId,
+    coverImageId: data.coverImageId,
     language: normalizeLanguage(data.language),
   };
 

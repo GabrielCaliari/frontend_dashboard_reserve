@@ -132,15 +132,15 @@ describe('cms-article-service', () => {
     const result = await createArticle(payload);
 
     expect(cmsApiClient.post).toHaveBeenCalledWith('cms/articles', {
-      display_title: 'Novo artigo',
-      meta_title: 'Titulo SEO',
-      meta_description: 'Descricao SEO',
-      focus_keyword: 'zarp',
+      displayTitle: 'Novo artigo',
+      metaTitle: 'Titulo SEO',
+      metaDescription: 'Descricao SEO',
+      focusKeyword: 'zarp',
       slug: 'novo-artigo',
-      author_id: 'author-1',
-      blog_id: 'blog-1',
+      authorId: 'author-1',
+      blogId: 'blog-1',
       content: '<p>conteudo</p>',
-      cover_image_id: 'asset-1',
+      coverImageId: 'asset-1',
       language: 'pt_br',
     });
     expect(result.language).toBe('pt_br');
@@ -175,8 +175,8 @@ describe('cms-article-service', () => {
     const result = await updateArticle('art-4', payload);
 
     expect(cmsApiClient.put).toHaveBeenCalledWith('cms/articles/art-4', {
-      meta_title: 'SEO atualizado',
-      focus_keyword: 'nova keyword',
+      metaTitle: 'SEO atualizado',
+      focusKeyword: 'nova keyword',
       language: 'en_us',
     });
     expect(result.metaTitle).toBe('SEO atualizado');
