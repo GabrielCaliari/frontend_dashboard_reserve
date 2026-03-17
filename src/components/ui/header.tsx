@@ -77,6 +77,13 @@ export function Header() {
                   variant="flat"
                 >
                   <DropdownItem
+                    key="profile"
+                    onPress={() => push("/dashboard/profile")}
+                    startContent={<UserCircle size={18} />}
+                  >
+                    {t("profile")}
+                  </DropdownItem>
+                  <DropdownItem
                     key="desconectar"
                     className="text-danger hover:bg-danger/10 data-[hover=true]:bg-danger/10"
                     color="danger"

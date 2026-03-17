@@ -104,7 +104,9 @@ export const fetchAuthorById = async (authorId: string): Promise<Author> => {
  */
 export const createAuthor = async (data: CreateAuthorDto): Promise<Author> => {
   try {
-    const response = await cmsApiClient.post('cms/authors', data);
+    const payload: Record<string, any> = { ...data };
+    if (!payload.avatarId) delete payload.avatarId;
+    const response = await cmsApiClient.post('cms/authors', payload);
     return normalizeAuthor(response.data);
   } catch (error) {
     throw transformCMSError(error);
@@ -119,7 +121,9 @@ export const updateAuthor = async (
   data: UpdateAuthorDto,
 ): Promise<Author> => {
   try {
-    const response = await cmsApiClient.put(`cms/authors/${authorId}`, data);
+    const payload: Record<string, any> = { ...data };
+    if (!payload.avatarId) delete payload.avatarId;
+    const response = await cmsApiClient.put(`cms/authors/${authorId}`, payload);
     return normalizeAuthor(response.data);
   } catch (error) {
     throw transformCMSError(error);

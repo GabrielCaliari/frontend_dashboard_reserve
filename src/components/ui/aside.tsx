@@ -362,7 +362,7 @@ export function Sidebar({
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="bg-[#0f0f1a] w-[310px] border-r border-[#1f1f2e] p-4 flex-col justify-between hidden lg:flex overflow-hidden relative z-10 transition-all">
+      <aside className="bg-[#0f0f1a] w-[310px] border-r border-[#1f1f2e] p-4 flex-col hidden lg:flex overflow-hidden relative z-10 transition-all h-[calc(100svh-60px)]">
         <div className="w-full flex-1 flex flex-col min-h-0">
           <div className="flex flex-col w-full shrink-0">
             <Link
