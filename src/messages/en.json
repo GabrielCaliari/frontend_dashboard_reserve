@@ -143,7 +143,10 @@
     "pageOf": "Page {page} of {total}",
     "previous": "Previous",
     "next": "Next",
-    "rowsPerPage": "Rows per page"
+    "rowsPerPage": "Rows per page",
+    "exportCsv": "Export CSV",
+    "clearFilters": "Clear filters",
+    "showingResults": "Showing {first}–{last} of {total} leads"
   },
 
   "campaign": {

@@ -137,7 +137,10 @@
     "pageOf": "Página {page} de {total}",
     "previous": "Anterior",
     "next": "Próximo",
-    "rowsPerPage": "Linhas por página"
+    "rowsPerPage": "Linhas por página",
+    "exportCsv": "Exportar CSV",
+    "clearFilters": "Limpar filtros",
+    "showingResults": "Exibindo {first}–{last} de {total} leads"
   },
   "campaign": {
     "pendingConfig": "Pendente de configuração",
