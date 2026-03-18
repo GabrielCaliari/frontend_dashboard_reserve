@@ -178,25 +178,7 @@ export function Sidebar({
               icon: UsersRound,
               path: "/dashboard/leads",
             },
-            {
-              id: "lead-collections",
-              label: t("leadCollections"),
-              icon: FolderOpen,
-              path: "/dashboard/leads/collections",
-            },
-            {
-              id: "abandoned-carts",
-              label: t("abandonedCarts"),
-              icon: ShoppingCart,
-              path: "/dashboard/abandoned-carts",
-            },
           ],
-        },
-        {
-          id: "email",
-          label: t("emailCampaigns"),
-          icon: Mail,
-          path: "/dashboard/email-campaign",
         },
         {
           id: "cms",
@@ -215,24 +197,6 @@ export function Sidebar({
               icon: FileText,
               path: "/dashboard/cms/articles",
             },
-            {
-              id: "authors",
-              label: t("authors"),
-              icon: UserCircle,
-              path: "/dashboard/cms/authors",
-            },
-            {
-              id: "collections",
-              label: t("cmsCollections"),
-              icon: FolderOpen,
-              path: "/dashboard/cms/collections",
-            },
-            {
-              id: "media",
-              label: t("media"),
-              icon: Image,
-              path: "/dashboard/cms/media",
-            },
           ],
         },
         {
@@ -240,31 +204,6 @@ export function Sidebar({
           label: t("profile"),
           icon: Settings,
           path: "/dashboard/profile",
-        },
-        {
-          id: "access-management",
-          label: t("accessManagement"),
-          icon: Shield,
-          subItems: [
-            {
-              id: "admins",
-              label: t("admins"),
-              icon: UserCog,
-              path: "/dashboard/access-management/admins",
-            },
-            {
-              id: "tenants",
-              label: t("tenants"),
-              icon: Building2,
-              path: "/dashboard/access-management/tenants",
-            },
-            {
-              id: "users",
-              label: t("users"),
-              icon: Users,
-              path: "/dashboard/access-management/users",
-            },
-          ],
         },
       ];
     },
