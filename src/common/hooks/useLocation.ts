@@ -1,37 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchStates, fetchCities } from "@/src/common/services/states-service";
 import { State, City } from "@/src/interfaces/states.interface";
 
 export const useLocation = () => {
-    const [states, setStates] = useState<State[]>([]);
-    const [cities, setCities] = useState<City[]>([]);
-    const [selectedState, setSelectedState] = useState<string | undefined>();
+  const [selectedState, setSelectedState] = useState<string | undefined>();
 
-    useEffect(() => {
-        const loadStates = async () => {
-            try {
-                const statesData = await fetchStates();
-                setStates(statesData);
-            } catch (error) {
-                console.error("Erro ao carregar estados:", error);
-            }
-        };
-        loadStates();
-    }, []);
+  const { data: states = [] } = useQuery<State[]>({
+    queryKey: ["states"],
+    queryFn: fetchStates,
+    staleTime: Infinity, // estados raramente mudam
+  });
 
-    useEffect(() => {
-        if (!selectedState) return;
+  const { data: cities = [] } = useQuery<City[]>({
+    queryKey: ["cities", selectedState],
+    queryFn: () => fetchCities(selectedState!),
+    enabled: !!selectedState,
+    staleTime: 5 * 60 * 1000,
+  });
 
-        const loadCities = async () => {
-            try {
-                const citiesData = await fetchCities(selectedState);
-                setCities(citiesData);
-            } catch (error) {
-                console.error("Erro ao carregar cidades:", error);
-            }
-        };
-        loadCities();
-    }, [selectedState]);
-
-    return { states, cities, selectedState, setSelectedState };
+  return { states, cities, selectedState, setSelectedState };
 };

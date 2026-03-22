@@ -31,7 +31,6 @@ import {
 import KanbanCard from "./kanban-card";
 import KanbanColumn from "./kanban-column";
 import { listLeadQualification } from "@/src/common/actions/list-lead-qualification";
-import { date } from "yup";
 import { ILeadQualificationMessage } from "@/src/interfaces/lead-qualification.interface";
 import useUpdateLeadQualification from "@/src/common/hooks/use-update-lead-qualification";
 import { useTranslations } from "next-intl";
@@ -67,24 +66,28 @@ export default function KanbanBoardWithAutosave() {
   const [activeColumn, setActiveColumn] = useState<ColumnType | null>(null);
 
   useEffect(() => {
-    const leadsReturn = listLeadQualification();
+    let active = true;
 
-    leadsReturn.then((data) => {
-      data.forEach((raw) => {
-        setCards((prev) => [
-          ...prev,
-          {
+    listLeadQualification()
+      .then((data) => {
+        if (!active) return;
+        setCards(
+          data.map((raw) => ({
             id: `${raw.message_id}-${Date.now()}`,
             title: raw.lead_name,
             description: raw.phone_number,
             columnId: raw.card,
             details: raw.messages,
-          },
-        ]);
+          })),
+        );
+      })
+      .catch(() => {
+        // silencia erros de carregamento — o board inicia vazio
       });
-    });
 
-    return () => {};
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Estados para o modal de adicionar coluna
@@ -102,36 +105,12 @@ export default function KanbanBoardWithAutosave() {
   const [isSaved, setIsSaved] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Carregar dados salvos do localStorage quando o componente é montado
+  // Detectar mudanças e resetar flag após debounce
   useEffect(() => {
-    // const savedColumns = localStorage.getItem("kanban-columns")
-    // const savedCards = localStorage.getItem("kanban-cards")
-    // if (savedColumns) {
-    //   try {
-    //     setColumns(JSON.parse(savedColumns))
-    //   } catch (error) {
-    //     console.error("Erro ao carregar colunas:", error)
-    //   }
-    // }
-    // if (savedCards) {
-    //   try {
-    //     setCards(JSON.parse(savedCards))
-    //   } catch (error) {
-    //     console.error("Erro ao carregar cartões:", error)
-    //   }
-    // }
-  }, []);
-
-  // Detectar mudanças e salvar automaticamente após um tempo
-  useEffect(() => {
-    if (hasChanges) {
-      const timer = setTimeout(() => {
-        setHasChanges(false);
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [hasChanges, columns, cards]);
+    if (!hasChanges) return;
+    const timer = setTimeout(() => setHasChanges(false), 2000);
+    return () => clearTimeout(timer);
+  }, [hasChanges]);
 
   // Marcar que houve mudanças quando columns ou cards mudam
   useEffect(() => {

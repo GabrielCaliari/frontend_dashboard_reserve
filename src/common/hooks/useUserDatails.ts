@@ -31,8 +31,8 @@ const useAdminDetails = () => {
   return useQuery({
     queryKey: ["get-user-data"],
     queryFn: fetchUserData,
-    enabled: !!token,
-    staleTime: 5 * 60 * 1000, // 5 min — evita refetch a cada remontagem
+    enabled: !!token && !!session,
+    staleTime: 5 * 60 * 1000,
   });
 };
 

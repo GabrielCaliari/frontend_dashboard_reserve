@@ -1,23 +1,30 @@
+import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { completeScreening } from "../actions/complete-screening";
 
 export default function useCompleteScreening() {
-    const execCompleteScreening = async (leadId: string) => {
-        const promise = completeScreening(leadId);
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (leadId: string) => completeScreening(leadId),
+    onSuccess: (result) => {
+      if (result) {
+        toast.success("O processo de triagem do Lead foi fechado com sucesso.");
+      } else {
+        toast.error("Ops... Deu erro ao concluir o processo de triagem do lead.");
+      }
+    },
+    onError: () => {
+      toast.error("Ops... Deu erro ao concluir o processo de triagem do lead.");
+    },
+  });
 
-        return promise
-            .then(async result => {
-                if (result) {
-                    toast.success('O processo de triagem do Lead foi fechado com sucesso.');
-                    return true;
-                }
-
-                throw 'Não foi possível fechar o processo de triagem do lead';
-            }).catch(async result => {
-                toast.error('Ops... Deu erro ao concluir o processo de triagem do lead.');
-                return false;
-            });
+  const execCompleteScreening = async (leadId: string): Promise<boolean> => {
+    try {
+      const result = await mutateAsync(leadId);
+      return !!result;
+    } catch {
+      return false;
     }
+  };
 
-    return { execCompleteScreening };
+  return { execCompleteScreening, isPending };
 }

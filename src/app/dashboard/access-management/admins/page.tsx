@@ -70,7 +70,10 @@ export default function AdminListPage() {
       }
       setIsFormModalOpen(false);
       setSelectedAdmin(undefined);
-    } catch {}
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message;
+      toast.error(Array.isArray(msg) ? msg.join(", ") : (msg || t("admins.management.errorMessage")));
+    }
   };
 
   const handleToggleStatus = (adminId: string, isActive: boolean) => {
@@ -89,7 +92,10 @@ export default function AdminListPage() {
         try {
           await toggleStatusMutation.mutateAsync({ id: adminId, isActive });
           setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-        } catch {}
+        } catch (err: any) {
+          const msg = err?.response?.data?.message || err?.message;
+          toast.error(Array.isArray(msg) ? msg.join(", ") : (msg || t("admins.management.errorMessage")));
+        }
       },
     });
   };
@@ -108,7 +114,10 @@ export default function AdminListPage() {
         try {
           await deleteAdminMutation.mutateAsync(adminId);
           setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-        } catch {}
+        } catch (err: any) {
+          const msg = err?.response?.data?.message || err?.message;
+          toast.error(Array.isArray(msg) ? msg.join(", ") : (msg || t("admins.management.errorMessage")));
+        }
       },
     });
   };

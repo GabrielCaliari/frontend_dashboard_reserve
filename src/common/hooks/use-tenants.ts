@@ -1,40 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { Tenant } from '@/src/common/@types/@auth';
-import { listMyTenants } from '../actions/tenant';
-import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
+import { listMyTenantsService } from '../services/tenant';
+import type { Tenant } from '@/src/common/@types/@auth';
 
 export default function useTenants() {
-    const [tenants, setTenants] = useState<Tenant[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error, refetch } = useQuery<Tenant[] | string>({
+    queryKey: ['my-tenants'],
+    queryFn: listMyTenantsService,
+    staleTime: 5 * 60 * 1000,
+  });
 
-    const fetchTenants = async () => {
-        setLoading(true);
-        setError(null);
+  const tenants = Array.isArray(data) ? data : [];
+  const queryError = typeof data === 'string' ? data : error ? String(error) : null;
 
-        try {
-            const result = await listMyTenants();
-
-            if (typeof result === 'string') {
-                setError(result);
-                toast.error('Erro ao carregar empresas');
-                return;
-            }
-
-            setTenants(result);
-        } catch (err) {
-            setError('Erro ao carregar empresas');
-            toast.error('Erro ao carregar empresas');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchTenants();
-    }, []);
-
-    return { tenants, loading, error, refetch: fetchTenants };
+  return {
+    tenants,
+    loading: isLoading,
+    error: queryError,
+    refetch,
+  };
 }

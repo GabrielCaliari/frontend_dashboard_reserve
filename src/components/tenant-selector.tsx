@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Select, SelectItem } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import useAdminDetails from "@/src/common/hooks/useUserDatails";
@@ -38,23 +38,26 @@ export default function TenantSelector() {
     }
   }, [tenants, selectedTenant, setSelectedTenant]);
 
-  const handleSelectionChange = (keys: any) => {
-    const selectedKey = Array.from(keys)[0] as string;
-    if (!selectedKey) return;
+  const handleSelectionChange = useCallback(
+    (keys: Iterable<React.Key>) => {
+      const selectedKey = Array.from(keys)[0] as string | undefined;
+      if (!selectedKey) return;
 
-    if (selectedKey === GLOBAL_VIEW_KEY && isSuperAdmin) {
-      setDashboardScope("global");
-      push("/dashboard/global");
-      return;
-    }
+      if (selectedKey === GLOBAL_VIEW_KEY && isSuperAdmin) {
+        setDashboardScope("global");
+        push("/dashboard/global");
+        return;
+      }
 
-    const tenant = tenants.find((t) => t.id.toString() === selectedKey);
-    if (tenant) {
-      setSelectedTenant(tenant);
-      setDashboardScope("tenant");
-      push("/dashboard");
-    }
-  };
+      const tenant = tenants.find((t) => t.id.toString() === selectedKey);
+      if (tenant) {
+        setSelectedTenant(tenant);
+        setDashboardScope("tenant");
+        push("/dashboard");
+      }
+    },
+    [isSuperAdmin, tenants, setDashboardScope, setSelectedTenant, push],
+  );
 
   // Prevent hydration mismatch - render placeholder on server
   if (!isMounted || isLoading) {

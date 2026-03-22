@@ -3,12 +3,13 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
 import { Input } from "@/src/components/ui/input"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Eye, MousePointer } from "lucide-react"
 import { IDelivery } from "@/src/common/@types/@delivery"
 import listDeliveriesByCampaignBatchIdService from "@/src/common/services/campaign-batch/list-deliveries-by-campaign-batch-id-service"
 import { EDeliveryStatus } from "@/src/common/@types/@delivery"
 import { useTranslations } from "next-intl"
+import { useQuery } from "@tanstack/react-query"
 
 interface LeadListDialogProps {
   isOpen: boolean
@@ -33,25 +34,25 @@ function StatusBadge({ status }: { status: string }) {
   )
 }
 
-
 export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [deliveries, setDeliveries] = useState<IDelivery[]>([])
   const t = useTranslations()
 
-  useEffect(() => {
-    listDeliveriesByCampaignBatchIdService(batchId)
-      .then((deliveries) => setDeliveries(deliveries as IDelivery[]))
+  const { data: deliveries = [], isLoading } = useQuery<IDelivery[]>({
+    queryKey: ["batch-deliveries", batchId],
+    queryFn: () => listDeliveriesByCampaignBatchIdService(batchId) as Promise<IDelivery[]>,
+    enabled: isOpen && !!batchId,
+    staleTime: 30 * 1000,
+  })
 
-    return () => {
-      setDeliveries([])
-    }
-  }, [batchId])
+  const filtered = searchTerm
+    ? deliveries.filter((d) =>
+        d.email_sent_to?.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+    : deliveries
 
   return (
-    <Dialog key={batchId} open={isOpen} onOpenChange={(isOpen) => {
-      if (!isOpen) onClose()
-    }}>
+    <Dialog key={batchId} open={isOpen} onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>{t("leadList.title")}{batchId}</DialogTitle>
@@ -68,17 +69,21 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
           <Table>
             <TableHeader>
               <TableRow>
-                {/* <TableHead>Nome</TableHead> */}
                 <TableHead>{t("common.email")}</TableHead>
                 <TableHead>{t("common.status")}</TableHead>
                 <TableHead>{t("leadList.metrics")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {deliveries.length > 0 ? (
-                deliveries.map((lead) => (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-4 text-gray-500">
+                    {t("common.loading")}...
+                  </TableCell>
+                </TableRow>
+              ) : filtered.length > 0 ? (
+                filtered.map((lead) => (
                   <TableRow key={lead.id}>
-                    {/* <TableCell className="font-medium">{lead.name}</TableCell> */}
                     <TableCell>{lead.email_sent_to}</TableCell>
                     <TableCell>
                       <StatusBadge status={EDeliveryStatus[lead.status]} />
@@ -95,7 +100,9 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
                             <MousePointer className="h-4 w-4 mr-1" />
                           </div>
                         )}
-                        {!lead.opened && !lead.clicked && <span className="text-gray-400">{t("leadList.notOpened")}</span>}
+                        {!lead.opened && !lead.clicked && (
+                          <span className="text-gray-400">{t("leadList.notOpened")}</span>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
