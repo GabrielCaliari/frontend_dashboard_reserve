@@ -118,7 +118,25 @@ export function AuthorDrawer({
         biography: author?.biography ?? "",
         avatarId: author?.avatarId ?? "",
       });
-      setSelectedAsset(null);
+      // Pre-populate selectedAsset so the grid highlights the existing avatar
+      if (author?.avatarId && author?.avatar) {
+        setSelectedAsset({
+          id: author.avatarId,
+          url: author.avatar.url,
+          filename: (author.avatar as any).filename ?? "",
+          mime_type: (author.avatar as any).mime_type ?? "image/*",
+          alt_text: (author.avatar as any).alt_text ?? "",
+          file_size: (author.avatar as any).file_size ?? 0,
+          status: "active",
+          collection_id: "",
+          tenant_id: "",
+          created_by: "",
+          created_at: "",
+          updated_at: "",
+        } as any);
+      } else {
+        setSelectedAsset(null);
+      }
       setPage(1);
       setAssetSearch("");
       setActiveTab("library");
@@ -132,9 +150,9 @@ export function AuthorDrawer({
     (asset: MediaAsset) => {
       const next = selectedAsset?.id === asset.id ? null : asset;
       setSelectedAsset(next);
-      setValue("avatarId", next?.id ?? author?.avatarId ?? "");
+      setValue("avatarId", next?.id ?? "");
     },
-    [selectedAsset, author?.avatarId, setValue],
+    [selectedAsset, setValue],
   );
 
   const handleRemoveAvatar = React.useCallback(() => {
