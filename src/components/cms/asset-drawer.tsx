@@ -4,13 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button, Input, Textarea, Chip, Spinner } from "@heroui/react";
 import { useDisclosure } from "@heroui/react";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@/src/components/ui/modal";
+import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import {
   X,
   Copy,
@@ -384,31 +378,17 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
           </div>
         )}
       </div>
-      {/* Delete confirmation modal */}
-      <Modal isOpen={deleteOpen} onClose={closeDelete} variant="danger">
-        <ModalContent>
-          <ModalHeader>{t("deleteConfirmTitle")}</ModalHeader>
-          <ModalBody>
-            {asset && (
-              <p className="text-gray-400 text-sm font-medium">{asset.filename}</p>
-            )}
-            <p className="text-gray-300">{t("deleteConfirmMessage")}</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="light" onPress={closeDelete}>
-              {tCommon("cancel")}
-            </Button>
-            <Button
-              color="danger"
-              onPress={handleDelete}
-              isLoading={deleteMutation.isPending || deleteCollectionMutation.isPending}
-              startContent={!(deleteMutation.isPending || deleteCollectionMutation.isPending) && <Trash2 className="w-4 h-4" />}
-            >
-              {tCommon("delete")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ConfirmationDialog
+        isOpen={deleteOpen}
+        onClose={closeDelete}
+        onConfirm={handleDelete}
+        title={t("deleteConfirmTitle")}
+        message={asset ? `${asset.filename} — ${t("deleteConfirmMessage")}` : t("deleteConfirmMessage")}
+        confirmText={tCommon("delete")}
+        cancelText={tCommon("cancel")}
+        variant="danger"
+        isLoading={deleteMutation.isPending || deleteCollectionMutation.isPending}
+      />
     </>
   );
 }

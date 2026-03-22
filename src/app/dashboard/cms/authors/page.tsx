@@ -9,6 +9,7 @@ import {
   Input,
 } from "@heroui/react";
 import { Plus, AlertCircle, Search } from "lucide-react";
+import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import { AuthorList } from "@/src/components/cms/authors/author-list";
 import { AuthorDrawer } from "@/src/components/cms/authors/author-drawer";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
@@ -28,6 +29,7 @@ export default function AuthorsPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
   const [search, setSearch] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<Author | null>(null);
 
   const { data: authors, isLoading } = useGetAuthors();
   const createAuthorMutation = useCreateAuthor();
@@ -53,26 +55,27 @@ export default function AuthorsPage() {
   };
 
   const handleDelete = (author: Author) => {
-    if (
-      confirm(
-        `Are you sure you want to delete "${author.firstName} ${author.lastName}"? This action cannot be undone.`,
-      )
-    ) {
-      deleteAuthorMutation.mutate(author.id, {
-        onSuccess: () => {
-          toast.success("Author deleted", {
-            description: `${author.firstName} ${author.lastName} has been deleted successfully.`,
-          });
-        },
-        onError: (error: any) => {
-          const message =
-            error?.response?.data?.message || error.message || "Unknown error";
-          toast.error("Failed to delete author", {
-            description: Array.isArray(message) ? message.join(", ") : message,
-          });
-        },
-      });
-    }
+    setDeleteTarget(author);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+    deleteAuthorMutation.mutate(deleteTarget.id, {
+      onSuccess: () => {
+        toast.success("Author deleted", {
+          description: `${deleteTarget.firstName} ${deleteTarget.lastName} has been deleted successfully.`,
+        });
+        setDeleteTarget(null);
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message || error.message || "Unknown error";
+        toast.error("Failed to delete author", {
+          description: Array.isArray(message) ? message.join(", ") : message,
+        });
+        setDeleteTarget(null);
+      },
+    });
   };
 
   const handleSubmit = async (data: CreateAuthorDto | UpdateAuthorDto) => {
@@ -176,6 +179,17 @@ export default function AuthorsPage() {
           </CardBody>
         </Card>
       </div>
+
+      <ConfirmationDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Author"
+        message={`Are you sure you want to delete "${deleteTarget?.firstName} ${deleteTarget?.lastName}"? This action cannot be undone.`}
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleteAuthorMutation.isPending}
+      />
 
       {/* Author Drawer */}
       <AuthorDrawer

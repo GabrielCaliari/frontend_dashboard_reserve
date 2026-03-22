@@ -23,6 +23,7 @@ import {
 } from "@/src/common/stores/tenant-store";
 import type { Article } from "@/src/common/@types/@cms-article";
 import { toast } from "sonner";
+import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 
 type ArticleStatus = "draft" | "published" | "archived";
 
@@ -34,6 +35,7 @@ function ArticlesPageContent() {
   );
   const [currentStatus, setCurrentStatus] = useState<ArticleStatus | undefined>(undefined);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Article | null>(null);
 
   const handleBlogChange = useCallback((value: string) => {
     setSelectedBlogId(value);
@@ -85,9 +87,15 @@ function ArticlesPageContent() {
   }
 
   const handleDelete = (article: Article) => {
-    if (confirm(`Are you sure you want to delete "${article.title}"?`)) {
-      deleteArticle(article.id);
-    }
+    setDeleteTarget(article);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+    deleteArticle(deleteTarget.id, {
+      onSuccess: () => setDeleteTarget(null),
+      onError: () => setDeleteTarget(null),
+    });
   };
 
   const handlePublish = (article: Article) => {
@@ -189,6 +197,16 @@ function ArticlesPageContent() {
             )
           }
           onRowClick={setSelectedArticle}
+        />
+
+        <ConfirmationDialog
+          isOpen={!!deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          onConfirm={handleConfirmDelete}
+          title="Delete Article"
+          message={`Are you sure you want to delete "${deleteTarget?.title}"? This action cannot be undone.`}
+          confirmText="Delete"
+          variant="danger"
         />
 
         <ArticleQuickEditDrawer

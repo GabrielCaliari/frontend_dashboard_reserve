@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle } from "lucide-react";
+import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import { Card, CardBody } from "@heroui/react";
 import { BlogList, BlogForm } from "@/src/components/cms/blogs";
 import { SecretKeyDialog } from "@/src/components/cms/secret-key-dialog";
@@ -33,6 +34,7 @@ export default function BlogsPage() {
   const [selectedBlog, setSelectedBlog] = useState<Blog | undefined>(undefined);
   const [secretKeyTargetBlog, setSecretKeyTargetBlog] = useState<Blog | null>(null);
   const [generatedSecretKey, setGeneratedSecretKey] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Blog | null>(null);
 
   const hasSelectedTenant = useHasSelectedTenant();
 
@@ -73,17 +75,17 @@ export default function BlogsPage() {
     setIsFormOpen(true);
   };
 
-  const handleDeleteClick = async (blog: Blog) => {
-    if (
-      confirm(
-        `Are you sure you want to delete "${blog.name}"? This will delete all articles and images.`,
-      )
-    ) {
-      try {
-        await deleteBlogMutation.mutateAsync(blog.id);
-      } catch (error) {
-        // Error is handled by mutation
-      }
+  const handleDeleteClick = (blog: Blog) => {
+    setDeleteTarget(blog);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteBlogMutation.mutateAsync(deleteTarget.id);
+      setDeleteTarget(null);
+    } catch (error) {
+      // Error is handled by mutation
     }
   };
 
@@ -190,6 +192,17 @@ export default function BlogsPage() {
             </div>
           </SheetContent>
         </Sheet>
+
+        <ConfirmationDialog
+          isOpen={!!deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          onConfirm={handleConfirmDelete}
+          title="Delete Blog"
+          message={`Are you sure you want to delete "${deleteTarget?.name}"? This will permanently delete all articles and images.`}
+          confirmText="Delete"
+          variant="danger"
+          isLoading={deleteBlogMutation.isPending}
+        />
 
         <SecretKeyDialog
           open={isSecretKeyOpen}

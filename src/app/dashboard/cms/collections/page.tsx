@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle, Plus, Pencil, Trash2, Search } from "lucide-react";
+import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import {
   Card,
   CardBody,
@@ -46,6 +47,7 @@ export default function CollectionsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<CollectionType | "all">("all");
+  const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string } | null>(null);
 
   const { data, isLoading } = useCollections({ page, limit: 20 });
   const deleteCollectionMutation = useDeleteCollection();
@@ -61,17 +63,17 @@ export default function CollectionsPage() {
     router.push(`/dashboard/cms/collections/${id}`);
   };
 
-  const handleDeleteClick = async (id: number, name: string) => {
-    if (
-      confirm(
-        `Are you sure you want to delete "${name}"? This will not delete the assets, only the collection.`
-      )
-    ) {
-      try {
-        await deleteCollectionMutation.mutateAsync(id);
-      } catch (error) {
-        // Error is handled by mutation
-      }
+  const handleDeleteClick = (id: number, name: string) => {
+    setDeleteTarget({ id, name });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteCollectionMutation.mutateAsync(deleteTarget.id);
+      setDeleteTarget(null);
+    } catch (error) {
+      // Error is handled by mutation
     }
   };
 
@@ -245,7 +247,6 @@ export default function CollectionsPage() {
                           variant="light"
                           color="danger"
                           onPress={() => handleDeleteClick(collection.id, collection.name)}
-                          isLoading={deleteCollectionMutation.isPending}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -257,6 +258,17 @@ export default function CollectionsPage() {
             </Table>
           </CardBody>
         </Card>
+
+        <ConfirmationDialog
+          isOpen={!!deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          onConfirm={handleConfirmDelete}
+          title="Delete Collection"
+          message={`Are you sure you want to delete "${deleteTarget?.name}"? This will not delete the assets, only the collection.`}
+          confirmText="Delete"
+          variant="danger"
+          isLoading={deleteCollectionMutation.isPending}
+        />
 
         {/* Pagination */}
         {totalPages > 1 && (

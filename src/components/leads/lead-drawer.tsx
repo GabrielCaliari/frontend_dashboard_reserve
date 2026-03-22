@@ -12,14 +12,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/src/components/ui/sheet";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogDescription,
-} from "@/src/components/ui/dialog";
+import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import { useGetLead } from "@/src/common/hooks/leads/use-get-lead";
 import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
 import { useDeleteLead } from "@/src/common/hooks/leads/use-delete-lead";
@@ -280,30 +273,16 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
         </SheetContent>
       </Sheet>
 
-      {/* Delete confirmation dialog */}
-      <Dialog open={showDeleteConfirm} onOpenChange={(open) => !open && setShowDeleteConfirm(false)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Lead</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to permanently delete{" "}
-              <strong>{lead?.name || "this lead"}</strong>? This action cannot be undone and all associated data will be lost.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 pt-2">
-            <Button variant="flat" onPress={() => setShowDeleteConfirm(false)}>
-              Cancel
-            </Button>
-            <Button
-              color="danger"
-              isLoading={deleteLead.isPending}
-              onPress={handleDelete}
-            >
-              Delete permanently
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmationDialog
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDelete}
+        title="Delete Lead"
+        message={`Are you sure you want to permanently delete "${lead?.name || "this lead"}"? This action cannot be undone and all associated data will be lost.`}
+        confirmText="Delete permanently"
+        variant="danger"
+        isLoading={deleteLead.isPending}
+      />
     </>
   );
 }
