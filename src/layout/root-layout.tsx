@@ -2,40 +2,23 @@
 
 import React from "react";
 
-import { Sidebar } from "../components/ui/aside";
-
 interface RootLayoutProps {
   children: React.ReactNode;
-  routeActive: string;
+  routeActive?: string; // mantido para não quebrar as páginas existentes, não é mais usado
 }
 
-export function LayoutScopeRoot({ children, routeActive }: RootLayoutProps) {
+export function LayoutScopeRoot({ children }: RootLayoutProps) {
   return (
-    <div className="inline-flex h-[calc(100svh-60px)] w-screen overflow-hidden">
-      <Sidebar
-        activeTab={routeActive}
-        disabledTabs={[]}
-        mobileStyle="footer"
-      />
-
-      <div className="flex-1 h-full overflow-y-auto custom-scrollbar">
-        <main className="mt-6 mx-auto pb-10">{children}</main>
-      </div>
+    <div className="flex-1 h-full overflow-y-auto custom-scrollbar">
+      <main className="mt-6 mx-auto pb-10">{children}</main>
     </div>
   );
 }
 
-export function LayoutScopeEditor({ children, routeActive }: RootLayoutProps) {
+export function LayoutScopeEditor({ children }: RootLayoutProps) {
   return (
-    <div className="inline-flex h-[calc(100svh-60px)] w-screen overflow-hidden">
-      <Sidebar
-        activeTab={routeActive}
-        disabledTabs={[]}
-        mobileStyle="footer"
-      />
-      <div className="flex-1 h-full overflow-hidden flex flex-col">
-        {children}
-      </div>
+    <div className="flex-1 h-full overflow-hidden flex flex-col">
+      {children}
     </div>
   );
 }

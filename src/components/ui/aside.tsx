@@ -3,6 +3,7 @@
 import { Button } from "@heroui/react";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
+import { usePathname } from "next/navigation";
 import TenantSelector from "../tenant-selector";
 import {
   Copyright,
@@ -40,7 +41,7 @@ import {
 import usePermissions from "@/src/common/hooks/use-permissions";
 
 export interface SidebarProps {
-  activeTab: any;
+  activeTab?: string; // opcional — derivado de usePathname() quando omitido
   disabledTabs?: string[];
   mobileStyle?: "footer" | "sidebar" | "hidden";
 }
@@ -54,7 +55,7 @@ interface NavItem {
 }
 
 export function Sidebar({
-  activeTab,
+  activeTab: activeTabProp,
   disabledTabs = [],
   mobileStyle = "footer",
 }: SidebarProps) {
@@ -66,47 +67,12 @@ export function Sidebar({
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const { isOpen: mobileDrawerOpen, close: closeMobileDrawer } = useMobileDrawerStore();
   const t = useTranslations("sidebar");
+  const pathname = usePathname();
 
   useEffect(() => {
     const name = getCookie("session-name") as string;
     setUserName(name || "");
   }, []);
-
-  useEffect(() => {
-    if (activeTab === "email-campaign" || activeTab === "abandoned-carts") {
-      setExpandedMenus((prev) =>
-        prev.includes("email") ? prev : [...prev, "email"],
-      );
-    }
-    if (activeTab === "leads" || activeTab === "lead-collections") {
-      setExpandedMenus((prev) =>
-        prev.includes("leads-menu") ? prev : [...prev, "leads-menu"],
-      );
-    }
-    if (
-      activeTab === "cms" ||
-      activeTab === "blogs" ||
-      activeTab === "articles" ||
-      activeTab === "authors" ||
-      activeTab === "collections" ||
-      activeTab === "media"
-    ) {
-      setExpandedMenus((prev) =>
-        prev.includes("cms") ? prev : [...prev, "cms"],
-      );
-    }
-    if (
-      activeTab === "admins" ||
-      activeTab === "tenants" ||
-      activeTab === "users"
-    ) {
-      setExpandedMenus((prev) =>
-        prev.includes("access-management")
-          ? prev
-          : [...prev, "access-management"],
-      );
-    }
-  }, [activeTab]);
 
   const toggleMenu = (menuId: string) => {
     setExpandedMenus((prev) =>
@@ -326,6 +292,58 @@ export function Sidebar({
     () => filterDisabled(navItems),
     [navItems, disabledTabs],
   );
+
+  // Deriva o activeTab a partir do pathname quando o prop não é fornecido
+  const activeTab = useMemo(() => {
+    if (activeTabProp != null) return activeTabProp;
+    const flat: NavItem[] = [];
+    const flatten = (items: NavItem[]) => {
+      items.forEach((item) => {
+        if (item.path) flat.push(item);
+        if (item.subItems) flatten(item.subItems);
+      });
+    };
+    flatten(filteredNavItems);
+    // Ordena por comprimento do path decrescente para priorizar rotas mais específicas
+    flat.sort((a, b) => (b.path?.length ?? 0) - (a.path?.length ?? 0));
+    return flat.find((item) => item.path && pathname.startsWith(item.path))?.id ?? "";
+  }, [activeTabProp, pathname, filteredNavItems]);
+
+  useEffect(() => {
+    if (activeTab === "email-campaign" || activeTab === "abandoned-carts") {
+      setExpandedMenus((prev) =>
+        prev.includes("email") ? prev : [...prev, "email"],
+      );
+    }
+    if (activeTab === "leads" || activeTab === "lead-collections") {
+      setExpandedMenus((prev) =>
+        prev.includes("leads-menu") ? prev : [...prev, "leads-menu"],
+      );
+    }
+    if (
+      activeTab === "cms" ||
+      activeTab === "blogs" ||
+      activeTab === "articles" ||
+      activeTab === "authors" ||
+      activeTab === "collections" ||
+      activeTab === "media"
+    ) {
+      setExpandedMenus((prev) =>
+        prev.includes("cms") ? prev : [...prev, "cms"],
+      );
+    }
+    if (
+      activeTab === "admins" ||
+      activeTab === "tenants" ||
+      activeTab === "users"
+    ) {
+      setExpandedMenus((prev) =>
+        prev.includes("access-management")
+          ? prev
+          : [...prev, "access-management"],
+      );
+    }
+  }, [activeTab]);
 
   const isItemActive = (item: NavItem): boolean => {
     if (item.id === activeTab) return true;
