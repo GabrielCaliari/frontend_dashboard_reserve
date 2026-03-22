@@ -52,7 +52,7 @@ export const fetchAuthors = async (
 ): Promise<Author[]> => {
   try {
     return await withRetry(async () => {
-      const params: Record<string, any> = { page, limit };
+      const params: Record<string, any> = { page, limit, expand: 'avatar' };
       if (active !== undefined) {
         params.active = active;
       }
