@@ -16,10 +16,14 @@ import {
   Textarea,
   Avatar,
   Pagination,
+  Select,
+  SelectItem,
+  Progress,
 } from "@heroui/react";
-import { User, Search, X } from "lucide-react";
+import { User, Search, X, Upload } from "lucide-react";
 import { AssetGrid } from "@/src/components/cms/asset-grid";
-import { useAssets } from "@/src/common/hooks/cms/use-assets";
+import { useAssets, useUploadAsset } from "@/src/common/hooks/cms/use-assets";
+import { useCollections } from "@/src/common/hooks/cms/use-collections";
 import {
   createAuthorSchema,
   updateAuthorSchema,
@@ -28,6 +32,9 @@ import {
 } from "@/src/common/schemas/cms-author-schema";
 import type { Author, CreateAuthorDto, UpdateAuthorDto } from "@/src/common/@types/@cms-author";
 import type { MediaAsset } from "@/src/common/@types/@cms-media";
+import { toast } from "sonner";
+
+type Tab = "library" | "upload";
 
 interface AuthorDrawerProps {
   open: boolean;
@@ -47,13 +54,22 @@ export function AuthorDrawer({
   const isEditMode = !!author;
   const schema = isEditMode ? updateAuthorSchema : createAuthorSchema;
 
+  const [activeTab, setActiveTab] = React.useState<Tab>("library");
   const [page, setPage] = React.useState(1);
   const [assetSearch, setAssetSearch] = React.useState("");
   const [selectedAsset, setSelectedAsset] = React.useState<MediaAsset | null>(null);
 
-  // Track the current avatar (existing from edit or newly selected)
-  const currentAvatarUrl = selectedAsset?.url ?? author?.avatar_url ?? null;
-  const currentAvatarId = selectedAsset?.id ?? author?.avatarId ?? "";
+  // Upload state
+  const [uploadFile, setUploadFile] = React.useState<File | null>(null);
+  const [uploadCollectionId, setUploadCollectionId] = React.useState<string>("");
+  const [uploadAltText, setUploadAltText] = React.useState("");
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const { mutateAsync: uploadAsset, isPending: isUploading, uploadProgress } = useUploadAsset();
+  const { data: collectionsData } = useCollections({ limit: 100 });
+
+  const currentAvatarUrl =
+    selectedAsset?.url ?? author?.avatar?.url ?? author?.avatar_url ?? null;
 
   const {
     register,
@@ -87,6 +103,12 @@ export function AuthorDrawer({
   const meta = assetsData?.meta;
   const totalPages = Math.max(meta?.totalPages ?? 1, 1);
 
+  // Collections that accept images
+  const allCollections = collectionsData?.data ?? [];
+  const imageCollections = allCollections.filter(
+    (c) => c.type === "image" || c.type === "mixed",
+  );
+
   // Reset state when drawer opens/closes or author changes
   React.useEffect(() => {
     if (open) {
@@ -99,6 +121,10 @@ export function AuthorDrawer({
       setSelectedAsset(null);
       setPage(1);
       setAssetSearch("");
+      setActiveTab("library");
+      setUploadFile(null);
+      setUploadCollectionId("");
+      setUploadAltText("");
     }
   }, [open, author, reset]);
 
@@ -115,6 +141,36 @@ export function AuthorDrawer({
     setSelectedAsset(null);
     setValue("avatarId", "");
   }, [setValue]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadFile(e.target.files?.[0] ?? null);
+  };
+
+  const handleUpload = async () => {
+    if (!uploadFile || !uploadCollectionId) return;
+    try {
+      const asset = await uploadAsset({
+        file: uploadFile,
+        collection_id: uploadCollectionId,
+        alt_text: uploadAltText.trim() || undefined,
+      });
+      setSelectedAsset(asset);
+      setValue("avatarId", asset.id);
+      setActiveTab("library");
+      setUploadFile(null);
+      setUploadCollectionId("");
+      setUploadAltText("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      toast.success("Image uploaded", {
+        description: `"${asset.filename}" uploaded and selected as avatar.`,
+      });
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || "Upload failed";
+      toast.error("Upload failed", {
+        description: Array.isArray(msg) ? msg.join(", ") : msg,
+      });
+    }
+  };
 
   const handleFormSubmit = React.useCallback(
     async (data: CreateAuthorInput | UpdateAuthorInput) => {
@@ -133,7 +189,9 @@ export function AuthorDrawer({
       >
         <SheetHeader className="shrink-0 border-b border-border bg-[#16162a] pr-14 px-6 py-4">
           <SheetTitle>
-            {isEditMode ? `Edit Author${displayName ? ` — ${displayName}` : ""}` : "Create Author"}
+            {isEditMode
+              ? `Edit Author${displayName ? ` — ${displayName}` : ""}`
+              : "Create Author"}
           </SheetTitle>
         </SheetHeader>
 
@@ -145,80 +203,211 @@ export function AuthorDrawer({
           <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6">
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
 
-              {/* LEFT: Asset image picker */}
+              {/* LEFT: Avatar picker */}
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">Avatar</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Select an image from your media library to use as the author avatar.
-                  </p>
-                </div>
-
-                {/* Search */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                  <ShadInput
-                    placeholder="Search images..."
-                    value={assetSearch}
-                    onChange={(e) => {
-                      setAssetSearch(e.target.value);
-                      setPage(1);
-                    }}
-                    className="pl-9 pr-9"
-                  />
-                  {assetSearch && (
+                {/* Section header + tab toggle */}
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground mb-1">Avatar</h3>
+                    <p className="text-xs text-muted-foreground">
+                      {activeTab === "library"
+                        ? "Select an image from your media library."
+                        : "Upload a new image to use as avatar."}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 rounded-md border border-border overflow-hidden text-xs font-medium">
                     <button
                       type="button"
-                      onClick={() => {
-                        setAssetSearch("");
-                        setPage(1);
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      onClick={() => setActiveTab("library")}
+                      className={`px-3 py-1.5 transition-colors ${
+                        activeTab === "library"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-background text-muted-foreground hover:text-foreground"
+                      }`}
                     >
-                      <X className="h-4 w-4" />
+                      Library
                     </button>
-                  )}
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("upload")}
+                      className={`px-3 py-1.5 transition-colors border-l border-border ${
+                        activeTab === "upload"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-background text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Upload
+                    </button>
+                  </div>
                 </div>
 
-                {/* Grid */}
-                <div className="rounded-md border border-border bg-background p-3">
-                  <AssetGrid
-                    assets={imageAssets}
-                    isLoading={isLoadingAssets}
-                    selectable
-                    selectedIds={selectedAsset ? [selectedAsset.id] : []}
-                    onSelect={handleAssetSelect}
-                    emptyMessage={
-                      assetSearch
-                        ? "No images match your search."
-                        : "No images found in your media library."
-                    }
-                  />
-                </div>
+                {activeTab === "library" ? (
+                  <>
+                    {/* Search */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                      <ShadInput
+                        placeholder="Search images..."
+                        value={assetSearch}
+                        onChange={(e) => {
+                          setAssetSearch(e.target.value);
+                          setPage(1);
+                        }}
+                        className="pl-9 pr-9"
+                      />
+                      {assetSearch && (
+                        <button
+                          type="button"
+                          onClick={() => { setAssetSearch(""); setPage(1); }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs text-muted-foreground">
-                      Showing {imageAssets.length} of {meta?.total ?? 0} images
-                    </p>
-                    <Pagination
-                      total={totalPages}
-                      page={page}
-                      onChange={setPage}
-                      showControls
-                      size="sm"
-                      classNames={{
-                        wrapper: "gap-1",
-                        item: "bg-background text-foreground border border-border",
-                        cursor: "bg-primary text-primary-foreground",
+                    {/* Grid */}
+                    <div className="rounded-md border border-border bg-background p-3">
+                      <AssetGrid
+                        assets={imageAssets}
+                        isLoading={isLoadingAssets}
+                        selectable
+                        selectedIds={selectedAsset ? [selectedAsset.id] : []}
+                        onSelect={handleAssetSelect}
+                        emptyMessage={
+                          assetSearch
+                            ? "No images match your search."
+                            : "No images found in your media library."
+                        }
+                      />
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex justify-between items-center">
+                        <p className="text-xs text-muted-foreground">
+                          Showing {imageAssets.length} of {meta?.total ?? 0} images
+                        </p>
+                        <Pagination
+                          total={totalPages}
+                          page={page}
+                          onChange={setPage}
+                          showControls
+                          size="sm"
+                          classNames={{
+                            wrapper: "gap-1",
+                            item: "bg-background text-foreground border border-border",
+                            cursor: "bg-primary text-primary-foreground",
+                          }}
+                        />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  /* Upload tab */
+                  <div className="rounded-md border border-border bg-background p-4 space-y-4">
+                    {/* Drop zone / file picker */}
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => fileInputRef.current?.click()}
+                      onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
+                      className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed p-8 text-center cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                        uploadFile
+                          ? "border-primary/50 bg-primary/5"
+                          : "border-border hover:border-primary/40 hover:bg-muted/20"
+                      }`}
+                    >
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="sr-only"
+                        onChange={handleFileChange}
+                        tabIndex={-1}
+                      />
+                      <Upload className="h-8 w-8 text-muted-foreground mb-3" />
+                      {uploadFile ? (
+                        <>
+                          <p className="text-sm font-medium text-foreground truncate max-w-[220px]">
+                            {uploadFile.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {(uploadFile.size / 1024).toFixed(0)} KB — click to change
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm text-foreground font-medium">Click to select an image</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            JPG, PNG, WebP, GIF up to 50 MB
+                          </p>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Collection selector */}
+                    <Select
+                      label="Upload to collection"
+                      placeholder="Select a collection"
+                      isRequired
+                      isDisabled={isUploading}
+                      selectedKeys={uploadCollectionId ? new Set([uploadCollectionId]) : new Set()}
+                      onSelectionChange={(keys) => {
+                        const val = Array.from(keys as Set<string>)[0] ?? "";
+                        setUploadCollectionId(val);
                       }}
+                      variant="bordered"
+                      size="sm"
+                      classNames={{ trigger: "bg-background" }}
+                    >
+                      {imageCollections.map((col) => (
+                        <SelectItem key={col.id}>{col.name}</SelectItem>
+                      ))}
+                    </Select>
+
+                    {imageCollections.length === 0 && (
+                      <p className="text-xs text-warning text-center">
+                        No image collections found. Create one in Media first.
+                      </p>
+                    )}
+
+                    {/* Alt text */}
+                    <Input
+                      label="Alt text (optional)"
+                      placeholder="Describe the image for accessibility"
+                      value={uploadAltText}
+                      onValueChange={setUploadAltText}
+                      isDisabled={isUploading}
+                      variant="bordered"
+                      size="sm"
                     />
+
+                    {/* Upload progress */}
+                    {isUploading && (
+                      <Progress
+                        value={uploadProgress}
+                        size="sm"
+                        color="primary"
+                        showValueLabel
+                        classNames={{ label: "text-xs text-muted-foreground" }}
+                        label="Uploading…"
+                      />
+                    )}
+
+                    <Button
+                      type="button"
+                      onClick={handleUpload}
+                      disabled={!uploadFile || !uploadCollectionId || isUploading}
+                      className="w-full"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      {isUploading ? `Uploading… ${uploadProgress}%` : "Upload & Use as Avatar"}
+                    </Button>
                   </div>
                 )}
               </div>
 
-              {/* RIGHT: Author details form + avatar preview (sticky) */}
+              {/* RIGHT: Author details + avatar preview (sticky) */}
               <div className="space-y-5 rounded-md border border-border bg-muted/20 p-4 xl:sticky xl:top-0">
 
                 {/* Avatar preview */}
@@ -237,10 +426,8 @@ export function AuthorDrawer({
                   <div className="text-center">
                     {currentAvatarUrl ? (
                       <>
-                        <p className="text-xs text-muted-foreground mb-1">
-                          {selectedAsset
-                            ? selectedAsset.filename
-                            : "Current avatar"}
+                        <p className="text-xs text-muted-foreground mb-1 truncate max-w-[200px]">
+                          {selectedAsset?.filename ?? "Current avatar"}
                         </p>
                         <button
                           type="button"
@@ -252,7 +439,7 @@ export function AuthorDrawer({
                       </>
                     ) : (
                       <p className="text-xs text-muted-foreground">
-                        No avatar — select an image on the left
+                        No avatar — select or upload an image
                       </p>
                     )}
                   </div>
