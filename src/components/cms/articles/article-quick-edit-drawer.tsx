@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Chip, Divider, Input, Textarea, Select, SelectItem } from "@heroui/react";
+import { Avatar, Button, Chip, Divider, Input, Textarea, Select, SelectItem } from "@heroui/react";
 import {
   Edit,
   Eye,
@@ -273,10 +273,37 @@ export function ArticleQuickEditDrawer({
                     label: "text-xs text-gray-400",
                     value: "text-sm",
                   }}
+                  renderValue={(items) =>
+                    items.map((item) => {
+                      const author = authors.find((a) => a.id === item.key);
+                      if (!author) return <span key={item.key}>{item.textValue}</span>;
+                      return (
+                        <div key={author.id} className="flex items-center gap-2">
+                          <Avatar
+                            src={author.avatar_url ?? author.avatar?.url ?? undefined}
+                            name={`${author.firstName} ${author.lastName}`}
+                            className="h-5 w-5 text-[9px]"
+                          />
+                          <span>{author.firstName} {author.lastName}</span>
+                        </div>
+                      );
+                    })
+                  }
                 >
                   {authors.map((author) => (
-                    <SelectItem key={author.id} value={author.id}>
-                      {author.firstName} {author.lastName}
+                    <SelectItem
+                      key={author.id}
+                      value={author.id}
+                      textValue={`${author.firstName} ${author.lastName}`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Avatar
+                          src={author.avatar_url ?? author.avatar?.url ?? undefined}
+                          name={`${author.firstName} ${author.lastName}`}
+                          className="h-6 w-6 text-[10px]"
+                        />
+                        <span>{author.firstName} {author.lastName}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </Select>

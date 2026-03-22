@@ -335,6 +335,7 @@ export function SeoSidebar({
                 return (
                   <div key={author.id} className="flex items-center gap-2">
                     <Avatar
+                      src={author.avatar_url ?? author.avatar?.url ?? undefined}
                       name={`${author.firstName} ${author.lastName}`}
                       className="h-6 w-6 text-[10px]"
                     />
@@ -351,6 +352,7 @@ export function SeoSidebar({
               >
                 <div className="flex items-center gap-2">
                   <Avatar
+                    src={author.avatar_url ?? author.avatar?.url ?? undefined}
                     name={`${author.firstName} ${author.lastName}`}
                     className="h-7 w-7 text-xs"
                   />

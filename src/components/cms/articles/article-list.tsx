@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import {
+  Avatar,
   Button,
   Tabs,
   Tab,
@@ -63,21 +64,8 @@ export default function ArticleList({
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
 
-  // Helper to get author name by ID
-  const getAuthorName = (authorId?: string) => {
-    if (!authorId) return "—";
-    const author = authors.find((a) => String(a.id) === String(authorId));
-    
-    // Debug temporário
-    if (!author && authorId) {
-      console.log('Author not found:', {
-        authorId,
-        availableAuthors: authors.map(a => ({ id: a.id, name: a.firstName }))
-      });
-    }
-    
-    return author ? author.firstName : "—";
-  };
+  const getAuthor = (authorId?: string) =>
+    authorId ? authors.find((a) => String(a.id) === String(authorId)) : undefined;
 
   const filteredArticles = useMemo(() => {
     const filtered = articles.filter((article) => {
@@ -143,12 +131,24 @@ export default function ArticleList({
             </span>
           </div>
         );
-      case "author":
-        return (
-          <span className="text-sm text-default-600">
-            {getAuthorName(article.authorId)}
-          </span>
+      case "author": {
+        const author = getAuthor(article.authorId);
+        return author ? (
+          <div className="flex items-center gap-2">
+            <Avatar
+              src={author.avatar_url ?? author.avatar?.url ?? undefined}
+              name={`${author.firstName} ${author.lastName}`}
+              size="sm"
+              className="w-6 h-6 text-[10px] shrink-0"
+            />
+            <span className="text-sm text-default-600 truncate">
+              {author.firstName} {author.lastName}
+            </span>
+          </div>
+        ) : (
+          <span className="text-sm text-default-400">—</span>
         );
+      }
       case "language":
         return (
           <Chip size="sm" variant="flat" color="default" className="uppercase">
