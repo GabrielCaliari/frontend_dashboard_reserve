@@ -69,7 +69,11 @@ export async function adminLogin({
 
     // Return success response with data but let the redirect happen
     // Wait for cookies to be set before redirecting
-    redirect("/dashboard");
+    if (authResponse.details.role === "super_admin") {
+      redirect("/dashboard/global");
+    } else {
+      redirect("/dashboard");
+    }
     // unreachable
     return { success: true, data: authResponse };
   }
