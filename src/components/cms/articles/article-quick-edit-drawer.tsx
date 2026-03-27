@@ -152,7 +152,7 @@ export function ArticleQuickEditDrawer({
           </div>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-6">
           {/* Status Actions */}
           <section className="space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">

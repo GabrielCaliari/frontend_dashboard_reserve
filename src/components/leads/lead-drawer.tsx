@@ -83,7 +83,7 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
   return (
     <>
       <Sheet open={!!leadId} onOpenChange={(open) => !open && onClose()}>
-        <SheetContent className="flex flex-col w-full max-w-xl overflow-hidden">
+        <SheetContent className="flex flex-col w-full sm:max-w-[95vw] md:max-w-xl overflow-hidden">
           {/* Header */}
           <SheetHeader>
             <div className="flex items-start justify-between pr-8">
@@ -142,7 +142,7 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
           </SheetHeader>
 
           {/* Body */}
-          <div className="flex-1 overflow-y-auto px-6 py-4">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
             {isLoading && (
               <div className="flex justify-center py-12">
                 <Spinner />
@@ -251,7 +251,7 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
 
                     {/* Timestamps */}
                     <Divider className="bg-gray-800" />
-                    <div className="flex gap-6 text-xs text-gray-500">
+                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-500">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         <span>Created {format(new Date(lead.created_at), "dd MMM yyyy, HH:mm")}</span>

@@ -142,9 +142,9 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
         onClick={onClose}
       />
       {/* Drawer panel */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-2xl z-50 bg-[#0e0e1a] border-l border-gray-800 shadow-2xl flex flex-col overflow-hidden">
+      <div className="fixed right-0 top-0 h-full w-full sm:max-w-[95vw] md:max-w-2xl z-50 bg-[#0e0e1a] border-l border-gray-800 shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 flex-shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-800 flex-shrink-0">
           <h2 className="text-lg font-semibold text-gray-100 truncate">
             {asset?.filename ?? t("assetDetails")}
           </h2>
@@ -169,19 +169,19 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
           <div className="flex-1 overflow-y-auto">
             <div className="flex flex-col lg:flex-row gap-0 h-full">
               {/* Preview panel */}
-              <div className="lg:w-[55%] bg-[#1a1a2e] flex items-center justify-center p-8 min-h-[300px] lg:min-h-0">
+              <div className="lg:w-[55%] bg-[#1a1a2e] flex items-center justify-center p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[280px] lg:min-h-0">
                 {asset.mime_type.startsWith("image/") ? (
                   <img
                     src={asset.url}
                     alt={asset.alt_text || asset.filename}
-                    className="max-w-full max-h-[500px] object-contain rounded-lg"
+                    className="max-w-full max-h-[220px] sm:max-h-[340px] lg:max-h-[500px] object-contain rounded-lg"
                   />
                 ) : asset.mime_type.startsWith("video/") ? (
                   // eslint-disable-next-line jsx-a11y/media-has-caption
                   (<video
                     src={asset.url}
                     controls
-                    className="max-w-full max-h-[400px] rounded-lg"
+                    className="max-w-full max-h-[200px] sm:max-h-[300px] lg:max-h-[400px] rounded-lg"
                   />)
                 ) : (
                   <div className="flex flex-col items-center gap-3 text-center">
@@ -192,7 +192,7 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
               </div>
 
               {/* Info + edit panel */}
-              <div className="lg:w-[45%] p-6 space-y-5 border-l border-gray-800">
+              <div className="lg:w-[45%] p-4 sm:p-5 lg:p-6 space-y-5 border-t lg:border-t-0 lg:border-l border-gray-800">
                 {/* Read-only metadata */}
                 <div className="space-y-3">
                   <div>

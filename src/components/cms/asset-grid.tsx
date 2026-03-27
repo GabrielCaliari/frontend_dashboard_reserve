@@ -7,6 +7,7 @@ import {
   Image,
   Button,
   Chip,
+  Skeleton,
   Spinner,
   Dropdown,
   DropdownTrigger,
@@ -35,6 +36,8 @@ interface AssetGridProps {
   selectable?: boolean;
   selectedIds?: CmsMediaId[];
   emptyMessage?: string;
+  /** Override the grid-cols classes. Defaults to full-page responsive set. */
+  gridCols?: string;
 }
 
 /**
@@ -71,6 +74,7 @@ export function AssetGrid({
   selectable = false,
   selectedIds = [],
   emptyMessage = "No assets found",
+  gridCols = "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6",
 }: AssetGridProps) {
   const [imageErrors, setImageErrors] = useState<Set<CmsMediaId>>(new Set());
 
@@ -95,26 +99,33 @@ export function AssetGrid({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+    <div className={`grid gap-3 ${gridCols}`}>
       {assets.map((asset) => {
         const isSelected = selectedIds.includes(asset.id);
         const isImage = asset.mime_type.startsWith("image/");
         const hasImageError = imageErrors.has(asset.id);
 
+        // Show skeleton only when the asset has no URL yet (conversion in progress).
+        // If a URL exists, render the image regardless of status so we never
+        // block display for assets that are actually accessible.
+        const isProcessing = asset.status === "processing" && !asset.url;
+
         return (
           <Card
             key={asset.id}
-            isPressable={selectable}
-            isHoverable
+            isPressable={selectable && !isProcessing}
+            isHoverable={!isProcessing}
             className={`${
               isSelected ? "ring-2 ring-primary" : ""
             } transition-all duration-200`}
-            onPress={() => selectable && onSelect?.(asset)}
+            onPress={() => selectable && !isProcessing && onSelect?.(asset)}
           >
             <CardBody className="p-0">
               {/* Preview */}
               <div className="aspect-square bg-muted relative overflow-hidden">
-                {isImage && !hasImageError ? (
+                {isProcessing ? (
+                  <Skeleton className="w-full h-full" />
+                ) : isImage && !hasImageError ? (
                   <Image
                     src={asset.url}
                     alt={asset.alt_text || asset.filename}
@@ -132,7 +143,7 @@ export function AssetGrid({
                 )}
 
                 {/* Selection Indicator */}
-                {selectable && (
+                {selectable && !isProcessing && (
                   <div className="absolute top-2 left-2">
                     <Checkbox
                       isSelected={isSelected}
@@ -147,20 +158,27 @@ export function AssetGrid({
                 )}
 
                 {/* Status Badge */}
-                {asset.status !== "active" && (
+                {asset.status === "failed" && (
                   <Chip
                     size="sm"
-                    color={asset.status === "failed" ? "danger" : "warning"}
+                    color="danger"
                     variant="flat"
                     className="absolute top-2 right-2"
                   >
-                    {asset.status}
+                    failed
                   </Chip>
                 )}
               </div>
 
               {/* Info */}
               <div className="p-3">
+                {isProcessing ? (
+                  <div className="space-y-2">
+                    <Skeleton className="h-3 w-3/4 rounded" />
+                    <Skeleton className="h-3 w-1/2 rounded" />
+                  </div>
+                ) : (
+                <>
                 <p
                   className="text-sm font-medium truncate"
                   title={asset.filename}
@@ -176,9 +194,11 @@ export function AssetGrid({
                     </span>
                   )}
                 </div>
+                </>
+                )}
 
                 {/* Actions */}
-                {!selectable && (
+                {!selectable && !isProcessing && (
                   <div className="flex items-center justify-between mt-3">
                     <Button
                       size="sm"
