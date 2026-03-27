@@ -26,10 +26,11 @@ export const fetchTenants = async (
   search?: string
 ): Promise<PaginatedResponse<Tenant>> => {
   // Backend returns array of tenants (not paginated)
-  const response = await apiClient.get<Tenant[]>('/tenants');
+  const response = await apiClient.get('/tenants');
   
-  // Transform to paginated response format
-  const allTenants = response.data;
+  // Normalize response — backend may return array directly or wrapped in { data: [...] }
+  const raw = response.data;
+  const allTenants: Tenant[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
   const filteredTenants = search 
     ? allTenants.filter(tenant => 
         tenant.name.toLowerCase().includes(search.toLowerCase()) ||

@@ -9,21 +9,30 @@ export const fetchUsers = async (
   perPage: number = 10,
   search?: string,
 ): Promise<PaginatedResponse<User>> => {
-  const response = await apiClient.get<{ users: User[]; pagination: { page: number; limit: number; total: number; totalPages: number } }>('/admin/users', { params: { page, limit: perPage } });
-  let users = response.data.users;
+  const response = await apiClient.get('/admin/users', { 
+    params: { page, limit: perPage },
+    headers: { 'x-tenant-id': undefined },
+  } as any);
+  const raw = response.data;
+  // Backend returns { data: User[], total, page, limit }
+  let users: User[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
+
   if (search) {
     users = users.filter((u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase()),
     );
   }
+
+  const total = search ? users.length : (raw?.total ?? users.length);
+
   return {
     data: users,
     meta: {
-      current_page: response.data.pagination.page,
-      per_page: response.data.pagination.limit,
-      total: search ? users.length : response.data.pagination.total,
-      total_pages: search ? Math.ceil(users.length / perPage) : response.data.pagination.totalPages,
+      current_page: raw?.page ?? page,
+      per_page: raw?.limit ?? perPage,
+      total,
+      total_pages: Math.ceil(total / perPage),
     },
   };
 };

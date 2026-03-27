@@ -382,15 +382,18 @@ export function Sidebar({
                 : "text-muted-foreground hover:text-foreground hover:bg-default-100/50"
           }`}
         >
-          <item.icon
-            className={`text-[1.3rem] flex-shrink-0 transition-colors ${
-              isDirectlyActive
-                ? "text-primary"
-                : isActive
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-            }`}
-          />
+          <span suppressHydrationWarning>
+            <item.icon
+              size={20}
+              className={`flex-shrink-0 transition-colors ${
+                isDirectlyActive
+                  ? "text-primary"
+                  : isActive
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+              }`}
+            />
+          </span>
           <span className="flex-1 text-left truncate text-sm">
             {item.label}
           </span>

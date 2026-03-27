@@ -20,8 +20,9 @@ export const fetchAdmins = async (
   perPage: number = 10,
   search?: string,
 ): Promise<PaginatedResponse<Admin>> => {
-  const response = await apiClient.get<Admin[]>('/admin/list');
-  const allAdmins = response.data;
+  const response = await apiClient.get('/admin/list', { headers: { 'x-tenant-id': undefined } } as any);
+  const raw = response.data;
+  const allAdmins: Admin[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
 
   const filtered = search
     ? allAdmins.filter(

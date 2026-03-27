@@ -62,7 +62,10 @@ export async function injectAuthHeaders(
 
     if (!requestConfig.skipTenantHeader && tenantCookie) {
       const tenantId = extractTenantId(tenantCookie);
-      if (tenantId) config.headers['x-tenant-id'] = tenantId;
+      // Only send if it looks like a valid CUID (25 chars, starts with 'c')
+      if (tenantId && /^c[a-z0-9]{24}$/.test(tenantId)) {
+        config.headers['x-tenant-id'] = tenantId;
+      }
     }
   } else {
     // === SERVER-SIDE (Server Actions / Route Handlers) ===
@@ -79,7 +82,10 @@ export async function injectAuthHeaders(
 
       if (!requestConfig.skipTenantHeader && tenantCookie) {
         const tenantId = extractTenantId(tenantCookie);
-        if (tenantId) config.headers['x-tenant-id'] = tenantId;
+        // Only send if it looks like a valid CUID (25 chars, starts with 'c')
+        if (tenantId && /^c[a-z0-9]{24}$/.test(tenantId)) {
+          config.headers['x-tenant-id'] = tenantId;
+        }
       }
     } catch {
       // Silent fail - cookies may not be available outside request context
