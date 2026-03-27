@@ -63,6 +63,7 @@
     "stats": "Stats",
     "statsOverview": "Visão Geral",
     "statsIntegrations": "Integrações",
+    "reports": "Relatórios",
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu"
   },
@@ -78,7 +79,6 @@
     "emailAbandonedCarts": "Email - Carrinhos abandonados"
   },
   "auth": {
-    "accessSystem": "Acessar sistema",
     "adminAuth": "Autenticação administrativa",
     "fillCredentials": "Preencha suas credenciais abaixo para continuar",
     "password": "Senha",
@@ -1117,5 +1117,45 @@
   },
   "accessManagementTenantDetail": {
     "openStatsDrilldown": "Abrir drill-down de stats"
+  },
+
+  "reports": {
+    "title": "Relatórios",
+    "subtitle": "Gerencie os relatórios de analytics",
+    "newReport": "Novo relatório",
+    "editReport": "Editar relatório",
+    "columnPhone": "Telefone",
+    "columnLabel": "Label",
+    "columnUrl": "URL",
+    "columnCreatedAt": "Criado em",
+    "columnActions": "Ações",
+    "noReportsFound": "Nenhum relatório encontrado",
+    "noReportsDescription": "Crie seu primeiro relatório para começar.",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "creating": "Criando...",
+    "saving": "Salvando...",
+    "phoneLabel": "Telefone",
+    "phonePlaceholder": "Ex.: (555) 555-5555",
+    "urlLabel": "URL",
+    "urlPlaceholder": "Ex.: https://drive.google.com/...",
+    "labelLabel": "Label",
+    "labelPlaceholder": "Ex.: Relatório João Silva",
+    "deleteTitle": "Excluir relatório",
+    "deleteConfirm": "Tem certeza que deseja excluir este relatório?",
+    "deleteWarning": "Esta ação não pode ser desfeita.",
+    "confirmDelete": "Excluir",
+    "phoneRequired": "Telefone é obrigatório",
+    "phoneMaxLength": "Telefone deve ter no máximo {max} caracteres",
+    "urlRequired": "URL é obrigatória",
+    "urlInvalid": "Insira uma URL válida",
+    "labelMaxLength": "Label deve ter no máximo {max} caracteres",
+    "showingResults": "Mostrando {start} a {end} de {total} relatórios",
+    "previous": "Anterior",
+    "next": "Próximo",
+    "rowsPerPage": "Linhas por página",
+    "accessDenied": "Você não tem permissão para acessar esta página."
   }
 }

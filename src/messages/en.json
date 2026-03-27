@@ -64,6 +64,7 @@
     "stats": "Stats",
     "statsOverview": "Overview",
     "statsIntegrations": "Integrations",
+    "reports": "Reports",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
@@ -82,7 +83,6 @@
   },
 
   "auth": {
-    "accessSystem": "Access system",
     "adminAuth": "Administrative authentication",
     "fillCredentials": "Fill in your credentials below to continue",
     "password": "Password",
@@ -1150,5 +1150,45 @@
   },
   "accessManagementTenantDetail": {
     "openStatsDrilldown": "Open stats drill-down"
+  },
+
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Manage analytics reports",
+    "newReport": "New report",
+    "editReport": "Edit report",
+    "columnPhone": "Phone",
+    "columnLabel": "Label",
+    "columnUrl": "URL",
+    "columnCreatedAt": "Created at",
+    "columnActions": "Actions",
+    "noReportsFound": "No reports found",
+    "noReportsDescription": "Create your first report to get started.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "saving": "Saving...",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "E.g.: (555) 555-5555",
+    "urlLabel": "URL",
+    "urlPlaceholder": "E.g.: https://drive.google.com/...",
+    "labelLabel": "Label",
+    "labelPlaceholder": "E.g.: Report John Smith",
+    "deleteTitle": "Delete report",
+    "deleteConfirm": "Are you sure you want to delete this report?",
+    "deleteWarning": "This action cannot be undone.",
+    "confirmDelete": "Delete",
+    "phoneRequired": "Phone is required",
+    "phoneMaxLength": "Phone must have at most {max} characters",
+    "urlRequired": "URL is required",
+    "urlInvalid": "Enter a valid URL",
+    "labelMaxLength": "Label must have at most {max} characters",
+    "showingResults": "Showing {start} to {end} of {total} reports",
+    "previous": "Previous",
+    "next": "Next",
+    "rowsPerPage": "Rows per page",
+    "accessDenied": "You do not have permission to access this page."
   }
 }

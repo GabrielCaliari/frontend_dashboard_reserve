@@ -20,12 +20,6 @@ export default async function Page() {
               className="h-7 sm:h-8 lg:h-9"
             />
             <div className="flex items-center gap-3 sm:gap-4">
-              <Link
-                href="https://zarpy.app"
-                className="hidden sm:inline text-sm text-blue-400 font-semibold hover:text-blue-300 transition-colors"
-              >
-                {t("accessSystem")}
-              </Link>
               <LanguageSwitcher variant="full" />
             </div>
           </div>

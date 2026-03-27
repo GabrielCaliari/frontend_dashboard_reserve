@@ -27,6 +27,7 @@ import {
   Image,
   Settings,
   X,
+  FileBarChart2,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -91,6 +92,12 @@ export function Sidebar({
             label: t("globalDashboard"),
             icon: LayoutDashboardIcon,
             path: "/dashboard/global",
+          },
+          {
+            id: "reports",
+            label: t("reports"),
+            icon: FileBarChart2,
+            path: "/dashboard/reports",
           },
           {
             id: "access-management",
