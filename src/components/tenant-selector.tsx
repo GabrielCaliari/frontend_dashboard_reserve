@@ -33,10 +33,25 @@ export default function TenantSelector() {
 
   // Auto-select first tenant if none selected and tenants are loaded
   useEffect(() => {
-    if (!selectedTenant && tenants.length > 0) {
-      setSelectedTenant(tenants[0]);
+    if (!selectedTenant && !isLoading && isMounted) {
+      if (isSuperAdmin && dashboardScope !== "global") {
+        setDashboardScope("global");
+        push("/dashboard/global");
+      } else if (!isSuperAdmin && tenants.length > 0) {
+        setSelectedTenant(tenants[0]);
+      }
     }
-  }, [tenants, selectedTenant, setSelectedTenant]);
+  }, [
+    tenants,
+    selectedTenant,
+    setSelectedTenant,
+    isSuperAdmin,
+    dashboardScope,
+    setDashboardScope,
+    push,
+    isLoading,
+    isMounted,
+  ]);
 
   const handleSelectionChange = useCallback(
     (keys: Iterable<React.Key>) => {

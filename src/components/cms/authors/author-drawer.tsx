@@ -22,7 +22,7 @@ import {
 } from "@heroui/react";
 import { User, Search, X, Upload } from "lucide-react";
 import { AssetGrid } from "@/src/components/cms/asset-grid";
-import { useAssets, useUploadAsset } from "@/src/common/hooks/cms/use-assets";
+import { useAssets, useAsset, useUploadAsset } from "@/src/common/hooks/cms/use-assets";
 import { useCollections } from "@/src/common/hooks/cms/use-collections";
 import {
   createAuthorSchema,
@@ -66,10 +66,19 @@ export function AuthorDrawer({
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const { mutateAsync: uploadAsset, isPending: isUploading, uploadProgress } = useUploadAsset();
+
+  // When the author has an avatarId but the list endpoint didn't return the
+  // expanded avatar object, fetch the asset directly to get the URL.
+  const avatarAssetId = open && author?.avatarId && !author?.avatar?.url ? author.avatarId : "";
+  const { data: fetchedAvatarAsset } = useAsset(avatarAssetId);
   const { data: collectionsData } = useCollections({ limit: 100 });
 
   const currentAvatarUrl =
-    selectedAsset?.url ?? author?.avatar?.url ?? author?.avatar_url ?? null;
+    selectedAsset?.url ??
+    author?.avatar?.url ??
+    author?.avatar_url ??
+    fetchedAvatarAsset?.url ??
+    null;
 
   const {
     register,
@@ -292,6 +301,7 @@ export function AuthorDrawer({
                         selectable
                         selectedIds={selectedAsset ? [selectedAsset.id] : []}
                         onSelect={handleAssetSelect}
+                        gridCols="grid-cols-2 sm:grid-cols-3 xl:grid-cols-4"
                         emptyMessage={
                           assetSearch
                             ? "No images match your search."
@@ -329,7 +339,7 @@ export function AuthorDrawer({
                       tabIndex={0}
                       onClick={() => fileInputRef.current?.click()}
                       onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
-                      className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed p-8 text-center cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                      className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed p-4 sm:p-8 text-center cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                         uploadFile
                           ? "border-primary/50 bg-primary/5"
                           : "border-border hover:border-primary/40 hover:bg-muted/20"
@@ -465,7 +475,7 @@ export function AuthorDrawer({
 
                 <div className="border-t border-border pt-4 space-y-4">
                   {/* Name fields */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3">
                     <Input
                       label="First Name"
                       placeholder="John"

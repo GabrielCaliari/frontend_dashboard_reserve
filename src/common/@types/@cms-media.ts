@@ -20,9 +20,14 @@ export type CollectionType = 'image' | 'document' | 'video' | 'audio' | 'mixed';
 export type CmsMediaId = string;
 
 /**
- * Asset status indicating the current state of a media asset
+ * Asset status indicating the current state of a media asset.
+ * "processing" = upload received, conversion in progress (no usable URL yet)
+ * "ready"      = conversion done, URL is accessible
+ * "active"     = legacy alias for ready (some responses use this)
+ * "archived"   = soft-deleted, no longer served
+ * "failed"     = conversion failed
  */
-export type AssetStatus = 'active' | 'archived' | 'failed';
+export type AssetStatus = 'processing' | 'ready' | 'active' | 'archived' | 'failed';
 
 // ============================================================================
 // Core Entities
