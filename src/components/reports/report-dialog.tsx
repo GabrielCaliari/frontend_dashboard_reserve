@@ -21,16 +21,17 @@ interface ReportDialogProps {
   isSubmitting: boolean;
 }
 
-// Simple US phone formatter: input: 1234567890 -> output: (123) 456-7890
+// Strips all non-digit characters and removes leading country code (1 for US/CA)
+const stripToDigits = (value: string) => value.replace(/\D/g, "").replace(/^1/, "");
+
+// Formats 10-digit string to (XXX) XXX-XXXX for display
 const formatUSPhone = (value: string) => {
-  if (!value) return value;
-  const phoneNumber = value.replace(/[^\d]/g, "");
-  const phoneNumberLength = phoneNumber.length;
-  if (phoneNumberLength < 4) return phoneNumber;
-  if (phoneNumberLength < 7) {
-    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+  const digits = stripToDigits(value);
+  if (digits.length < 4) return digits;
+  if (digits.length < 7) {
+    return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
   }
-  return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
 };
 
 export function ReportDialog({
@@ -52,8 +53,9 @@ export function ReportDialog({
     validationSchema: ReportSchema(t),
     enableReinitialize: true,
     onSubmit: (values) => {
+      const digits = stripToDigits(values.phone);
       onSubmit({
-        phone: values.phone,
+        phone: `1${digits}`,
         url: values.url,
         label: values.label || undefined,
       });
