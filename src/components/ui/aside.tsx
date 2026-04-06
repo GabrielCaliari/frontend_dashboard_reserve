@@ -163,6 +163,12 @@ export function Sidebar({
  path:"/dashboard",
  },
  {
+ id:"hotel-portal",
+ label:"Portal de Clientes",
+ icon: Building2,
+ path:"/dashboard/hotel-portal",
+ },
+ {
  id:"leads-menu",
  label: t("leads"),
  icon: HiOutlineDatabase,
