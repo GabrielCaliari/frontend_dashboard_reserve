@@ -1,5 +1,5 @@
-import { apiClient } from '@/src/common/config/api';
-import type { LeadListResponse } from '@/src/common/@types/@lead';
+import { apiClient } from "@/src/common/config/api";
+import type { LeadListResponse } from "@/src/common/@types/@lead";
 
 interface ListLeadsParams {
   page?: number;
@@ -9,7 +9,7 @@ interface ListLeadsParams {
 }
 
 export async function listLeadsService(
-  params: ListLeadsParams = {}
+  params: ListLeadsParams = {},
 ): Promise<LeadListResponse> {
   const { page = 1, limit = 30, status, origin } = params;
 
@@ -17,7 +17,7 @@ export async function listLeadsService(
   if (status !== undefined) queryParams.status = status;
   if (origin !== undefined) queryParams.origin = origin;
 
-  const response = await apiClient.get<LeadListResponse>('/leads', {
+  const response = await apiClient.get<LeadListResponse>("/leads", {
     params: queryParams,
   });
 

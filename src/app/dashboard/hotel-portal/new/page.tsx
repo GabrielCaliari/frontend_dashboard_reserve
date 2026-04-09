@@ -44,7 +44,9 @@ export default function NewHotelClientPage() {
       toast.success("Cliente criado com sucesso!");
       push(`/dashboard/hotel-portal/${client.id}`);
     } catch {
-      toast.error("Erro ao criar cliente. Verifique os dados e tente novamente.");
+      toast.error(
+        "Erro ao criar cliente. Verifique os dados e tente novamente.",
+      );
     }
   }
 
@@ -61,7 +63,9 @@ export default function NewHotelClientPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">Novo Cliente</h1>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+              Novo Cliente
+            </h1>
             <p className="text-sm text-muted-foreground mt-0.5">
               Cadastre um novo hotel no portal RÉSERVE.
             </p>
@@ -75,7 +79,9 @@ export default function NewHotelClientPage() {
                 <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Building2 className="h-4 w-4 text-primary" />
                 </div>
-                <h2 className="text-base font-semibold text-foreground">Dados do Hotel</h2>
+                <h2 className="text-base font-semibold text-foreground">
+                  Dados do Hotel
+                </h2>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -151,7 +157,9 @@ export default function NewHotelClientPage() {
 
           <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
             <CardBody className="p-6 sm:p-8 space-y-6">
-              <h2 className="text-base font-semibold text-foreground">Acesso do Cliente</h2>
+              <h2 className="text-base font-semibold text-foreground">
+                Acesso do Cliente
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   label="Email"

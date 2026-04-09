@@ -5,24 +5,27 @@
  * Only accessible by super_admin users.
  */
 
-import { apiClient } from '@/src/common/config/api';
+import { apiClient } from "@/src/common/config/api";
 import type {
   Report,
   CreateReportDto,
   UpdateReportDto,
   ReportsListResponse,
-} from '@/src/common/@types/@report';
+} from "@/src/common/@types/@report";
 
 export const reportService = {
-  async list(page: number = 1, limit: number = 20): Promise<ReportsListResponse> {
-    const response = await apiClient.get<ReportsListResponse>('/reports', {
+  async list(
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<ReportsListResponse> {
+    const response = await apiClient.get<ReportsListResponse>("/reports", {
       params: { page, limit },
     });
     return response.data;
   },
 
   async create(data: CreateReportDto): Promise<Report> {
-    const response = await apiClient.post<Report>('/reports', data);
+    const response = await apiClient.post<Report>("/reports", data);
     return response.data;
   },
 

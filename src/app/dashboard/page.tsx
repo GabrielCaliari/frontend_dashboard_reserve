@@ -1,38 +1,38 @@
 "use client";
 
-import { useMemo, useState } from"react";
-import { LayoutScopeRoot } from"@/src/layout/root-layout";
-import { AlertCircle, BarChart3, Plug } from"lucide-react";
-import { Card, CardBody, Spinner, Button } from"@heroui/react";
-import { useTranslations } from"next-intl";
-import Link from"next/link";
-import { useHasSelectedTenant } from"@/src/common/stores/tenant-store";
+import { useMemo, useState } from "react";
+import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { AlertCircle, BarChart3, Plug } from "lucide-react";
+import { Card, CardBody, Spinner, Button } from "@heroui/react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
 import {
- useStatsDashboard,
- useStatsTimeseriesModules,
-} from"@/src/common/hooks/stats";
+  useStatsDashboard,
+  useStatsTimeseriesModules,
+} from "@/src/common/hooks/stats";
 import {
- StatGroupCard,
- DateRangePicker,
- StatsTimeseriesCard,
- CmsOverviewCards,
-} from"@/src/components/stats";
+  StatGroupCard,
+  DateRangePicker,
+  StatsTimeseriesCard,
+  CmsOverviewCards,
+} from "@/src/components/stats";
 
 function getDefaultRange() {
- const to = new Date();
- const from = new Date();
- from.setDate(from.getDate() - 30);
- return {
- from: from.toISOString().split("T")[0],
- to: to.toISOString().split("T")[0],
- };
+  const to = new Date();
+  const from = new Date();
+  from.setDate(from.getDate() - 30);
+  return {
+    from: from.toISOString().split("T")[0],
+    to: to.toISOString().split("T")[0],
+  };
 }
 
 function buildIsoRange(from: string, to: string) {
- return {
- from: from ?`${from}T00:00:00.000Z` : undefined,
- to: to ?`${to}T23:59:59.999Z` : undefined,
- };
+  return {
+    from: from ? `${from}T00:00:00.000Z` : undefined,
+    to: to ? `${to}T23:59:59.999Z` : undefined,
+  };
 }
 
 export default function DashboardPage() {
@@ -56,12 +56,16 @@ export default function DashboardPage() {
   const visibleTimeseriesModules = useMemo(
     () =>
       timeseriesModules.filter(
-        (module) => module.isLoading || module.seriesItem || (!module.isError && module.data?.series.length),
+        (module) =>
+          module.isLoading ||
+          module.seriesItem ||
+          (!module.isError && module.data?.series.length),
       ),
     [timeseriesModules],
   );
   const groupByModuleKey = useMemo(
-    () => new Map((data?.groups ?? []).map((group) => [group.moduleKey, group])),
+    () =>
+      new Map((data?.groups ?? []).map((group) => [group.moduleKey, group])),
     [data?.groups],
   );
 
@@ -97,23 +101,24 @@ export default function DashboardPage() {
                 {t("title")}
               </h1>
               <p className="text-muted-foreground mt-3 text-base">
-                {data?.generatedAt ? (
-                  t("updatedAt", {
-                    date: new Date(data.generatedAt).toLocaleString(),
-                  })
-                ) : (
-                  "Visão geral das métricas e dados de performance do sistema."
-                )}
+                {data?.generatedAt
+                  ? t("updatedAt", {
+                      date: new Date(data.generatedAt).toLocaleString(),
+                    })
+                  : "Visão geral das métricas e dados de performance do sistema."}
               </p>
             </div>
-            
+
             {/* Controls */}
             <div className="flex flex-wrap items-center gap-3">
               <div className="bg-background rounded-xl p-1 border border-border flex items-center">
                 <DateRangePicker
                   from={from}
                   to={to}
-                  onChange={(f, tVal) => { setFrom(f); setTo(tVal); }}
+                  onChange={(f, tVal) => {
+                    setFrom(f);
+                    setTo(tVal);
+                  }}
                 />
               </div>
               <Button
@@ -132,7 +137,6 @@ export default function DashboardPage() {
 
         {/* Bento Grid Layout */}
         <div className="flex flex-col gap-8">
-          
           {/* CMS Overview Section */}
           <section className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
@@ -174,9 +178,12 @@ export default function DashboardPage() {
                   <div className="w-20 h-20 rounded-full bg-default-100 flex items-center justify-center mb-6">
                     <BarChart3 className="h-10 w-10 text-muted-foreground" />
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">{t("emptyState")}</h3>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                    {t("emptyState")}
+                  </h3>
                   <p className="text-muted-foreground mb-8 max-w-md">
-                    Conecte um provedor de analytics para visualizar as métricas avançadas neste dashboard.
+                    Conecte um provedor de analytics para visualizar as métricas
+                    avançadas neste dashboard.
                   </p>
                   <Button
                     as={Link}
@@ -201,11 +208,17 @@ export default function DashboardPage() {
                       return (
                         <StatsTimeseriesCard
                           key={module.moduleKey}
-                          title={group?.label ?? module.seriesItem?.label ?? module.moduleKey}
+                          title={
+                            group?.label ??
+                            module.seriesItem?.label ??
+                            module.moduleKey
+                          }
                           description={group?.description}
                           seriesItem={module.seriesItem}
                           isLoading={module.isLoading}
-                          error={module.isError ? t("timeseriesError") : undefined}
+                          error={
+                            module.isError ? t("timeseriesError") : undefined
+                          }
                         />
                       );
                     })}

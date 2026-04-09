@@ -33,7 +33,9 @@ function ArticlesPageContent() {
   const [selectedBlogId, setSelectedBlogId] = useState<string>(
     searchParams.get("blogId") || "",
   );
-  const [currentStatus, setCurrentStatus] = useState<ArticleStatus | undefined>(undefined);
+  const [currentStatus, setCurrentStatus] = useState<ArticleStatus | undefined>(
+    undefined,
+  );
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Article | null>(null);
 
@@ -44,23 +46,32 @@ function ArticlesPageContent() {
   const hasSelectedTenant = useHasSelectedTenant();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
 
-  const { data: articlesData, isLoading, error, isError } = useListArticles(selectedBlogId || undefined, 1, 50);
+  const {
+    data: articlesData,
+    isLoading,
+    error,
+    isError,
+  } = useListArticles(selectedBlogId || undefined, 1, 50);
   const { data: authorsData } = useGetAuthors();
 
   const { mutate: deleteArticle } = useDeleteArticle();
-  const { mutate: publishArticle, isPending: isPublishingArticle } = usePublishArticle();
-  const { mutate: archiveArticle, isPending: isArchivingArticle } = useArchiveArticle();
-  const { mutate: unarchiveArticle, isPending: isUnarchivingArticle } = useUnarchiveArticle();
-  const { mutate: updateArticle, isPending: isUpdatingArticle } = useUpdateArticle();
+  const { mutate: publishArticle, isPending: isPublishingArticle } =
+    usePublishArticle();
+  const { mutate: archiveArticle, isPending: isArchivingArticle } =
+    useArchiveArticle();
+  const { mutate: unarchiveArticle, isPending: isUnarchivingArticle } =
+    useUnarchiveArticle();
+  const { mutate: updateArticle, isPending: isUpdatingArticle } =
+    useUpdateArticle();
 
   const articles: Article[] = Array.isArray(articlesData)
     ? articlesData
     : ((articlesData as any)?.data ?? []);
-  
+
   const authors = Array.isArray(authorsData) ? authorsData : [];
-  
+
   // Debug temporário
-  console.log('Authors loaded:', authors.length, authors.slice(0, 2));
+  console.log("Authors loaded:", authors.length, authors.slice(0, 2));
 
   if (isError) {
     return (
@@ -75,7 +86,9 @@ function ArticlesPageContent() {
                 Error Loading Articles
               </h3>
               <p className="text-muted-foreground">
-                {error instanceof Error ? error.message : "Failed to load articles. Please try again."}
+                {error instanceof Error
+                  ? error.message
+                  : "Failed to load articles. Please try again."}
               </p>
             </CardBody>
           </Card>
@@ -130,7 +143,7 @@ function ArticlesPageContent() {
         onSuccess: () => {
           setSelectedArticle(null);
         },
-      }
+      },
     );
   };
 
@@ -173,7 +186,9 @@ function ArticlesPageContent() {
             {selectedTenant && (
               <div className="text-sm text-muted-foreground">
                 Managing content for {""}
-                <span className="font-semibold text-primary">{selectedTenant.name}</span>
+                <span className="font-semibold text-primary">
+                  {selectedTenant.name}
+                </span>
               </div>
             )}
           </div>
@@ -187,7 +202,8 @@ function ArticlesPageContent() {
         currentStatus={currentStatus}
         onStatusChange={setCurrentStatus}
         onCreateClick={() =>
-          router.push(`/dashboard/cms/articles/new${selectedBlogId ? `?blogId=${selectedBlogId}` : ""}`,
+          router.push(
+            `/dashboard/cms/articles/new${selectedBlogId ? `?blogId=${selectedBlogId}` : ""}`,
           )
         }
         onRowClick={setSelectedArticle}
@@ -209,17 +225,23 @@ function ArticlesPageContent() {
         isOpen={selectedArticle !== null}
         onClose={() => setSelectedArticle(null)}
         onEditClick={(article) =>
-          router.push(`/dashboard/cms/articles/${article.id}?blogId=${article.blog_id}`)
+          router.push(
+            `/dashboard/cms/articles/${article.id}?blogId=${article.blog_id}`,
+          )
         }
         onPreviewClick={(article) =>
-          router.push(`/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`)
+          router.push(
+            `/dashboard/cms/articles/${article.id}/preview?blogId=${article.blog_id}`,
+          )
         }
         onPublish={handlePublish}
         onArchive={handleArchive}
         onUnarchive={handleUnarchive}
         onDelete={handleDelete}
         onSave={handleQuickUpdate}
-        isStatusActionPending={isPublishingArticle || isArchivingArticle || isUnarchivingArticle}
+        isStatusActionPending={
+          isPublishingArticle || isArchivingArticle || isUnarchivingArticle
+        }
         isSaving={isUpdatingArticle}
       />
     </CmsPageLayout>
@@ -233,12 +255,14 @@ export default function ArticlesPage() {
         <CmsPageLayout routeActive="articles">
           <div className="flex justify-center items-center min-h-[400px]">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-            <span className="ml-3 text-muted-foreground">Loading articles...</span>
+            <span className="ml-3 text-muted-foreground">
+              Loading articles...
+            </span>
           </div>
         </CmsPageLayout>
       }
     >
- <ArticlesPageContent />
- </Suspense>
- );
+      <ArticlesPageContent />
+    </Suspense>
+  );
 }

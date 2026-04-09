@@ -1,59 +1,69 @@
 "use client";
 
 import {
- CartesianGrid,
- Line,
- LineChart,
- ResponsiveContainer,
- Tooltip,
- XAxis,
- YAxis,
-} from"recharts";
-import { useTranslations } from"next-intl";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from"@/src/components/ui/card";
-import type { StatsTimeseriesItem } from"@/src/common/@types/@stats";
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { useTranslations } from "next-intl";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
+import type { StatsTimeseriesItem } from "@/src/common/@types/@stats";
 
 interface StatsTimeseriesCardProps {
- title: string;
- description?: string;
- seriesItem?: StatsTimeseriesItem;
- isLoading?: boolean;
- error?: string;
+  title: string;
+  description?: string;
+  seriesItem?: StatsTimeseriesItem;
+  isLoading?: boolean;
+  error?: string;
 }
 
 function formatAxisDate(value: string) {
- const date = new Date(value);
+  const date = new Date(value);
 
- if (Number.isNaN(date.getTime())) {
- return value;
- }
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
 
- return date.toLocaleDateString("pt-BR", {
- day:"2-digit",
- month:"2-digit",
- });
+  return date.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+  });
 }
 
 export function StatsTimeseriesCard({
- title,
- description,
- seriesItem,
- isLoading,
- error,
+  title,
+  description,
+  seriesItem,
+  isLoading,
+  error,
 }: StatsTimeseriesCardProps) {
- const t = useTranslations("stats");
- const chartData =
- seriesItem?.series.map((point) => ({
- ...point,
- label: formatAxisDate(point.date),
- })) ?? [];
+  const t = useTranslations("stats");
+  const chartData =
+    seriesItem?.series.map((point) => ({
+      ...point,
+      label: formatAxisDate(point.date),
+    })) ?? [];
 
   return (
     <Card className="bg-default-50 border-border shadow-none h-full flex flex-col">
       <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="text-xl font-bold tracking-tight text-foreground break-words">{title}</CardTitle>
+        <CardTitle className="text-xl font-bold tracking-tight text-foreground break-words">
+          {title}
+        </CardTitle>
         {description ? (
-          <CardDescription className="break-words text-sm text-muted-foreground">{description}</CardDescription>
+          <CardDescription className="break-words text-sm text-muted-foreground">
+            {description}
+          </CardDescription>
         ) : null}
       </CardHeader>
       <CardContent className="flex-1">
@@ -77,8 +87,15 @@ export function StatsTimeseriesCard({
           <div className="w-full h-full overflow-x-auto">
             <div className="h-[300px] min-w-[520px] sm:min-w-0">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 12, right: 12, bottom: 4, left: 0 }}>
-                  <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 12, right: 12, bottom: 4, left: 0 }}
+                >
+                  <CartesianGrid
+                    stroke="hsl(var(--border))"
+                    strokeDasharray="3 3"
+                    vertical={false}
+                  />
                   <XAxis
                     dataKey="label"
                     stroke="hsl(var(--muted-foreground))"
@@ -101,11 +118,21 @@ export function StatsTimeseriesCard({
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "12px",
                       color: "hsl(var(--foreground))",
-                      boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+                      boxShadow:
+                        "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
                     }}
-                    labelStyle={{ color: "hsl(var(--muted-foreground))", marginBottom: "4px" }}
-                    itemStyle={{ color: "hsl(var(--foreground))", fontWeight: "bold" }}
-                    formatter={(value: number) => [value.toLocaleString("pt-BR"), seriesItem?.metricLabel ?? title]}
+                    labelStyle={{
+                      color: "hsl(var(--muted-foreground))",
+                      marginBottom: "4px",
+                    }}
+                    itemStyle={{
+                      color: "hsl(var(--foreground))",
+                      fontWeight: "bold",
+                    }}
+                    formatter={(value: number) => [
+                      value.toLocaleString("pt-BR"),
+                      seriesItem?.metricLabel ?? title,
+                    ]}
                   />
                   <Line
                     type="monotone"
@@ -113,7 +140,12 @@ export function StatsTimeseriesCard({
                     stroke="hsl(var(--primary))"
                     strokeWidth={4}
                     dot={false}
-                    activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 2 }}
+                    activeDot={{
+                      r: 6,
+                      fill: "hsl(var(--primary))",
+                      stroke: "hsl(var(--background))",
+                      strokeWidth: 2,
+                    }}
                   />
                 </LineChart>
               </ResponsiveContainer>

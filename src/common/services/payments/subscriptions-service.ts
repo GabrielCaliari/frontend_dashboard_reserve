@@ -1,4 +1,4 @@
-import { apiClient } from '@/src/common/config/api';
+import { apiClient } from "@/src/common/config/api";
 import type {
   Subscription,
   GetSubscriptionResponse,
@@ -6,31 +6,34 @@ import type {
   CheckoutSessionResponse,
   CancelSubscriptionDto,
   CancelSubscriptionResponse,
-} from '@/src/common/@types/@payments';
+} from "@/src/common/@types/@payments";
 
 export async function getSubscriptionByTenantService(
-  tenantId: string
+  tenantId: string,
 ): Promise<GetSubscriptionResponse> {
   const response = await apiClient.get<GetSubscriptionResponse>(
-    `/subscriptions/tenant/${tenantId}`
+    `/subscriptions/tenant/${tenantId}`,
   );
   return response.data;
 }
 
 export async function createCheckoutSessionService(
-  data: CreateCheckoutSessionDto
+  data: CreateCheckoutSessionDto,
 ): Promise<CheckoutSessionResponse> {
-  const response = await apiClient.post<CheckoutSessionResponse>('/subscriptions/checkout', data);
+  const response = await apiClient.post<CheckoutSessionResponse>(
+    "/subscriptions/checkout",
+    data,
+  );
   return response.data;
 }
 
 export async function cancelSubscriptionService(
   subscriptionId: string,
-  data: CancelSubscriptionDto
+  data: CancelSubscriptionDto,
 ): Promise<CancelSubscriptionResponse> {
   const response = await apiClient.post<CancelSubscriptionResponse>(
     `/subscriptions/${subscriptionId}/cancel`,
-    data
+    data,
   );
   return response.data;
 }

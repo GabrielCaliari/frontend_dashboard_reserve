@@ -5,14 +5,14 @@
  * All IDs are strings (UUIDs) matching the backend.
  */
 
-import { apiClient } from '@/src/common/config/api';
+import { apiClient } from "@/src/common/config/api";
 import {
   Admin,
   PaginatedResponse,
   CreateAdminDto,
   UpdateAdminDto,
   AdminRole,
-} from '@/src/common/@types/@access-management';
+} from "@/src/common/@types/@access-management";
 
 /** Fetch paginated list of admins. Client-side search/pagination because backend returns a flat array. */
 export const fetchAdmins = async (
@@ -21,17 +21,25 @@ export const fetchAdmins = async (
   search?: string,
 ): Promise<PaginatedResponse<Admin>> => {
   // Check if user is super admin via cookie
-  const isSuperAdmin = typeof window !== 'undefined'
-    ? document.cookie.split('; ').find(row => row.startsWith('session-role='))?.split('=')[1] === 'super_admin'
-    : false;
+  const isSuperAdmin =
+    typeof window !== "undefined"
+      ? document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("session-role="))
+          ?.split("=")[1] === "super_admin"
+      : false;
 
   // Only skip tenant header for super admins
-  const headers = isSuperAdmin ? { 'x-skip-tenant': 'true' } : {};
-  
-  const response = await apiClient.get('/admin/list', { headers });
+  const headers = isSuperAdmin ? { "x-skip-tenant": "true" } : {};
+
+  const response = await apiClient.get("/admin/list", { headers });
   const raw = response.data;
-  const rawAdmins: any[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
-  
+  const rawAdmins: any[] = Array.isArray(raw)
+    ? raw
+    : Array.isArray(raw?.data)
+      ? raw.data
+      : [];
+
   // Normalize: backend returns `active`, frontend expects `is_active`
   const allAdmins: Admin[] = rawAdmins.map((a) => ({
     ...a,
@@ -72,7 +80,15 @@ export const fetchAdminById = async (id: string): Promise<Admin> => {
         tenant_id: t.id,
         admin_id: id,
         role: t.role,
-        tenant: { id: t.id, name: t.name, slug: t.slug, domain: t.domain, is_active: t.is_active ?? t.active ?? true, created_at: t.created_at, updated_at: t.updated_at },
+        tenant: {
+          id: t.id,
+          name: t.name,
+          slug: t.slug,
+          domain: t.domain,
+          is_active: t.is_active ?? t.active ?? true,
+          created_at: t.created_at,
+          updated_at: t.updated_at,
+        },
       }))
     : [];
 
@@ -87,14 +103,14 @@ export const fetchAdminById = async (id: string): Promise<Admin> => {
 
 /** Create a new admin account. */
 export const createAdmin = async (data: CreateAdminDto): Promise<Admin> => {
-  const response = await apiClient.post<Admin>('/admin/register', data);
+  const response = await apiClient.post<Admin>("/admin/register", data);
   return response.data;
 };
 
 /** Update name and/or email for an existing admin. */
 export const updateAdmin = async (
   id: string,
-  data: Omit<UpdateAdminDto, 'role'>,
+  data: Omit<UpdateAdminDto, "role">,
 ): Promise<Admin> => {
   const response = await apiClient.patch<Admin>(`/admin/${id}`, data);
   return response.data;

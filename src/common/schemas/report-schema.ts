@@ -7,9 +7,7 @@ export const ReportSchema = (t: TranslateFn) =>
     phone: Yup.string()
       .required(t("phoneRequired"))
       .max(20, t("phoneMaxLength", { max: 20 })),
-    url: Yup.string()
-      .required(t("urlRequired"))
-      .url(t("urlInvalid")),
+    url: Yup.string().required(t("urlRequired")).url(t("urlInvalid")),
     label: Yup.string()
       .max(150, t("labelMaxLength", { max: 150 }))
       .nullable()

@@ -8,30 +8,36 @@ export interface CmsTabItem {
   id: string;
   label: string;
   count?: number;
-  color?: "default" | "primary" | "secondary" | "success" | "warning" | "danger";
+  color?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger";
 }
 
 interface CmsPageHeaderProps {
   title: string;
   description?: string;
   icon?: ReactNode;
-  
+
   // Action Button
   actionLabel?: string;
   actionIcon?: ReactNode;
   onActionClick?: () => void;
   isActionDisabled?: boolean;
-  
+
   // Search
   searchValue?: string;
   onSearchChange?: (val: string) => void;
   searchPlaceholder?: string;
-  
+
   // Tabs
   tabs?: CmsTabItem[];
   activeTab?: string;
   onTabChange?: (tabId: string) => void;
-  
+
   // Extra elements like BlogSelector
   extraTopContent?: ReactNode;
 }
@@ -69,11 +75,13 @@ export function CmsPageHeader({
               {title}
             </h1>
             {description && (
-              <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">{description}</p>
+              <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
+                {description}
+              </p>
             )}
           </div>
         </div>
-        
+
         {actionLabel && onActionClick && (
           <Button
             color="primary"
@@ -94,7 +102,9 @@ export function CmsPageHeader({
               placeholder={searchPlaceholder}
               value={searchValue || ""}
               onValueChange={onSearchChange}
-              startContent={<Search className="w-4 h-4 text-muted-foreground" />}
+              startContent={
+                <Search className="w-4 h-4 text-muted-foreground" />
+              }
               isClearable
               onClear={() => onSearchChange("")}
               classNames={{
@@ -112,10 +122,12 @@ export function CmsPageHeader({
               variant="underlined"
               color="primary"
               classNames={{
-                tabList: "gap-4 sm:gap-6 w-full relative rounded-none p-0 border-b border-border overflow-x-auto",
+                tabList:
+                  "gap-4 sm:gap-6 w-full relative rounded-none p-0 border-b border-border overflow-x-auto",
                 cursor: "w-full bg-primary",
                 tab: "max-w-fit px-0 h-12",
-                tabContent: "group-data-[selected=true]:text-primary font-medium text-sm",
+                tabContent:
+                  "group-data-[selected=true]:text-primary font-medium text-sm",
               }}
             >
               {tabs.map((tab) => (
@@ -125,7 +137,12 @@ export function CmsPageHeader({
                     <div className="flex items-center gap-2 whitespace-nowrap">
                       <span>{tab.label}</span>
                       {tab.count !== undefined && (
-                        <Chip size="sm" variant="flat" color={tab.color || "default"} className="h-5 text-[10px] px-1">
+                        <Chip
+                          size="sm"
+                          variant="flat"
+                          color={tab.color || "default"}
+                          className="h-5 text-[10px] px-1"
+                        >
                           {tab.count}
                         </Chip>
                       )}

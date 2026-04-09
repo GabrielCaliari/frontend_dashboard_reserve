@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   publishArticle,
   archiveArticle,
   updateArticle,
   scheduleArticle,
   updatePublishedAt,
-} from '@/src/common/services/cms-article-service';
+} from "@/src/common/services/cms-article-service";
 
 /**
  * Hook to change the status of an existing article from the editor toolbar.
@@ -19,7 +19,7 @@ export function useArticleStatus(articleId: string) {
   const queryClient = useQueryClient();
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ['cms', 'articles'] });
+    queryClient.invalidateQueries({ queryKey: ["cms", "articles"] });
   };
 
   const publish = useMutation({
@@ -28,7 +28,8 @@ export function useArticleStatus(articleId: string) {
   });
 
   const schedule = useMutation({
-    mutationFn: (scheduledAt: string) => scheduleArticle(articleId, scheduledAt),
+    mutationFn: (scheduledAt: string) =>
+      scheduleArticle(articleId, scheduledAt),
     onSuccess: invalidate,
   });
 
@@ -38,12 +39,13 @@ export function useArticleStatus(articleId: string) {
   });
 
   const draft = useMutation({
-    mutationFn: () => updateArticle(articleId, { status: 'draft' }),
+    mutationFn: () => updateArticle(articleId, { status: "draft" }),
     onSuccess: invalidate,
   });
 
   const editPublishedAt = useMutation({
-    mutationFn: (publishedAt: string) => updatePublishedAt(articleId, publishedAt),
+    mutationFn: (publishedAt: string) =>
+      updatePublishedAt(articleId, publishedAt),
     onSuccess: invalidate,
   });
 

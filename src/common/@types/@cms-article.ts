@@ -1,6 +1,6 @@
-import { ArticleImage } from './@cms-image';
+import { ArticleImage } from "./@cms-image";
 
-export type ArticleStatus = 'draft' | 'scheduled' | 'published' | 'archived';
+export type ArticleStatus = "draft" | "scheduled" | "published" | "archived";
 
 export type ArticleLanguage = string;
 
@@ -59,6 +59,6 @@ export interface UpdateArticleDto {
   status?: ArticleStatus;
 }
 
-export interface ArticleListItem extends Omit<Article, 'content' | 'images'> {
+export interface ArticleListItem extends Omit<Article, "content" | "images"> {
   image_count: number;
 }

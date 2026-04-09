@@ -1,17 +1,23 @@
-import { useQueries, useQuery } from '@tanstack/react-query';
-import { statsService } from '@/src/common/services/stats-service';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { statsService } from "@/src/common/services/stats-service";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
 import type {
   StatsTimeseriesItem,
   StatsDashboardQuery,
   StatsTimeseriesQuery,
-} from '@/src/common/@types/@stats';
+} from "@/src/common/@types/@stats";
 
 export function useStatsDashboard(query: StatsDashboardQuery = {}) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
-    queryKey: ['stats-dashboard', 'tenant-current', tenantId, query.from, query.to],
+    queryKey: [
+      "stats-dashboard",
+      "tenant-current",
+      tenantId,
+      query.from,
+      query.to,
+    ],
     queryFn: () => statsService.getDashboard(query),
     enabled: !!tenantId,
   });
@@ -22,7 +28,13 @@ export function useStatsTenantDashboard(
   query: StatsDashboardQuery = {},
 ) {
   return useQuery({
-    queryKey: ['stats-dashboard', 'tenant-specific', tenantId, query.from, query.to],
+    queryKey: [
+      "stats-dashboard",
+      "tenant-specific",
+      tenantId,
+      query.from,
+      query.to,
+    ],
     queryFn: () => statsService.getTenantDashboard(tenantId!, query),
     enabled: !!tenantId,
   });
@@ -30,7 +42,7 @@ export function useStatsTenantDashboard(
 
 export function useStatsGlobalDashboard(query: StatsDashboardQuery = {}) {
   return useQuery({
-    queryKey: ['stats-dashboard', 'global', query.from, query.to],
+    queryKey: ["stats-dashboard", "global", query.from, query.to],
     queryFn: () => statsService.getGlobalDashboard(query),
   });
 }
@@ -40,7 +52,7 @@ export function useStatsTimeseries(query: StatsTimeseriesQuery = {}) {
 
   return useQuery({
     queryKey: [
-      'stats-timeseries',
+      "stats-timeseries",
       tenantId,
       query.module,
       query.granularity,
@@ -61,17 +73,18 @@ export function useStatsTimeseriesModules(
   return useQueries({
     queries: modules.map((moduleKey) => ({
       queryKey: [
-        'stats-timeseries',
+        "stats-timeseries",
         tenantId,
         moduleKey,
         query.granularity,
         query.from,
         query.to,
       ],
-      queryFn: () => statsService.getTimeseries({
-        ...query,
-        module: moduleKey,
-      }),
+      queryFn: () =>
+        statsService.getTimeseries({
+          ...query,
+          module: moduleKey,
+        }),
       enabled: !!tenantId && !!moduleKey,
     })),
     combine: (results) =>
@@ -90,7 +103,7 @@ export function useStatsModule(moduleKey: string | null) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
-    queryKey: ['stats-module', tenantId, moduleKey],
+    queryKey: ["stats-module", tenantId, moduleKey],
     queryFn: () => statsService.getModuleStats(moduleKey!),
     enabled: !!tenantId && !!moduleKey,
   });

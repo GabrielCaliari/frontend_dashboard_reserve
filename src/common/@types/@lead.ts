@@ -151,7 +151,7 @@ export interface RegenerateKeyResponse {
 
 // Keep for backward compat
 export enum CollectionAccessMode {
-  PUBLIC = 'public',
-  PRIVATE = 'private',
-  RESTRICTED = 'restricted',
+  PUBLIC = "public",
+  PRIVATE = "private",
+  RESTRICTED = "restricted",
 }

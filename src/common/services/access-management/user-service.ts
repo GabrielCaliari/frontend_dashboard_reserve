@@ -1,26 +1,35 @@
 /**
  * User Service — all IDs are strings (UUIDs)
  */
-import { apiClient } from '@/src/common/config/api';
-import { User, PaginatedResponse, UpdateUserDto } from '@/src/common/@types/@access-management';
+import { apiClient } from "@/src/common/config/api";
+import {
+  User,
+  PaginatedResponse,
+  UpdateUserDto,
+} from "@/src/common/@types/@access-management";
 
 export const fetchUsers = async (
   page: number = 1,
   perPage: number = 10,
   search?: string,
 ): Promise<PaginatedResponse<User>> => {
-  const response = await apiClient.get('/admin/users', { 
+  const response = await apiClient.get("/admin/users", {
     params: { page, limit: perPage },
-    headers: { 'x-skip-tenant': 'true' },
+    headers: { "x-skip-tenant": "true" },
   });
   const raw = response.data;
   // Backend returns { data: User[], total, page, limit }
-  let users: User[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
+  let users: User[] = Array.isArray(raw)
+    ? raw
+    : Array.isArray(raw?.data)
+      ? raw.data
+      : [];
 
   if (search) {
-    users = users.filter((u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()),
+    users = users.filter(
+      (u) =>
+        u.name.toLowerCase().includes(search.toLowerCase()) ||
+        u.email.toLowerCase().includes(search.toLowerCase()),
     );
   }
 
@@ -42,7 +51,10 @@ export const fetchUserById = async (id: string): Promise<User> => {
   return response.data;
 };
 
-export const updateUser = async (id: string, data: UpdateUserDto): Promise<User> => {
+export const updateUser = async (
+  id: string,
+  data: UpdateUserDto,
+): Promise<User> => {
   const response = await apiClient.patch<User>(`/admin/users/${id}`, data);
   return response.data;
 };

@@ -19,10 +19,13 @@ export function useCreateBlockedPeriod() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (period: Omit<BlockedPeriod, "id" | "tenantId" | "createdAt">) =>
-      createBlockedPeriodService(period),
+    mutationFn: (
+      period: Omit<BlockedPeriod, "id" | "tenantId" | "createdAt">,
+    ) => createBlockedPeriodService(period),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "blocked-periods"] });
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", "blocked-periods"],
+      });
     },
   });
 }
@@ -31,10 +34,17 @@ export function useUpdateBlockedPeriod() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, period }: { id: string; period: Omit<BlockedPeriod, "id" | "tenantId" | "createdAt"> }) =>
-      updateBlockedPeriodService(id, period),
+    mutationFn: ({
+      id,
+      period,
+    }: {
+      id: string;
+      period: Omit<BlockedPeriod, "id" | "tenantId" | "createdAt">;
+    }) => updateBlockedPeriodService(id, period),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "blocked-periods"] });
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", "blocked-periods"],
+      });
     },
   });
 }
@@ -45,7 +55,9 @@ export function useDeleteBlockedPeriod() {
   return useMutation({
     mutationFn: (id: string) => deleteBlockedPeriodService(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "blocked-periods"] });
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", "blocked-periods"],
+      });
     },
   });
 }

@@ -1,8 +1,13 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { AdminRole } from '@/src/common/@types/@access-management';
+import { AdminRole } from "@/src/common/@types/@access-management";
 
-const TENANT_SCOPED_ROLES = [AdminRole.owner, AdminRole.manager, AdminRole.editor, AdminRole.viewer] as const;
+const TENANT_SCOPED_ROLES = [
+  AdminRole.owner,
+  AdminRole.manager,
+  AdminRole.editor,
+  AdminRole.viewer,
+] as const;
 
 export const TenantScopedRole = z.enum(TENANT_SCOPED_ROLES);
 
@@ -11,9 +16,10 @@ export type TenantScopedRoleType = z.infer<typeof TenantScopedRole>;
 /**
  * Name validation schema
  */
-const nameSchema = z.string()
-  .min(1, 'Name is required')
-  .max(100, 'Name must be 100 characters or less');
+const nameSchema = z
+  .string()
+  .min(1, "Name is required")
+  .max(100, "Name must be 100 characters or less");
 
 /**
  * Slug validation schema
@@ -22,24 +28,26 @@ const nameSchema = z.string()
  * - Cannot start or end with a hyphen
  * - Minimum 2 characters
  */
-const slugSchema = z.string()
-  .min(2, 'Slug must be at least 2 characters')
-  .max(50, 'Slug must be 50 characters or less')
+const slugSchema = z
+  .string()
+  .min(2, "Slug must be at least 2 characters")
+  .max(50, "Slug must be 50 characters or less")
   .regex(
     /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-    'Slug must contain only lowercase letters, numbers, and hyphens (cannot start or end with hyphen)'
+    "Slug must contain only lowercase letters, numbers, and hyphens (cannot start or end with hyphen)",
   );
 
 /**
  * Domain validation schema
  * Validates standard domain format (e.g., example.com, subdomain.example.com)
  */
-const domainSchema = z.string()
-  .min(3, 'Domain is required')
-  .max(255, 'Domain must be 255 characters or less')
+const domainSchema = z
+  .string()
+  .min(3, "Domain is required")
+  .max(255, "Domain must be 255 characters or less")
   .regex(
     /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/i,
-    'Invalid domain format (e.g., example.com)'
+    "Invalid domain format (e.g., example.com)",
   );
 
 /**
@@ -49,7 +57,7 @@ const domainSchema = z.string()
 export const createTenantSchema = z.object({
   name: nameSchema,
   slug: slugSchema,
-  domain: domainSchema
+  domain: domainSchema,
 });
 
 /**
@@ -59,7 +67,7 @@ export const createTenantSchema = z.object({
 export const updateTenantSchema = z.object({
   name: nameSchema.optional(),
   slug: slugSchema.optional(),
-  domain: domainSchema.optional()
+  domain: domainSchema.optional(),
 });
 
 /**
@@ -73,8 +81,8 @@ export type CreateTenantFormData = z.infer<typeof createTenantSchema>;
 export type UpdateTenantFormData = z.infer<typeof updateTenantSchema>;
 
 export const assignAdminSchema = z.object({
-  admin_id: z.string().min(1, 'Admin ID is required'),
-  tenant_id: z.string().min(1, 'Tenant ID is required'),
+  admin_id: z.string().min(1, "Admin ID is required"),
+  tenant_id: z.string().min(1, "Tenant ID is required"),
 });
 
 export type AssignAdminFormData = z.infer<typeof assignAdminSchema>;
@@ -83,4 +91,6 @@ export const updateAdminTenantRoleSchema = z.object({
   role: TenantScopedRole,
 });
 
-export type UpdateAdminTenantRoleFormData = z.infer<typeof updateAdminTenantRoleSchema>;
+export type UpdateAdminTenantRoleFormData = z.infer<
+  typeof updateAdminTenantRoleSchema
+>;

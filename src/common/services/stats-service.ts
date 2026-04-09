@@ -1,4 +1,4 @@
-import api from '@/src/common/config/api';
+import api from "@/src/common/config/api";
 import type {
   DashboardResponse,
   StatsIntegration,
@@ -9,7 +9,7 @@ import type {
   StatsTimeseriesQuery,
   StatsTimeseriesResponse,
   StatsModuleResponse,
-} from '@/src/common/@types/@stats';
+} from "@/src/common/@types/@stats";
 
 function buildDashboardParams(query: StatsDashboardQuery = {}) {
   const params: Record<string, string> = {};
@@ -23,8 +23,10 @@ function buildDashboardParams(query: StatsDashboardQuery = {}) {
 export const statsService = {
   // ── Dashboard ─────────────────────────────────
 
-  async getDashboard(query: StatsDashboardQuery = {}): Promise<DashboardResponse> {
-    const response = await api.get<DashboardResponse>('/stats/dashboard', {
+  async getDashboard(
+    query: StatsDashboardQuery = {},
+  ): Promise<DashboardResponse> {
+    const response = await api.get<DashboardResponse>("/stats/dashboard", {
       params: buildDashboardParams(query),
     });
     return response.data;
@@ -44,11 +46,16 @@ export const statsService = {
     return response.data;
   },
 
-  async getGlobalDashboard(query: StatsDashboardQuery = {}): Promise<DashboardResponse> {
-    const response = await api.get<DashboardResponse>('/stats/dashboard/global', {
-      params: buildDashboardParams(query),
-      skipTenantHeader: true,
-    } as never);
+  async getGlobalDashboard(
+    query: StatsDashboardQuery = {},
+  ): Promise<DashboardResponse> {
+    const response = await api.get<DashboardResponse>(
+      "/stats/dashboard/global",
+      {
+        params: buildDashboardParams(query),
+        skipTenantHeader: true,
+      } as never,
+    );
     return response.data;
   },
 
@@ -62,48 +69,71 @@ export const statsService = {
     if (query.granularity) params.granularity = query.granularity;
     if (query.module) params.module = query.module;
 
-    const response = await api.get<StatsTimeseriesResponse>('/stats/timeseries', {
-      params: Object.keys(params).length > 0 ? params : undefined,
-    });
+    const response = await api.get<StatsTimeseriesResponse>(
+      "/stats/timeseries",
+      {
+        params: Object.keys(params).length > 0 ? params : undefined,
+      },
+    );
     return response.data;
   },
 
   async getModuleStats(moduleKey: string): Promise<StatsModuleResponse> {
-    const response = await api.get<StatsModuleResponse>(`/stats/module/${moduleKey}`);
+    const response = await api.get<StatsModuleResponse>(
+      `/stats/module/${moduleKey}`,
+    );
     return response.data;
   },
 
   async getAvailableIntegrations(): Promise<AvailableIntegration[]> {
-    const response = await api.get<AvailableIntegration[]>('/stats/available-integrations');
+    const response = await api.get<AvailableIntegration[]>(
+      "/stats/available-integrations",
+    );
     return response.data;
   },
 
   // ── Integrations CRUD ─────────────────────────
 
   async listIntegrations(): Promise<StatsIntegration[]> {
-    const response = await api.get<StatsIntegration[]>('/stats/integrations');
+    const response = await api.get<StatsIntegration[]>("/stats/integrations");
     return response.data;
   },
 
   async getProviders(): Promise<AvailableIntegration[]> {
-    const response = await api.get<AvailableIntegration[]>('/stats/available-integrations', {
-      skipTenantHeader: true,
-    } as never);
+    const response = await api.get<AvailableIntegration[]>(
+      "/stats/available-integrations",
+      {
+        skipTenantHeader: true,
+      } as never,
+    );
     return response.data;
   },
 
   async getIntegration(id: string): Promise<StatsIntegration> {
-    const response = await api.get<StatsIntegration>(`/stats/integrations/${id}`);
+    const response = await api.get<StatsIntegration>(
+      `/stats/integrations/${id}`,
+    );
     return response.data;
   },
 
-  async createIntegration(data: CreateStatsIntegrationDto): Promise<StatsIntegration> {
-    const response = await api.post<StatsIntegration>('/stats/integrations', data);
+  async createIntegration(
+    data: CreateStatsIntegrationDto,
+  ): Promise<StatsIntegration> {
+    const response = await api.post<StatsIntegration>(
+      "/stats/integrations",
+      data,
+    );
     return response.data;
   },
 
-  async updateIntegration(id: string, data: UpdateStatsIntegrationDto): Promise<StatsIntegration> {
-    const response = await api.patch<StatsIntegration>(`/stats/integrations/${id}`, data);
+  async updateIntegration(
+    id: string,
+    data: UpdateStatsIntegrationDto,
+  ): Promise<StatsIntegration> {
+    const response = await api.patch<StatsIntegration>(
+      `/stats/integrations/${id}`,
+      data,
+    );
     return response.data;
   },
 

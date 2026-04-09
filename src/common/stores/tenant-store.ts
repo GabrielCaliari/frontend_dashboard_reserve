@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Tenant } from '@/src/common/@types/@auth';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import type { Tenant } from "@/src/common/@types/@auth";
 
-export type DashboardScope = 'tenant' | 'global';
+export type DashboardScope = "tenant" | "global";
 
 interface TenantState {
   selectedTenant: Tenant | null;
@@ -18,27 +18,27 @@ const COOKIE_MAX_AGE = 86400; // 24h
  * Storage adapter que persiste o state do Zustand diretamente em cookie.
  * Unica fonte de verdade -- client e server leem o mesmo cookie.
  */
-const cookieStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> = {
+const cookieStorage: Pick<Storage, "getItem" | "setItem" | "removeItem"> = {
   getItem(name) {
-    if (typeof document === 'undefined') return null;
+    if (typeof document === "undefined") return null;
     const match = document.cookie
-      .split('; ')
+      .split("; ")
       .find((row) => row.startsWith(`${name}=`));
     if (!match) return null;
     try {
-      return decodeURIComponent(match.split('=').slice(1).join('='));
+      return decodeURIComponent(match.split("=").slice(1).join("="));
     } catch {
       return null;
     }
   },
   setItem(name, value) {
-    if (typeof document === 'undefined') return;
-    const isSecure = window.location.protocol === 'https:';
-    const flags = `path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
+    if (typeof document === "undefined") return;
+    const isSecure = window.location.protocol === "https:";
+    const flags = `path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax${isSecure ? "; Secure" : ""}`;
     document.cookie = `${name}=${encodeURIComponent(value)}; ${flags}`;
   },
   removeItem(name) {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
     document.cookie = `${name}=; path=/; max-age=0`;
   },
 };
@@ -47,23 +47,24 @@ export const useTenantStore = create<TenantState>()(
   persist(
     (set) => ({
       selectedTenant: null,
-      dashboardScope: 'tenant',
+      dashboardScope: "tenant",
       setSelectedTenant: (tenant) => set({ selectedTenant: tenant }),
       setDashboardScope: (dashboardScope) => set({ dashboardScope }),
-      clearSelectedTenant: () => set({ selectedTenant: null, dashboardScope: 'tenant' }),
+      clearSelectedTenant: () =>
+        set({ selectedTenant: null, dashboardScope: "tenant" }),
     }),
     {
-      name: 'tenant-storage',
+      name: "tenant-storage",
       storage: createJSONStorage(() => cookieStorage),
-    }
-  )
+    },
+  ),
 );
 
 // Hook para obter o tenant ID selecionado (útil para APIs)
 export const useSelectedTenantId = () => {
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const dashboardScope = useTenantStore((state) => state.dashboardScope);
-  if (dashboardScope === 'global') return null;
+  if (dashboardScope === "global") return null;
   return selectedTenant?.id || null;
 };
 
@@ -71,7 +72,7 @@ export const useSelectedTenantId = () => {
 export const useHasSelectedTenant = () => {
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const dashboardScope = useTenantStore((state) => state.dashboardScope);
-  return dashboardScope === 'tenant' && selectedTenant !== null;
+  return dashboardScope === "tenant" && selectedTenant !== null;
 };
 
 export const useDashboardScope = () => {
@@ -79,5 +80,5 @@ export const useDashboardScope = () => {
 };
 
 export const useIsGlobalDashboardScope = () => {
-  return useTenantStore((state) => state.dashboardScope === 'global');
+  return useTenantStore((state) => state.dashboardScope === "global");
 };

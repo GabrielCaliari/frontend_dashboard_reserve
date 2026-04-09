@@ -27,23 +27,33 @@ export interface UpdateAppointmentResponse {
 }
 
 export async function listAppointmentsService(
-  params: ListAppointmentsParams = {}
+  params: ListAppointmentsParams = {},
 ): Promise<ListAppointmentsResponse> {
   const response = await apiClient.get("/leads/admin/appointments", { params });
   return response.data;
 }
 
-export async function getAppointmentService(id: string): Promise<GetAppointmentResponse> {
+export async function getAppointmentService(
+  id: string,
+): Promise<GetAppointmentResponse> {
   const response = await apiClient.get(`/leads/admin/appointments/${id}`);
   return response.data;
 }
 
-export async function cancelAppointmentService(id: string): Promise<UpdateAppointmentResponse> {
-  const response = await apiClient.patch(`/leads/admin/appointments/${id}/cancel`);
+export async function cancelAppointmentService(
+  id: string,
+): Promise<UpdateAppointmentResponse> {
+  const response = await apiClient.patch(
+    `/leads/admin/appointments/${id}/cancel`,
+  );
   return response.data;
 }
 
-export async function completeAppointmentService(id: string): Promise<UpdateAppointmentResponse> {
-  const response = await apiClient.patch(`/leads/admin/appointments/${id}/complete`);
+export async function completeAppointmentService(
+  id: string,
+): Promise<UpdateAppointmentResponse> {
+  const response = await apiClient.patch(
+    `/leads/admin/appointments/${id}/complete`,
+  );
   return response.data;
 }

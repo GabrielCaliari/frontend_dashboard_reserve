@@ -15,7 +15,14 @@ import {
   Pagination,
   Card,
 } from "@heroui/react";
-import { Edit, Trash2, User as UserIcon, Plus, Users, Search } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  User as UserIcon,
+  Plus,
+  Users,
+  Search,
+} from "lucide-react";
 import type { Author } from "@/src/common/@types/@cms-author";
 import { CmsPageHeader, CmsTabItem } from "../shared/cms-page-header";
 
@@ -38,12 +45,17 @@ export function AuthorList({
 }: AuthorListProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all");
 
   const getDisplayName = (author: Author) => {
     const fullName = author.fullName?.trim();
     if (fullName) return fullName;
-    return [author.firstName, author.lastName].filter(Boolean).join(" ").trim() || "Unnamed author";
+    return (
+      [author.firstName, author.lastName].filter(Boolean).join(" ").trim() ||
+      "Unnamed author"
+    );
   };
 
   const getAvatarUrl = (author: Author) => {
@@ -79,7 +91,12 @@ export function AuthorList({
   const tabs: CmsTabItem[] = [
     { id: "all", label: "All", count: summary.all },
     { id: "active", label: "Active", count: summary.active, color: "success" },
-    { id: "inactive", label: "Inactive", count: summary.inactive, color: "warning" },
+    {
+      id: "inactive",
+      label: "Inactive",
+      count: summary.inactive,
+      color: "warning",
+    },
   ];
 
   const totalPages = Math.ceil(filteredAuthors.length / PAGE_SIZE);
@@ -127,7 +144,9 @@ export function AuthorList({
         >
           <TableHeader>
             <TableColumn>AUTHOR</TableColumn>
-            <TableColumn className="hidden sm:table-cell">BIOGRAPHY</TableColumn>
+            <TableColumn className="hidden sm:table-cell">
+              BIOGRAPHY
+            </TableColumn>
             <TableColumn>STATUS</TableColumn>
             <TableColumn className="hidden md:table-cell">CREATED</TableColumn>
             <TableColumn align="end">ACTIONS</TableColumn>
@@ -146,15 +165,22 @@ export function AuthorList({
                   )}
                 </div>
                 <p className="font-medium text-foreground mb-1">
-                  {search || statusFilter !== "all" ? "No authors match your filters" : "No Authors Yet"}
+                  {search || statusFilter !== "all"
+                    ? "No authors match your filters"
+                    : "No Authors Yet"}
                 </p>
                 <p className="text-sm text-muted-foreground mb-4">
                   {search || statusFilter !== "all"
                     ? "Try adjusting your search term or status filter."
                     : "Create your first author to start publishing articles."}
                 </p>
-                {(!search && statusFilter === "all") && (
-                  <Button color="primary" size="sm" onPress={onCreateClick} startContent={<Plus size={16} />}>
+                {!search && statusFilter === "all" && (
+                  <Button
+                    color="primary"
+                    size="sm"
+                    onPress={onCreateClick}
+                    startContent={<Plus size={16} />}
+                  >
                     Create Your First Author
                   </Button>
                 )}
@@ -169,7 +195,9 @@ export function AuthorList({
                       src={getAvatarUrl(author)}
                       name={getDisplayName(author)}
                       size="sm"
-                      fallback={<UserIcon className="w-4 h-4 text-muted-foreground" />}
+                      fallback={
+                        <UserIcon className="w-4 h-4 text-muted-foreground" />
+                      }
                     />
                     <span className="font-medium text-foreground">
                       {getDisplayName(author)}
@@ -179,7 +207,9 @@ export function AuthorList({
                 <TableCell className="hidden sm:table-cell">
                   <p className="text-sm text-muted-foreground max-w-xs truncate">
                     {author.biography || (
-                      <span className="text-muted-foreground italic">No biography</span>
+                      <span className="text-muted-foreground italic">
+                        No biography
+                      </span>
                     )}
                   </p>
                 </TableCell>
@@ -200,8 +230,16 @@ export function AuthorList({
                   </span>
                 </TableCell>
                 <TableCell>
-                  <div className="flex gap-2 justify-end" onClick={(e) => e.stopPropagation()}>
-                    <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(author)}>
+                  <div
+                    className="flex gap-2 justify-end"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      onPress={() => onEdit(author)}
+                    >
                       <Edit className="w-4 h-4" />
                     </Button>
                     <Button

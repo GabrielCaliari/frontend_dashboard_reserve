@@ -1,5 +1,8 @@
-import { cmsApiClient } from '@/src/common/config/api';
-import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
+import { cmsApiClient } from "@/src/common/config/api";
+import {
+  withRetry,
+  transformCMSError,
+} from "@/src/common/utils/cms-error-handler";
 import type {
   CmsMediaId,
   MediaCollection,
@@ -15,7 +18,7 @@ import type {
   ReorderRelationsRequest,
   CollectionListParams,
   AssetListParams,
-} from '@/src/common/@types/@cms-media';
+} from "@/src/common/@types/@cms-media";
 
 /**
  * CMS Media Storage Service
@@ -27,15 +30,15 @@ export type UpdateCollectionDto = UpdateCollectionRequest;
 export type UploadAssetDto = UploadAssetRequest;
 export type UpdateAssetDto = UpdateAssetRequest;
 export type CreateRelationDto = CreateRelationRequest;
-export type ReorderRelationDto = ReorderRelationsRequest['relations'][number];
+export type ReorderRelationDto = ReorderRelationsRequest["relations"][number];
 export type CollectionFilters = CollectionListParams;
 export type AssetFilters = AssetListParams;
 
 const getResponsePayload = <T>(payload: T | { data: T }): T => {
   if (
     payload &&
-    typeof payload === 'object' &&
-    'data' in payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
     !Array.isArray(payload)
   ) {
     return payload.data as T;
@@ -45,11 +48,11 @@ const getResponsePayload = <T>(payload: T | { data: T }): T => {
 };
 
 const getNestedArrayPayload = <T>(payload: unknown): T[] | null => {
-  if (!payload || typeof payload !== 'object') {
+  if (!payload || typeof payload !== "object") {
     return null;
   }
 
-  const candidateKeys = ['data', 'collections', 'assets', 'relations', 'items'];
+  const candidateKeys = ["data", "collections", "assets", "relations", "items"];
 
   for (const key of candidateKeys) {
     const value = (payload as Record<string, unknown>)[key];
@@ -64,17 +67,17 @@ const getNestedArrayPayload = <T>(payload: unknown): T[] | null => {
 const getPaginationPayload = (
   payload: unknown,
 ): Record<string, number | undefined> | undefined => {
-  if (!payload || typeof payload !== 'object') {
+  if (!payload || typeof payload !== "object") {
     return undefined;
   }
 
   const directMeta = (payload as Record<string, unknown>).meta;
-  if (directMeta && typeof directMeta === 'object') {
+  if (directMeta && typeof directMeta === "object") {
     return directMeta as Record<string, number | undefined>;
   }
 
   const directPagination = (payload as Record<string, unknown>).pagination;
-  if (directPagination && typeof directPagination === 'object') {
+  if (directPagination && typeof directPagination === "object") {
     return directPagination as Record<string, number | undefined>;
   }
 
@@ -87,17 +90,15 @@ const normalizePaginatedResponse = <T>(
 ): PaginatedResponse<T> => {
   if (
     payload &&
-    typeof payload === 'object' &&
-    'data' in payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
     (payload as { data?: unknown }).data &&
-    typeof (payload as { data?: unknown }).data === 'object' &&
-    (
-      'data' in ((payload as { data: Record<string, unknown> }).data) ||
-      'collections' in ((payload as { data: Record<string, unknown> }).data) ||
-      'assets' in ((payload as { data: Record<string, unknown> }).data) ||
-      'relations' in ((payload as { data: Record<string, unknown> }).data) ||
-      'items' in ((payload as { data: Record<string, unknown> }).data)
-    )
+    typeof (payload as { data?: unknown }).data === "object" &&
+    ("data" in (payload as { data: Record<string, unknown> }).data ||
+      "collections" in (payload as { data: Record<string, unknown> }).data ||
+      "assets" in (payload as { data: Record<string, unknown> }).data ||
+      "relations" in (payload as { data: Record<string, unknown> }).data ||
+      "items" in (payload as { data: Record<string, unknown> }).data)
   ) {
     return normalizePaginatedResponse<T>(
       (payload as { data: unknown }).data,
@@ -137,8 +138,8 @@ const normalizePaginatedResponse = <T>(
 
   if (
     payload &&
-    typeof payload === 'object' &&
-    'data' in payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
     Array.isArray((payload as PaginatedResponse<T>).data)
   ) {
     const typedPayload = payload as {
@@ -201,8 +202,8 @@ const normalizeRelationListResponse = (payload: unknown): MediaRelation[] => {
 
   if (
     payload &&
-    typeof payload === 'object' &&
-    'data' in payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
     Array.isArray((payload as { data: MediaRelation[] }).data)
   ) {
     return (payload as { data: MediaRelation[] }).data;
@@ -221,11 +222,11 @@ const normalizeRelationListResponse = (payload: unknown): MediaRelation[] => {
  * @returns Promise<PaginatedResponse<MediaCollection>>
  */
 export const fetchCollections = async (
-  params?: CollectionFilters
+  params?: CollectionFilters,
 ): Promise<PaginatedResponse<MediaCollection>> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get('cms/collections', { params });
+      const response = await cmsApiClient.get("cms/collections", { params });
       return normalizePaginatedResponse<MediaCollection>(response.data, params);
     });
   } catch (error) {
@@ -238,7 +239,9 @@ export const fetchCollections = async (
  * @param id - Collection ID
  * @returns Promise<MediaCollection>
  */
-export const fetchCollectionById = async (id: CmsMediaId): Promise<MediaCollection> => {
+export const fetchCollectionById = async (
+  id: CmsMediaId,
+): Promise<MediaCollection> => {
   try {
     return await withRetry(async () => {
       const response = await cmsApiClient.get(`cms/collections/${id}`);
@@ -255,10 +258,10 @@ export const fetchCollectionById = async (id: CmsMediaId): Promise<MediaCollecti
  * @returns Promise<MediaCollection>
  */
 export const createCollection = async (
-  data: CreateCollectionDto
+  data: CreateCollectionDto,
 ): Promise<MediaCollection> => {
   try {
-    const response = await cmsApiClient.post('cms/collections', data);
+    const response = await cmsApiClient.post("cms/collections", data);
     return getResponsePayload<MediaCollection>(response.data);
   } catch (error) {
     throw transformCMSError(error);
@@ -273,7 +276,7 @@ export const createCollection = async (
  */
 export const updateCollection = async (
   id: CmsMediaId,
-  data: UpdateCollectionDto
+  data: UpdateCollectionDto,
 ): Promise<MediaCollection> => {
   try {
     const response = await cmsApiClient.put(`cms/collections/${id}`, data);
@@ -308,12 +311,14 @@ export const deleteCollection = async (id: CmsMediaId): Promise<void> => {
  */
 export const fetchAssets = async (
   filters?: AssetFilters,
-  params?: PaginationParams
+  params?: PaginationParams,
 ): Promise<PaginatedResponse<MediaAsset>> => {
   try {
     return await withRetry(async () => {
       const queryParams = { ...filters, ...params };
-      const response = await cmsApiClient.get('cms/assets', { params: queryParams });
+      const response = await cmsApiClient.get("cms/assets", {
+        params: queryParams,
+      });
       return normalizePaginatedResponse<MediaAsset>(response.data, params);
     });
   } catch (error) {
@@ -327,9 +332,12 @@ export const fetchCollectionAssets = async (
 ): Promise<PaginatedResponse<MediaAsset>> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get(`cms/collections/${collectionId}/assets`, {
-        params,
-      });
+      const response = await cmsApiClient.get(
+        `cms/collections/${collectionId}/assets`,
+        {
+          params,
+        },
+      );
 
       return normalizePaginatedResponse<MediaAsset>(response.data, params);
     });
@@ -362,25 +370,27 @@ export const fetchAssetById = async (id: CmsMediaId): Promise<MediaAsset> => {
  */
 export const uploadAsset = async (
   data: UploadAssetDto,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
 ): Promise<MediaAsset> => {
   try {
     const formData = new FormData();
-    formData.append('file', data.file);
-    formData.append('collection_id', data.collection_id);
-    
+    formData.append("file", data.file);
+    formData.append("collection_id", data.collection_id);
+
     if (data.alt_text) {
-      formData.append('alt_text', data.alt_text);
-    }
-    
-    if (data.metadata) {
-      formData.append('metadata', JSON.stringify(data.metadata));
+      formData.append("alt_text", data.alt_text);
     }
 
-    const response = await cmsApiClient.post('cms/assets', formData, {
+    if (data.metadata) {
+      formData.append("metadata", JSON.stringify(data.metadata));
+    }
+
+    const response = await cmsApiClient.post("cms/assets", formData, {
       onUploadProgress: (progressEvent) => {
         if (onProgress && progressEvent.total) {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          const progress = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
           onProgress(progress);
         }
       },
@@ -400,7 +410,7 @@ export const uploadAsset = async (
  */
 export const updateAsset = async (
   id: CmsMediaId,
-  data: UpdateAssetDto
+  data: UpdateAssetDto,
 ): Promise<MediaAsset> => {
   try {
     const response = await cmsApiClient.patch(`cms/assets/${id}`, data);
@@ -428,7 +438,9 @@ export const deleteCollectionAsset = async (
   assetId: CmsMediaId,
 ): Promise<void> => {
   try {
-    await cmsApiClient.delete(`cms/collections/${collectionId}/assets/${assetId}`);
+    await cmsApiClient.delete(
+      `cms/collections/${collectionId}/assets/${assetId}`,
+    );
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -448,7 +460,7 @@ export const deleteCollectionAsset = async (
 export const fetchRelations = async (
   entityType: string,
   entityId: string,
-  relationType?: string
+  relationType?: string,
 ): Promise<MediaRelation[]> => {
   try {
     return await withRetry(async () => {
@@ -456,7 +468,10 @@ export const fetchRelations = async (
       if (relationType) {
         params.relation_type = relationType;
       }
-      const response = await cmsApiClient.get(`cms/relations/${entityType}/${entityId}`, { params });
+      const response = await cmsApiClient.get(
+        `cms/relations/${entityType}/${entityId}`,
+        { params },
+      );
       return normalizeRelationListResponse(response.data);
     });
   } catch (error) {
@@ -470,10 +485,10 @@ export const fetchRelations = async (
  * @returns Promise<MediaRelation>
  */
 export const createRelation = async (
-  data: CreateRelationDto
+  data: CreateRelationDto,
 ): Promise<MediaRelation> => {
   try {
-    const response = await cmsApiClient.post('cms/relations/attach', data);
+    const response = await cmsApiClient.post("cms/relations/attach", data);
     return getResponsePayload<MediaRelation>(response.data);
   } catch (error) {
     throw transformCMSError(error);
@@ -485,11 +500,14 @@ export const createRelation = async (
  * @param data - Detach data identifying the relation
  * @returns Promise<void>
  */
-export const deleteRelation = async (
-  data: { asset_id: CmsMediaId; entity_type: string; entity_id: string; relation_type?: string }
-): Promise<void> => {
+export const deleteRelation = async (data: {
+  asset_id: CmsMediaId;
+  entity_type: string;
+  entity_id: string;
+  relation_type?: string;
+}): Promise<void> => {
   try {
-    await cmsApiClient.post('cms/relations/detach', data);
+    await cmsApiClient.post("cms/relations/detach", data);
   } catch (error) {
     throw transformCMSError(error);
   }
@@ -501,10 +519,10 @@ export const deleteRelation = async (
  * @returns Promise<void>
  */
 export const reorderRelations = async (
-  data: ReorderRelationsRequest
+  data: ReorderRelationsRequest,
 ): Promise<void> => {
   try {
-    await cmsApiClient.put('cms/relations/reorder', {
+    await cmsApiClient.put("cms/relations/reorder", {
       ...data,
       order: data.relations,
     });

@@ -44,8 +44,12 @@ export function useArticleEditorState(): ArticleEditorState {
   const [coverImageId, setCoverImageId] = useState("");
   const [content, setContent] = useState("");
   const [focusKeyword, setFocusKeyword] = useState("");
-  const [contentStats, setContentStats] = useState<ContentStats | undefined>(undefined);
-  const [highlightedSection, setHighlightedSection] = useState<string | null>(null);
+  const [contentStats, setContentStats] = useState<ContentStats | undefined>(
+    undefined,
+  );
+  const [highlightedSection, setHighlightedSection] = useState<string | null>(
+    null,
+  );
 
   const handleTitleChange = useCallback(
     (value: string) => {
@@ -56,7 +60,9 @@ export function useArticleEditorState(): ArticleEditorState {
           : prev,
       );
       setSlug((prev) =>
-        !prev || prev === generateSlug(displayTitle) ? generateSlug(value) : prev,
+        !prev || prev === generateSlug(displayTitle)
+          ? generateSlug(value)
+          : prev,
       );
     },
     [displayTitle],
@@ -65,10 +71,12 @@ export function useArticleEditorState(): ArticleEditorState {
   const reset = useCallback((values: Partial<ArticleEditorValues>) => {
     if (values.displayTitle !== undefined) setDisplayTitle(values.displayTitle);
     if (values.metaTitle !== undefined) setMetaTitle(values.metaTitle);
-    if (values.metaDescription !== undefined) setMetaDescription(values.metaDescription);
+    if (values.metaDescription !== undefined)
+      setMetaDescription(values.metaDescription);
     if (values.slug !== undefined) setSlug(values.slug);
     if (values.language !== undefined) setLanguage(values.language);
-    if (values.selectedAuthorId !== undefined) setSelectedAuthorId(values.selectedAuthorId);
+    if (values.selectedAuthorId !== undefined)
+      setSelectedAuthorId(values.selectedAuthorId);
     if (values.coverImageId !== undefined) setCoverImageId(values.coverImageId);
     if (values.content !== undefined) setContent(values.content);
     if (values.focusKeyword !== undefined) setFocusKeyword(values.focusKeyword);

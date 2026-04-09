@@ -1,9 +1,14 @@
 // Coupon types — aligned with backend_api_reserve branch 001-feat-coupons
 // All monetary values are in cents (integer)
 
-export type EDiscountType = 'percentage' | 'fixed_amount';
-export type ECouponScope = 'order' | 'product' | 'category';
-export type ECouponAppliesTo = 'b2b' | 'b2c' | 'b2c_recurring' | 'b2c_one_time' | 'both';
+export type EDiscountType = "percentage" | "fixed_amount";
+export type ECouponScope = "order" | "product" | "category";
+export type ECouponAppliesTo =
+  | "b2b"
+  | "b2c"
+  | "b2c_recurring"
+  | "b2c_one_time"
+  | "both";
 
 /** Per-product discount override — used when a single coupon needs different values per product */
 export interface ProductOverride {
@@ -25,7 +30,7 @@ export interface DiscountCoupon {
   categoryIds: string[];
   appliesTo: ECouponAppliesTo;
   cumulative: boolean;
-  minOrderAmount: number | null;   // cents
+  minOrderAmount: number | null; // cents
   maxDiscountAmount: number | null; // cents
   maxRedemptions: number | null;
   redeemedCount: number;
@@ -84,7 +89,7 @@ export interface ValidateCouponPayload {
     quantity: number;
     isRecurring?: boolean;
   }[];
-  context: 'b2b' | 'b2c';
+  context: "b2b" | "b2c";
 }
 
 export interface CouponLineResult {
@@ -97,8 +102,8 @@ export interface CouponValidationResult {
   valid: boolean;
   coupons: CouponLineResult[];
   totalDiscount: number; // cents
-  orderTotal: number;   // cents
-  finalTotal: number;   // cents
+  orderTotal: number; // cents
+  finalTotal: number; // cents
 }
 
 export interface CouponLinkResponse {

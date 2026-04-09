@@ -3,7 +3,10 @@ import {
   getScheduleConfigService,
   saveScheduleConfigService,
 } from "@/src/common/services/appointments/schedule-config-service";
-import type { ScheduleConfig, LegacyScheduleConfig } from "@/src/common/@types/@appointment";
+import type {
+  ScheduleConfig,
+  LegacyScheduleConfig,
+} from "@/src/common/@types/@appointment";
 
 export function useScheduleConfig() {
   return useQuery({
@@ -23,7 +26,9 @@ export function useSaveScheduleConfig() {
   return useMutation({
     mutationFn: (config: ScheduleConfig) => saveScheduleConfigService(config),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "schedule-config"] });
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", "schedule-config"],
+      });
     },
   });
 }

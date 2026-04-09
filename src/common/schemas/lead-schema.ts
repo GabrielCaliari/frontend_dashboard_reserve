@@ -1,10 +1,17 @@
-import { z } from 'zod';
-import { LeadOrigin, LeadStatus, CollectionAccessMode } from '@/src/common/@types/@lead';
+import { z } from "zod";
+import {
+  LeadOrigin,
+  LeadStatus,
+  CollectionAccessMode,
+} from "@/src/common/@types/@lead";
 
 export const createLeadSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters').optional(),
-  email: z.string().email('Invalid email address').optional(),
-  phone_number: z.string().min(10, 'Phone number must be at least 10 digits').optional(),
+  name: z.string().min(2, "Name must be at least 2 characters").optional(),
+  email: z.string().email("Invalid email address").optional(),
+  phone_number: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .optional(),
   origin: z.nativeEnum(LeadOrigin).optional(),
   origin_font: z.string().optional(),
   description: z.string().optional(),
@@ -16,17 +23,17 @@ export const updateLeadStatusSchema = z.object({
 });
 
 export const createCollectionSchema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters'),
-  source: z.string().min(3, 'Source must be at least 3 characters'),
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  source: z.string().min(3, "Source must be at least 3 characters"),
   access_mode: z.nativeEnum(CollectionAccessMode),
-  allowed_domains: z.array(z.string().url('Invalid URL')).optional(),
+  allowed_domains: z.array(z.string().url("Invalid URL")).optional(),
 });
 
 export const updateCollectionSchema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters').optional(),
-  source: z.string().min(3, 'Source must be at least 3 characters').optional(),
+  name: z.string().min(3, "Name must be at least 3 characters").optional(),
+  source: z.string().min(3, "Source must be at least 3 characters").optional(),
   access_mode: z.nativeEnum(CollectionAccessMode).optional(),
-  allowed_domains: z.array(z.string().url('Invalid URL')).optional(),
+  allowed_domains: z.array(z.string().url("Invalid URL")).optional(),
   active: z.boolean().optional(),
 });
 

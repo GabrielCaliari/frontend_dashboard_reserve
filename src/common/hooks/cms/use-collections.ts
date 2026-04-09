@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchCollections,
   fetchCollectionById,
@@ -8,20 +8,22 @@ import {
   type CollectionFilters,
   type CreateCollectionDto,
   type UpdateCollectionDto,
-} from '@/src/common/services/cms-media-service';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
-import type { CmsMediaId } from '@/src/common/@types/@cms-media';
+} from "@/src/common/services/cms-media-service";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { CmsMediaId } from "@/src/common/@types/@cms-media";
 
 /**
  * Query key factory for collections
  * Provides consistent query keys for cache management
  */
 export const collectionKeys = {
-  all: (tenantId: string | null) => ['collections', tenantId] as const,
-  lists: (tenantId: string | null) => [...collectionKeys.all(tenantId), 'list'] as const,
+  all: (tenantId: string | null) => ["collections", tenantId] as const,
+  lists: (tenantId: string | null) =>
+    [...collectionKeys.all(tenantId), "list"] as const,
   list: (tenantId: string | null, params?: CollectionFilters) =>
     [...collectionKeys.lists(tenantId), params] as const,
-  details: (tenantId: string | null) => [...collectionKeys.all(tenantId), 'detail'] as const,
+  details: (tenantId: string | null) =>
+    [...collectionKeys.all(tenantId), "detail"] as const,
   detail: (tenantId: string | null, id: CmsMediaId) =>
     [...collectionKeys.details(tenantId), id] as const,
 };

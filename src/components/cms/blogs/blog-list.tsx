@@ -25,7 +25,9 @@ export default function BlogList({
   onRegenerateKeyClick,
 }: BlogListProps) {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all");
 
   const summary = useMemo(() => {
     const active = blogs.filter((blog) => blog.active).length;
@@ -66,7 +68,12 @@ export default function BlogList({
   const tabs: CmsTabItem[] = [
     { id: "all", label: "All", count: summary.all },
     { id: "active", label: "Active", count: summary.active, color: "success" },
-    { id: "inactive", label: "Inactive", count: summary.inactive, color: "warning" },
+    {
+      id: "inactive",
+      label: "Inactive",
+      count: summary.inactive,
+      color: "warning",
+    },
   ];
 
   if (isLoading) {
@@ -96,9 +103,12 @@ export default function BlogList({
 
       {blogs.length === 0 ? (
         <div className="flex min-h-[360px] flex-col items-center justify-center rounded-[24px] border border-dashed border-border bg-default-50 px-6 text-center">
-          <p className="mb-2 text-lg font-medium text-foreground">No collections yet</p>
+          <p className="mb-2 text-lg font-medium text-foreground">
+            No collections yet
+          </p>
           <p className="mb-5 max-w-md text-sm text-muted-foreground">
-            Create your first blog collection to start organizing articles, media, and public credentials.
+            Create your first blog collection to start organizing articles,
+            media, and public credentials.
           </p>
           <Button
             color="primary"
@@ -110,7 +120,9 @@ export default function BlogList({
         </div>
       ) : filteredBlogs.length === 0 ? (
         <div className="flex min-h-[260px] flex-col items-center justify-center rounded-[24px] border border-border bg-default-50 px-6 text-center">
-          <p className="mb-2 text-lg font-medium text-foreground">No matching collections</p>
+          <p className="mb-2 text-lg font-medium text-foreground">
+            No matching collections
+          </p>
           <p className="max-w-md text-sm text-muted-foreground">
             Adjust the search terms or filters to broaden the result set.
           </p>

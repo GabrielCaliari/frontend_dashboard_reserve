@@ -1,22 +1,22 @@
 /**
  * Formats a file size in bytes to a human-readable string
- * 
+ *
  * @param bytes - File size in bytes
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted string (e.g., "1.5 MB", "500 KB")
- * 
+ *
  * @example
  * formatFileSize(1024) // "1 KB"
  * formatFileSize(1536000) // "1.46 MB"
  * formatFileSize(0) // "0 Bytes"
  */
 export function formatFileSize(bytes: number, decimals: number = 2): string {
-  if (bytes === 0) return '0 Bytes';
-  if (bytes < 0) return 'Invalid size';
+  if (bytes === 0) return "0 Bytes";
+  if (bytes < 0) return "Invalid size";
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const size = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
@@ -26,10 +26,10 @@ export function formatFileSize(bytes: number, decimals: number = 2): string {
 
 /**
  * Parses a human-readable file size string to bytes
- * 
+ *
  * @param sizeStr - Size string (e.g., "1.5 MB", "500KB")
  * @returns Size in bytes, or null if invalid
- * 
+ *
  * @example
  * parseFileSize("1 MB") // 1048576
  * parseFileSize("500 KB") // 512000

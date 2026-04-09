@@ -1,6 +1,6 @@
 /**
  * CMS Media Storage Type Definitions
- * 
+ *
  * Type definitions for media collections, assets, and relations
  * used in the CMS media storage feature.
  */
@@ -12,7 +12,7 @@
 /**
  * Collection type defining the category of media assets
  */
-export type CollectionType = 'image' | 'document' | 'video' | 'audio' | 'mixed';
+export type CollectionType = "image" | "document" | "video" | "audio" | "mixed";
 
 /**
  * CMS media identifiers are CUID strings.
@@ -27,7 +27,12 @@ export type CmsMediaId = string;
  * "archived"   = soft-deleted, no longer served
  * "failed"     = conversion failed
  */
-export type AssetStatus = 'processing' | 'ready' | 'active' | 'archived' | 'failed';
+export type AssetStatus =
+  | "processing"
+  | "ready"
+  | "active"
+  | "archived"
+  | "failed";
 
 // ============================================================================
 // Core Entities
@@ -35,7 +40,7 @@ export type AssetStatus = 'processing' | 'ready' | 'active' | 'archived' | 'fail
 
 /**
  * Media Collection
- * 
+ *
  * Represents a collection of media assets with specific rules and constraints.
  * Collections organize assets by context and enforce validation rules.
  */
@@ -55,7 +60,7 @@ export interface MediaCollection {
 
 /**
  * Media Asset
- * 
+ *
  * Represents a single media file stored in Vercel Blob Storage.
  * Contains metadata, dimensions, and storage information.
  */
@@ -80,7 +85,7 @@ export interface MediaAsset {
 
 /**
  * Media Relation
- * 
+ *
  * Represents the relationship between a media asset and an entity.
  * Supports polymorphic relations (articles, blogs, etc.) with display ordering.
  */
@@ -326,7 +331,7 @@ export interface UploadQueueItem {
   file: File;
   collectionId: CmsMediaId;
   altText?: string;
-  status: 'pending' | 'uploading' | 'success' | 'error';
+  status: "pending" | "uploading" | "success" | "error";
   progress: number;
   error?: string;
   result?: MediaAsset;

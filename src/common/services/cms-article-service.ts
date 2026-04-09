@@ -1,12 +1,15 @@
-import { cmsApiClient } from '@/src/common/config/api';
+import { cmsApiClient } from "@/src/common/config/api";
 import {
   Article,
   ArticleStatus,
   CreateArticleDto,
   UpdateArticleDto,
   ArticleCoverImage,
-} from '@/src/common/@types/@cms-article';
-import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
+} from "@/src/common/@types/@cms-article";
+import {
+  withRetry,
+  transformCMSError,
+} from "@/src/common/utils/cms-error-handler";
 
 interface ArticleApiResponse {
   id: string | number;
@@ -34,10 +37,10 @@ interface ArticleApiResponse {
   scheduled_at?: string | null;
   created_at: string;
   updated_at: string;
-  images?: Article['images'];
+  images?: Article["images"];
 }
 
-const defaultLanguage = 'en_us';
+const defaultLanguage = "en_us";
 
 const normalizeLanguage = (language?: string | null): string => {
   const normalized = language?.trim().toLowerCase();
@@ -63,23 +66,27 @@ const normalizeCoverImage = (
 const normalizeArticle = (article: ArticleApiResponse): Article => ({
   id: String(article.id),
   blog_id: String(article.blog_id),
-  title: article.title ?? article.displayTitle ?? article.display_title ?? '',
-  displayTitle: article.displayTitle ?? article.display_title ?? article.title ?? '',
+  title: article.title ?? article.displayTitle ?? article.display_title ?? "",
+  displayTitle:
+    article.displayTitle ?? article.display_title ?? article.title ?? "",
   slug: article.slug,
   content: article.content,
   metaTitle: article.metaTitle ?? article.meta_title ?? undefined,
-  metaDescription: article.metaDescription ?? article.meta_description ?? undefined,
+  metaDescription:
+    article.metaDescription ?? article.meta_description ?? undefined,
   focusKeyword: article.focusKeyword ?? article.focus_keyword ?? undefined,
-  authorId: article.authorId != null
-    ? String(article.authorId)
-    : article.author_id != null
-      ? String(article.author_id)
-      : undefined,
-  coverImageId: article.coverImageId != null
-    ? String(article.coverImageId)
-    : article.cover_image_id != null
-      ? String(article.cover_image_id)
-      : undefined,
+  authorId:
+    article.authorId != null
+      ? String(article.authorId)
+      : article.author_id != null
+        ? String(article.author_id)
+        : undefined,
+  coverImageId:
+    article.coverImageId != null
+      ? String(article.coverImageId)
+      : article.cover_image_id != null
+        ? String(article.cover_image_id)
+        : undefined,
   coverImage: normalizeCoverImage(article.coverImage ?? article.cover_image),
   language: normalizeLanguage(article.language),
   status: article.status,
@@ -105,11 +112,13 @@ const serializeArticlePayload = (data: CreateArticleDto | UpdateArticleDto) => {
     content: data.content,
     coverImageId: data.coverImageId,
     language: normalizeLanguage(data.language),
-    ...('status' in data && data.status ? { status: data.status } : {}),
+    ...("status" in data && data.status ? { status: data.status } : {}),
   };
 
   return Object.fromEntries(
-    Object.entries(payload).filter(([, value]) => value !== undefined && value !== ''),
+    Object.entries(payload).filter(
+      ([, value]) => value !== undefined && value !== "",
+    ),
   );
 };
 
@@ -125,24 +134,24 @@ export const fetchArticles = async (
   blogId?: string | number,
   status?: ArticleStatus,
   page: number = 1,
-  limit: number = 30
+  limit: number = 30,
 ): Promise<Article[]> => {
   try {
     return await withRetry(async () => {
       const params: Record<string, string | number> = { page, limit };
       if (blogId) params.blogId = blogId;
       if (status) params.status = status;
-      
-      const response = await cmsApiClient.get('cms/articles', { params });
-      
+
+      const response = await cmsApiClient.get("cms/articles", { params });
+
       if (response.data && Array.isArray(response.data.data)) {
         return normalizeArticles(response.data.data as ArticleApiResponse[]);
       }
-      
+
       if (Array.isArray(response.data)) {
         return normalizeArticles(response.data as ArticleApiResponse[]);
       }
-      
+
       return [];
     });
   } catch (error) {
@@ -155,9 +164,7 @@ export const fetchArticles = async (
  * @param articleId - The article ID
  * @returns Promise<Article>
  */
-export const fetchArticleById = async (
-  articleId: string
-): Promise<Article> => {
+export const fetchArticleById = async (articleId: string): Promise<Article> => {
   try {
     return await withRetry(async () => {
       const response = await cmsApiClient.get(`cms/articles/${articleId}`);
@@ -174,7 +181,7 @@ export const fetchArticleById = async (
  * @returns Promise<Article>
  */
 export const createArticle = async (
-  data: CreateArticleDto
+  data: CreateArticleDto,
 ): Promise<Article> => {
   try {
     const payload = serializeArticlePayload({
@@ -182,7 +189,7 @@ export const createArticle = async (
       authorId: String(data.authorId),
     });
 
-    const response = await cmsApiClient.post('cms/articles', payload);
+    const response = await cmsApiClient.post("cms/articles", payload);
     return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
@@ -197,7 +204,7 @@ export const createArticle = async (
  */
 export const updateArticle = async (
   articleId: string,
-  data: UpdateArticleDto
+  data: UpdateArticleDto,
 ): Promise<Article> => {
   try {
     const response = await cmsApiClient.put(
@@ -215,9 +222,7 @@ export const updateArticle = async (
  * @param articleId - The article ID
  * @returns Promise<void>
  */
-export const deleteArticle = async (
-  articleId: string
-): Promise<void> => {
+export const deleteArticle = async (articleId: string): Promise<void> => {
   try {
     await cmsApiClient.delete(`cms/articles/${articleId}`);
   } catch (error) {
@@ -230,11 +235,11 @@ export const deleteArticle = async (
  * @param articleId - The article ID
  * @returns Promise<Article>
  */
-export const publishArticle = async (
-  articleId: string
-): Promise<Article> => {
+export const publishArticle = async (articleId: string): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`cms/articles/${articleId}/publish`);
+    const response = await cmsApiClient.post(
+      `cms/articles/${articleId}/publish`,
+    );
     return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
@@ -246,11 +251,11 @@ export const publishArticle = async (
  * @param articleId - The article ID
  * @returns Promise<Article>
  */
-export const archiveArticle = async (
-  articleId: string
-): Promise<Article> => {
+export const archiveArticle = async (articleId: string): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`cms/articles/${articleId}/archive`);
+    const response = await cmsApiClient.post(
+      `cms/articles/${articleId}/archive`,
+    );
     return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
@@ -262,11 +267,11 @@ export const archiveArticle = async (
  * @param articleId - The article ID
  * @returns Promise<Article>
  */
-export const unarchiveArticle = async (
-  articleId: string
-): Promise<Article> => {
+export const unarchiveArticle = async (articleId: string): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`cms/articles/${articleId}/unarchive`);
+    const response = await cmsApiClient.post(
+      `cms/articles/${articleId}/unarchive`,
+    );
     return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
@@ -284,7 +289,10 @@ export const scheduleArticle = async (
   scheduledAt: string,
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.post(`cms/articles/${articleId}/publish`, { scheduledAt });
+    const response = await cmsApiClient.post(
+      `cms/articles/${articleId}/publish`,
+      { scheduledAt },
+    );
     return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);
@@ -302,7 +310,10 @@ export const updatePublishedAt = async (
   publishedAt: string,
 ): Promise<Article> => {
   try {
-    const response = await cmsApiClient.patch(`cms/articles/${articleId}/published-at`, { publishedAt });
+    const response = await cmsApiClient.patch(
+      `cms/articles/${articleId}/published-at`,
+      { publishedAt },
+    );
     return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);

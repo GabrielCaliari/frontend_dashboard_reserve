@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteArticle } from '@/src/common/services/cms-article-service';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
-import { ARTICLE_QUERY_KEYS } from './useArticles';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteArticle } from "@/src/common/services/cms-article-service";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { ARTICLE_QUERY_KEYS } from "./useArticles";
 
 export function useDeleteArticle() {
   const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export function useDeleteArticle() {
   return useMutation({
     mutationFn: (articleId: string) => deleteArticle(articleId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cms', 'articles'] });
+      queryClient.invalidateQueries({ queryKey: ["cms", "articles"] });
     },
   });
 }

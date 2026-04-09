@@ -1,12 +1,12 @@
 // Report Types — Analytics Reports module (super_admin only)
 
 export interface Report {
-  id: string;           // cuid
+  id: string; // cuid
   phone: string;
   url: string;
   label: string | null;
-  createdAt: string;    // ISO date
-  updatedAt: string;    // ISO date
+  createdAt: string; // ISO date
+  updatedAt: string; // ISO date
 }
 
 export interface CreateReportDto {

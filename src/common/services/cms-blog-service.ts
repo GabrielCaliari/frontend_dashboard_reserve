@@ -1,17 +1,23 @@
-import { cmsApiClient } from '@/src/common/config/api';
-import type { MediaAsset, PaginatedResponse } from '@/src/common/@types/@cms-media';
+import { cmsApiClient } from "@/src/common/config/api";
+import type {
+  MediaAsset,
+  PaginatedResponse,
+} from "@/src/common/@types/@cms-media";
 import type {
   Blog,
   CreateBlogDto,
   UpdateBlogDto,
-} from '@/src/common/@types/@cms-blog';
-import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
+} from "@/src/common/@types/@cms-blog";
+import {
+  withRetry,
+  transformCMSError,
+} from "@/src/common/utils/cms-error-handler";
 
 const getResponsePayload = <T>(payload: T | { data: T }): T => {
   if (
     payload &&
-    typeof payload === 'object' &&
-    'data' in payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
     !Array.isArray(payload)
   ) {
     return payload.data as T;
@@ -25,7 +31,7 @@ const normalizeBlogListPayload = (payload: unknown): Blog[] => {
     return payload as Blog[];
   }
 
-  if (!payload || typeof payload !== 'object') {
+  if (!payload || typeof payload !== "object") {
     return [];
   }
 
@@ -55,7 +61,7 @@ const normalizePaginatedAssetsResponse = (
   page = 1,
   limit = 20,
 ): PaginatedResponse<MediaAsset> => {
-  if (payload && typeof payload === 'object') {
+  if (payload && typeof payload === "object") {
     const typedPayload = payload as {
       data?: unknown;
       assets?: MediaAsset[];
@@ -63,7 +69,7 @@ const normalizePaginatedAssetsResponse = (
       pagination?: Record<string, number | undefined>;
     };
 
-    if (typedPayload.data && typeof typedPayload.data === 'object') {
+    if (typedPayload.data && typeof typedPayload.data === "object") {
       return normalizePaginatedAssetsResponse(typedPayload.data, page, limit);
     }
 
@@ -82,7 +88,10 @@ const normalizePaginatedAssetsResponse = (
           page: metaSource?.page ?? metaSource?.current_page ?? page,
           limit: metaSource?.limit ?? limit,
           total: metaSource?.total ?? metaSource?.total_records ?? data.length,
-          totalPages: metaSource?.totalPages ?? metaSource?.total_pages ?? (data.length > 0 ? 1 : 0),
+          totalPages:
+            metaSource?.totalPages ??
+            metaSource?.total_pages ??
+            (data.length > 0 ? 1 : 0),
         },
       };
     }
@@ -118,7 +127,7 @@ const normalizePaginatedAssetsResponse = (
 export const fetchBlogs = async (): Promise<Blog[]> => {
   try {
     return await withRetry(async () => {
-      const response = await cmsApiClient.get('cms/blogs');
+      const response = await cmsApiClient.get("cms/blogs");
       return normalizeBlogListPayload(response.data);
     });
   } catch (error) {
@@ -134,7 +143,7 @@ export const fetchBlogs = async (): Promise<Blog[]> => {
 export const fetchBlogById = async (blogId: string | number): Promise<Blog> => {
   try {
     const blogs = await fetchBlogs();
-    const blog = blogs.find(b => String(b.id) === String(blogId));
+    const blog = blogs.find((b) => String(b.id) === String(blogId));
     if (!blog) throw new Error(`Blog not found: ${blogId}`);
     return blog;
   } catch (error) {
@@ -149,7 +158,7 @@ export const fetchBlogById = async (blogId: string | number): Promise<Blog> => {
  */
 export const createBlog = async (data: CreateBlogDto): Promise<Blog> => {
   try {
-    const response = await cmsApiClient.post('cms/blogs', data);
+    const response = await cmsApiClient.post("cms/blogs", data);
     return getResponsePayload<Blog>(response.data);
   } catch (error) {
     throw transformCMSError(error);
@@ -164,7 +173,7 @@ export const createBlog = async (data: CreateBlogDto): Promise<Blog> => {
  */
 export const updateBlog = async (
   blogId: string | number,
-  data: UpdateBlogDto
+  data: UpdateBlogDto,
 ): Promise<Blog> => {
   try {
     const response = await cmsApiClient.patch(`cms/blogs/${blogId}`, data);
@@ -194,9 +203,13 @@ export const deleteBlog = async (blogId: number): Promise<void> => {
  * @param blogId - The ID of the blog
  * @returns Promise<Blog> - The blog data with the new secret_key
  */
-export const regenerateBlogSecretKey = async (blogId: number): Promise<Blog> => {
+export const regenerateBlogSecretKey = async (
+  blogId: number,
+): Promise<Blog> => {
   try {
-    const response = await cmsApiClient.post(`cms/blogs/${blogId}/regenerate-key`);
+    const response = await cmsApiClient.post(
+      `cms/blogs/${blogId}/regenerate-key`,
+    );
     return getResponsePayload<Blog>(response.data);
   } catch (error) {
     throw transformCMSError(error);
@@ -230,17 +243,20 @@ export const uploadBlogAsset = async (
 ): Promise<MediaAsset> => {
   try {
     const formData = new FormData();
-    formData.append('file', data.file);
+    formData.append("file", data.file);
 
     if (data.alt_text) {
-      formData.append('alt_text', data.alt_text);
+      formData.append("alt_text", data.alt_text);
     }
 
     if (data.metadata) {
-      formData.append('metadata', JSON.stringify(data.metadata));
+      formData.append("metadata", JSON.stringify(data.metadata));
     }
 
-    const response = await cmsApiClient.post(`cms/blogs/${blogId}/assets`, formData);
+    const response = await cmsApiClient.post(
+      `cms/blogs/${blogId}/assets`,
+      formData,
+    );
     return getResponsePayload<MediaAsset>(response.data);
   } catch (error) {
     throw transformCMSError(error);

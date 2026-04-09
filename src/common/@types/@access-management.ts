@@ -3,11 +3,11 @@
  */
 
 export enum AdminRole {
-  super_admin = 'super_admin',
-  owner = 'owner',
-  manager = 'manager',
-  editor = 'editor',
-  viewer = 'viewer',
+  super_admin = "super_admin",
+  owner = "owner",
+  manager = "manager",
+  editor = "editor",
+  viewer = "viewer",
 }
 
 export interface Admin {
@@ -104,8 +104,16 @@ export interface TenantAssignmentChange {
   updateRole: { tenant_id: string; role: AdminRole }[];
 }
 
-export interface CreateTenantDto { name: string; slug: string; domain: string; }
-export interface UpdateTenantDto { name?: string; slug?: string; domain?: string; }
+export interface CreateTenantDto {
+  name: string;
+  slug: string;
+  domain: string;
+}
+export interface UpdateTenantDto {
+  name?: string;
+  slug?: string;
+  domain?: string;
+}
 
 export interface UpdateUserDto {
   name?: string;
@@ -113,9 +121,30 @@ export interface UpdateUserDto {
   phone_number?: string;
 }
 
-export interface PaginationParams { page?: number; per_page?: number; search?: string; }
+export interface PaginationParams {
+  page?: number;
+  per_page?: number;
+  search?: string;
+}
 
-export interface AdminFormData { name: string; email: string; password?: string; role: AdminRole; tenantAssignments?: TenantAssignmentChange; }
-export interface TenantFormData { name: string; slug: string; domain: string; }
-export interface UserFormData { name: string; email: string; phone_number?: string; }
-export interface AssignAdminFormData { admin_id: string; role: AdminRole; }
+export interface AdminFormData {
+  name: string;
+  email: string;
+  password?: string;
+  role: AdminRole;
+  tenantAssignments?: TenantAssignmentChange;
+}
+export interface TenantFormData {
+  name: string;
+  slug: string;
+  domain: string;
+}
+export interface UserFormData {
+  name: string;
+  email: string;
+  phone_number?: string;
+}
+export interface AssignAdminFormData {
+  admin_id: string;
+  role: AdminRole;
+}

@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect } from"react";
-import { useRouter } from"next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PaymentsPage() {
- const router = useRouter();
+  const router = useRouter();
 
- useEffect(() => {
- router.replace("/dashboard/payments/products");
- }, [router]);
+  useEffect(() => {
+    router.replace("/dashboard/payments/products");
+  }, [router]);
 
- return null;
+  return null;
 }

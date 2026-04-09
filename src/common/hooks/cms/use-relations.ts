@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchRelations,
   createRelation,
@@ -6,20 +6,28 @@ import {
   reorderRelations,
   type CreateRelationDto,
   type ReorderRelationDto,
-} from '@/src/common/services/cms-media-service';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
-import { assetKeys } from './use-assets';
-import type { CmsMediaId, MediaRelation, ReorderRelationsRequest } from '@/src/common/@types/@cms-media';
+} from "@/src/common/services/cms-media-service";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { assetKeys } from "./use-assets";
+import type {
+  CmsMediaId,
+  MediaRelation,
+  ReorderRelationsRequest,
+} from "@/src/common/@types/@cms-media";
 
 /**
  * Query key factory for relations
  * Provides consistent query keys for cache management
  */
 export const relationKeys = {
-  all: (tenantId: string | null) => ['relations', tenantId] as const,
-  lists: (tenantId: string | null) => [...relationKeys.all(tenantId), 'list'] as const,
+  all: (tenantId: string | null) => ["relations", tenantId] as const,
+  lists: (tenantId: string | null) =>
+    [...relationKeys.all(tenantId), "list"] as const,
   byEntity: (tenantId: string | null, entityType: string, entityId: string) =>
-    [...relationKeys.lists(tenantId), { entity_type: entityType, entity_id: entityId }] as const,
+    [
+      ...relationKeys.lists(tenantId),
+      { entity_type: entityType, entity_id: entityId },
+    ] as const,
   byAsset: (tenantId: string | null, assetId: CmsMediaId) =>
     [...relationKeys.lists(tenantId), { asset_id: assetId }] as const,
 };
@@ -31,7 +39,11 @@ export const relationKeys = {
  * @param relationType - Optional relation type filter
  * @returns React Query result with relations data
  */
-export function useRelations(entityType: string, entityId: string, relationType?: string) {
+export function useRelations(
+  entityType: string,
+  entityId: string,
+  relationType?: string,
+) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
@@ -58,20 +70,23 @@ export function useAttachAsset() {
       const entityKey = relationKeys.byEntity(
         tenantId,
         variables.entity_type,
-        variables.entity_id
+        variables.entity_id,
       );
 
-      queryClient.setQueryData(entityKey, (old: MediaRelation[] | undefined) => {
-        if (!old) return [newRelation];
-        return [...old, newRelation];
-      });
+      queryClient.setQueryData(
+        entityKey,
+        (old: MediaRelation[] | undefined) => {
+          if (!old) return [newRelation];
+          return [...old, newRelation];
+        },
+      );
 
       // Invalidate all relation lists for this entity
       queryClient.invalidateQueries({
         queryKey: relationKeys.byEntity(
           tenantId,
           variables.entity_type,
-          variables.entity_id
+          variables.entity_id,
         ),
       });
 
@@ -95,14 +110,18 @@ export function useDetachAsset() {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (data: { asset_id: CmsMediaId; entity_type: string; entity_id: string; relation_type?: string }) =>
-      deleteRelation(data),
+    mutationFn: (data: {
+      asset_id: CmsMediaId;
+      entity_type: string;
+      entity_id: string;
+      relation_type?: string;
+    }) => deleteRelation(data),
     onSuccess: (_result, variables) => {
       queryClient.invalidateQueries({
         queryKey: relationKeys.byEntity(
           tenantId,
           variables.entity_type,
-          variables.entity_id
+          variables.entity_id,
         ),
       });
     },
@@ -140,7 +159,7 @@ export function useReorderRelations() {
 
           // Create a map of id -> new display_order
           const orderMap = new Map(
-            request.relations.map((item) => [item.id, item.display_order])
+            request.relations.map((item) => [item.id, item.display_order]),
           );
 
           // Update display_order for matching relations and sort
@@ -153,7 +172,7 @@ export function useReorderRelations() {
               return relation;
             })
             .sort((a, b) => a.display_order - b.display_order);
-        }
+        },
       );
 
       // Return context with the previous lists

@@ -1,9 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { couponsService } from '@/src/common/services/coupons-service';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
-import type { CreateCouponPayload, UpdateCouponPayload } from '@/src/common/@types/@coupons';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { couponsService } from "@/src/common/services/coupons-service";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type {
+  CreateCouponPayload,
+  UpdateCouponPayload,
+} from "@/src/common/@types/@coupons";
 
-const QUERY_KEY = 'coupons';
+const QUERY_KEY = "coupons";
 
 export function useListCoupons(params?: { page?: number; limit?: number }) {
   const tenantId = useSelectedTenantId();

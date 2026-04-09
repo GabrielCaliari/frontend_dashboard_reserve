@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { listCollectionsAction } from '@/src/common/actions/leads/list-collections';
-import type { CollectionListResponse } from '@/src/common/@types/@lead';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
+import { useQuery } from "@tanstack/react-query";
+import { listCollectionsAction } from "@/src/common/actions/leads/list-collections";
+import type { CollectionListResponse } from "@/src/common/@types/@lead";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
 
 interface UseListCollectionsParams {
   page?: number;
@@ -15,7 +15,7 @@ export function useListCollections(params: UseListCollectionsParams = {}) {
   const tenantId = useSelectedTenantId();
 
   return useQuery<CollectionListResponse>({
-    queryKey: ['lead-collections', 'list', tenantId, page, limit, active],
+    queryKey: ["lead-collections", "list", tenantId, page, limit, active],
     queryFn: () => listCollectionsAction({ page, limit, active }),
     enabled: enabled && !!tenantId,
     staleTime: 30000,

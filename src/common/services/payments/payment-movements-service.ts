@@ -1,11 +1,11 @@
-import { cmsApiClient } from '@/src/common/config/api';
+import { cmsApiClient } from "@/src/common/config/api";
 import type {
   PaymentMovement,
   PaymentMovementsResponse,
   ListMovementsParams,
   MovementStatus,
   MovementType,
-} from '@/src/common/@types/@payment-movements';
+} from "@/src/common/@types/@payment-movements";
 
 /**
  * Shape retornada pelo backend em GET /subscriptions/movements
@@ -13,8 +13,8 @@ import type {
  */
 interface BackendMovement {
   id: string;
-  source: 'b2c' | 'b2b';
-  type?: 'subscription' | 'one_time';
+  source: "b2c" | "b2b";
+  type?: "subscription" | "one_time";
   status: string;
   amount: number;
   currency: string;
@@ -25,7 +25,9 @@ interface BackendMovement {
   productName?: string;
   products?: Array<{ id: string; name: string }>;
   // cart_items (B2B multi-produto)
-  metadata?: { cart_items?: Array<{ productId: string; productName?: string }> };
+  metadata?: {
+    cart_items?: Array<{ productId: string; productName?: string }>;
+  };
   // Subscription fields
   stripeSubscriptionId?: string;
   stripePriceId?: string;
@@ -50,54 +52,58 @@ interface BackendMovementsResponse {
 }
 
 function mapMovement(m: BackendMovement): PaymentMovement {
-  const type: MovementType = m.type === 'subscription' || m.source === 'b2c'
-    ? 'subscription'
-    : 'one_time';
+  const type: MovementType =
+    m.type === "subscription" || m.source === "b2c"
+      ? "subscription"
+      : "one_time";
 
   // Detecta modo teste pelo prefixo do Stripe ID
   const isTest =
-    m.stripeCheckoutId?.startsWith('cs_test_') ||
-    m.stripePaymentIntent?.startsWith('pi_test_') ||
-    String(m.stripePaymentIntent ?? '').includes('test');
-  const stripeBase = `https://dashboard.stripe.com${isTest ? '/test' : ''}`;
+    m.stripeCheckoutId?.startsWith("cs_test_") ||
+    m.stripePaymentIntent?.startsWith("pi_test_") ||
+    String(m.stripePaymentIntent ?? "").includes("test");
+  const stripeBase = `https://dashboard.stripe.com${isTest ? "/test" : ""}`;
 
-  const stripeLink =
-    m.stripeSubscriptionId
-      ? `${stripeBase}/subscriptions/${m.stripeSubscriptionId}`
-      : m.stripePaymentIntent
+  const stripeLink = m.stripeSubscriptionId
+    ? `${stripeBase}/subscriptions/${m.stripeSubscriptionId}`
+    : m.stripePaymentIntent
       ? `${stripeBase}/payments/${m.stripePaymentIntent}`
       : m.stripeCheckoutId
-      ? `${stripeBase}/checkout/sessions/${m.stripeCheckoutId}`
-      : null;
+        ? `${stripeBase}/checkout/sessions/${m.stripeCheckoutId}`
+        : null;
 
   // Monta lista de produtos (suporte a cart_items multi-produto)
-  const cartItems = Array.isArray(m.metadata?.cart_items) && m.metadata!.cart_items!.length > 0
-    ? m.metadata!.cart_items!
-    : [];
+  const cartItems =
+    Array.isArray(m.metadata?.cart_items) && m.metadata!.cart_items!.length > 0
+      ? m.metadata!.cart_items!
+      : [];
 
   const products: Array<{ id: string; name: string }> =
     m.products && m.products.length > 0
       ? m.products
       : cartItems.length > 0
-      ? cartItems.map((item) => ({ id: item.productId ?? '', name: item.productName ?? '—' }))
-      : m.productId
-      ? [{ id: m.productId, name: m.productName ?? '—' }]
-      : [];
+        ? cartItems.map((item) => ({
+            id: item.productId ?? "",
+            name: item.productName ?? "—",
+          }))
+        : m.productId
+          ? [{ id: m.productId, name: m.productName ?? "—" }]
+          : [];
 
   const firstProduct = products[0];
 
   return {
     id: m.id,
     type,
-    customerEmail: m.customerEmail ?? '',
+    customerEmail: m.customerEmail ?? "",
     customerName: m.customerName,
     customerPhone: m.customerPhone,
-    productName: firstProduct?.name ?? m.productName ?? '—',
+    productName: firstProduct?.name ?? m.productName ?? "—",
     productId: firstProduct?.id ?? m.productId,
     products: products.length > 0 ? products : undefined,
     amount: m.amount ?? 0,
-    currency: m.currency ?? 'brl',
-    status: (m.status ?? 'pending') as MovementStatus,
+    currency: m.currency ?? "brl",
+    status: (m.status ?? "pending") as MovementStatus,
     stripeLink,
     // Subscription
     currentPeriodStart: m.currentPeriodStart,
@@ -114,37 +120,52 @@ function mapMovement(m: BackendMovement): PaymentMovement {
 }
 
 export const paymentMovementsService = {
-  async listMovements(params?: ListMovementsParams): Promise<PaymentMovementsResponse> {
+  async listMovements(
+    params?: ListMovementsParams,
+  ): Promise<PaymentMovementsResponse> {
     // Mapeia o filtro de tipo para o param source do backend
     const source =
-      params?.type === 'subscription' ? 'b2c'
-      : params?.type === 'one_time'    ? 'b2b'
-      : 'all';
+      params?.type === "subscription"
+        ? "b2c"
+        : params?.type === "one_time"
+          ? "b2b"
+          : "all";
 
     const queryParams = {
       source,
-      status: params?.status && params.status !== 'all' ? params.status : 'all',
+      status: params?.status && params.status !== "all" ? params.status : "all",
       limit: params?.limit ?? 100,
       offset: params?.offset ?? 0,
     };
 
-    console.log('[movements] request → GET /subscriptions/movements', queryParams);
+    console.log(
+      "[movements] request → GET /subscriptions/movements",
+      queryParams,
+    );
 
-    const res = await cmsApiClient.get<BackendMovementsResponse>('/subscriptions/movements', {
-      params: queryParams,
+    const res = await cmsApiClient.get<BackendMovementsResponse>(
+      "/subscriptions/movements",
+      {
+        params: queryParams,
+      },
+    );
+
+    console.log("[movements] response →", res.status, {
+      total: res.data?.total,
     });
-
-    console.log('[movements] response →', res.status, { total: res.data?.total });
 
     const raw: BackendMovement[] = Array.isArray(res.data)
       ? res.data
       : Array.isArray(res.data?.data)
-      ? res.data.data
-      : [];
+        ? res.data.data
+        : [];
 
     const data = raw.map(mapMovement);
 
-    data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    data.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
 
     return {
       data,

@@ -4,20 +4,27 @@ import { temperatureAnalysisByMessageId } from "../actions/temperature-analysis-
 
 export default function useTemperatureAnalysisByMessageId() {
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (messageId: string) => temperatureAnalysisByMessageId(messageId),
+    mutationFn: (messageId: string) =>
+      temperatureAnalysisByMessageId(messageId),
     onSuccess: (result) => {
       if (result === true) {
         toast.success("Temperatura processada com sucesso.");
       } else {
-        toast.error("Ops... Deu erro ao concluir o processo de temperatura do lead.");
+        toast.error(
+          "Ops... Deu erro ao concluir o processo de temperatura do lead.",
+        );
       }
     },
     onError: () => {
-      toast.error("Ops... Deu erro ao concluir o processo de temperatura do lead.");
+      toast.error(
+        "Ops... Deu erro ao concluir o processo de temperatura do lead.",
+      );
     },
   });
 
-  const execTemperatureAnalysisByMessageId = async (messageId: string): Promise<boolean> => {
+  const execTemperatureAnalysisByMessageId = async (
+    messageId: string,
+  ): Promise<boolean> => {
     try {
       const result = await mutateAsync(messageId);
       return result === true;

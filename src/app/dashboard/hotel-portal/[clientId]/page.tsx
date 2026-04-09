@@ -70,9 +70,15 @@ import type {
 
 function fmt(n: number, style: "currency" | "percent" | "decimal" = "decimal") {
   if (style === "currency")
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(n);
   if (style === "percent")
-    return new Intl.NumberFormat("pt-BR", { style: "percent", minimumFractionDigits: 1 }).format(n);
+    return new Intl.NumberFormat("pt-BR", {
+      style: "percent",
+      minimumFractionDigits: 1,
+    }).format(n);
   return new Intl.NumberFormat("pt-BR").format(n);
 }
 
@@ -97,12 +103,16 @@ function KpiCard({
         <div
           className={`h-10 w-10 rounded-xl flex items-center justify-center ${accent ? "bg-primary/10" : "bg-default-100"}`}
         >
-          <Icon className={`h-5 w-5 ${accent ? "text-primary" : "text-muted-foreground"}`} />
+          <Icon
+            className={`h-5 w-5 ${accent ? "text-primary" : "text-muted-foreground"}`}
+          />
         </div>
         <div>
           <p className="text-2xl font-bold text-foreground">{value}</p>
           <p className="text-sm text-muted-foreground mt-0.5">{label}</p>
-          {sub && <p className="text-xs text-muted-foreground/70 mt-1">{sub}</p>}
+          {sub && (
+            <p className="text-xs text-muted-foreground/70 mt-1">{sub}</p>
+          )}
         </div>
       </CardBody>
     </Card>
@@ -113,7 +123,9 @@ function SectionHeader({ title }: { title: string }) {
   return (
     <div className="flex items-center gap-3">
       <div className="w-1.5 h-6 rounded-full bg-primary" />
-      <h2 className="text-lg font-semibold tracking-tight text-foreground">{title}</h2>
+      <h2 className="text-lg font-semibold tracking-tight text-foreground">
+        {title}
+      </h2>
     </div>
   );
 }
@@ -206,7 +218,9 @@ function DashboardTab({ clientId }: { clientId: string }) {
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <p className="font-semibold text-foreground">Comissão Total Recuperada</p>
+              <p className="font-semibold text-foreground">
+                Comissão Total Recuperada
+              </p>
               <p className="text-3xl font-bold text-primary mt-1">
                 {fmt(kpi.commission_recovered_total, "currency")}
               </p>
@@ -250,12 +264,27 @@ function DashboardTab({ clientId }: { clientId: string }) {
             </p>
             <ResponsiveContainer width="100%" height={240}>
               <ReLineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="hsl(var(--border))"
+                />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip />
-                <Line type="monotone" dataKey="Direto" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="OTA" stroke="hsl(var(--warning))" strokeWidth={2} dot={false} />
+                <Line
+                  type="monotone"
+                  dataKey="Direto"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="OTA"
+                  stroke="hsl(var(--warning))"
+                  strokeWidth={2}
+                  dot={false}
+                />
               </ReLineChart>
             </ResponsiveContainer>
           </CardBody>
@@ -277,7 +306,10 @@ function CampaignsTab({ clientId }: { clientId: string }) {
       {data.summary.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.summary.map((s) => (
-            <Card key={s.channel} className="bg-default-50 border border-border rounded-3xl shadow-none">
+            <Card
+              key={s.channel}
+              className="bg-default-50 border border-border rounded-3xl shadow-none"
+            >
               <CardBody className="p-6 space-y-4">
                 <div className="flex items-center gap-3">
                   <div
@@ -291,15 +323,21 @@ function CampaignsTab({ clientId }: { clientId: string }) {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <p className="text-muted-foreground">Investimento</p>
-                    <p className="font-semibold text-foreground">{fmt(s.total_spend, "currency")}</p>
+                    <p className="font-semibold text-foreground">
+                      {fmt(s.total_spend, "currency")}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Cliques</p>
-                    <p className="font-semibold text-foreground">{fmt(s.total_clicks)}</p>
+                    <p className="font-semibold text-foreground">
+                      {fmt(s.total_clicks)}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Conversões</p>
-                    <p className="font-semibold text-foreground">{fmt(s.total_conversions)}</p>
+                    <p className="font-semibold text-foreground">
+                      {fmt(s.total_conversions)}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">ROAS</p>
@@ -318,7 +356,9 @@ function CampaignsTab({ clientId }: { clientId: string }) {
         <Card className="border-border bg-default-50 shadow-none border-dashed rounded-3xl">
           <CardBody className="flex flex-col items-center justify-center py-16 text-center">
             <Megaphone className="h-10 w-10 text-muted-foreground mb-4" />
-            <p className="text-foreground font-medium">Nenhuma campanha encontrada</p>
+            <p className="text-foreground font-medium">
+              Nenhuma campanha encontrada
+            </p>
             <p className="text-sm text-muted-foreground mt-1">
               Dados serão sincronizados automaticamente a cada 6h.
             </p>
@@ -331,8 +371,18 @@ function CampaignsTab({ clientId }: { clientId: string }) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    {["Canal", "Campanha", "Investimento", "Cliques", "Conversões", "ROAS"].map((h) => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                    {[
+                      "Canal",
+                      "Campanha",
+                      "Investimento",
+                      "Cliques",
+                      "Conversões",
+                      "ROAS",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide"
+                      >
                         {h}
                       </th>
                     ))}
@@ -340,21 +390,38 @@ function CampaignsTab({ clientId }: { clientId: string }) {
                 </thead>
                 <tbody>
                   {data.metrics.slice(0, 20).map((m) => (
-                    <tr key={m.id} className="border-b border-border/50 hover:bg-default-100/50 transition-colors">
+                    <tr
+                      key={m.id}
+                      className="border-b border-border/50 hover:bg-default-100/50 transition-colors"
+                    >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div
                             className="h-2 w-2 rounded-full"
-                            style={{ background: CHANNEL_COLORS[m.channel] ?? "#888" }}
+                            style={{
+                              background: CHANNEL_COLORS[m.channel] ?? "#888",
+                            }}
                           />
-                          <span className="text-xs">{CHANNEL_LABELS[m.channel] ?? m.channel}</span>
+                          <span className="text-xs">
+                            {CHANNEL_LABELS[m.channel] ?? m.channel}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 max-w-[180px] truncate text-foreground">{m.campaign_name}</td>
-                      <td className="px-4 py-3 text-foreground">{fmt(m.spend, "currency")}</td>
-                      <td className="px-4 py-3 text-foreground">{fmt(m.clicks)}</td>
-                      <td className="px-4 py-3 text-foreground">{fmt(m.conversions)}</td>
-                      <td className="px-4 py-3 text-foreground">{m.roas ? `${m.roas.toFixed(2)}x` : "—"}</td>
+                      <td className="px-4 py-3 max-w-[180px] truncate text-foreground">
+                        {m.campaign_name}
+                      </td>
+                      <td className="px-4 py-3 text-foreground">
+                        {fmt(m.spend, "currency")}
+                      </td>
+                      <td className="px-4 py-3 text-foreground">
+                        {fmt(m.clicks)}
+                      </td>
+                      <td className="px-4 py-3 text-foreground">
+                        {fmt(m.conversions)}
+                      </td>
+                      <td className="px-4 py-3 text-foreground">
+                        {m.roas ? `${m.roas.toFixed(2)}x` : "—"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -388,19 +455,48 @@ function SiteTab({ clientId }: { clientId: string }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard label="Total de Visitantes" value={fmt(totals.total_visitors)} icon={Users} />
-        <KpiCard label="Páginas de Pacotes" value={fmt(totals.package_page_views)} icon={Globe} />
-        <KpiCard label="Taxa de Conversão" value={fmt(totals.conversion_rate, "percent")} icon={MousePointer} accent />
-        <KpiCard label="Taxa de Abandono" value={fmt(totals.avg_bounce_rate, "percent")} icon={ShoppingCart} />
+        <KpiCard
+          label="Total de Visitantes"
+          value={fmt(totals.total_visitors)}
+          icon={Users}
+        />
+        <KpiCard
+          label="Páginas de Pacotes"
+          value={fmt(totals.package_page_views)}
+          icon={Globe}
+        />
+        <KpiCard
+          label="Taxa de Conversão"
+          value={fmt(totals.conversion_rate, "percent")}
+          icon={MousePointer}
+          accent
+        />
+        <KpiCard
+          label="Taxa de Abandono"
+          value={fmt(totals.avg_bounce_rate, "percent")}
+          icon={ShoppingCart}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
           <CardBody className="p-6">
-            <p className="font-semibold text-foreground mb-6">Origem do Tráfego</p>
+            <p className="font-semibold text-foreground mb-6">
+              Origem do Tráfego
+            </p>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie data={trafficData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                <Pie
+                  data={trafficData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  dataKey="value"
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
+                  labelLine={false}
+                >
                   {trafficData.map((_, i) => (
                     <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                   ))}
@@ -413,20 +509,43 @@ function SiteTab({ clientId }: { clientId: string }) {
 
         <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
           <CardBody className="p-6">
-            <p className="font-semibold text-foreground mb-6">Funil de Conversão</p>
+            <p className="font-semibold text-foreground mb-6">
+              Funil de Conversão
+            </p>
             <div className="space-y-3">
               {[
-                { label: "Visitantes", value: totals.total_visitors, color: "bg-primary" },
-                { label: "Views de Pacotes", value: totals.package_page_views, color: "bg-primary/70" },
-                { label: "Início do Checkout", value: totals.checkout_starts, color: "bg-primary/50" },
-                { label: "Reservas Completas", value: totals.checkout_completes, color: "bg-primary/30" },
+                {
+                  label: "Visitantes",
+                  value: totals.total_visitors,
+                  color: "bg-primary",
+                },
+                {
+                  label: "Views de Pacotes",
+                  value: totals.package_page_views,
+                  color: "bg-primary/70",
+                },
+                {
+                  label: "Início do Checkout",
+                  value: totals.checkout_starts,
+                  color: "bg-primary/50",
+                },
+                {
+                  label: "Reservas Completas",
+                  value: totals.checkout_completes,
+                  color: "bg-primary/30",
+                },
               ].map(({ label, value, color }) => {
-                const pct = totals.total_visitors > 0 ? (value / totals.total_visitors) * 100 : 0;
+                const pct =
+                  totals.total_visitors > 0
+                    ? (value / totals.total_visitors) * 100
+                    : 0;
                 return (
                   <div key={label}>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-muted-foreground">{label}</span>
-                      <span className="font-medium text-foreground">{fmt(value)}</span>
+                      <span className="font-medium text-foreground">
+                        {fmt(value)}
+                      </span>
                     </div>
                     <div className="h-2 bg-default-100 rounded-full overflow-hidden">
                       <div
@@ -471,12 +590,21 @@ function OtaTab({ clientId }: { clientId: string }) {
         commission_rate: parseFloat(form.commission_rate) / 100,
         platform_breakdown: {
           booking: form.booking ? parseFloat(form.booking) : undefined,
-          getyourguide: form.getyourguide ? parseFloat(form.getyourguide) : undefined,
+          getyourguide: form.getyourguide
+            ? parseFloat(form.getyourguide)
+            : undefined,
           viator: form.viator ? parseFloat(form.viator) : undefined,
         },
       });
       toast.success("Dados OTA inseridos com sucesso!");
-      setForm((p) => ({ ...p, ota_bookings: "", ota_revenue: "", booking: "", getyourguide: "", viator: "" }));
+      setForm((p) => ({
+        ...p,
+        ota_bookings: "",
+        ota_revenue: "",
+        booking: "",
+        getyourguide: "",
+        viator: "",
+      }));
     } catch {
       toast.error("Erro ao inserir dados OTA.");
     }
@@ -491,8 +619,12 @@ function OtaTab({ clientId }: { clientId: string }) {
               <Database className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground">Inserir Dados OTA</h3>
-              <p className="text-xs text-muted-foreground">Dados mensais de Booking, GetYourGuide e Viator.</p>
+              <h3 className="font-semibold text-foreground">
+                Inserir Dados OTA
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Dados mensais de Booking, GetYourGuide e Viator.
+              </p>
             </div>
           </div>
           <form onSubmit={handleInsert} className="space-y-4">
@@ -535,12 +667,38 @@ function OtaTab({ clientId }: { clientId: string }) {
                 variant="bordered"
                 classNames={{ inputWrapper: "rounded-2xl border-border" }}
               />
-              <Input label="Booking.com (R$)" type="number" value={form.booking} onChange={set("booking")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
-              <Input label="GetYourGuide (R$)" type="number" value={form.getyourguide} onChange={set("getyourguide")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
-              <Input label="Viator (R$)" type="number" value={form.viator} onChange={set("viator")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
+              <Input
+                label="Booking.com (R$)"
+                type="number"
+                value={form.booking}
+                onChange={set("booking")}
+                variant="bordered"
+                classNames={{ inputWrapper: "rounded-2xl border-border" }}
+              />
+              <Input
+                label="GetYourGuide (R$)"
+                type="number"
+                value={form.getyourguide}
+                onChange={set("getyourguide")}
+                variant="bordered"
+                classNames={{ inputWrapper: "rounded-2xl border-border" }}
+              />
+              <Input
+                label="Viator (R$)"
+                type="number"
+                value={form.viator}
+                onChange={set("viator")}
+                variant="bordered"
+                classNames={{ inputWrapper: "rounded-2xl border-border" }}
+              />
             </div>
             <div className="flex justify-end">
-              <Button type="submit" color="primary" isLoading={isPending} className="font-medium">
+              <Button
+                type="submit"
+                color="primary"
+                isLoading={isPending}
+                className="font-medium"
+              >
                 Salvar Dados OTA
               </Button>
             </div>
@@ -557,19 +715,43 @@ function OtaTab({ clientId }: { clientId: string }) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    {["Mês", "Reservas OTA", "Receita OTA", "Comissão Paga", "Recuperado"].map((h) => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">{h}</th>
+                    {[
+                      "Mês",
+                      "Reservas OTA",
+                      "Receita OTA",
+                      "Comissão Paga",
+                      "Recuperado",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide"
+                      >
+                        {h}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {otaList.map((o) => (
-                    <tr key={o.id} className="border-b border-border/50 hover:bg-default-100/50 transition-colors">
-                      <td className="px-4 py-3 font-medium text-foreground">{o.reference_month.slice(0, 7)}</td>
-                      <td className="px-4 py-3 text-foreground">{fmt(o.ota_bookings)}</td>
-                      <td className="px-4 py-3 text-foreground">{fmt(o.ota_revenue, "currency")}</td>
-                      <td className="px-4 py-3 text-danger">{fmt(o.commission_paid, "currency")}</td>
-                      <td className="px-4 py-3 text-success font-semibold">{fmt(o.commission_paid, "currency")}</td>
+                    <tr
+                      key={o.id}
+                      className="border-b border-border/50 hover:bg-default-100/50 transition-colors"
+                    >
+                      <td className="px-4 py-3 font-medium text-foreground">
+                        {o.reference_month.slice(0, 7)}
+                      </td>
+                      <td className="px-4 py-3 text-foreground">
+                        {fmt(o.ota_bookings)}
+                      </td>
+                      <td className="px-4 py-3 text-foreground">
+                        {fmt(o.ota_revenue, "currency")}
+                      </td>
+                      <td className="px-4 py-3 text-danger">
+                        {fmt(o.commission_paid, "currency")}
+                      </td>
+                      <td className="px-4 py-3 text-success font-semibold">
+                        {fmt(o.commission_paid, "currency")}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -584,13 +766,18 @@ function OtaTab({ clientId }: { clientId: string }) {
 
 function ReportsTab({ clientId }: { clientId: string }) {
   const { data: reports, isLoading } = useHotelPortalReports(clientId);
-  const { mutateAsync: createReport, isPending: creating } = useCreateReport(clientId);
-  const { mutateAsync: publishReport, isPending: publishing } = usePublishReport(clientId);
-  const { mutateAsync: updateReport, isPending: updating } = useUpdateReport(clientId);
+  const { mutateAsync: createReport, isPending: creating } =
+    useCreateReport(clientId);
+  const { mutateAsync: publishReport, isPending: publishing } =
+    usePublishReport(clientId);
+  const { mutateAsync: updateReport, isPending: updating } =
+    useUpdateReport(clientId);
 
   const [selected, setSelected] = useState<MonthlyReport | null>(null);
   const [draft, setDraft] = useState<Partial<PublishReportDto>>({});
-  const [newMonth, setNewMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [newMonth, setNewMonth] = useState(
+    new Date().toISOString().slice(0, 7),
+  );
 
   function selectReport(r: MonthlyReport) {
     setSelected(r);
@@ -659,9 +846,17 @@ function ReportsTab({ clientId }: { clientId: string }) {
             value={newMonth}
             onChange={(e) => setNewMonth(e.target.value)}
             variant="bordered"
-            classNames={{ inputWrapper: "rounded-2xl border-border", base: "max-w-[200px]" }}
+            classNames={{
+              inputWrapper: "rounded-2xl border-border",
+              base: "max-w-[200px]",
+            }}
           />
-          <Button color="primary" onPress={handleCreate} isLoading={creating} className="font-medium">
+          <Button
+            color="primary"
+            onPress={handleCreate}
+            isLoading={creating}
+            className="font-medium"
+          >
             Criar Relatório
           </Button>
         </CardBody>
@@ -674,12 +869,20 @@ function ReportsTab({ clientId }: { clientId: string }) {
               <h3 className="font-semibold text-foreground">
                 Relatório — {selected.reference_month.slice(0, 7)}
               </h3>
-              <Button size="sm" variant="flat" onPress={() => setSelected(null)}>Fechar</Button>
+              <Button
+                size="sm"
+                variant="flat"
+                onPress={() => setSelected(null)}
+              >
+                Fechar
+              </Button>
             </div>
             <Textarea
               label="Resumo executivo"
               value={draft.executive_summary ?? ""}
-              onChange={(e) => setDraft((p) => ({ ...p, executive_summary: e.target.value }))}
+              onChange={(e) =>
+                setDraft((p) => ({ ...p, executive_summary: e.target.value }))
+              }
               variant="bordered"
               minRows={3}
               classNames={{ inputWrapper: "rounded-2xl border-border" }}
@@ -688,7 +891,10 @@ function ReportsTab({ clientId }: { clientId: string }) {
               label="Destaques (um por linha)"
               value={(draft.highlights ?? []).join("\n")}
               onChange={(e) =>
-                setDraft((p) => ({ ...p, highlights: e.target.value.split("\n").filter(Boolean) }))
+                setDraft((p) => ({
+                  ...p,
+                  highlights: e.target.value.split("\n").filter(Boolean),
+                }))
               }
               variant="bordered"
               minRows={3}
@@ -698,7 +904,10 @@ function ReportsTab({ clientId }: { clientId: string }) {
               label="Próximos passos (um por linha)"
               value={(draft.next_steps ?? []).join("\n")}
               onChange={(e) =>
-                setDraft((p) => ({ ...p, next_steps: e.target.value.split("\n").filter(Boolean) }))
+                setDraft((p) => ({
+                  ...p,
+                  next_steps: e.target.value.split("\n").filter(Boolean),
+                }))
               }
               variant="bordered"
               minRows={3}
@@ -707,16 +916,28 @@ function ReportsTab({ clientId }: { clientId: string }) {
             <Textarea
               label="Comentário estratégico da RÉSERVE"
               value={draft.admin_comment ?? ""}
-              onChange={(e) => setDraft((p) => ({ ...p, admin_comment: e.target.value }))}
+              onChange={(e) =>
+                setDraft((p) => ({ ...p, admin_comment: e.target.value }))
+              }
               variant="bordered"
               minRows={4}
               classNames={{ inputWrapper: "rounded-2xl border-border" }}
             />
             <div className="flex gap-3 justify-end flex-wrap">
-              <Button variant="flat" onPress={handleSave} isLoading={updating} className="font-medium">
+              <Button
+                variant="flat"
+                onPress={handleSave}
+                isLoading={updating}
+                className="font-medium"
+              >
                 Salvar Rascunho
               </Button>
-              <Button color="primary" onPress={handlePublish} isLoading={publishing} className="font-medium">
+              <Button
+                color="primary"
+                onPress={handlePublish}
+                isLoading={publishing}
+                className="font-medium"
+              >
                 Publicar e Notificar Cliente
               </Button>
             </div>
@@ -741,10 +962,13 @@ function ReportsTab({ clientId }: { clientId: string }) {
                       <FileText className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">{r.reference_month.slice(0, 7)}</p>
+                      <p className="font-medium text-foreground">
+                        {r.reference_month.slice(0, 7)}
+                      </p>
                       {r.published_at && (
                         <p className="text-xs text-muted-foreground">
-                          Publicado em {new Date(r.published_at).toLocaleDateString("pt-BR")}
+                          Publicado em{" "}
+                          {new Date(r.published_at).toLocaleDateString("pt-BR")}
                         </p>
                       )}
                     </div>
@@ -753,7 +977,9 @@ function ReportsTab({ clientId }: { clientId: string }) {
                     {r.notification_sent && (
                       <CheckCircle2 className="h-4 w-4 text-success" />
                     )}
-                    <Chip size="sm" variant="flat" color={cfg.color}>{cfg.label}</Chip>
+                    <Chip size="sm" variant="flat" color={cfg.color}>
+                      {cfg.label}
+                    </Chip>
                   </div>
                 </CardBody>
               </Card>
@@ -773,8 +999,12 @@ function ConfigTab({ clientId }: { clientId: string }) {
     country: client?.country ?? "",
     booking_engine: client?.booking_engine ?? "",
     logo_url: client?.logo_url ?? "",
-    target_occupancy: client ? String(Math.round(client.target_occupancy * 100)) : "70",
-    target_direct_pct: client ? String(Math.round(client.target_direct_pct * 100)) : "50",
+    target_occupancy: client
+      ? String(Math.round(client.target_occupancy * 100))
+      : "70",
+    target_direct_pct: client
+      ? String(Math.round(client.target_direct_pct * 100))
+      : "50",
   });
 
   useMemo(() => {
@@ -813,7 +1043,9 @@ function ConfigTab({ clientId }: { clientId: string }) {
   async function handleToggleActive() {
     try {
       await update({ is_active: !client?.is_active });
-      toast.success(client?.is_active ? "Cliente desativado." : "Cliente ativado.");
+      toast.success(
+        client?.is_active ? "Cliente desativado." : "Cliente ativado.",
+      );
     } catch {
       toast.error("Erro ao alterar status.");
     }
@@ -825,12 +1057,52 @@ function ConfigTab({ clientId }: { clientId: string }) {
         <CardBody className="p-6 sm:p-8 space-y-5">
           <h3 className="font-semibold text-foreground">Dados do Hotel</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Nome do Hotel" value={form.hotel_name} onChange={set("hotel_name")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} isRequired />
-            <Input label="País" value={form.country} onChange={set("country")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} isRequired />
-            <Input label="Motor de Reservas" value={form.booking_engine} onChange={set("booking_engine")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
-            <Input label="URL do Logo" value={form.logo_url} onChange={set("logo_url")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
-            <Input label="Meta de Ocupação (%)" type="number" value={form.target_occupancy} onChange={set("target_occupancy")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
-            <Input label="Meta de Reserva Direta (%)" type="number" value={form.target_direct_pct} onChange={set("target_direct_pct")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
+            <Input
+              label="Nome do Hotel"
+              value={form.hotel_name}
+              onChange={set("hotel_name")}
+              variant="bordered"
+              classNames={{ inputWrapper: "rounded-2xl border-border" }}
+              isRequired
+            />
+            <Input
+              label="País"
+              value={form.country}
+              onChange={set("country")}
+              variant="bordered"
+              classNames={{ inputWrapper: "rounded-2xl border-border" }}
+              isRequired
+            />
+            <Input
+              label="Motor de Reservas"
+              value={form.booking_engine}
+              onChange={set("booking_engine")}
+              variant="bordered"
+              classNames={{ inputWrapper: "rounded-2xl border-border" }}
+            />
+            <Input
+              label="URL do Logo"
+              value={form.logo_url}
+              onChange={set("logo_url")}
+              variant="bordered"
+              classNames={{ inputWrapper: "rounded-2xl border-border" }}
+            />
+            <Input
+              label="Meta de Ocupação (%)"
+              type="number"
+              value={form.target_occupancy}
+              onChange={set("target_occupancy")}
+              variant="bordered"
+              classNames={{ inputWrapper: "rounded-2xl border-border" }}
+            />
+            <Input
+              label="Meta de Reserva Direta (%)"
+              type="number"
+              value={form.target_direct_pct}
+              onChange={set("target_direct_pct")}
+              variant="bordered"
+              classNames={{ inputWrapper: "rounded-2xl border-border" }}
+            />
           </div>
           <div className="flex gap-3 justify-between flex-wrap pt-2">
             <Button
@@ -842,7 +1114,12 @@ function ConfigTab({ clientId }: { clientId: string }) {
             >
               {client?.is_active ? "Desativar Cliente" : "Ativar Cliente"}
             </Button>
-            <Button type="submit" color="primary" isLoading={isPending} className="font-medium">
+            <Button
+              type="submit"
+              color="primary"
+              isLoading={isPending}
+              className="font-medium"
+            >
               Salvar Configurações
             </Button>
           </div>
@@ -852,30 +1129,43 @@ function ConfigTab({ clientId }: { clientId: string }) {
       {client?.credentials && client.credentials.length > 0 && (
         <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
           <CardBody className="p-6 sm:p-8 space-y-4">
-            <h3 className="font-semibold text-foreground">Status das Integrações</h3>
+            <h3 className="font-semibold text-foreground">
+              Status das Integrações
+            </h3>
             <div className="space-y-3">
               {client.credentials.map((cred) => (
-                <div key={cred.platform} className="flex items-center justify-between p-4 bg-background rounded-2xl border border-border">
+                <div
+                  key={cred.platform}
+                  className="flex items-center justify-between p-4 bg-background rounded-2xl border border-border"
+                >
                   <div>
                     <p className="font-medium text-foreground text-sm">
-                      {CHANNEL_LABELS[cred.platform as ECampaignChannel] ?? cred.platform}
+                      {CHANNEL_LABELS[cred.platform as ECampaignChannel] ??
+                        cred.platform}
                     </p>
                     {cred.last_sync_at && (
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        Última sync: {new Date(cred.last_sync_at).toLocaleString("pt-BR")}
+                        Última sync:{" "}
+                        {new Date(cred.last_sync_at).toLocaleString("pt-BR")}
                       </p>
                     )}
                     {cred.error_message && (
-                      <p className="text-xs text-danger mt-0.5">{cred.error_message}</p>
+                      <p className="text-xs text-danger mt-0.5">
+                        {cred.error_message}
+                      </p>
                     )}
                   </div>
                   <Chip
                     size="sm"
                     variant="flat"
                     color={
-                      cred.sync_status === "ACTIVE" ? "success" :
-                      cred.sync_status === "ERROR" ? "danger" :
-                      cred.sync_status === "PENDING" ? "warning" : "default"
+                      cred.sync_status === "ACTIVE"
+                        ? "success"
+                        : cred.sync_status === "ERROR"
+                          ? "danger"
+                          : cred.sync_status === "PENDING"
+                            ? "warning"
+                            : "default"
                     }
                   >
                     {cred.sync_status}
@@ -928,18 +1218,31 @@ export default function HotelClientPortalPage({
           ) : (
             <div className="flex items-center gap-3">
               {client?.logo_url ? (
-                <img src={client.logo_url} alt={client.hotel_name} className="h-9 w-9 rounded-xl object-cover border border-border" />
+                <img
+                  src={client.logo_url}
+                  alt={client.hotel_name}
+                  className="h-9 w-9 rounded-xl object-cover border border-border"
+                />
               ) : (
                 <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Building2 className="h-4 w-4 text-primary" />
                 </div>
               )}
               <div>
-                <h1 className="text-xl font-bold text-foreground">{client?.hotel_name}</h1>
-                <p className="text-sm text-muted-foreground">{client?.country}</p>
+                <h1 className="text-xl font-bold text-foreground">
+                  {client?.hotel_name}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  {client?.country}
+                </p>
               </div>
               {client && (
-                <Chip size="sm" variant="flat" color={client.is_active ? "success" : "danger"} className="ml-2">
+                <Chip
+                  size="sm"
+                  variant="flat"
+                  color={client.is_active ? "success" : "danger"}
+                  className="ml-2"
+                >
                   {client.is_active ? "Ativo" : "Inativo"}
                 </Chip>
               )}

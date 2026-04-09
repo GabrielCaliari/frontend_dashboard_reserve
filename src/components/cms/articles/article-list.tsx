@@ -15,13 +15,7 @@ import {
   Card,
   Pagination,
 } from "@heroui/react";
-import {
-  Search,
-  FileText,
-  Sparkles,
-  Edit,
-  Plus,
-} from "lucide-react";
+import { Search, FileText, Sparkles, Edit, Plus } from "lucide-react";
 import type { Article } from "@/src/common/@types/@cms-article";
 import type { Author } from "@/src/common/@types/@cms-author";
 import ArticleStatusBadge from "./article-status-badge";
@@ -64,11 +58,15 @@ export default function ArticleList({
   const [page, setPage] = useState(1);
 
   const getAuthor = (authorId?: string) =>
-    authorId ? authors.find((a) => String(a.id) === String(authorId)) : undefined;
+    authorId
+      ? authors.find((a) => String(a.id) === String(authorId))
+      : undefined;
 
   const filteredArticles = useMemo(() => {
     const filtered = articles.filter((article) => {
-      const matchesStatus = currentStatus ? article.status === currentStatus : true;
+      const matchesStatus = currentStatus
+        ? article.status === currentStatus
+        : true;
       const matchesSearch = searchQuery
         ? article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           article.slug.toLowerCase().includes(searchQuery.toLowerCase())
@@ -84,7 +82,10 @@ export default function ArticleList({
   }, [articles, currentStatus, searchQuery]);
 
   const totalPages = Math.ceil(filteredArticles.length / PAGE_SIZE);
-  const pagedArticles = filteredArticles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pagedArticles = filteredArticles.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
 
   const handleTabChange = (key: string | number) => {
     setPage(1);
@@ -119,8 +120,18 @@ export default function ArticleList({
   const tabs: CmsTabItem[] = [
     { id: "all", label: "All", count: counts.all },
     { id: "draft", label: "Drafts", count: counts.draft, color: "warning" },
-    { id: "published", label: "Published", count: counts.published, color: "success" },
-    { id: "archived", label: "Archived", count: counts.archived, color: "default" },
+    {
+      id: "published",
+      label: "Published",
+      count: counts.published,
+      color: "success",
+    },
+    {
+      id: "archived",
+      label: "Archived",
+      count: counts.archived,
+      color: "default",
+    },
   ];
 
   const renderCell = (article: Article, columnKey: string) => {
@@ -226,7 +237,9 @@ export default function ArticleList({
                 key={col.key}
                 align={col.key === "actions" ? "end" : "start"}
                 className={
-                  col.key === "updated_at" || col.key === "author" || col.key === "language"
+                  col.key === "updated_at" ||
+                  col.key === "author" ||
+                  col.key === "language"
                     ? "hidden md:table-cell"
                     : undefined
                 }
@@ -256,7 +269,9 @@ export default function ArticleList({
               ) : (
                 <div className="py-12 text-center">
                   <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-20" />
-                  <p className="font-medium text-foreground mb-1">No articles yet</p>
+                  <p className="font-medium text-foreground mb-1">
+                    No articles yet
+                  </p>
                   <p className="text-sm text-muted-foreground mb-4">
                     Create your first article to get started
                   </p>
@@ -277,7 +292,9 @@ export default function ArticleList({
                 {(col) => (
                   <TableCell
                     className={
-                      col === "updated_at" || col === "author" || col === "language"
+                      col === "updated_at" ||
+                      col === "author" ||
+                      col === "language"
                         ? "hidden md:table-cell"
                         : undefined
                     }

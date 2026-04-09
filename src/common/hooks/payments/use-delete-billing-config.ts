@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteBillingConfigAction } from '@/src/common/actions/payments/delete-billing-config';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteBillingConfigAction } from "@/src/common/actions/payments/delete-billing-config";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
 
 export function useDeleteBillingConfig() {
   const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export function useDeleteBillingConfig() {
   return useMutation({
     mutationFn: () => deleteBillingConfigAction(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['billing-config', tenantId] });
+      queryClient.invalidateQueries({ queryKey: ["billing-config", tenantId] });
     },
   });
 }

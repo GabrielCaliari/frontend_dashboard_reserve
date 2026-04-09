@@ -60,11 +60,17 @@ export default function TenantDashboardDrilldownPage() {
             >
               {t("backToGlobal")}
             </Button>
-            <h1 className="text-2xl font-bold text-foreground">{tenant?.name ?? tenantId}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{t("tenantDrilldownDescription")}</p>
+            <h1 className="text-2xl font-bold text-foreground">
+              {tenant?.name ?? tenantId}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("tenantDrilldownDescription")}
+            </p>
             {data?.generatedAt ? (
               <p className="mt-2 text-xs text-muted-foreground">
-                {t("updatedAt", { date: new Date(data.generatedAt).toLocaleString() })}
+                {t("updatedAt", {
+                  date: new Date(data.generatedAt).toLocaleString(),
+                })}
               </p>
             ) : null}
           </div>
@@ -124,7 +130,9 @@ export default function TenantDashboardDrilldownPage() {
         <div className="space-y-4 pt-4">
           <div className="flex items-center gap-2 border-b border-border pb-3">
             <Bell className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Configurações de notificações</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              Configurações de notificações
+            </h2>
           </div>
           <TenantNotificationSettingsForm tenantId={tenantId} isSuperAdmin />
         </div>

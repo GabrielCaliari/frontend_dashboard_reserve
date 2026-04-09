@@ -1,14 +1,14 @@
 /**
  * Tenant Service
- * 
+ *
  * Service layer for tenant management operations.
  * Handles all API calls related to tenant CRUD operations.
- * 
+ *
  * API Base URL: Configured in api.ts
  * Authentication: Bearer token (handled by api interceptor)
  */
 
-import { apiClient } from '@/src/common/config/api';
+import { apiClient } from "@/src/common/config/api";
 import {
   Tenant,
   PaginatedResponse,
@@ -18,7 +18,7 @@ import {
   AssignAdminDto,
   UpdateAdminRoleDto,
   AdminRole,
-} from '@/src/common/@types/@access-management';
+} from "@/src/common/@types/@access-management";
 
 /**
  * Fetch paginated list of tenants with optional search
@@ -26,33 +26,40 @@ import {
 export const fetchTenants = async (
   page: number = 1,
   perPage: number = 10,
-  search?: string
+  search?: string,
 ): Promise<PaginatedResponse<Tenant>> => {
   // Backend returns array of tenants (not paginated)
-  const response = await apiClient.get('/tenants');
-  
+  const response = await apiClient.get("/tenants");
+
   // Normalize response — backend may return array directly or wrapped in { data: [...] }
   const raw = response.data;
-  const rawTenants: any[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
+  const rawTenants: any[] = Array.isArray(raw)
+    ? raw
+    : Array.isArray(raw?.data)
+      ? raw.data
+      : [];
 
   const allTenants: Tenant[] = rawTenants.map((t) => ({
     ...t,
     is_active: t.is_active ?? t.active ?? false,
-    scheduled_for_deletion: t.scheduled_for_deletion ?? t.deletion_scheduled_for_at != null ?? false,
+    scheduled_for_deletion:
+      t.scheduled_for_deletion ?? t.deletion_scheduled_for_at != null ?? false,
     deletion_scheduled_for_at: t.deletion_scheduled_for_at ?? null,
   }));
-  const filteredTenants = search 
-    ? allTenants.filter(tenant => 
-        tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-        tenant.slug.toLowerCase().includes(search.toLowerCase()) ||
-        (tenant.domain && tenant.domain.toLowerCase().includes(search.toLowerCase()))
+  const filteredTenants = search
+    ? allTenants.filter(
+        (tenant) =>
+          tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+          tenant.slug.toLowerCase().includes(search.toLowerCase()) ||
+          (tenant.domain &&
+            tenant.domain.toLowerCase().includes(search.toLowerCase())),
       )
     : allTenants;
-  
+
   const startIndex = (page - 1) * perPage;
   const endIndex = startIndex + perPage;
   const paginatedData = filteredTenants.slice(startIndex, endIndex);
-  
+
   return {
     data: paginatedData,
     meta: {
@@ -77,7 +84,7 @@ export const fetchTenantById = async (id: string): Promise<Tenant> => {
  * Create a new tenant
  */
 export const createTenant = async (data: CreateTenantDto): Promise<Tenant> => {
-  const response = await apiClient.post<Tenant>('/tenants', data);
+  const response = await apiClient.post<Tenant>("/tenants", data);
   return response.data;
 };
 
@@ -86,7 +93,7 @@ export const createTenant = async (data: CreateTenantDto): Promise<Tenant> => {
  */
 export const updateTenant = async (
   id: string,
-  data: UpdateTenantDto
+  data: UpdateTenantDto,
 ): Promise<Tenant> => {
   const response = await apiClient.patch<Tenant>(`/tenants/${id}`, data);
   return response.data;
@@ -135,11 +142,16 @@ export const getTenantDeletionStatus = async (id: string): Promise<any> => {
   return response.data;
 };
 
-export const assignAdminToTenant = async (data: AssignAdminDto): Promise<void> => {
-  await apiClient.post('/tenants/assign', data);
+export const assignAdminToTenant = async (
+  data: AssignAdminDto,
+): Promise<void> => {
+  await apiClient.post("/tenants/assign", data);
 };
 
-export const unassignAdminFromTenant = async (tenantId: string, adminId: string): Promise<void> => {
+export const unassignAdminFromTenant = async (
+  tenantId: string,
+  adminId: string,
+): Promise<void> => {
   await apiClient.delete(`/tenants/${tenantId}/admins/${adminId}`);
 };
 

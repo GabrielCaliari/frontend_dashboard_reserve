@@ -1,14 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
-import { paymentMovementsService } from '@/src/common/services/payments/payment-movements-service';
-import { useHasSelectedTenant } from '@/src/common/stores/tenant-store';
-import type { PaymentMovement, MovementStatus } from '@/src/common/@types/@payment-movements';
+import { useQuery } from "@tanstack/react-query";
+import { paymentMovementsService } from "@/src/common/services/payments/payment-movements-service";
+import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import type {
+  PaymentMovement,
+  MovementStatus,
+} from "@/src/common/@types/@payment-movements";
 
 // Status que indicam carrinho abandonado ou lead que não fechou
 const ABANDONED_STATUSES: MovementStatus[] = [
-  'pending',
-  'abandoned',
-  'incomplete',
-  'past_due',
+  "pending",
+  "abandoned",
+  "incomplete",
+  "past_due",
 ];
 
 export interface AbandonedCart {
@@ -20,7 +23,7 @@ export interface AbandonedCart {
   country?: string;
   gateway: string;
   products: { id: string; name: string; price: number }[];
-  type: 'subscription' | 'one_time';
+  type: "subscription" | "one_time";
   status: MovementStatus;
   amount: number;
   currency: string;
@@ -28,19 +31,19 @@ export interface AbandonedCart {
   stripeLink?: string | null;
   // Campos para remarketing
   emailSequence?: {
-    step1: 'sent' | 'pending' | 'failed';
-    step2: 'sent' | 'pending' | 'failed';
-    step3: 'sent' | 'pending' | 'failed';
+    step1: "sent" | "pending" | "failed";
+    step2: "sent" | "pending" | "failed";
+    step3: "sent" | "pending" | "failed";
   };
-  smsStatus?: 'sent' | 'pending' | 'failed';
+  smsStatus?: "sent" | "pending" | "failed";
 }
 
 function mapMovementToAbandonedCart(movement: PaymentMovement): AbandonedCart {
   return {
     id: movement.id,
-    name: movement.customerName || movement.customerEmail.split('@')[0],
+    name: movement.customerName || movement.customerEmail.split("@")[0],
     email: movement.customerEmail,
-    gateway: 'Stripe',
+    gateway: "Stripe",
     products: [
       {
         id: movement.productId || movement.id,
@@ -56,11 +59,11 @@ function mapMovementToAbandonedCart(movement: PaymentMovement): AbandonedCart {
     stripeLink: movement.stripeLink,
     // Inicializa campos de remarketing como pending
     emailSequence: {
-      step1: 'pending',
-      step2: 'pending',
-      step3: 'pending',
+      step1: "pending",
+      step2: "pending",
+      step3: "pending",
     },
-    smsStatus: 'pending',
+    smsStatus: "pending",
   };
 }
 
@@ -68,7 +71,7 @@ export function useAbandonedCarts() {
   const hasTenant = useHasSelectedTenant();
 
   return useQuery({
-    queryKey: ['abandoned-carts'],
+    queryKey: ["abandoned-carts"],
     queryFn: async () => {
       // Busca todas as movimentações
       const response = await paymentMovementsService.listMovements({
@@ -77,7 +80,7 @@ export function useAbandonedCarts() {
 
       // Filtra apenas os status que indicam abandono
       const abandonedMovements = response.data.filter((movement) =>
-        ABANDONED_STATUSES.includes(movement.status)
+        ABANDONED_STATUSES.includes(movement.status),
       );
 
       // Mapeia para o formato de AbandonedCart

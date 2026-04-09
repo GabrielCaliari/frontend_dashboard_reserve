@@ -1,9 +1,17 @@
 // Hotel Portal — aligned with backend reserve-client-portal module
 
-export type EPlatform = 'GA4' | 'META_ADS' | 'GOOGLE_ADS';
-export type EIntegrationStatus = 'PENDING' | 'ACTIVE' | 'ERROR' | 'DISCONNECTED';
-export type EReportStatus = 'DRAFT' | 'REVIEW' | 'PUBLISHED';
-export type ECampaignChannel = 'META_ADS' | 'GOOGLE_ADS' | 'GOOGLE_HOTEL_ADS' | 'REMARKETING';
+export type EPlatform = "GA4" | "META_ADS" | "GOOGLE_ADS";
+export type EIntegrationStatus =
+  | "PENDING"
+  | "ACTIVE"
+  | "ERROR"
+  | "DISCONNECTED";
+export type EReportStatus = "DRAFT" | "REVIEW" | "PUBLISHED";
+export type ECampaignChannel =
+  | "META_ADS"
+  | "GOOGLE_ADS"
+  | "GOOGLE_HOTEL_ADS"
+  | "REMARKETING";
 
 export interface ApiCredentialStatus {
   platform: EPlatform;
@@ -155,7 +163,11 @@ export interface OtaMonthlyData {
   ota_revenue: number;
   commission_rate: number;
   commission_paid: number;
-  platform_breakdown?: { booking?: number; getyourguide?: number; viator?: number };
+  platform_breakdown?: {
+    booking?: number;
+    getyourguide?: number;
+    viator?: number;
+  };
   created_at: string;
   updated_at: string;
 }
@@ -189,7 +201,11 @@ export interface InsertOtaDataDto {
   ota_bookings: number;
   ota_revenue: number;
   commission_rate: number;
-  platform_breakdown?: { booking?: number; getyourguide?: number; viator?: number };
+  platform_breakdown?: {
+    booking?: number;
+    getyourguide?: number;
+    viator?: number;
+  };
 }
 
 export interface PublishReportDto {

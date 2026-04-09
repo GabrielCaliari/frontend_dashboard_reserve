@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /**
  * Collection Form Validation Schema
- * 
+ *
  * Validates collection creation and update forms with business rules:
  * - Name: 3-100 characters
  * - Slug: lowercase, alphanumeric with hyphens
@@ -17,33 +17,31 @@ export const collectionFormSchema = z.object({
     .string()
     .min(3, "Name must be at least 3 characters")
     .max(100, "Name must not exceed 100 characters"),
-  
+
   slug: z
     .string()
     .min(3, "Slug must be at least 3 characters")
     .max(100, "Slug must not exceed 100 characters")
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      "Slug must be lowercase alphanumeric with hyphens only"
+      "Slug must be lowercase alphanumeric with hyphens only",
     ),
-  
+
   description: z
     .string()
     .max(500, "Description must not exceed 500 characters")
     .optional(),
-  
+
   type: z.enum(["image", "document", "video", "audio", "mixed"], {
     required_error: "Please select a collection type",
   }),
-  
+
   allowed_mime_types: z
     .array(z.string())
     .min(1, "At least one MIME type must be selected"),
-  
-  max_file_size: z
-    .number()
-    .positive("Max file size must be greater than 0"),
-  
+
+  max_file_size: z.number().positive("Max file size must be greater than 0"),
+
   max_items: z
     .number()
     .positive("Max items must be greater than 0")
@@ -85,11 +83,23 @@ export const MIME_TYPES_BY_CATEGORY = {
   document: [
     { value: "application/pdf", label: "PDF" },
     { value: "application/msword", label: "DOC" },
-    { value: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", label: "DOCX" },
+    {
+      value:
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      label: "DOCX",
+    },
     { value: "application/vnd.ms-excel", label: "XLS" },
-    { value: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", label: "XLSX" },
+    {
+      value:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      label: "XLSX",
+    },
     { value: "application/vnd.ms-powerpoint", label: "PPT" },
-    { value: "application/vnd.openxmlformats-officedocument.presentationml.presentation", label: "PPTX" },
+    {
+      value:
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      label: "PPTX",
+    },
     { value: "text/plain", label: "TXT" },
     { value: "text/csv", label: "CSV" },
   ],
@@ -116,7 +126,11 @@ export const MIME_TYPES_BY_CATEGORY = {
     { value: "image/gif", label: "GIF" },
     { value: "image/webp", label: "WebP" },
     { value: "application/pdf", label: "PDF" },
-    { value: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", label: "DOCX" },
+    {
+      value:
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      label: "DOCX",
+    },
     { value: "video/mp4", label: "MP4" },
     { value: "video/webm", label: "WebM" },
   ],

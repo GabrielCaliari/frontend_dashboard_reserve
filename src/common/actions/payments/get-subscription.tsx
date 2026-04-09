@@ -1,10 +1,10 @@
-'use server';
+"use server";
 
-import { getSubscriptionByTenantService } from '@/src/common/services/payments/subscriptions-service';
-import type { GetSubscriptionResponse } from '@/src/common/@types/@payments';
+import { getSubscriptionByTenantService } from "@/src/common/services/payments/subscriptions-service";
+import type { GetSubscriptionResponse } from "@/src/common/@types/@payments";
 
 export async function getSubscriptionAction(
-  tenantId: string
+  tenantId: string,
 ): Promise<GetSubscriptionResponse> {
   try {
     const result = await getSubscriptionByTenantService(tenantId);
@@ -13,7 +13,9 @@ export async function getSubscriptionAction(
     if (error?.response?.status === 404) {
       return { subscription: null };
     }
-    console.error('Error fetching subscription:', error);
-    throw new Error(error?.response?.data?.message || 'Failed to fetch subscription');
+    console.error("Error fetching subscription:", error);
+    throw new Error(
+      error?.response?.data?.message || "Failed to fetch subscription",
+    );
   }
 }

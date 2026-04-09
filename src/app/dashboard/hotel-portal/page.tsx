@@ -5,13 +5,7 @@ import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useHotelClients } from "@/src/common/hooks/hotel-portal";
 import type { HotelClient } from "@/src/common/@types/@hotel-portal";
 import { useRouter } from "nextjs-toploader/app";
-import {
-  Card,
-  CardBody,
-  Button,
-  Spinner,
-  Chip,
-} from "@heroui/react";
+import { Card, CardBody, Button, Spinner, Chip } from "@heroui/react";
 import {
   AlertCircle,
   Building2,
@@ -35,10 +29,18 @@ const STATUS_DOT: Record<string, string> = {
   DISCONNECTED: "bg-default-400",
 };
 
-function IntegrationChip({ platform, status }: { platform: string; status: string }) {
+function IntegrationChip({
+  platform,
+  status,
+}: {
+  platform: string;
+  status: string;
+}) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground">
-      <span className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[status] ?? "bg-default-400"}`} />
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[status] ?? "bg-default-400"}`}
+      />
       {PLATFORM_LABELS[platform] ?? platform}
     </span>
   );
@@ -68,7 +70,9 @@ function ClientCard({ client }: { client: HotelClient }) {
               <p className="font-semibold text-foreground truncate leading-tight">
                 {client.hotel_name}
               </p>
-              <p className="text-xs text-muted-foreground mt-0.5">{client.country}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {client.country}
+              </p>
             </div>
           </div>
           <Chip
@@ -118,7 +122,9 @@ function ClientCard({ client }: { client: HotelClient }) {
             size="sm"
             variant="bordered"
             className="flex-1 font-medium"
-            onPress={() => push(`/dashboard/hotel-portal/${client.id}?tab=config`)}
+            onPress={() =>
+              push(`/dashboard/hotel-portal/${client.id}?tab=config`)
+            }
           >
             Editar
           </Button>
@@ -139,7 +145,9 @@ export default function HotelPortalPage() {
       active: clients.filter((c) => c.is_active).length,
       errors: clients.reduce(
         (acc, c) =>
-          acc + (c.credentials?.filter((cr) => cr.sync_status === "ERROR").length ?? 0),
+          acc +
+          (c.credentials?.filter((cr) => cr.sync_status === "ERROR").length ??
+            0),
         0,
       ),
     };
@@ -172,19 +180,48 @@ export default function HotelPortalPage() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: "Total de Clientes", value: stats.total, icon: Users, color: "text-primary" },
-            { label: "Clientes Ativos", value: stats.active, icon: Wifi, color: "text-success" },
-            { label: "Integrações com Erro", value: stats.errors, icon: AlertCircle, color: "text-danger" },
-            { label: "OTA Pendente", value: "--", icon: TrendingUp, color: "text-warning" },
+            {
+              label: "Total de Clientes",
+              value: stats.total,
+              icon: Users,
+              color: "text-primary",
+            },
+            {
+              label: "Clientes Ativos",
+              value: stats.active,
+              icon: Wifi,
+              color: "text-success",
+            },
+            {
+              label: "Integrações com Erro",
+              value: stats.errors,
+              icon: AlertCircle,
+              color: "text-danger",
+            },
+            {
+              label: "OTA Pendente",
+              value: "--",
+              icon: TrendingUp,
+              color: "text-warning",
+            },
           ].map(({ label, value, icon: Icon, color }) => (
-            <Card key={label} className="bg-default-50 border border-border rounded-3xl shadow-none">
+            <Card
+              key={label}
+              className="bg-default-50 border border-border rounded-3xl shadow-none"
+            >
               <CardBody className="p-6 flex flex-row items-center gap-4">
-                <div className={`h-10 w-10 rounded-xl bg-default-100 flex items-center justify-center flex-shrink-0`}>
+                <div
+                  className={`h-10 w-10 rounded-xl bg-default-100 flex items-center justify-center flex-shrink-0`}
+                >
                   <Icon className={`h-5 w-5 ${color}`} />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{isLoading ? "—" : value}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+                  <p className="text-2xl font-bold text-foreground">
+                    {isLoading ? "—" : value}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {label}
+                  </p>
                 </div>
               </CardBody>
             </Card>
@@ -209,7 +246,9 @@ export default function HotelPortalPage() {
             <Card className="border-danger/20 bg-danger/5 shadow-none rounded-3xl">
               <CardBody className="p-8 text-center">
                 <AlertCircle className="w-10 h-10 text-danger mx-auto mb-4" />
-                <p className="text-base text-danger">Erro ao carregar clientes. Tente novamente.</p>
+                <p className="text-base text-danger">
+                  Erro ao carregar clientes. Tente novamente.
+                </p>
               </CardBody>
             </Card>
           )}
@@ -224,7 +263,8 @@ export default function HotelPortalPage() {
                   Nenhum cliente cadastrado
                 </h3>
                 <p className="text-muted-foreground mb-8 max-w-md">
-                  Adicione o primeiro hotel para começar a acompanhar os resultados.
+                  Adicione o primeiro hotel para começar a acompanhar os
+                  resultados.
                 </p>
                 <Button
                   color="primary"

@@ -1,18 +1,24 @@
-import { useQuery } from '@tanstack/react-query';
-import { getSubscriptionAction } from '@/src/common/actions/payments/get-subscription';
-import type { GetSubscriptionResponse, Subscription } from '@/src/common/@types/@payments';
-import { useSelectedTenantId, useTenantStore } from '@/src/common/stores/tenant-store';
+import { useQuery } from "@tanstack/react-query";
+import { getSubscriptionAction } from "@/src/common/actions/payments/get-subscription";
+import type {
+  GetSubscriptionResponse,
+  Subscription,
+} from "@/src/common/@types/@payments";
+import {
+  useSelectedTenantId,
+  useTenantStore,
+} from "@/src/common/stores/tenant-store";
 
 export function useSubscription() {
   const tenantId = useSelectedTenantId();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
 
   return useQuery<GetSubscriptionResponse>({
-    queryKey: ['subscription', tenantId],
+    queryKey: ["subscription", tenantId],
     queryFn: async () => {
       const result = await getSubscriptionAction(selectedTenant!.id);
       // Normaliza: backend pode retornar o objeto direto ou { subscription: {...} }
-      if (result && 'id' in result && !('subscription' in result)) {
+      if (result && "id" in result && !("subscription" in result)) {
         return { subscription: result as unknown as Subscription };
       }
       return result;

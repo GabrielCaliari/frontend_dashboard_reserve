@@ -1,27 +1,29 @@
-import axios, { AxiosInstance } from 'axios';
-import { buildApiBaseUrl } from './build-api-base-url';
+import axios, { AxiosInstance } from "axios";
+import { buildApiBaseUrl } from "./build-api-base-url";
 
-const CMS_API_URL = process.env.NODE_ENV === 'development' 
-  ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? process.env.NEXT_LOCAL_API_URL)
-  : (process.env.NEXT_PUBLIC_RESERVE_API_URL ?? process.env.NEXT_PUBLIC_API_URL);
+const CMS_API_URL =
+  process.env.NODE_ENV === "development"
+    ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? process.env.NEXT_LOCAL_API_URL)
+    : (process.env.NEXT_PUBLIC_RESERVE_API_URL ??
+      process.env.NEXT_PUBLIC_API_URL);
 
 /**
  * Factory function to create a configured axios instance for CMS public API endpoints.
  * The public API uses blog secret keys for authentication instead of JWT tokens.
- * 
+ *
  * @param blogSecretKey - The secret key associated with a specific blog
  * @returns Configured axios instance with public API base URL and authentication header
- * 
+ *
  * @example
  * const client = createPublicCmsClient('your-blog-secret-key');
  * const response = await client.get('/articles');
  */
 export const createPublicCmsClient = (blogSecretKey: string): AxiosInstance => {
   const client = axios.create({
-    baseURL: buildApiBaseUrl(CMS_API_URL, 'api/cms/public'),
+    baseURL: buildApiBaseUrl(CMS_API_URL, "api/cms/public"),
     headers: {
-      'Content-Type': 'application/json',
-      'x-blog-secret-key': blogSecretKey,
+      "Content-Type": "application/json",
+      "x-blog-secret-key": blogSecretKey,
     },
   });
 
@@ -33,7 +35,7 @@ export const createPublicCmsClient = (blogSecretKey: string): AxiosInstance => {
       // Don't redirect on 401 - just reject the promise
       // The caller (cms-public-service) will handle the error appropriately
       return Promise.reject(error);
-    }
+    },
   );
 
   return client;

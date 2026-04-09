@@ -32,7 +32,7 @@ export interface DashboardResponse {
 
 export type StatsModuleResponse = MetricGroupResponse;
 
-export type StatsTimeseriesGranularity = 'hour' | 'day' | 'week' | 'month';
+export type StatsTimeseriesGranularity = "hour" | "day" | "week" | "month";
 
 export interface StatsTimeseriesPoint {
   date: string;
@@ -80,7 +80,7 @@ export interface StatsIntegration {
 }
 
 export interface ConfigSchemaField {
-  type: 'string' | 'json';
+  type: "string" | "json";
   required: boolean;
   secret?: boolean;
   description: string;

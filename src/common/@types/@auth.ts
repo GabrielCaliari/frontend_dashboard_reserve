@@ -6,11 +6,11 @@ export interface LoginCredentials {
 }
 
 export enum AdminRole {
-  super_admin = 'super_admin',
-  owner = 'owner',
-  manager = 'manager',
-  editor = 'editor',
-  viewer = 'viewer',
+  super_admin = "super_admin",
+  owner = "owner",
+  manager = "manager",
+  editor = "editor",
+  viewer = "viewer",
 }
 
 export interface AuthResponse {

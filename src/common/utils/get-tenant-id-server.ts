@@ -1,11 +1,11 @@
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
 type TenantStorageSnapshot = {
   state?: {
     selectedTenant?: {
       id?: string | number;
     } | null;
-    dashboardScope?: 'tenant' | 'global';
+    dashboardScope?: "tenant" | "global";
   };
 };
 
@@ -16,14 +16,14 @@ type TenantStorageSnapshot = {
 export async function getTenantIdFromCookie(): Promise<string | null> {
   try {
     const cookieStore = await cookies();
-    const tenantCookie = cookieStore.get('tenant-storage')?.value;
+    const tenantCookie = cookieStore.get("tenant-storage")?.value;
 
     if (!tenantCookie) return null;
 
     const decoded = decodeURIComponent(tenantCookie);
     const parsed: TenantStorageSnapshot = JSON.parse(decoded);
 
-    if (!parsed || parsed.state?.dashboardScope === 'global') {
+    if (!parsed || parsed.state?.dashboardScope === "global") {
       return null;
     }
 

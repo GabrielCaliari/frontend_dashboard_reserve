@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import { Button, Chip } from "@heroui/react";
-import { Eye, EyeOff, Copy, Check, AlertTriangle } from 'lucide-react';
+import { Eye, EyeOff, Copy, Check, AlertTriangle } from "lucide-react";
 
 interface BlogSecretKeyDisplayProps {
   secretKey?: string;
@@ -21,7 +21,7 @@ export default function BlogSecretKeyDisplay({
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error('Failed to copy secret key:', error);
+      console.error("Failed to copy secret key:", error);
     }
   };
 
@@ -29,7 +29,9 @@ export default function BlogSecretKeyDisplay({
     return (
       <div className="space-y-2 rounded-xl bg-content2 p-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-foreground">Secret key</span>
+          <span className="text-sm font-medium text-foreground">
+            Secret key
+          </span>
           <Chip size="sm" variant="flat" color="default">
             Not Available
           </Chip>
@@ -41,13 +43,19 @@ export default function BlogSecretKeyDisplay({
     );
   }
 
-  const maskedKey = secretKey.slice(0, 8) + '•'.repeat(Math.max(0, secretKey.length - 8));
+  const maskedKey =
+    secretKey.slice(0, 8) + "•".repeat(Math.max(0, secretKey.length - 8));
 
   return (
     <div className="space-y-3 rounded-xl bg-content2 p-4">
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium text-foreground">Secret key</span>
-        <Chip size="sm" variant="flat" color="warning" startContent={<AlertTriangle size={14} />}>
+        <Chip
+          size="sm"
+          variant="flat"
+          color="warning"
+          startContent={<AlertTriangle size={14} />}
+        >
           Keep Secure
         </Chip>
       </div>
@@ -62,7 +70,7 @@ export default function BlogSecretKeyDisplay({
             size="sm"
             variant="light"
             onPress={() => setIsVisible(!isVisible)}
-            aria-label={isVisible ? 'Hide secret key' : 'Show secret key'}
+            aria-label={isVisible ? "Hide secret key" : "Show secret key"}
           >
             {isVisible ? <EyeOff size={16} /> : <Eye size={16} />}
           </Button>
@@ -72,7 +80,7 @@ export default function BlogSecretKeyDisplay({
             variant="light"
             onPress={handleCopy}
             aria-label="Copy secret key"
-            color={isCopied ? 'success' : 'default'}
+            color={isCopied ? "success" : "default"}
           >
             {isCopied ? <Check size={16} /> : <Copy size={16} />}
           </Button>

@@ -1,29 +1,29 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createBlog,
   updateBlog,
   deleteBlog,
   regenerateBlogSecretKey,
-} from '@/src/common/services/cms-blog-service';
+} from "@/src/common/services/cms-blog-service";
 import type {
   Blog,
   CreateBlogDto,
   UpdateBlogDto,
-} from '@/src/common/@types/@cms-blog';
-import { BLOG_QUERY_KEYS } from './useBlogs';
-import { useCMSToast } from './use-cms-toast';
+} from "@/src/common/@types/@cms-blog";
+import { BLOG_QUERY_KEYS } from "./useBlogs";
+import { useCMSToast } from "./use-cms-toast";
 
 /**
  * Hook to create a new blog
  * Automatically invalidates the blogs list cache on success
  * Shows success/error toast notifications
- * 
+ *
  * @returns Mutation object with mutate, mutateAsync, and status properties
- * 
+ *
  * @example
  * ```tsx
  * const createBlog = useCreateBlog();
- * 
+ *
  * const handleCreate = async (data: CreateBlogDto) => {
  *   try {
  *     const newBlog = await createBlog.mutateAsync(data);
@@ -46,7 +46,7 @@ export const useCreateBlog = () => {
       toast.blogCreated();
     },
     onError: (error) => {
-      toast.showError(error, 'Failed to create blog');
+      toast.showError(error, "Failed to create blog");
     },
   });
 };
@@ -55,13 +55,13 @@ export const useCreateBlog = () => {
  * Hook to update an existing blog
  * Automatically invalidates both the blogs list and the specific blog cache on success
  * Shows success/error toast notifications
- * 
+ *
  * @returns Mutation object with mutate, mutateAsync, and status properties
- * 
+ *
  * @example
  * ```tsx
  * const updateBlog = useUpdateBlog();
- * 
+ *
  * const handleUpdate = async (blogId: number, data: UpdateBlogDto) => {
  *   try {
  *     await updateBlog.mutateAsync({ blogId, data });
@@ -91,7 +91,7 @@ export const useUpdateBlog = () => {
       toast.blogUpdated();
     },
     onError: (error) => {
-      toast.showError(error, 'Failed to update blog');
+      toast.showError(error, "Failed to update blog");
     },
   });
 };
@@ -101,13 +101,13 @@ export const useUpdateBlog = () => {
  * Automatically invalidates the blogs list cache on success
  * Shows success/error toast notifications
  * Note: This cascades to delete all associated articles and images
- * 
+ *
  * @returns Mutation object with mutate, mutateAsync, and status properties
- * 
+ *
  * @example
  * ```tsx
  * const deleteBlog = useDeleteBlog();
- * 
+ *
  * const handleDelete = async (blogId: number) => {
  *   if (confirm('Are you sure? This will delete all articles and images.')) {
  *     try {
@@ -135,7 +135,7 @@ export const useDeleteBlog = () => {
       toast.blogDeleted();
     },
     onError: (error) => {
-      toast.showError(error, 'Failed to delete blog');
+      toast.showError(error, "Failed to delete blog");
     },
   });
 };
@@ -145,13 +145,13 @@ export const useDeleteBlog = () => {
  * Automatically invalidates both the blogs list and the specific blog cache on success
  * Shows success/error toast notifications
  * Note: This immediately invalidates the previous secret key
- * 
+ *
  * @returns Mutation object with mutate, mutateAsync, and status properties
- * 
+ *
  * @example
  * ```tsx
  * const regenerateKey = useRegenerateBlogKey();
- * 
+ *
  * const handleRegenerate = async (blogId: number) => {
  *   if (confirm('This will invalidate the current key. Continue?')) {
  *     try {
@@ -180,7 +180,7 @@ export const useRegenerateBlogKey = () => {
       toast.blogKeyRegenerated();
     },
     onError: (error) => {
-      toast.showError(error, 'Failed to regenerate secret key');
+      toast.showError(error, "Failed to regenerate secret key");
     },
   });
 };

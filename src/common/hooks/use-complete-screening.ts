@@ -9,7 +9,9 @@ export default function useCompleteScreening() {
       if (result) {
         toast.success("O processo de triagem do Lead foi fechado com sucesso.");
       } else {
-        toast.error("Ops... Deu erro ao concluir o processo de triagem do lead.");
+        toast.error(
+          "Ops... Deu erro ao concluir o processo de triagem do lead.",
+        );
       }
     },
     onError: () => {

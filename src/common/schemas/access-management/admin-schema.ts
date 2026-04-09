@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Admin role enum matching backend AdminRole
  */
 export const AdminRole = z.enum([
-  'super_admin',
-  'owner',
-  'manager',
-  'editor',
-  'viewer'
+  "super_admin",
+  "owner",
+  "manager",
+  "editor",
+  "viewer",
 ]);
 
 /**
@@ -18,24 +18,27 @@ export const AdminRole = z.enum([
  * - At least one uppercase letter
  * - At least one digit
  */
-const passwordSchema = z.string()
-  .min(8, 'Password must be at least 8 characters')
-  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-  .regex(/[0-9]/, 'Password must contain at least one digit');
+const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[0-9]/, "Password must contain at least one digit");
 
 /**
  * Email validation schema
  */
-const emailSchema = z.string()
-  .email('Invalid email format')
-  .min(1, 'Email is required');
+const emailSchema = z
+  .string()
+  .email("Invalid email format")
+  .min(1, "Email is required");
 
 /**
  * Name validation schema
  */
-const nameSchema = z.string()
-  .min(1, 'Name is required')
-  .max(100, 'Name must be 100 characters or less');
+const nameSchema = z
+  .string()
+  .min(1, "Name is required")
+  .max(100, "Name must be 100 characters or less");
 
 /**
  * Schema for creating a new admin
@@ -45,7 +48,7 @@ export const createAdminSchema = z.object({
   name: nameSchema,
   email: emailSchema,
   password: passwordSchema,
-  role: AdminRole
+  role: AdminRole,
 });
 
 /**
@@ -56,8 +59,11 @@ export const createAdminSchema = z.object({
 export const updateAdminSchema = z.object({
   name: nameSchema.optional(),
   email: emailSchema.optional(),
-  password: passwordSchema.optional().or(z.literal('')).transform(v => v || undefined),
-  role: AdminRole.optional()
+  password: passwordSchema
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => v || undefined),
+  role: AdminRole.optional(),
 });
 
 /**

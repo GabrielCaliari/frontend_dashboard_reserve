@@ -2,12 +2,14 @@ import axios from "axios";
 import { buildApiBaseUrl } from "./build-api-base-url";
 import { injectAuthHeaders } from "./get-auth-headers";
 
-const API_URL = process.env.NEXT_PUBLIC_RESERVE_API_EMAIL_URL ?? process.env.NEXT_PUBLIC_API_EMAIL_URL;
+const API_URL =
+  process.env.NEXT_PUBLIC_RESERVE_API_EMAIL_URL ??
+  process.env.NEXT_PUBLIC_API_EMAIL_URL;
 
 const apiEmail = axios.create({
   baseURL: buildApiBaseUrl(API_URL),
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -26,7 +28,7 @@ apiEmail.interceptors.response.use(
     // Don't auto-redirect on 401 - let the service layer handle it
     // This allows for better error messages and prevents redirect loops
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiEmail;

@@ -1,260 +1,270 @@
-import { render, screen, fireEvent, waitFor } from'@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from'vitest';
-import { BlogForm } from'../blog-form';
-import type { Blog } from'@/src/common/@types/@cms-blog';
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { BlogForm } from "../blog-form";
+import type { Blog } from "@/src/common/@types/@cms-blog";
 
-describe('BlogForm', () => {
- const mockOnSubmit = vi.fn();
- const mockOnCancel = vi.fn();
+describe("BlogForm", () => {
+  const mockOnSubmit = vi.fn();
+  const mockOnCancel = vi.fn();
 
- const mockBlog: Blog = {
- id: 1,
- tenant_id: 1,
- name:'Test Blog',
- slug:'test-blog',
- description:'Test Description',
- secret_key:'test-key',
- created_at:'2024-01-01T00:00:00Z',
- updated_at:'2024-01-01T00:00:00Z',
- };
+  const mockBlog: Blog = {
+    id: 1,
+    tenant_id: 1,
+    name: "Test Blog",
+    slug: "test-blog",
+    description: "Test Description",
+    secret_key: "test-key",
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+  };
 
- beforeEach(() => {
- vi.clearAllMocks();
- });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
- describe('Create Mode', () => {
- it('renders empty form in create mode', () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+  describe("Create Mode", () => {
+    it("renders empty form in create mode", () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- expect(screen.getByLabelText(/Blog Name/i)).toHaveValue('');
- expect(screen.getByLabelText(/Description/i)).toHaveValue('');
- expect(screen.getByText('Create Blog')).toBeInTheDocument();
- });
+      expect(screen.getByLabelText(/Blog Name/i)).toHaveValue("");
+      expect(screen.getByLabelText(/Description/i)).toHaveValue("");
+      expect(screen.getByText("Create Blog")).toBeInTheDocument();
+    });
 
- it('shows character count for name field', () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+    it("shows character count for name field", () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- expect(screen.getByText('0/150 characters')).toBeInTheDocument();
- });
+      expect(screen.getByText("0/150 characters")).toBeInTheDocument();
+    });
 
- it('shows character count for description field', () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+    it("shows character count for description field", () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- expect(screen.getByText('0/500 characters')).toBeInTheDocument();
- });
+      expect(screen.getByText("0/500 characters")).toBeInTheDocument();
+    });
 
- it('validates required name field', async () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+    it("validates required name field", async () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- const submitButton = screen.getByText('Create Blog');
- fireEvent.click(submitButton);
+      const submitButton = screen.getByText("Create Blog");
+      fireEvent.click(submitButton);
 
- await waitFor(() => {
- expect(screen.getByText(/Blog name is required/i)).toBeInTheDocument();
- });
+      await waitFor(() => {
+        expect(screen.getByText(/Blog name is required/i)).toBeInTheDocument();
+      });
 
- expect(mockOnSubmit).not.toHaveBeenCalled();
- });
+      expect(mockOnSubmit).not.toHaveBeenCalled();
+    });
 
- it('validates name max length (150 characters)', async () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+    it("validates name max length (150 characters)", async () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- const nameInput = screen.getByLabelText(/Blog Name/i);
- const longName ='a'.repeat(151);
- 
- fireEvent.change(nameInput, { target: { value: longName } });
- fireEvent.click(screen.getByText('Create Blog'));
+      const nameInput = screen.getByLabelText(/Blog Name/i);
+      const longName = "a".repeat(151);
 
- await waitFor(() => {
- expect(screen.getByText(/must be 150 characters or less/i)).toBeInTheDocument();
- });
+      fireEvent.change(nameInput, { target: { value: longName } });
+      fireEvent.click(screen.getByText("Create Blog"));
 
- expect(mockOnSubmit).not.toHaveBeenCalled();
- });
+      await waitFor(() => {
+        expect(
+          screen.getByText(/must be 150 characters or less/i),
+        ).toBeInTheDocument();
+      });
 
- it('validates description max length (500 characters)', async () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+      expect(mockOnSubmit).not.toHaveBeenCalled();
+    });
 
- const nameInput = screen.getByLabelText(/Blog Name/i);
- const descriptionInput = screen.getByLabelText(/Description/i);
- const longDescription ='a'.repeat(501);
- 
- fireEvent.change(nameInput, { target: { value:'Valid Name' } });
- fireEvent.change(descriptionInput, { target: { value: longDescription } });
- fireEvent.click(screen.getByText('Create Blog'));
+    it("validates description max length (500 characters)", async () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- await waitFor(() => {
- expect(screen.getByText(/must be 500 characters or less/i)).toBeInTheDocument();
- });
+      const nameInput = screen.getByLabelText(/Blog Name/i);
+      const descriptionInput = screen.getByLabelText(/Description/i);
+      const longDescription = "a".repeat(501);
 
- expect(mockOnSubmit).not.toHaveBeenCalled();
- });
+      fireEvent.change(nameInput, { target: { value: "Valid Name" } });
+      fireEvent.change(descriptionInput, {
+        target: { value: longDescription },
+      });
+      fireEvent.click(screen.getByText("Create Blog"));
 
- it('submits valid form data', async () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+      await waitFor(() => {
+        expect(
+          screen.getByText(/must be 500 characters or less/i),
+        ).toBeInTheDocument();
+      });
 
- const nameInput = screen.getByLabelText(/Blog Name/i);
- const descriptionInput = screen.getByLabelText(/Description/i);
+      expect(mockOnSubmit).not.toHaveBeenCalled();
+    });
 
- fireEvent.change(nameInput, { target: { value:'My Blog' } });
- fireEvent.change(descriptionInput, { target: { value:'My Description' } });
- fireEvent.click(screen.getByText('Create Blog'));
+    it("submits valid form data", async () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- await waitFor(() => {
- expect(mockOnSubmit).toHaveBeenCalledWith({
- name:'My Blog',
- description:'My Description',
- });
- });
- });
+      const nameInput = screen.getByLabelText(/Blog Name/i);
+      const descriptionInput = screen.getByLabelText(/Description/i);
 
- it('calls onCancel when cancel button is clicked', () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+      fireEvent.change(nameInput, { target: { value: "My Blog" } });
+      fireEvent.change(descriptionInput, {
+        target: { value: "My Description" },
+      });
+      fireEvent.click(screen.getByText("Create Blog"));
 
- fireEvent.click(screen.getByText('Cancel'));
- expect(mockOnCancel).toHaveBeenCalled();
- });
- });
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith({
+          name: "My Blog",
+          description: "My Description",
+        });
+      });
+    });
 
- describe('Edit Mode', () => {
- it('renders form with blog data in edit mode', () => {
- render(
- <BlogForm
- blog={mockBlog}
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+    it("calls onCancel when cancel button is clicked", () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- expect(screen.getByLabelText(/Blog Name/i)).toHaveValue('Test Blog');
- expect(screen.getByLabelText(/Description/i)).toHaveValue('Test Description');
- expect(screen.getByText('Update Blog')).toBeInTheDocument();
- });
+      fireEvent.click(screen.getByText("Cancel"));
+      expect(mockOnCancel).toHaveBeenCalled();
+    });
+  });
 
- it('updates character counts based on existing data', () => {
- render(
- <BlogForm
- blog={mockBlog}
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+  describe("Edit Mode", () => {
+    it("renders form with blog data in edit mode", () => {
+      render(
+        <BlogForm
+          blog={mockBlog}
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- expect(screen.getByText('9/150 characters')).toBeInTheDocument(); //"Test Blog" = 9 chars
- expect(screen.getByText('16/500 characters')).toBeInTheDocument(); //"Test Description" = 16 chars
- });
+      expect(screen.getByLabelText(/Blog Name/i)).toHaveValue("Test Blog");
+      expect(screen.getByLabelText(/Description/i)).toHaveValue(
+        "Test Description",
+      );
+      expect(screen.getByText("Update Blog")).toBeInTheDocument();
+    });
 
- it('submits updated form data', async () => {
- render(
- <BlogForm
- blog={mockBlog}
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={false}
- />
- );
+    it("updates character counts based on existing data", () => {
+      render(
+        <BlogForm
+          blog={mockBlog}
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- const nameInput = screen.getByLabelText(/Blog Name/i);
- fireEvent.change(nameInput, { target: { value:'Updated Blog' } });
- fireEvent.click(screen.getByText('Update Blog'));
+      expect(screen.getByText("9/150 characters")).toBeInTheDocument(); //"Test Blog" = 9 chars
+      expect(screen.getByText("16/500 characters")).toBeInTheDocument(); //"Test Description" = 16 chars
+    });
 
- await waitFor(() => {
- expect(mockOnSubmit).toHaveBeenCalledWith({
- name:'Updated Blog',
- description:'Test Description',
- });
- });
- });
- });
+    it("submits updated form data", async () => {
+      render(
+        <BlogForm
+          blog={mockBlog}
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={false}
+        />,
+      );
 
- describe('Submitting State', () => {
- it('disables form inputs when submitting', () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={true}
- />
- );
+      const nameInput = screen.getByLabelText(/Blog Name/i);
+      fireEvent.change(nameInput, { target: { value: "Updated Blog" } });
+      fireEvent.click(screen.getByText("Update Blog"));
 
- expect(screen.getByLabelText(/Blog Name/i)).toBeDisabled();
- expect(screen.getByLabelText(/Description/i)).toBeDisabled();
- expect(screen.getByText('Cancel')).toBeDisabled();
- });
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith({
+          name: "Updated Blog",
+          description: "Test Description",
+        });
+      });
+    });
+  });
 
- it('shows loading text when submitting in create mode', () => {
- render(
- <BlogForm
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={true}
- />
- );
+  describe("Submitting State", () => {
+    it("disables form inputs when submitting", () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={true}
+        />,
+      );
 
- expect(screen.getByText('Creating...')).toBeInTheDocument();
- });
+      expect(screen.getByLabelText(/Blog Name/i)).toBeDisabled();
+      expect(screen.getByLabelText(/Description/i)).toBeDisabled();
+      expect(screen.getByText("Cancel")).toBeDisabled();
+    });
 
- it('shows loading text when submitting in edit mode', () => {
- render(
- <BlogForm
- blog={mockBlog}
- onSubmit={mockOnSubmit}
- onCancel={mockOnCancel}
- isSubmitting={true}
- />
- );
+    it("shows loading text when submitting in create mode", () => {
+      render(
+        <BlogForm
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={true}
+        />,
+      );
 
- expect(screen.getByText('Updating...')).toBeInTheDocument();
- });
- });
+      expect(screen.getByText("Creating...")).toBeInTheDocument();
+    });
+
+    it("shows loading text when submitting in edit mode", () => {
+      render(
+        <BlogForm
+          blog={mockBlog}
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isSubmitting={true}
+        />,
+      );
+
+      expect(screen.getByText("Updating...")).toBeInTheDocument();
+    });
+  });
 });

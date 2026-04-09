@@ -1,6 +1,6 @@
-'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { apiClient } from '@/src/common/config/api';
+"use client";
+import { useState, useEffect, useCallback } from "react";
+import { apiClient } from "@/src/common/config/api";
 
 interface NotificationsFilter {
   type?: string;
@@ -18,7 +18,7 @@ export function useNotifications(filters: NotificationsFilter = {}) {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await apiClient.get('/notifications', { params: filters });
+      const res = await apiClient.get("/notifications", { params: filters });
       setData(res.data?.data ?? []);
       setTotal(res.data?.total ?? 0);
     } finally {
@@ -26,7 +26,9 @@ export function useNotifications(filters: NotificationsFilter = {}) {
     }
   }, [JSON.stringify(filters)]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   return { data, total, loading, refetch: load };
 }

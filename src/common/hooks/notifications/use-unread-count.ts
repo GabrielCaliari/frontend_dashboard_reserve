@@ -1,6 +1,6 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { apiClient } from '@/src/common/config/api';
+"use client";
+import { useState, useEffect } from "react";
+import { apiClient } from "@/src/common/config/api";
 
 export function useUnreadCount(tenantId: string | null) {
   const [count, setCount] = useState(0);
@@ -9,9 +9,12 @@ export function useUnreadCount(tenantId: string | null) {
     if (!tenantId) return;
     const load = async () => {
       try {
-        const res = await apiClient.get('/notifications/tenant/me/unread-count', {
-          headers: { 'x-tenant-id': tenantId },
-        });
+        const res = await apiClient.get(
+          "/notifications/tenant/me/unread-count",
+          {
+            headers: { "x-tenant-id": tenantId },
+          },
+        );
         setCount(res.data?.count ?? 0);
       } catch {}
     };

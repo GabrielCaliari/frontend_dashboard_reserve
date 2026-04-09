@@ -1,16 +1,16 @@
 // Unified payment movements — all Stripe activity in one place
 
-export type MovementType = 'subscription' | 'one_time';
+export type MovementType = "subscription" | "one_time";
 export type MovementStatus =
-  | 'completed'
-  | 'active'
-  | 'pending'
-  | 'abandoned'
-  | 'canceled'
-  | 'refunded'
-  | 'trialing'
-  | 'past_due'
-  | 'incomplete';
+  | "completed"
+  | "active"
+  | "pending"
+  | "abandoned"
+  | "canceled"
+  | "refunded"
+  | "trialing"
+  | "past_due"
+  | "incomplete";
 
 export interface PaymentMovement {
   id: string;
@@ -18,8 +18,8 @@ export interface PaymentMovement {
   customerEmail: string;
   customerName?: string;
   customerPhone?: string;
-  productName: string;       // nome do primeiro produto (retrocompatibilidade)
-  productId?: string;        // id do primeiro produto (retrocompatibilidade)
+  productName: string; // nome do primeiro produto (retrocompatibilidade)
+  productId?: string; // id do primeiro produto (retrocompatibilidade)
   products?: Array<{ id: string; name: string }>; // todos os produtos da compra
   amount: number; // em centavos
   currency: string;
@@ -47,8 +47,8 @@ export interface PaymentMovementsResponse {
 }
 
 export interface ListMovementsParams {
-  type?: MovementType | 'all';
-  status?: MovementStatus | 'all';
+  type?: MovementType | "all";
+  status?: MovementStatus | "all";
   limit?: number;
   offset?: number;
 }

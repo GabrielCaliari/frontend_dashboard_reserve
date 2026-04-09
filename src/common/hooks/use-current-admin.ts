@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { getCookie } from 'cookies-next';
-import { AdminRole } from '@/src/common/@types/@access-management';
+import { getCookie } from "cookies-next";
+import { AdminRole } from "@/src/common/@types/@access-management";
 
 export interface CurrentAdmin {
   id: string;
@@ -15,10 +15,10 @@ export interface CurrentAdmin {
  * Replaces the broken `currentAdminId = 1` hardcoded pattern.
  */
 export function useCurrentAdmin(): CurrentAdmin {
-  const id    = (getCookie('session-code')  as string) || '';
-  const name  = (getCookie('session-name')  as string) || '';
-  const email = (getCookie('session-email') as string) || '';
-  const role  = (getCookie('session-role')  as AdminRole) || AdminRole.viewer;
+  const id = (getCookie("session-code") as string) || "";
+  const name = (getCookie("session-name") as string) || "";
+  const email = (getCookie("session-email") as string) || "";
+  const role = (getCookie("session-role") as AdminRole) || AdminRole.viewer;
 
   return { id, name, email, role };
 }

@@ -1,16 +1,25 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateAuthor, fetchAuthorById, UpdateAuthorDto } from '@/src/common/services/cms-author-service';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
-import { AUTHOR_QUERY_KEYS } from './use-get-authors';
-import type { Author } from '@/src/common/@types/@cms-author';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  updateAuthor,
+  fetchAuthorById,
+  UpdateAuthorDto,
+} from "@/src/common/services/cms-author-service";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { AUTHOR_QUERY_KEYS } from "./use-get-authors";
+import type { Author } from "@/src/common/@types/@cms-author";
 
 export function useUpdateAuthor() {
   const queryClient = useQueryClient();
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: ({ authorId, data }: { authorId: string; data: UpdateAuthorDto }) =>
-      updateAuthor(authorId, data),
+    mutationFn: ({
+      authorId,
+      data,
+    }: {
+      authorId: string;
+      data: UpdateAuthorDto;
+    }) => updateAuthor(authorId, data),
     onSuccess: async (updatedAuthor) => {
       // If the mutation response didn't include the expanded avatar object,
       // fetch the individual author to get the full data with avatar URL.

@@ -3,7 +3,7 @@
 export interface ProductPrice {
   id: string;
   stripePriceId: string;
-  interval: 'month' | 'year' | 'week' | 'day';
+  interval: "month" | "year" | "week" | "day";
   intervalCount: number;
   unitAmount: number;
   currency: string;
@@ -54,7 +54,14 @@ export interface UserSubscription {
   productId: string;
   stripeSubscriptionId: string;
   stripePriceId: string;
-  status: 'active' | 'trialing' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'past_due' | 'unpaid';
+  status:
+    | "active"
+    | "trialing"
+    | "canceled"
+    | "incomplete"
+    | "incomplete_expired"
+    | "past_due"
+    | "unpaid";
   currentPeriodStart: string;
   currentPeriodEnd: string;
   cancelAtPeriodEnd: boolean;

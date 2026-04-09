@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import { listCollectionsService } from '@/src/common/services/leads/list-collections-service';
-import type { CollectionListResponse } from '@/src/common/@types/@lead';
+import { listCollectionsService } from "@/src/common/services/leads/list-collections-service";
+import type { CollectionListResponse } from "@/src/common/@types/@lead";
 
 interface ListCollectionsParams {
   page?: number;
@@ -10,12 +10,14 @@ interface ListCollectionsParams {
 }
 
 export async function listCollectionsAction(
-  params: ListCollectionsParams = {}
+  params: ListCollectionsParams = {},
 ): Promise<CollectionListResponse> {
   try {
     return await listCollectionsService(params);
   } catch (error: any) {
-    console.error('Error listing collections:', error);
-    throw new Error(error?.response?.data?.message || 'Failed to list collections');
+    console.error("Error listing collections:", error);
+    throw new Error(
+      error?.response?.data?.message || "Failed to list collections",
+    );
   }
 }

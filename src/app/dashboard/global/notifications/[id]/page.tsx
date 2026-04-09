@@ -1,11 +1,15 @@
-'use client';
-import { use, useEffect, useState } from 'react';
-import { Spinner } from '@heroui/react';
-import { NotificationForm } from '@/src/components/notifications/notification-form';
-import { apiClient } from '@/src/common/config/api';
-import { CmsPageLayout } from '@/src/components/cms/shared/cms-page-layout';
+"use client";
+import { use, useEffect, useState } from "react";
+import { Spinner } from "@heroui/react";
+import { NotificationForm } from "@/src/components/notifications/notification-form";
+import { apiClient } from "@/src/common/config/api";
+import { CmsPageLayout } from "@/src/components/cms/shared/cms-page-layout";
 
-export default function EditNotificationPage({ params }: { params: Promise<{ id: string }> }) {
+export default function EditNotificationPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const [notification, setNotification] = useState<any>(null);
 

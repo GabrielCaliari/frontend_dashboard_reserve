@@ -6,7 +6,7 @@
 // ─── Plans (Stripe Products) ──────────────────────────────────────────────────
 
 export type PlanBillingInterval = 1 | 2 | 3 | 4; // 1=weekly 2=monthly 3=quarterly 4=annual
-export type PlanCurrency = 'brl' | 'usd';
+export type PlanCurrency = "brl" | "usd";
 
 export interface StripePlan {
   id: string;
@@ -53,17 +53,17 @@ export interface ArchivePlanResponse {
   archived: boolean;
 }
 
-export type BillingInterval = 'monthly' | 'quarterly' | 'semiannual' | 'annual';
-export type BillingCollectionMode = 'upfront' | 'installments';
+export type BillingInterval = "monthly" | "quarterly" | "semiannual" | "annual";
+export type BillingCollectionMode = "upfront" | "installments";
 export type SubscriptionStatus =
-  | 'active'
-  | 'trialing'
-  | 'past_due'
-  | 'canceled'
-  | 'incomplete'
-  | 'incomplete_expired'
-  | 'unpaid'
-  | 'paused';
+  | "active"
+  | "trialing"
+  | "past_due"
+  | "canceled"
+  | "incomplete"
+  | "incomplete_expired"
+  | "unpaid"
+  | "paused";
 
 export interface StripePriceIds {
   monthly?: string;
@@ -116,7 +116,8 @@ export interface CreateBillingConfigDto {
   metadata?: BillingConfigMetadata;
 }
 
-export interface UpdateBillingConfigDto extends Partial<CreateBillingConfigDto> {
+export interface UpdateBillingConfigDto
+  extends Partial<CreateBillingConfigDto> {
   active?: boolean;
 }
 

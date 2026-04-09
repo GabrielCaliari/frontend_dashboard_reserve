@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -21,9 +21,9 @@ import {
   FolderOpen,
   CalendarDays,
   Clock,
-} from 'lucide-react';
-import type { Blog } from '@/src/common/@types/@cms-blog';
-import BlogSecretKeyDisplay from './blog-secret-key-display';
+} from "lucide-react";
+import type { Blog } from "@/src/common/@types/@cms-blog";
+import BlogSecretKeyDisplay from "./blog-secret-key-display";
 
 interface BlogCardProps {
   blog: Blog;
@@ -34,9 +34,9 @@ interface BlogCardProps {
 }
 
 function formatDate(value?: string | null): string {
-  if (!value) return '—';
+  if (!value) return "—";
   const d = new Date(value);
-  if (isNaN(d.getTime())) return '—';
+  if (isNaN(d.getTime())) return "—";
   return d.toLocaleDateString();
 }
 
@@ -54,16 +54,20 @@ export default function BlogCard({
         <div className="min-w-0 flex-1 space-y-2.5">
           {/* Chips */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <Chip size="sm" variant="flat" color={blog.active ? "success" : "default"}>
-              {blog.active ? 'Active' : 'Inactive'}
+            <Chip
+              size="sm"
+              variant="flat"
+              color={blog.active ? "success" : "default"}
+            >
+              {blog.active ? "Active" : "Inactive"}
             </Chip>
             <Chip
               size="sm"
               variant="flat"
-              color={blog.mediaCollectionId ? 'primary' : 'default'}
+              color={blog.mediaCollectionId ? "primary" : "default"}
               startContent={<FolderOpen size={12} />}
             >
-              {blog.mediaCollectionId ? 'Collection linked' : 'No collection'}
+              {blog.mediaCollectionId ? "Collection linked" : "No collection"}
             </Chip>
           </div>
 
@@ -98,10 +102,18 @@ export default function BlogCard({
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Blog actions">
-            <DropdownItem key="edit" startContent={<Edit size={16} />} onPress={onEdit}>
+            <DropdownItem
+              key="edit"
+              startContent={<Edit size={16} />}
+              onPress={onEdit}
+            >
               Edit Collection
             </DropdownItem>
-            <DropdownItem key="articles" startContent={<FileText size={16} />} onPress={onViewArticles}>
+            <DropdownItem
+              key="articles"
+              startContent={<FileText size={16} />}
+              onPress={onViewArticles}
+            >
               View Articles
             </DropdownItem>
             <DropdownItem

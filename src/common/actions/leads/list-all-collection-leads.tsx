@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import { listAllCollectionLeadsService } from '@/src/common/services/leads/list-all-collection-leads-service';
-import type { LeadListResponse } from '@/src/common/@types/@lead';
+import { listAllCollectionLeadsService } from "@/src/common/services/leads/list-all-collection-leads-service";
+import type { LeadListResponse } from "@/src/common/@types/@lead";
 
 interface ListAllCollectionLeadsParams {
   page?: number;
@@ -9,12 +9,14 @@ interface ListAllCollectionLeadsParams {
 }
 
 export async function listAllCollectionLeadsAction(
-  params: ListAllCollectionLeadsParams = {}
+  params: ListAllCollectionLeadsParams = {},
 ): Promise<LeadListResponse> {
   try {
     return await listAllCollectionLeadsService(params);
   } catch (error: any) {
-    console.error('Error listing all collection leads:', error);
-    throw new Error(error?.response?.data?.message || 'Failed to list collection leads');
+    console.error("Error listing all collection leads:", error);
+    throw new Error(
+      error?.response?.data?.message || "Failed to list collection leads",
+    );
   }
 }

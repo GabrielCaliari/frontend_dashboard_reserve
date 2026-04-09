@@ -1,12 +1,16 @@
-'use server';
+"use server";
 
-import { getCollectionService } from '@/src/common/services/leads/get-collection-service';
-import type { CollectionDetailResponse } from '@/src/common/@types/@lead';
+import { getCollectionService } from "@/src/common/services/leads/get-collection-service";
+import type { CollectionDetailResponse } from "@/src/common/@types/@lead";
 
-export async function getCollectionAction(id: string): Promise<CollectionDetailResponse> {
+export async function getCollectionAction(
+  id: string,
+): Promise<CollectionDetailResponse> {
   try {
     return await getCollectionService(id);
   } catch (error: any) {
-    throw new Error(error?.response?.data?.message || 'Failed to get collection');
+    throw new Error(
+      error?.response?.data?.message || "Failed to get collection",
+    );
   }
 }

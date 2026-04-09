@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import { getBillingConfigService } from '@/src/common/services/payments/billing-config-service';
-import type { TenantBillingConfig } from '@/src/common/@types/@payments';
+import { getBillingConfigService } from "@/src/common/services/payments/billing-config-service";
+import type { TenantBillingConfig } from "@/src/common/@types/@payments";
 
 export async function getBillingConfigAction(): Promise<TenantBillingConfig | null> {
   try {
@@ -10,7 +10,7 @@ export async function getBillingConfigAction(): Promise<TenantBillingConfig | nu
     if (error?.response?.status === 404) {
       return null;
     }
-    console.error('Error fetching billing config:', error);
+    console.error("Error fetching billing config:", error);
     return null;
   }
 }

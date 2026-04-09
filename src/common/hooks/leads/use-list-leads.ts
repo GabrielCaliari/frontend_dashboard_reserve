@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { listLeadsAction } from '@/src/common/actions/leads/list-leads';
-import type { LeadListResponse } from '@/src/common/@types/@lead';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
+import { useQuery } from "@tanstack/react-query";
+import { listLeadsAction } from "@/src/common/actions/leads/list-leads";
+import type { LeadListResponse } from "@/src/common/@types/@lead";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
 
 interface UseListLeadsParams {
   page?: number;
@@ -16,7 +16,7 @@ export function useListLeads(params: UseListLeadsParams = {}) {
   const tenantId = useSelectedTenantId();
 
   return useQuery<LeadListResponse>({
-    queryKey: ['leads', 'list', tenantId, page, limit, status, origin],
+    queryKey: ["leads", "list", tenantId, page, limit, status, origin],
     queryFn: () => listLeadsAction({ page, limit, status, origin }),
     enabled: enabled && !!tenantId,
     staleTime: 30000,

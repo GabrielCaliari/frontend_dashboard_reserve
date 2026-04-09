@@ -1,38 +1,47 @@
 "use client";
 
-import { AlertCircle } from"lucide-react";
-import { useTranslations } from"next-intl";
+import { AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
- Card,
- CardHeader,
- CardTitle,
- CardDescription,
- CardContent,
-} from"@/src/components/ui/card";
-import { StatKpiCard } from"./stat-kpi-card";
-import { MetadataTable } from"./metadata-table";
-import type { MetricGroupResponse } from"@/src/common/@types/@stats";
-import { formatStatValue } from"./format-stat-value";
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/src/components/ui/card";
+import { StatKpiCard } from "./stat-kpi-card";
+import { MetadataTable } from "./metadata-table";
+import type { MetricGroupResponse } from "@/src/common/@types/@stats";
+import { formatStatValue } from "./format-stat-value";
 
 interface StatGroupCardProps {
- group: MetricGroupResponse;
+  group: MetricGroupResponse;
 }
 
 export function StatGroupCard({ group }: StatGroupCardProps) {
- const t = useTranslations("stats");
- const isTopBlogsMetric = (metricKey: string) => metricKey.startsWith("cms.blog.");
- const isTopCollectionsMetric = (metricKey: string) => metricKey.startsWith("leads.collection.");
+  const t = useTranslations("stats");
+  const isTopBlogsMetric = (metricKey: string) =>
+    metricKey.startsWith("cms.blog.");
+  const isTopCollectionsMetric = (metricKey: string) =>
+    metricKey.startsWith("leads.collection.");
 
- const topBlogsMetrics = group.metrics.filter((metric) => isTopBlogsMetric(metric.key));
- const topCollectionsMetrics = group.metrics.filter((metric) => isTopCollectionsMetric(metric.key));
- const metricsWithMetadata = group.metrics.filter((m) => m.metadata);
- const metricsWithoutMetadata = group.metrics.filter(
- (metric) =>
- !metric.metadata && !isTopBlogsMetric(metric.key) && !isTopCollectionsMetric(metric.key),
- );
- const metadataMetrics = metricsWithMetadata.filter(
- (metric) => !isTopBlogsMetric(metric.key) && !isTopCollectionsMetric(metric.key),
- );
+  const topBlogsMetrics = group.metrics.filter((metric) =>
+    isTopBlogsMetric(metric.key),
+  );
+  const topCollectionsMetrics = group.metrics.filter((metric) =>
+    isTopCollectionsMetric(metric.key),
+  );
+  const metricsWithMetadata = group.metrics.filter((m) => m.metadata);
+  const metricsWithoutMetadata = group.metrics.filter(
+    (metric) =>
+      !metric.metadata &&
+      !isTopBlogsMetric(metric.key) &&
+      !isTopCollectionsMetric(metric.key),
+  );
+  const metadataMetrics = metricsWithMetadata.filter(
+    (metric) =>
+      !isTopBlogsMetric(metric.key) && !isTopCollectionsMetric(metric.key),
+  );
 
   return (
     <Card className="bg-default-50 border-border shadow-none h-full">
@@ -72,7 +81,9 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
             {topBlogsMetrics.length > 0 && (
               <Card className="bg-background border-border shadow-none hover:border-primary/30 transition-colors">
                 <CardContent className="p-5">
-                  <p className="mb-4 text-sm font-semibold tracking-wide uppercase text-muted-foreground">{t("topBlogs")}</p>
+                  <p className="mb-4 text-sm font-semibold tracking-wide uppercase text-muted-foreground">
+                    {t("topBlogs")}
+                  </p>
                   <div className="space-y-3">
                     {topBlogsMetrics.map((metric) => (
                       <div
@@ -100,7 +111,9 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
             {topCollectionsMetrics.length > 0 && (
               <Card className="bg-background border-border shadow-none hover:border-primary/30 transition-colors">
                 <CardContent className="p-5">
-                  <p className="mb-4 text-sm font-semibold tracking-wide uppercase text-muted-foreground">{t("topLeadCollections")}</p>
+                  <p className="mb-4 text-sm font-semibold tracking-wide uppercase text-muted-foreground">
+                    {t("topLeadCollections")}
+                  </p>
                   <div className="space-y-3">
                     {topCollectionsMetrics.map((metric) => (
                       <div
@@ -109,10 +122,14 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
                       >
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-medium text-foreground sm:whitespace-normal">
-                            {String(metric.metadata?.collection_name ?? metric.label)}
+                            {String(
+                              metric.metadata?.collection_name ?? metric.label,
+                            )}
                           </p>
                           <p className="truncate text-xs text-muted-foreground sm:whitespace-normal sm:break-all">
-                            {String(metric.metadata?.collection_id ?? metric.key)}
+                            {String(
+                              metric.metadata?.collection_id ?? metric.key,
+                            )}
                           </p>
                         </div>
                         <span className="text-sm font-bold text-foreground sm:text-right bg-background px-3 py-1 rounded-lg border border-border">
@@ -139,22 +156,22 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
                     <p className="text-sm font-semibold text-foreground break-words">
                       {metric.label}
                     </p>
- <span className="text-lg font-bold text-foreground break-words sm:text-right">
- {formatStatValue(metric.value, metric.unit)}
- </span>
- </div>
- {metric.metadata && (
- <MetadataTable
- metadata={metric.metadata}
- metricKey={metric.key}
- />
- )}
- </CardContent>
- </Card>
- ))}
- </div>
- )}
- </CardContent>
- </Card>
- );
+                    <span className="text-lg font-bold text-foreground break-words sm:text-right">
+                      {formatStatValue(metric.value, metric.unit)}
+                    </span>
+                  </div>
+                  {metric.metadata && (
+                    <MetadataTable
+                      metadata={metric.metadata}
+                      metricKey={metric.key}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
 }

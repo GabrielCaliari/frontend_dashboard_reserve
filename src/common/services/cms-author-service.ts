@@ -1,12 +1,15 @@
-import { cmsApiClient } from '@/src/common/config/api';
+import { cmsApiClient } from "@/src/common/config/api";
 import type {
   Author,
   AuthorApiResponse,
   CreateAuthorDto,
   UpdateAuthorDto,
   AssignAvatarDto,
-} from '@/src/common/@types/@cms-author';
-import { withRetry, transformCMSError } from '@/src/common/utils/cms-error-handler';
+} from "@/src/common/@types/@cms-author";
+import {
+  withRetry,
+  transformCMSError,
+} from "@/src/common/utils/cms-error-handler";
 
 export type { CreateAuthorDto, UpdateAuthorDto, AssignAvatarDto };
 
@@ -15,16 +18,13 @@ export type { CreateAuthorDto, UpdateAuthorDto, AssignAvatarDto };
  * The backend has returned both snake_case and camelCase fields across endpoints.
  */
 function normalizeAuthor(raw: AuthorApiResponse | Record<string, any>): Author {
-  const firstName = raw.first_name ?? raw.firstName ?? '';
-  const lastName = raw.last_name ?? raw.lastName ?? '';
+  const firstName = raw.first_name ?? raw.firstName ?? "";
+  const lastName = raw.last_name ?? raw.lastName ?? "";
   const avatar = raw.avatar ?? undefined;
   const avatarId = raw.avatar_id ?? raw.avatarId ?? avatar?.id ?? undefined;
   const avatarUrl = raw.avatar_url ?? raw.avatarUrl ?? avatar?.url ?? undefined;
   const fullName =
-    raw.full_name ??
-    raw.fullName ??
-    `${firstName} ${lastName}`.trim() ??
-    '';
+    raw.full_name ?? raw.fullName ?? `${firstName} ${lastName}`.trim() ?? "";
 
   return {
     id: raw.id,
@@ -52,12 +52,12 @@ export const fetchAuthors = async (
 ): Promise<Author[]> => {
   try {
     return await withRetry(async () => {
-      const params: Record<string, any> = { page, limit, expand: 'avatar' };
+      const params: Record<string, any> = { page, limit, expand: "avatar" };
       if (active !== undefined) {
         params.active = active;
       }
 
-      const response = await cmsApiClient.get('cms/authors', { params });
+      const response = await cmsApiClient.get("cms/authors", { params });
 
       // { data: AuthorApiResponse[], pagination: {...} }
       if (response.data && Array.isArray(response.data.data)) {
@@ -106,7 +106,7 @@ export const createAuthor = async (data: CreateAuthorDto): Promise<Author> => {
   try {
     const payload: Record<string, any> = { ...data };
     if (!payload.avatarId) delete payload.avatarId;
-    const response = await cmsApiClient.post('cms/authors', payload);
+    const response = await cmsApiClient.post("cms/authors", payload);
     return normalizeAuthor(response.data);
   } catch (error) {
     throw transformCMSError(error);

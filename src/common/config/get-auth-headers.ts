@@ -1,11 +1,11 @@
-import type { InternalAxiosRequestConfig } from 'axios';
+import type { InternalAxiosRequestConfig } from "axios";
 
 type TenantStorageSnapshot = {
   state?: {
     selectedTenant?: {
       id?: string | number;
     } | null;
-    dashboardScope?: 'tenant' | 'global';
+    dashboardScope?: "tenant" | "global";
   };
 };
 
@@ -23,7 +23,7 @@ function parseTenantCookie(cookieValue: string): TenantStorageSnapshot | null {
 
 function extractTenantId(cookieValue: string): string | null {
   const parsed = parseTenantCookie(cookieValue);
-  if (!parsed || parsed.state?.dashboardScope === 'global') {
+  if (!parsed || parsed.state?.dashboardScope === "global") {
     return null;
   }
 
@@ -43,48 +43,48 @@ export async function injectAuthHeaders(
     skipTenantHeader?: boolean;
   };
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     // === CLIENT-SIDE ===
     const getCookie = (name: string) =>
       document.cookie
-        .split('; ')
+        .split("; ")
         .find((row) => row.startsWith(`${name}=`))
-        ?.split('=')
+        ?.split("=")
         .slice(1)
-        .join('=') ?? null;
+        .join("=") ?? null;
 
-    const token = getCookie('token');
-    const sessionId = getCookie('session-code');
-    const tenantCookie = getCookie('tenant-storage');
+    const token = getCookie("token");
+    const sessionId = getCookie("session-code");
+    const tenantCookie = getCookie("tenant-storage");
 
     if (token) config.headers.Authorization = `Bearer ${token}`;
-    if (sessionId) config.headers['session-id'] = sessionId;
+    if (sessionId) config.headers["session-id"] = sessionId;
 
     if (!requestConfig.skipTenantHeader && tenantCookie) {
       const tenantId = extractTenantId(tenantCookie);
       // Only send if it looks like a valid alphanumeric ID (supports CUIDv1 and CUIDv2)
       if (tenantId && /^[a-z0-9]{2,32}$/.test(tenantId)) {
-        config.headers['x-tenant-id'] = tenantId;
+        config.headers["x-tenant-id"] = tenantId;
       }
     }
   } else {
     // === SERVER-SIDE (Server Actions / Route Handlers) ===
     try {
-      const { cookies } = await import('next/headers');
+      const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
 
-      const token = cookieStore.get('token')?.value;
-      const sessionId = cookieStore.get('session-code')?.value;
-      const tenantCookie = cookieStore.get('tenant-storage')?.value;
+      const token = cookieStore.get("token")?.value;
+      const sessionId = cookieStore.get("session-code")?.value;
+      const tenantCookie = cookieStore.get("tenant-storage")?.value;
 
       if (token) config.headers.Authorization = `Bearer ${token}`;
-      if (sessionId) config.headers['session-id'] = sessionId;
+      if (sessionId) config.headers["session-id"] = sessionId;
 
       if (!requestConfig.skipTenantHeader && tenantCookie) {
         const tenantId = extractTenantId(tenantCookie);
         // Only send if it looks like a valid alphanumeric ID (supports CUIDv1 and CUIDv2)
         if (tenantId && /^[a-z0-9]{2,32}$/.test(tenantId)) {
-          config.headers['x-tenant-id'] = tenantId;
+          config.headers["x-tenant-id"] = tenantId;
         }
       }
     } catch {

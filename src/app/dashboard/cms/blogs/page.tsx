@@ -32,8 +32,12 @@ export default function BlogsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSecretKeyOpen, setIsSecretKeyOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<Blog | undefined>(undefined);
-  const [secretKeyTargetBlog, setSecretKeyTargetBlog] = useState<Blog | null>(null);
-  const [generatedSecretKey, setGeneratedSecretKey] = useState<string | null>(null);
+  const [secretKeyTargetBlog, setSecretKeyTargetBlog] = useState<Blog | null>(
+    null,
+  );
+  const [generatedSecretKey, setGeneratedSecretKey] = useState<string | null>(
+    null,
+  );
   const [deleteTarget, setDeleteTarget] = useState<Blog | null>(null);
 
   const hasSelectedTenant = useHasSelectedTenant();
@@ -101,7 +105,9 @@ export default function BlogsPage() {
     }
 
     try {
-      const updatedBlog = await regenerateKeyMutation.mutateAsync(secretKeyTargetBlog.id);
+      const updatedBlog = await regenerateKeyMutation.mutateAsync(
+        secretKeyTargetBlog.id,
+      );
       setGeneratedSecretKey(updatedBlog.secret_key);
       setSecretKeyTargetBlog(updatedBlog);
     } catch (error) {
@@ -117,7 +123,9 @@ export default function BlogsPage() {
           data: data as UpdateBlogDto,
         });
       } else {
-        const createdBlog = await createBlogMutation.mutateAsync(data as CreateBlogDto);
+        const createdBlog = await createBlogMutation.mutateAsync(
+          data as CreateBlogDto,
+        );
         setSecretKeyTargetBlog(createdBlog);
         setGeneratedSecretKey(createdBlog.secret_key);
         setIsSecretKeyOpen(true);
@@ -143,7 +151,8 @@ export default function BlogsPage() {
                 No Tenant Selected
               </h3>
               <p className="text-muted-foreground">
-                Please select a tenant from the sidebar to manage blog collections.
+                Please select a tenant from the sidebar to manage blog
+                collections.
               </p>
             </CardBody>
           </Card>
@@ -182,8 +191,7 @@ export default function BlogsPage() {
               onSubmit={handleSubmit}
               onCancel={() => handleFormOpenChange(false)}
               isSubmitting={
-                createBlogMutation.isPending ||
-                updateBlogMutation.isPending
+                createBlogMutation.isPending || updateBlogMutation.isPending
               }
             />
           </div>
@@ -206,7 +214,9 @@ export default function BlogsPage() {
         onOpenChange={handleSecretKeyOpenChange}
         secretKey={generatedSecretKey}
         blogTitle={secretKeyTargetBlog?.name ?? "Selected Collection"}
-        onConfirmRegenerate={generatedSecretKey ? undefined : handleConfirmRegenerateKey}
+        onConfirmRegenerate={
+          generatedSecretKey ? undefined : handleConfirmRegenerateKey
+        }
         isPending={regenerateKeyMutation.isPending}
       />
     </CmsPageLayout>

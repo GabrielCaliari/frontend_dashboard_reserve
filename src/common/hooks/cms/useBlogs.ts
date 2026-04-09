@@ -1,22 +1,25 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchBlogs, fetchBlogById } from '@/src/common/services/cms-blog-service';
-import type { Blog } from '@/src/common/@types/@cms-blog';
-import { useSelectedTenantId } from '@/src/common/stores/tenant-store';
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchBlogs,
+  fetchBlogById,
+} from "@/src/common/services/cms-blog-service";
+import type { Blog } from "@/src/common/@types/@cms-blog";
+import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
 
 /**
  * Query keys for blog-related queries
  * Used for cache management and invalidation
  */
 export const BLOG_QUERY_KEYS = {
-  all: ['cms', 'blogs'] as const,
-  detail: (id: string | number) => ['cms', 'blogs', id] as const,
+  all: ["cms", "blogs"] as const,
+  detail: (id: string | number) => ["cms", "blogs", id] as const,
 };
 
 /**
  * Hook to fetch all blogs for the authenticated tenant
- * 
+ *
  * @returns Query result with blogs data, loading state, and error
- * 
+ *
  * @example
  * ```tsx
  * const { data: blogs, isLoading, error } = useBlogs();
@@ -34,10 +37,10 @@ export const useBlogs = () => {
 
 /**
  * Hook to fetch a single blog by ID
- * 
+ *
  * @param blogId - The ID of the blog to fetch
  * @returns Query result with blog data, loading state, and error
- * 
+ *
  * @example
  * ```tsx
  * const { data: blog, isLoading, error } = useBlog(blogId);

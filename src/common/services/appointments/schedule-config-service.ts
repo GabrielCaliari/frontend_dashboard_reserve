@@ -1,5 +1,8 @@
 import { apiClient } from "@/src/common/config/api";
-import type { ScheduleConfig, LegacyScheduleConfig } from "@/src/common/@types/@appointment";
+import type {
+  ScheduleConfig,
+  LegacyScheduleConfig,
+} from "@/src/common/@types/@appointment";
 
 export interface GetScheduleConfigResponse {
   data: ScheduleConfig | LegacyScheduleConfig;
@@ -12,16 +15,20 @@ export interface SaveScheduleConfigResponse {
 }
 
 export async function getScheduleConfigService(): Promise<GetScheduleConfigResponse> {
-  const response = await apiClient.get("/leads/admin/appointments/schedule-config");
+  const response = await apiClient.get(
+    "/leads/admin/appointments/schedule-config",
+  );
   return response.data;
 }
 
 export async function saveScheduleConfigService(
-  config: ScheduleConfig
+  config: ScheduleConfig,
 ): Promise<SaveScheduleConfigResponse> {
   // Convert new format to legacy format for API compatibility
-  const enabledDays = Object.entries(config.days).filter(([_, day]) => day.enabled);
-  
+  const enabledDays = Object.entries(config.days).filter(
+    ([_, day]) => day.enabled,
+  );
+
   if (enabledDays.length === 0) {
     throw new Error("At least one working day must be enabled");
   }
@@ -54,6 +61,9 @@ export async function saveScheduleConfigService(
     legacyConfig.lunchEndTime = representativeSchedule.lunchEndTime;
   }
 
-  const response = await apiClient.put("/leads/admin/appointments/schedule-config", legacyConfig);
+  const response = await apiClient.put(
+    "/leads/admin/appointments/schedule-config",
+    legacyConfig,
+  );
   return response.data;
 }

@@ -2,10 +2,7 @@
 
 import { CmsPageLayout } from "@/src/components/cms/shared/cms-page-layout";
 import { useState } from "react";
-import {
-  Card,
-  CardBody,
-} from "@heroui/react";
+import { Card, CardBody } from "@heroui/react";
 import { AlertCircle } from "lucide-react";
 import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import { AuthorList } from "@/src/components/cms/authors/author-list";

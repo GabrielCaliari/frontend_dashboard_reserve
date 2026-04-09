@@ -1,11 +1,11 @@
-export { useStatsDashboard } from './use-stats-dashboard';
+export { useStatsDashboard } from "./use-stats-dashboard";
 export {
   useStatsGlobalDashboard,
   useStatsModule,
   useStatsTenantDashboard,
   useStatsTimeseries,
   useStatsTimeseriesModules,
-} from './use-stats-dashboard';
+} from "./use-stats-dashboard";
 export {
   useStatsIntegrations,
   useStatsProviders,
@@ -13,4 +13,4 @@ export {
   useCreateStatsIntegration,
   useUpdateStatsIntegration,
   useDeleteStatsIntegration,
-} from './use-stats-integrations';
+} from "./use-stats-integrations";

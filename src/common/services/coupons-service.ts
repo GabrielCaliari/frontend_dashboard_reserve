@@ -1,4 +1,4 @@
-import { apiClient, cmsApiClient } from '@/src/common/config/api';
+import { apiClient, cmsApiClient } from "@/src/common/config/api";
 import type {
   DiscountCoupon,
   CouponListResponse,
@@ -7,15 +7,21 @@ import type {
   ValidateCouponPayload,
   CouponValidationResult,
   CouponLinkResponse,
-} from '@/src/common/@types/@coupons';
+} from "@/src/common/@types/@coupons";
 
 export const couponsService = {
   /**
    * Lista cupons paginados.
    * Usa cmsApiClient para não disparar redirect global em 401.
    */
-  async list(params?: { page?: number; limit?: number }): Promise<CouponListResponse> {
-    const response = await cmsApiClient.get<CouponListResponse>('/admin/coupons', { params });
+  async list(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<CouponListResponse> {
+    const response = await cmsApiClient.get<CouponListResponse>(
+      "/admin/coupons",
+      { params },
+    );
     return response.data;
   },
 
@@ -23,7 +29,9 @@ export const couponsService = {
    * Obtém um cupom por ID.
    */
   async getById(id: string): Promise<DiscountCoupon> {
-    const response = await cmsApiClient.get<DiscountCoupon>(`/admin/coupons/${id}`);
+    const response = await cmsApiClient.get<DiscountCoupon>(
+      `/admin/coupons/${id}`,
+    );
     return response.data;
   },
 
@@ -31,7 +39,10 @@ export const couponsService = {
    * Cria um novo cupom.
    */
   async create(data: CreateCouponPayload): Promise<DiscountCoupon> {
-    const response = await apiClient.post<DiscountCoupon>('/admin/coupons', data);
+    const response = await apiClient.post<DiscountCoupon>(
+      "/admin/coupons",
+      data,
+    );
     return response.data;
   },
 
@@ -40,7 +51,10 @@ export const couponsService = {
    * Nota: code, discountType e scope NÃO podem ser alterados.
    */
   async update(id: string, data: UpdateCouponPayload): Promise<DiscountCoupon> {
-    const response = await apiClient.put<DiscountCoupon>(`/admin/coupons/${id}`, data);
+    const response = await apiClient.put<DiscountCoupon>(
+      `/admin/coupons/${id}`,
+      data,
+    );
     return response.data;
   },
 
@@ -48,7 +62,9 @@ export const couponsService = {
    * Desativa um cupom (soft-delete).
    */
   async deactivate(id: string): Promise<{ message: string }> {
-    const response = await apiClient.delete<{ message: string }>(`/admin/coupons/${id}`);
+    const response = await apiClient.delete<{ message: string }>(
+      `/admin/coupons/${id}`,
+    );
     return response.data;
   },
 
@@ -58,8 +74,8 @@ export const couponsService = {
    */
   async validate(data: ValidateCouponPayload): Promise<CouponValidationResult> {
     const response = await cmsApiClient.post<CouponValidationResult>(
-      '/public/coupons/validate',
-      data
+      "/public/coupons/validate",
+      data,
     );
     return response.data;
   },
@@ -71,7 +87,7 @@ export const couponsService = {
   async getLink(id: string, baseUrl?: string): Promise<CouponLinkResponse> {
     const response = await cmsApiClient.get<CouponLinkResponse>(
       `/admin/coupons/${id}/link`,
-      { params: baseUrl ? { baseUrl } : undefined }
+      { params: baseUrl ? { baseUrl } : undefined },
     );
     return response.data;
   },

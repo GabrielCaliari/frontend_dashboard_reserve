@@ -10,7 +10,10 @@ export default function SettingsPage() {
     <LayoutScopeRoot routeActive="settings">
       <div className="p-6 max-w-3xl">
         <Breadcrumbs
-          items={[{ label: "Dashboard", href: "/dashboard" }, { label: "Settings" }]}
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Settings" },
+          ]}
         />
 
         <div className="flex items-center gap-4 mb-8">
@@ -19,7 +22,9 @@ export default function SettingsPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-            <p className="text-muted-foreground text-sm">Manage your account and workspace settings</p>
+            <p className="text-muted-foreground text-sm">
+              Manage your account and workspace settings
+            </p>
           </div>
         </div>
 
@@ -28,7 +33,9 @@ export default function SettingsPage() {
             <h2 className="text-lg font-semibold">General</h2>
           </CardHeader>
           <CardBody>
-            <p className="text-muted-foreground text-sm">Settings will be available here.</p>
+            <p className="text-muted-foreground text-sm">
+              Settings will be available here.
+            </p>
           </CardBody>
         </Card>
       </div>

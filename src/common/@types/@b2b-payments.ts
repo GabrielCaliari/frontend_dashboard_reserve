@@ -19,7 +19,7 @@ export interface B2BProduct {
   updatedAt: string;
 }
 
-export type PurchaseStatus = 'pending' | 'completed' | 'abandoned' | 'refunded';
+export type PurchaseStatus = "pending" | "completed" | "abandoned" | "refunded";
 
 export interface B2BPurchase {
   id: string;

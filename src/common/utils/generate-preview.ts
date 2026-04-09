@@ -6,20 +6,20 @@ export interface PreviewOptions {
   width?: number;
   height?: number;
   quality?: number;
-  fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside';
+  fit?: "cover" | "contain" | "fill" | "inside" | "outside";
 }
 
 /**
  * Generates a preview URL for an image asset
  * For Vercel Blob Storage, returns the original URL (optimization handled by Vercel)
- * 
+ *
  * @param url - Original asset URL
  * @param options - Preview options (width, height, quality, fit)
  * @returns Preview URL
  */
 export function generateImagePreview(
   url: string,
-  options: PreviewOptions = {}
+  options: PreviewOptions = {},
 ): string {
   // Vercel Blob Storage handles image optimization automatically
   // We return the original URL as Vercel will serve optimized versions
@@ -29,7 +29,7 @@ export function generateImagePreview(
 
 /**
  * Generates a thumbnail URL for an image asset
- * 
+ *
  * @param url - Original asset URL
  * @param size - Thumbnail size (default: 200px)
  * @returns Thumbnail URL
@@ -38,20 +38,20 @@ export function generateThumbnail(url: string, size: number = 200): string {
   return generateImagePreview(url, {
     width: size,
     height: size,
-    fit: 'cover',
+    fit: "cover",
   });
 }
 
 /**
  * Creates a data URL preview from a File object (for client-side preview before upload)
- * 
+ *
  * @param file - File object
  * @returns Promise resolving to data URL
  */
 export function createFilePreview(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) {
-      reject(new Error('File is not an image'));
+    if (!file.type.startsWith("image/")) {
+      reject(new Error("File is not an image"));
       return;
     }
 
@@ -59,15 +59,15 @@ export function createFilePreview(file: File): Promise<string> {
 
     reader.onload = (e) => {
       const result = e.target?.result;
-      if (typeof result === 'string') {
+      if (typeof result === "string") {
         resolve(result);
       } else {
-        reject(new Error('Failed to read file'));
+        reject(new Error("Failed to read file"));
       }
     };
 
     reader.onerror = () => {
-      reject(new Error('Failed to read file'));
+      reject(new Error("Failed to read file"));
     };
 
     reader.readAsDataURL(file);
@@ -76,16 +76,16 @@ export function createFilePreview(file: File): Promise<string> {
 
 /**
  * Creates multiple file previews from an array of files
- * 
+ *
  * @param files - Array of File objects
  * @returns Promise resolving to array of data URLs
  */
 export async function createFilePreviews(
-  files: File[]
+  files: File[],
 ): Promise<Array<{ file: File; preview: string | null }>> {
   const previews = await Promise.allSettled(
     files.map(async (file) => {
-      if (!file.type.startsWith('image/')) {
+      if (!file.type.startsWith("image/")) {
         return { file, preview: null };
       }
       try {
@@ -94,69 +94,69 @@ export async function createFilePreviews(
       } catch {
         return { file, preview: null };
       }
-    })
+    }),
   );
 
   return previews.map((result) =>
-    result.status === 'fulfilled'
+    result.status === "fulfilled"
       ? result.value
-      : { file: files[0], preview: null }
+      : { file: files[0], preview: null },
   );
 }
 
 /**
  * Revokes object URLs to free memory
  * Call this when preview is no longer needed
- * 
+ *
  * @param url - Object URL to revoke
  */
 export function revokePreviewUrl(url: string): void {
-  if (url.startsWith('blob:')) {
+  if (url.startsWith("blob:")) {
     URL.revokeObjectURL(url);
   }
 }
 
 /**
  * Gets a placeholder icon/image for non-image files
- * 
+ *
  * @param mimeType - File MIME type
  * @returns Icon name or placeholder URL
  */
 export function getFileTypeIcon(mimeType: string): string {
-  if (mimeType.startsWith('image/')) return 'image';
-  if (mimeType.startsWith('video/')) return 'video';
-  if (mimeType.startsWith('audio/')) return 'audio';
-  if (mimeType === 'application/pdf') return 'file-text';
+  if (mimeType.startsWith("image/")) return "image";
+  if (mimeType.startsWith("video/")) return "video";
+  if (mimeType.startsWith("audio/")) return "audio";
+  if (mimeType === "application/pdf") return "file-text";
   if (
-    mimeType.includes('document') ||
-    mimeType.includes('msword') ||
-    mimeType.includes('wordprocessingml')
+    mimeType.includes("document") ||
+    mimeType.includes("msword") ||
+    mimeType.includes("wordprocessingml")
   )
-    return 'file-text';
+    return "file-text";
   if (
-    mimeType.includes('sheet') ||
-    mimeType.includes('ms-excel') ||
-    mimeType.includes('spreadsheetml')
+    mimeType.includes("sheet") ||
+    mimeType.includes("ms-excel") ||
+    mimeType.includes("spreadsheetml")
   )
-    return 'file-spreadsheet';
-  if (mimeType.includes('zip') || mimeType.includes('compressed'))
-    return 'file-archive';
+    return "file-spreadsheet";
+  if (mimeType.includes("zip") || mimeType.includes("compressed"))
+    return "file-archive";
 
-  return 'file';
+  return "file";
 }
 
 /**
  * Extracts image dimensions from a File object
- * 
+ *
  * @param file - Image file
  * @returns Promise resolving to dimensions { width, height }
  */
 export function getImageDimensions(
-  file: File
+  file: File,
 ): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) {
-      reject(new Error('File is not an image'));
+    if (!file.type.startsWith("image/")) {
+      reject(new Error("File is not an image"));
       return;
     }
 
@@ -173,7 +173,7 @@ export function getImageDimensions(
 
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error('Failed to load image'));
+      reject(new Error("Failed to load image"));
     };
 
     img.src = url;
@@ -182,22 +182,22 @@ export function getImageDimensions(
 
 /**
  * Formats image dimensions as a string
- * 
+ *
  * @param width - Image width
  * @param height - Image height
  * @returns Formatted string (e.g., "1920 × 1080")
  */
 export function formatDimensions(
   width: number | undefined,
-  height: number | undefined
+  height: number | undefined,
 ): string {
-  if (!width || !height) return 'Unknown';
+  if (!width || !height) return "Unknown";
   return `${width} × ${height}`;
 }
 
 /**
  * Calculates aspect ratio from dimensions
- * 
+ *
  * @param width - Image width
  * @param height - Image height
  * @returns Aspect ratio as string (e.g., "16:9", "4:3")
@@ -210,7 +210,7 @@ export function calculateAspectRatio(width: number, height: number): string {
 
 /**
  * Checks if an image is landscape orientation
- * 
+ *
  * @param width - Image width
  * @param height - Image height
  * @returns True if landscape
@@ -221,7 +221,7 @@ export function isLandscape(width: number, height: number): boolean {
 
 /**
  * Checks if an image is portrait orientation
- * 
+ *
  * @param width - Image width
  * @param height - Image height
  * @returns True if portrait
@@ -232,7 +232,7 @@ export function isPortrait(width: number, height: number): boolean {
 
 /**
  * Checks if an image is square
- * 
+ *
  * @param width - Image width
  * @param height - Image height
  * @returns True if square

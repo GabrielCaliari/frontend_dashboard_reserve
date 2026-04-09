@@ -1,9 +1,11 @@
-const trimTrailingSlashes = (value: string): string => value.replace(/\/+$/, "");
+const trimTrailingSlashes = (value: string): string =>
+  value.replace(/\/+$/, "");
 
 const trimLeadingAndTrailingSlashes = (value: string): string =>
   value.replace(/^\/+|\/+$/g, "");
 
-const removeApiSuffix = (value: string): string => value.replace(/\/api\/?$/i, "");
+const removeApiSuffix = (value: string): string =>
+  value.replace(/\/api\/?$/i, "");
 
 export const buildApiBaseUrl = (
   rawBaseUrl: string | undefined,

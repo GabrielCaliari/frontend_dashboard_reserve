@@ -7,15 +7,15 @@ import { useRouter } from "nextjs-toploader/app";
 const useAdminDetails = () => {
   const { replace } = useRouter();
 
-  const token = getCookie('token') as string;
-  const session = getCookie('session-code') as string;
+  const token = getCookie("token") as string;
+  const session = getCookie("session-code") as string;
 
   const fetchUserData = async () => {
     try {
       const response = await api.get("/admin/me", {
         headers: {
           Authorization: `Bearer ${token}`,
-          'session-id': session,
+          "session-id": session,
         },
       });
       return response.data;
