@@ -32,8 +32,8 @@ import type {
   LeadCollection,
   CreateCollectionDto,
   UpdateCollectionDto,
-} from "@/src/common/@types/@lead";
-import { formatDate } from "@/src/common/lib/utils";
+} from "@/src/shared/domain/types/@lead";
+import { formatDate } from "@/src/shared/lib/utils";
 import { toast } from "react-hot-toast";
 
 type CollectionFormValues = {

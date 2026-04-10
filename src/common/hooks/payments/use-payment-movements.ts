@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { paymentMovementsService } from "@/src/common/services/payments/payment-movements-service";
-import type { ListMovementsParams } from "@/src/common/@types/@payment-movements";
+import type { ListMovementsParams } from "@/src/shared/domain/types/@payment-movements";
 import {
   useHasSelectedTenant,
   useTenantStore,
-} from "@/src/common/stores/tenant-store";
+} from "@/src/shared/stores/tenant-store";
 
 export function usePaymentMovements(params?: ListMovementsParams) {
   const hasTenant = useHasSelectedTenant();

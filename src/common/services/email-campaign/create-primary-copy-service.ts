@@ -1,4 +1,4 @@
-import { ICreatePrimaryCopy } from "../../@types/@email-builder";
+import { ICreatePrimaryCopy } from "@/src/shared/domain/types/@email-builder";
 import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 

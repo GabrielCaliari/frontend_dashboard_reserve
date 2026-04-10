@@ -11,13 +11,13 @@ import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import { useCreateAuthor } from "@/src/common/hooks/cms/use-create-author";
 import { useUpdateAuthor } from "@/src/common/hooks/cms/use-update-author";
 import { useDeleteAuthor } from "@/src/common/hooks/cms/use-delete-author";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import { toast } from "sonner";
-import type { Author } from "@/src/common/@types/@cms-author";
+import type { Author } from "@/src/shared/domain/types/@cms-author";
 import type {
   CreateAuthorDto,
   UpdateAuthorDto,
-} from "@/src/common/@types/@cms-author";
+} from "@/src/shared/domain/types/@cms-author";
 
 export default function AuthorsPage() {
   const hasSelectedTenant = useHasSelectedTenant();

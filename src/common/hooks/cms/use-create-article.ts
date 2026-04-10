@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createArticle } from "@/src/common/services/cms-article-service";
-import type { CreateArticleDto } from "@/src/common/@types/@cms-article";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { CreateArticleDto } from "@/src/shared/domain/types/@cms-article";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import { ARTICLE_QUERY_KEYS } from "./useArticles";
 
 export function useCreateArticle(blogId: string) {

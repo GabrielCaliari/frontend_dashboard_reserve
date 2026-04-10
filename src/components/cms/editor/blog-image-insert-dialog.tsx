@@ -16,11 +16,11 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Pagination, Chip } from "@heroui/react";
-import { formatFileSize } from "@/src/common/utils/format-file-size";
+import { formatFileSize } from "@/src/shared/utils/format-file-size";
 import type {
   CollectionType,
   MediaAsset,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 
 const TYPE_BADGES: Partial<
   Record<

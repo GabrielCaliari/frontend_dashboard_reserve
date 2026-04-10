@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { BlogForm } from "../blog-form";
-import type { Blog } from "@/src/common/@types/@cms-blog";
+import type { Blog } from "@/src/shared/domain/types/@cms-blog";
 
 describe("BlogForm", () => {
   const mockOnSubmit = vi.fn();

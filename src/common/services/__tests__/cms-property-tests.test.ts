@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as fc from "fast-check";
-import { createBlogSchema } from "@/src/common/schemas/cms-blog-schema";
-import { articleLanguagePattern } from "@/src/common/schemas/cms-article-schema";
+import { createBlogSchema } from "@/src/shared/schemas/cms-blog-schema";
+import { articleLanguagePattern } from "@/src/shared/schemas/cms-article-schema";
 import { archiveArticle, publishArticle } from "../cms-article-service";
 import { fetchPublicArticles } from "../cms-public-service";
 import { cmsApiClient } from "@/src/common/config/api";

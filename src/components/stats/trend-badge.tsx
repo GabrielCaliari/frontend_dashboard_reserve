@@ -1,7 +1,7 @@
 "use client";
 
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { cn } from "@/src/common/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 
 interface TrendBadgeProps {
   trend?: number;

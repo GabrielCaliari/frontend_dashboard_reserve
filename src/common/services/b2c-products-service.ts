@@ -3,7 +3,7 @@ import type {
   Product,
   B2CFeeConfig,
   B2CCategory,
-} from "@/src/common/@types/@b2c-products";
+} from "@/src/shared/domain/types/@b2c-products";
 
 // Modos de billing do backend
 type BackendBillingMode = "unlimited" | "limited" | "one_time" | "one_time_exp";

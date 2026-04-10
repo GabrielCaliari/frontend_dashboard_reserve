@@ -3,8 +3,8 @@ import {
   ArticleImage,
   UpdateArticleImageDto,
   ReorderImageDto,
-} from "@/src/common/@types/@cms-image";
-import { transformCMSError } from "@/src/common/utils/cms-error-handler";
+} from "@/src/shared/domain/types/@cms-image";
+import { transformCMSError } from "@/src/shared/utils/cms-error-handler";
 
 /**
  * Upload multiple images to an article

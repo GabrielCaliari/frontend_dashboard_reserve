@@ -31,18 +31,18 @@ import {
   useUnassignAdminFromTenant,
   useUpdateAdminTenantRole,
 } from "@/src/common/hooks/access-management/useTenants";
-import { useCurrentAdmin } from "@/src/common/hooks/use-current-admin";
+import { useCurrentAdmin } from "@/src/shared/hooks/use-current-admin";
 import type {
   Admin,
   CreateAdminDto,
   UpdateAdminDto,
   TenantAssignmentChange,
-} from "@/src/common/@types/@access-management";
-import { AdminRole } from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 import type {
   CreateAdminFormData,
   UpdateAdminFormData,
-} from "@/src/common/schemas/access-management/admin-schema";
+} from "@/src/shared/schemas/access-management/admin-schema";
 import { toast } from "react-hot-toast";
 
 export default function AdminListPage() {

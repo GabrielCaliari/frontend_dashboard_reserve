@@ -4,17 +4,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Textarea } from "@heroui/react";
 import { User, FileText } from "lucide-react";
-import type { Author } from "@/src/common/@types/@cms-author";
+import type { Author } from "@/src/shared/domain/types/@cms-author";
 import type {
   CreateAuthorDto,
   UpdateAuthorDto,
-} from "@/src/common/@types/@cms-author";
+} from "@/src/shared/domain/types/@cms-author";
 import {
   createAuthorSchema,
   updateAuthorSchema,
   type CreateAuthorInput,
   type UpdateAuthorInput,
-} from "@/src/common/schemas/cms-author-schema";
+} from "@/src/shared/schemas/cms-author-schema";
 
 interface AuthorFormProps {
   author?: Author;

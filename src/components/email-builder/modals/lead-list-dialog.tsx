@@ -17,9 +17,9 @@ import {
 import { Input } from "@/src/components/ui/input";
 import { useState } from "react";
 import { Eye, MousePointer } from "lucide-react";
-import { IDelivery } from "@/src/common/@types/@delivery";
+import { IDelivery } from "@/src/shared/domain/types/@delivery";
 import listDeliveriesByCampaignBatchIdService from "@/src/common/services/campaign-batch/list-deliveries-by-campaign-batch-id-service";
-import { EDeliveryStatus } from "@/src/common/@types/@delivery";
+import { EDeliveryStatus } from "@/src/shared/domain/types/@delivery";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 

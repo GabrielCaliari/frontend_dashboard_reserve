@@ -18,7 +18,7 @@ import type {
   User,
   PaginatedResponse,
   UpdateUserDto,
-} from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
 
 // Mock the API client
 vi.mock("@/src/common/config/access-management-api-client", () => ({

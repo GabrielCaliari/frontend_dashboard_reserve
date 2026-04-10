@@ -8,7 +8,7 @@
  */
 
 import React from "react";
-import { Article } from "@/src/common/@types/@cms-article";
+import { Article } from "@/src/shared/domain/types/@cms-article";
 import { Skeleton, Button } from "@heroui/react";
 import PublicArticleCard from "./public-article-card";
 

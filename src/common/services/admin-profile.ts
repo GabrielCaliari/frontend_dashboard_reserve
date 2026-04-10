@@ -1,4 +1,4 @@
-import { AdminProfile } from "@/src/common/@types/@auth";
+import { AdminProfile } from "@/src/shared/domain/types/@auth";
 import api from "../config/api";
 import { errorTypes } from "../config/error-types";
 

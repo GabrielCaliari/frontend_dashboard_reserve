@@ -15,11 +15,11 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { Edit, Power, Trash2, ExternalLink, RotateCcw } from "lucide-react";
-import { Admin, AdminRole } from "@/src/common/@types/@access-management";
-import { formatDate } from "@/src/common/lib/utils";
+import { Admin, AdminRole } from "@/src/shared/domain/types/@access-management";
+import { formatDate } from "@/src/shared/lib/utils";
 import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
-import usePermissions from "@/src/common/hooks/use-permissions";
+import usePermissions from "@/src/shared/hooks/use-permissions";
 
 interface AdminTableProps {
   admins: Admin[];

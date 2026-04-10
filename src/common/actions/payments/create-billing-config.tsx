@@ -4,7 +4,7 @@ import { createBillingConfigService } from "@/src/common/services/payments/billi
 import type {
   CreateBillingConfigDto,
   TenantBillingConfig,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export async function createBillingConfigAction(
   data: CreateBillingConfigDto,

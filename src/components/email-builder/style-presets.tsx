@@ -6,7 +6,7 @@ import { ScrollArea } from "@/src/components/ui/scroll-area";
 import type {
   IEmailComponent,
   IStylePreset,
-} from "@/src/common/@types/@email-builder";
+} from "@/src/shared/domain/types/@email-builder";
 
 interface StylePresetsProps {
   componentType: string;

@@ -2,7 +2,7 @@ import { cmsApiClient } from "@/src/common/config/api";
 import {
   withRetry,
   transformCMSError,
-} from "@/src/common/utils/cms-error-handler";
+} from "@/src/shared/utils/cms-error-handler";
 import type {
   CmsMediaId,
   MediaCollection,
@@ -18,7 +18,7 @@ import type {
   ReorderRelationsRequest,
   CollectionListParams,
   AssetListParams,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 
 /**
  * CMS Media Storage Service

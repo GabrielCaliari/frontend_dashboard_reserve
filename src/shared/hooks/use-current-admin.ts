@@ -1,7 +1,7 @@
 "use client";
 
 import { getCookie } from "cookies-next";
-import { AdminRole } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 
 export interface CurrentAdmin {
   id: string;

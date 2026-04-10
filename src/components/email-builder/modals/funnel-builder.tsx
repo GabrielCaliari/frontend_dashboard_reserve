@@ -25,7 +25,7 @@ import {
   X,
   AlertCircle,
 } from "lucide-react";
-import { IFunnel, IFunnelStep } from "@/src/common/@types/@email-campaign";
+import { IFunnel, IFunnelStep } from "@/src/shared/domain/types/@email-campaign";
 import { useTranslations } from "next-intl";
 
 interface FunnelBuilderProps {

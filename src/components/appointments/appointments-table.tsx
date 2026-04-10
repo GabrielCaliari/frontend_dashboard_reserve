@@ -26,7 +26,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { formatDate } from "@/src/common/lib/utils";
+import { formatDate } from "@/src/shared/lib/utils";
 import {
   useCancelAppointment,
   useCompleteAppointment,
@@ -34,7 +34,7 @@ import {
 import type {
   Appointment,
   EAppointmentStatus,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 interface AppointmentsTableProps {
   appointments: Appointment[];

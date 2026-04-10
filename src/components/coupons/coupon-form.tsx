@@ -24,7 +24,7 @@ import type {
   ECouponScope,
   ECouponAppliesTo,
   ProductOverride,
-} from "@/src/common/@types/@coupons";
+} from "@/src/shared/domain/types/@coupons";
 import { useListB2BProducts } from "@/src/common/hooks/useB2BPayments";
 import {
   useListB2CProducts,

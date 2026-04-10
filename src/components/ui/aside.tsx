@@ -41,12 +41,12 @@ import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
 import { getCookie } from "cookies-next";
 import { useRouter } from "nextjs-toploader/app";
 import { useTranslations } from "next-intl";
-import { useMobileDrawerStore } from "@/src/common/stores/mobile-drawer.store";
+import { useMobileDrawerStore } from "@/src/shared/stores/mobile-drawer.store";
 import {
   useDashboardScope,
   useTenantStore,
-} from "@/src/common/stores/tenant-store";
-import usePermissions from "@/src/common/hooks/use-permissions";
+} from "@/src/shared/stores/tenant-store";
+import usePermissions from "@/src/shared/hooks/use-permissions";
 import { NotificationBadge } from "../notifications/notification-badge";
 
 export interface SidebarProps {

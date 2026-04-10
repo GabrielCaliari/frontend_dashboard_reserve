@@ -18,8 +18,8 @@ import { useCreateBlog } from "@/src/common/hooks/cms/use-create-blog";
 import {
   blogCreateSchema,
   type BlogCreateFormData,
-} from "@/src/common/schemas/blog-schema";
-import type { Blog } from "@/src/common/@types/@cms-blog";
+} from "@/src/shared/schemas/blog-schema";
+import type { Blog } from "@/src/shared/domain/types/@cms-blog";
 
 interface CreateBlogDialogProps {
   open: boolean;

@@ -1,11 +1,11 @@
 "use server";
 
 import { updatePlanService } from "@/src/common/services/payments/plans-service";
-import { getTenantIdFromCookie } from "@/src/common/utils/get-tenant-id-server";
+import { getTenantIdFromCookie } from "@/src/shared/utils/get-tenant-id-server";
 import type {
   UpdateStripePlanDto,
   StripePlan,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export async function updatePlanAction(
   id: string,

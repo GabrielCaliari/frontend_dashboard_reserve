@@ -1,11 +1,11 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { statsService } from "@/src/common/services/stats-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import type {
   StatsTimeseriesItem,
   StatsDashboardQuery,
   StatsTimeseriesQuery,
-} from "@/src/common/@types/@stats";
+} from "@/src/shared/domain/types/@stats";
 
 export function useStatsDashboard(query: StatsDashboardQuery = {}) {
   const tenantId = useSelectedTenantId();

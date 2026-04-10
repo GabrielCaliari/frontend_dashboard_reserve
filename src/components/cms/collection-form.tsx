@@ -11,11 +11,11 @@ import {
   Button,
   Chip,
 } from "@heroui/react";
-import { MIME_TYPE_GROUPS } from "@/src/common/utils/validate-file";
+import { MIME_TYPE_GROUPS } from "@/src/shared/utils/validate-file";
 import type {
   MediaCollection,
   CollectionType,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 
 const collectionSchema = z.object({
   name: z

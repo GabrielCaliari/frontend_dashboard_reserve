@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import { AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { Report } from "@/src/common/@types/@report";
+import type { Report } from "@/src/shared/domain/types/@report";
 
 interface DeleteReportDialogProps {
   isOpen: boolean;

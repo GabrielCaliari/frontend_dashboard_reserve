@@ -19,7 +19,7 @@ import {
   useCategories,
   useUpdateB2BProductFees,
 } from "@/src/common/hooks/payments/use-b2c-fees";
-import type { B2BProduct } from "@/src/common/@types/@b2b-payments";
+import type { B2BProduct } from "@/src/shared/domain/types/@b2b-payments";
 
 interface B2BProductFeesModalProps {
   isOpen: boolean;

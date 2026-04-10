@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Check, Save } from "lucide-react";
-import { cn } from "@/src/common/utils";
+import { cn } from "@/src/shared/utils";
 import { useTranslations } from "next-intl";
 
 interface AutoSaveIndicatorProps {

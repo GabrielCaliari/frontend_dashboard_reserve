@@ -1,7 +1,7 @@
 "use server";
 
 import { getSubscriptionByTenantService } from "@/src/common/services/payments/subscriptions-service";
-import type { GetSubscriptionResponse } from "@/src/common/@types/@payments";
+import type { GetSubscriptionResponse } from "@/src/shared/domain/types/@payments";
 
 export async function getSubscriptionAction(
   tenantId: string,

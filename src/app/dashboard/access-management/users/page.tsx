@@ -23,8 +23,8 @@ import {
 import type {
   User,
   UpdateUserDto,
-} from "@/src/common/@types/@access-management";
-import type { UpdateUserFormData } from "@/src/common/schemas/access-management/user-schema";
+} from "@/src/shared/domain/types/@access-management";
+import type { UpdateUserFormData } from "@/src/shared/schemas/access-management/user-schema";
 import { Button } from "@heroui/react";
 
 export default function UserListPage() {

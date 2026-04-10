@@ -4,7 +4,7 @@ import { cancelSubscriptionService } from "@/src/common/services/payments/subscr
 import type {
   CancelSubscriptionDto,
   CancelSubscriptionResponse,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export async function cancelSubscriptionAction(
   subscriptionId: string,

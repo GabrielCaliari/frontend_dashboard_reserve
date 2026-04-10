@@ -18,7 +18,7 @@ import {
   useScheduleConfig,
   useSaveScheduleConfig,
 } from "@/src/common/hooks/appointments/use-schedule-config";
-import type { ScheduleConfig } from "@/src/common/@types/@appointment";
+import type { ScheduleConfig } from "@/src/shared/domain/types/@appointment";
 
 interface DaySchedule {
   enabled: boolean;

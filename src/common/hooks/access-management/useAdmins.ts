@@ -23,10 +23,10 @@ import type {
   UpdateAdminDto,
   AdminRole,
   ApiErrorResponse,
-} from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
 import type { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
+import { mapErrorMessage } from "@/src/shared/utils/error-message-mapper";
 
 export const adminKeys = {
   all: ["admins"] as const,

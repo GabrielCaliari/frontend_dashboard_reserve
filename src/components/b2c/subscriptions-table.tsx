@@ -19,7 +19,7 @@ import {
   useListB2CSubscriptions,
   useCancelB2CSubscription,
 } from "@/src/common/hooks/useB2CSubscriptions";
-import type { UserSubscription } from "@/src/common/@types/@b2c-products";
+import type { UserSubscription } from "@/src/shared/domain/types/@b2c-products";
 import { ConfirmModal } from "@/src/components/modals/confirm-modal";
 
 export function B2CSubscriptionsTable() {

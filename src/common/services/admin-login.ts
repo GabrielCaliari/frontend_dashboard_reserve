@@ -1,4 +1,4 @@
-import { LoginCredentials, AuthResponse } from "@/src/common/@types/@auth";
+import { LoginCredentials, AuthResponse } from "@/src/shared/domain/types/@auth";
 import api from "../config/api";
 import { errorTypes } from "../config/error-types";
 

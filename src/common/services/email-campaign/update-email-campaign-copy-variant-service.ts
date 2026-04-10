@@ -1,4 +1,4 @@
-import { ECopyVariationType } from "../../@types/@email-campaign";
+import { ECopyVariationType } from "@/src/shared/domain/types/@email-campaign";
 import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 

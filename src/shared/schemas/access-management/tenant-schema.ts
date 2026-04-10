@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { AdminRole } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 
 const TENANT_SCOPED_ROLES = [
   AdminRole.owner,

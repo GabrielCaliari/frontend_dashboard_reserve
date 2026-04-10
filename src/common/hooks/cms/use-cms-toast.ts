@@ -1,10 +1,10 @@
 "use client";
 
-import { useToast } from "@/src/common/hooks/use-toast";
+import { useToast } from "@/src/shared/hooks/use-toast";
 import {
   CMSError,
   getErrorMessage,
-} from "@/src/common/utils/cms-error-handler";
+} from "@/src/shared/utils/cms-error-handler";
 
 /**
  * CMS-specific toast notifications hook

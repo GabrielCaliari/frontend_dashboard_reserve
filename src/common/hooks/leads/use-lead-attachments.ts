@@ -5,9 +5,9 @@ import { removeLeadAttachmentAction } from "@/src/common/actions/leads/remove-le
 import type {
   LeadAttachment,
   AddAttachmentDto,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 import { toast } from "react-hot-toast";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 export function useLeadAttachments(leadId: string) {
   const tenantId = useSelectedTenantId();

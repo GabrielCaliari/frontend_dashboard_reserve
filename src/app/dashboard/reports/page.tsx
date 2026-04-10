@@ -27,14 +27,14 @@ import {
 import { useTranslations } from "next-intl";
 import { useRouter } from "nextjs-toploader/app";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
-import usePermissions from "@/src/common/hooks/use-permissions";
+import usePermissions from "@/src/shared/hooks/use-permissions";
 import {
   useReports,
   useCreateReport,
   useUpdateReport,
   useDeleteReport,
 } from "@/src/common/hooks/reports/use-reports";
-import type { Report } from "@/src/common/@types/@report";
+import type { Report } from "@/src/shared/domain/types/@report";
 import { ReportDialog } from "@/src/components/reports/report-dialog";
 import { DeleteReportDialog } from "@/src/components/reports/delete-report-dialog";
 

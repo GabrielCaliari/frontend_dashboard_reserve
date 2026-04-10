@@ -18,7 +18,7 @@ import {
   AssignAdminDto,
   UpdateAdminRoleDto,
   AdminRole,
-} from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
 
 /**
  * Fetch paginated list of tenants with optional search

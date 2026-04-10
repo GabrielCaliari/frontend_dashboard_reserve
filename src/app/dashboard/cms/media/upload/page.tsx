@@ -15,7 +15,7 @@ import {
   CardBody,
 } from "@heroui/react";
 import { ArrowLeft, FolderOpen, Upload } from "lucide-react";
-import type { MediaCollection } from "@/src/common/@types/@cms-media";
+import type { MediaCollection } from "@/src/shared/domain/types/@cms-media";
 
 /**
  * Asset Upload Page

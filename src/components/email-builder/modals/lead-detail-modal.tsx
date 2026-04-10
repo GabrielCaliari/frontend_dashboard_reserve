@@ -17,7 +17,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@/src/components/ui/modal";
-import { Lead, LeadOrigin, LeadStatus } from "@/src/common/@types/@lead";
+import { Lead, LeadOrigin, LeadStatus } from "@/src/shared/domain/types/@lead";
 import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
 import { format } from "date-fns";
 import { Mail, Phone, Calendar, Tag } from "lucide-react";

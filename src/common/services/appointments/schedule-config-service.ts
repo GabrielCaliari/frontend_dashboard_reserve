@@ -2,7 +2,7 @@ import { apiClient } from "@/src/common/config/api";
 import type {
   ScheduleConfig,
   LegacyScheduleConfig,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 export interface GetScheduleConfigResponse {
   data: ScheduleConfig | LegacyScheduleConfig;

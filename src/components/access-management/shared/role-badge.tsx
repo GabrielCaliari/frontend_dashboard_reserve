@@ -1,12 +1,12 @@
 "use client";
 
 import { Chip, Tooltip } from "@heroui/react";
-import { AdminRole } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 import {
   getRoleColor,
   formatRoleLabel,
   getRoleDescription,
-} from "@/src/common/utils/role-utils";
+} from "@/src/shared/utils/role-utils";
 
 interface RoleBadgeProps {
   role: AdminRole;

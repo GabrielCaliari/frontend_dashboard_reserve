@@ -35,7 +35,7 @@ import {
   useToggleTenantStatus,
   useDeleteTenant,
 } from "@/src/common/hooks/access-management/useTenants";
-import { AdminRole } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 import { toast } from "react-hot-toast";
 
 /**

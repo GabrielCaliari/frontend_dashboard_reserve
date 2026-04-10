@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import type { IEmailComponent } from "@/src/common/@types/@email-builder";
+import type { IEmailComponent } from "@/src/shared/domain/types/@email-builder";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Trash2, Move, Edit } from "lucide-react";

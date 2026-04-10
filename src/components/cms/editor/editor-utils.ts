@@ -1,6 +1,6 @@
 import type { Value } from "platejs";
 import type { Chapter } from "./editor-types";
-import type { ContentStats } from "@/src/common/@types/cms";
+import type { ContentStats } from "@/src/shared/domain/types/cms";
 
 export const EMPTY_SLATE_VALUE: Value = [
   { type: "p", children: [{ text: "" }] },

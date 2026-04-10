@@ -1,11 +1,11 @@
 "use server";
 
 import { createPlanService } from "@/src/common/services/payments/plans-service";
-import { getTenantIdFromCookie } from "@/src/common/utils/get-tenant-id-server";
+import { getTenantIdFromCookie } from "@/src/shared/utils/get-tenant-id-server";
 import type {
   CreateStripePlanDto,
   StripePlan,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 // tenant_id is injected server-side — callers don't need to pass it
 type CreatePlanInput = Omit<CreateStripePlanDto, "tenant_id">;

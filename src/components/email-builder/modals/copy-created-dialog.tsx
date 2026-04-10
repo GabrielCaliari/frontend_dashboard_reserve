@@ -1,6 +1,6 @@
 import { SimpleEmailEditorDialog } from "./simple-email-editor-dialog";
-import { IEmailCampaign } from "@/src/common/@types/@email-campaign";
-import { IEmail } from "@/src/common/@types/@email";
+import { IEmailCampaign } from "@/src/shared/domain/types/@email-campaign";
+import { IEmail } from "@/src/shared/domain/types/@email";
 
 export function CopyCreatedDialog({
   isOpen,

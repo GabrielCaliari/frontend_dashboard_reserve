@@ -16,7 +16,7 @@ import { AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { IEmail } from "@/src/common/@types/@email";
+import { IEmail } from "@/src/shared/domain/types/@email";
 
 export interface EmailMetadata {
   subject: string;

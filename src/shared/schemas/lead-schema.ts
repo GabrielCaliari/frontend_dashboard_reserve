@@ -3,7 +3,7 @@ import {
   LeadOrigin,
   LeadStatus,
   CollectionAccessMode,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 
 export const createLeadSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").optional(),

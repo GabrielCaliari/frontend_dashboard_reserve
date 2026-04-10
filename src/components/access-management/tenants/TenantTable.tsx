@@ -15,8 +15,8 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { Edit, Power, Trash2, Copy, Check, RotateCcw } from "lucide-react";
-import { Tenant } from "@/src/common/@types/@access-management";
-import { formatDate } from "@/src/common/lib/utils";
+import { Tenant } from "@/src/shared/domain/types/@access-management";
+import { formatDate } from "@/src/shared/lib/utils";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
 
 interface TenantTableProps {

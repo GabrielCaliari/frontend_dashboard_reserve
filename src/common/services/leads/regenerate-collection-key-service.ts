@@ -1,5 +1,5 @@
 import { apiClient } from "@/src/common/config/api";
-import type { RegenerateKeyResponse } from "@/src/common/@types/@lead";
+import type { RegenerateKeyResponse } from "@/src/shared/domain/types/@lead";
 
 export async function regenerateCollectionKeyService(
   id: string,

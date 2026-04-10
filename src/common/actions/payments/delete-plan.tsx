@@ -1,7 +1,7 @@
 "use server";
 
 import { deletePlanService } from "@/src/common/services/payments/plans-service";
-import { getTenantIdFromCookie } from "@/src/common/utils/get-tenant-id-server";
+import { getTenantIdFromCookie } from "@/src/shared/utils/get-tenant-id-server";
 
 export async function deletePlanAction(id: string): Promise<void> {
   try {

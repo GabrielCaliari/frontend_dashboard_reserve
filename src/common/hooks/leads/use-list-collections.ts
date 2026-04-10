@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { listCollectionsAction } from "@/src/common/actions/leads/list-collections";
-import type { CollectionListResponse } from "@/src/common/@types/@lead";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { CollectionListResponse } from "@/src/shared/domain/types/@lead";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 interface UseListCollectionsParams {
   page?: number;

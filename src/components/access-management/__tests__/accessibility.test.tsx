@@ -21,7 +21,7 @@ import { AdminFormModal } from "../admins/AdminFormModal";
 import { ConfirmationDialog } from "../shared/confirmation-dialog";
 import { SearchInput } from "../shared/search-input";
 import { PaginationControls } from "../shared/pagination-controls";
-import { AdminRole } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 
 // Extend expect with axe matchers
 expect.extend(toHaveNoViolations);

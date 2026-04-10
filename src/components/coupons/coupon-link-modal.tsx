@@ -14,8 +14,8 @@ import {
 import { Link2, ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useGetCouponLink } from "@/src/common/hooks/useCoupons";
-import { toast } from "@/src/common/hooks/use-toast";
-import type { DiscountCoupon } from "@/src/common/@types/@coupons";
+import { toast } from "@/src/shared/hooks/use-toast";
+import type { DiscountCoupon } from "@/src/shared/domain/types/@coupons";
 import { isAxiosError } from "axios";
 
 interface CouponLinkModalProps {

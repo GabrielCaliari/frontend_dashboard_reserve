@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { b2bPaymentsService } from "@/src/common/services/b2b-payments-service";
-import type { PurchaseStatus } from "@/src/common/@types/@b2b-payments";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import type { PurchaseStatus } from "@/src/shared/domain/types/@b2b-payments";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 
 export function useListB2BProducts() {
   const hasTenant = useHasSelectedTenant();

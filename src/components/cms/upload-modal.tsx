@@ -8,7 +8,7 @@ import {
 } from "@/src/components/ui/modal";
 import { AssetUpload } from "./asset-upload";
 import { useTranslations } from "next-intl";
-import type { MediaCollection } from "@/src/common/@types/@cms-media";
+import type { MediaCollection } from "@/src/shared/domain/types/@cms-media";
 
 interface UploadModalProps {
   isOpen: boolean;

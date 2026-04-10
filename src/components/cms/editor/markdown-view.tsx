@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Copy, Check } from "lucide-react";
-import { cn } from "@/src/common/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import {
   Tooltip,
   TooltipContent,

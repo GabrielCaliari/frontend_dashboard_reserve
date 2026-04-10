@@ -3,13 +3,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { Select, SelectItem } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import useAdminDetails from "@/src/common/hooks/useUserDatails";
-import usePermissions from "@/src/common/hooks/use-permissions";
+import useAdminDetails from "@/src/shared/hooks/useUserDatails";
+import usePermissions from "@/src/shared/hooks/use-permissions";
 import { useRouter } from "nextjs-toploader/app";
 import {
   useDashboardScope,
   useTenantStore,
-} from "@/src/common/stores/tenant-store";
+} from "@/src/shared/stores/tenant-store";
 
 const GLOBAL_VIEW_KEY = "__global_view__";
 

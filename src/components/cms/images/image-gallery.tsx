@@ -41,7 +41,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { ArticleImage } from "@/src/common/@types/@cms-image";
+import type { ArticleImage } from "@/src/shared/domain/types/@cms-image";
 import {
   useUpdateImage,
   useDeleteImage,

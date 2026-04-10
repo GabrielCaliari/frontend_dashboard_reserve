@@ -6,7 +6,7 @@ import {
 import type {
   ScheduleConfig,
   LegacyScheduleConfig,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 export function useScheduleConfig() {
   return useQuery({

@@ -10,7 +10,7 @@ import {
   useUpdateCollection,
   useDeleteCollection,
 } from "@/src/common/hooks/cms/use-collections";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import { toast } from "sonner";
 
 export default function EditCollectionPage() {

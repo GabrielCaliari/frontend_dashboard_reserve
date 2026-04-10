@@ -23,7 +23,7 @@ import {
   Users,
   Search,
 } from "lucide-react";
-import type { Author } from "@/src/common/@types/@cms-author";
+import type { Author } from "@/src/shared/domain/types/@cms-author";
 import { CmsPageHeader, CmsTabItem } from "../shared/cms-page-header";
 
 const PAGE_SIZE = 15;

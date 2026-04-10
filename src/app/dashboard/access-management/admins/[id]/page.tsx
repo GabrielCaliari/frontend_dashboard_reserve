@@ -43,14 +43,14 @@ import {
   useUnassignAdminFromTenant,
   useUpdateAdminTenantRole,
 } from "@/src/common/hooks/access-management/useTenants";
-import { useCurrentAdmin } from "@/src/common/hooks/use-current-admin";
+import { useCurrentAdmin } from "@/src/shared/hooks/use-current-admin";
 import type {
   UpdateAdminDto,
   TenantAssignmentChange,
-} from "@/src/common/@types/@access-management";
-import { AdminRole } from "@/src/common/@types/@access-management";
-import type { UpdateAdminFormData } from "@/src/common/schemas/access-management/admin-schema";
-import { formatDate } from "@/src/common/lib/utils";
+} from "@/src/shared/domain/types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
+import type { UpdateAdminFormData } from "@/src/shared/schemas/access-management/admin-schema";
+import { formatDate } from "@/src/shared/lib/utils";
 import { toast } from "react-hot-toast";
 
 export default function AdminDetailPage() {

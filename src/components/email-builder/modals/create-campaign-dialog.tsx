@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CreateCampaignFormData,
   createCampaignSchema,
-} from "@/src/common/schemas/create-campaign-dialog";
+} from "@/src/shared/schemas/create-campaign-dialog";
 import { createEmailCampaign } from "@/src/common/actions/email-campaign/create-email-campaign";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";

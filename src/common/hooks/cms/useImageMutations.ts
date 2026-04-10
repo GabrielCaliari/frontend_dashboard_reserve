@@ -5,15 +5,15 @@ import {
   deleteImage,
   reorderImages,
 } from "@/src/common/services/cms-image-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import { ARTICLE_QUERY_KEYS } from "./useArticles";
 import { useCMSToast } from "./use-cms-toast";
 import type {
   ArticleImage,
   UpdateArticleImageDto,
   ReorderImageDto,
-} from "@/src/common/@types/@cms-image";
-import type { Article } from "@/src/common/@types/@cms-article";
+} from "@/src/shared/domain/types/@cms-image";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
 
 /**
  * Hook to upload multiple images to an article

@@ -4,7 +4,7 @@ import type {
   B2BPurchase,
   B2BMetrics,
   PurchaseStatus,
-} from "@/src/common/@types/@b2b-payments";
+} from "@/src/shared/domain/types/@b2b-payments";
 
 export const b2bPaymentsService = {
   /**

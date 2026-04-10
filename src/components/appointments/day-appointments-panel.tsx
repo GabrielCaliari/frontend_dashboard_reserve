@@ -8,7 +8,7 @@ import { AppointmentDetailModal } from "./appointment-detail-modal";
 import type {
   Appointment,
   EAppointmentStatus,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 interface DayAppointmentsPanelProps {
   date: string | null;

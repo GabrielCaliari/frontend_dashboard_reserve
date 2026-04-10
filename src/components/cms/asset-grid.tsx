@@ -23,8 +23,8 @@ import {
   Trash2,
   CheckCircle,
 } from "lucide-react";
-import { formatFileSize } from "@/src/common/utils/format-file-size";
-import type { CmsMediaId, MediaAsset } from "@/src/common/@types/@cms-media";
+import { formatFileSize } from "@/src/shared/utils/format-file-size";
+import type { CmsMediaId, MediaAsset } from "@/src/shared/domain/types/@cms-media";
 
 interface AssetGridProps {
   assets: MediaAsset[];

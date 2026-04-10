@@ -3,11 +3,11 @@ import { getSubscriptionAction } from "@/src/common/actions/payments/get-subscri
 import type {
   GetSubscriptionResponse,
   Subscription,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 import {
   useSelectedTenantId,
   useTenantStore,
-} from "@/src/common/stores/tenant-store";
+} from "@/src/shared/stores/tenant-store";
 
 export function useSubscription() {
   const tenantId = useSelectedTenantId();

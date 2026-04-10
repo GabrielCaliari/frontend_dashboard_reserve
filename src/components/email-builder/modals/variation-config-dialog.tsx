@@ -14,7 +14,7 @@ import { Label } from "@/src/components/ui/label";
 import { Cpu, Edit, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { updateEmailCampaignCopyVariant } from "@/src/common/actions/email-campaign/update-email-campaign-copy-variant";
-import { ECopyVariationType } from "@/src/common/@types/@email-campaign";
+import { ECopyVariationType } from "@/src/shared/domain/types/@email-campaign";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 

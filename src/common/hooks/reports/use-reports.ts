@@ -9,10 +9,10 @@ import type {
   CreateReportDto,
   UpdateReportDto,
   ReportsListResponse,
-} from "@/src/common/@types/@report";
+} from "@/src/shared/domain/types/@report";
 import type { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
+import { mapErrorMessage } from "@/src/shared/utils/error-message-mapper";
 
 export const reportKeys = {
   all: ["reports"] as const,

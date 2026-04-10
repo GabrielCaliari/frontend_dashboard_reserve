@@ -10,7 +10,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 
-import useAdminDetails from "@/src/common/hooks/useUserDatails";
+import useAdminDetails from "@/src/shared/hooks/useUserDatails";
 
 import {
   User,
@@ -32,7 +32,7 @@ import { useRouter } from "nextjs-toploader/app";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "./language-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
-import { useMobileDrawerStore } from "@/src/common/stores/mobile-drawer.store";
+import { useMobileDrawerStore } from "@/src/shared/stores/mobile-drawer.store";
 export function Header() {
   const { data } = useAdminDetails();
 

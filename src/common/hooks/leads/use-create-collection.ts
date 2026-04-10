@@ -3,7 +3,7 @@ import { createCollectionAction } from "@/src/common/actions/leads/create-collec
 import type {
   CreateCollectionDto,
   CollectionDetailResponse,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 import { toast } from "react-hot-toast";
 
 export function useCreateCollection() {

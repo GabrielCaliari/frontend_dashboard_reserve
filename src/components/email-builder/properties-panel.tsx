@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import type { IEmailComponent } from "@/src/common/@types/@email-builder";
+import type { IEmailComponent } from "@/src/shared/domain/types/@email-builder";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import {

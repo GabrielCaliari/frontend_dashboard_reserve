@@ -32,7 +32,7 @@ import {
 import type {
   Appointment,
   EAppointmentStatus,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 interface AppointmentDetailModalProps {
   appointment: Appointment | null;

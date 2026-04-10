@@ -33,13 +33,13 @@ import {
   updateAuthorSchema,
   type CreateAuthorInput,
   type UpdateAuthorInput,
-} from "@/src/common/schemas/cms-author-schema";
+} from "@/src/shared/schemas/cms-author-schema";
 import type {
   Author,
   CreateAuthorDto,
   UpdateAuthorDto,
-} from "@/src/common/@types/@cms-author";
-import type { MediaAsset } from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-author";
+import type { MediaAsset } from "@/src/shared/domain/types/@cms-media";
 import { toast } from "sonner";
 
 type Tab = "library" | "upload";

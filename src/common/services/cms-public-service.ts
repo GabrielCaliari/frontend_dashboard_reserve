@@ -1,9 +1,9 @@
 import { createPublicCmsClient } from "@/src/common/config/cms-public-api-client";
-import { Article } from "@/src/common/@types/@cms-article";
+import { Article } from "@/src/shared/domain/types/@cms-article";
 import {
   withRetry,
   transformCMSError,
-} from "@/src/common/utils/cms-error-handler";
+} from "@/src/shared/utils/cms-error-handler";
 
 interface PublicArticleApiResponse {
   id: string | number;

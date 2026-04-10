@@ -25,7 +25,7 @@ import { usePlans } from "@/src/common/hooks/payments/use-plans";
 import { useCreateCheckoutSession } from "@/src/common/hooks/payments/use-create-checkout-session";
 import { useCancelSubscription } from "@/src/common/hooks/payments/use-cancel-subscription";
 import { SubscriptionCard } from "./subscription-card";
-import { useTenantStore } from "@/src/common/stores/tenant-store";
+import { useTenantStore } from "@/src/shared/stores/tenant-store";
 
 export function SubscriptionsSection() {
   const t = useTranslations("payments.subscriptions");

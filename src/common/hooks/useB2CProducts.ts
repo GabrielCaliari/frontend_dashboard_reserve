@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { b2cProductsService } from "@/src/common/services/b2c-products-service";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 
 export function useListB2CProducts() {
   const hasTenant = useHasSelectedTenant();

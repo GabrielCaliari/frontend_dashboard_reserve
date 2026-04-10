@@ -3,8 +3,8 @@
 import listEmailCampaignService from "@/src/common/services/email-campaign/list-email-campaign-service";
 import EmailCampaignTableDropdownMenu from "../dropdow-menu/email-campaign-table-dropdown-menu";
 import CampaignsTableRow from "./campaigns-table-row";
-import { formatDate, getEnumLabel } from "@/src/common/lib/utils";
-import { EEmailCampaignStatus } from "@/src/common/enums/email-campaign";
+import { formatDate, getEnumLabel } from "@/src/shared/lib/utils";
+import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
 import { getTranslations } from "next-intl/server";
 
 export async function CampaignsTable() {

@@ -7,7 +7,7 @@ import { useTranslations, useLocale } from "next-intl";
 import type {
   Appointment,
   EAppointmentStatus,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 interface AppointmentsCalendarProps {
   appointments: Appointment[];

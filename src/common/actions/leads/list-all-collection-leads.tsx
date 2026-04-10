@@ -1,7 +1,7 @@
 "use server";
 
 import { listAllCollectionLeadsService } from "@/src/common/services/leads/list-all-collection-leads-service";
-import type { LeadListResponse } from "@/src/common/@types/@lead";
+import type { LeadListResponse } from "@/src/shared/domain/types/@lead";
 
 interface ListAllCollectionLeadsParams {
   page?: number;

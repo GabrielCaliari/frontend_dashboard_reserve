@@ -6,7 +6,7 @@
  */
 
 import { AxiosError } from "axios";
-import { ApiErrorResponse } from "@/src/common/@types/@access-management";
+import { ApiErrorResponse } from "@/src/shared/domain/types/@access-management";
 
 // ============================================================================
 // Error Constants

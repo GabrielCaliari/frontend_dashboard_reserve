@@ -9,7 +9,7 @@ import type {
   StatsTimeseriesQuery,
   StatsTimeseriesResponse,
   StatsModuleResponse,
-} from "@/src/common/@types/@stats";
+} from "@/src/shared/domain/types/@stats";
 
 function buildDashboardParams(query: StatsDashboardQuery = {}) {
   const params: Record<string, string> = {};

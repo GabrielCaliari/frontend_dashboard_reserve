@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import type {
   ECouponScope,
   ECouponAppliesTo,
-} from "@/src/common/@types/@coupons";
+} from "@/src/shared/domain/types/@coupons";
 
 interface CouponFiltersBarProps {
   search: string;

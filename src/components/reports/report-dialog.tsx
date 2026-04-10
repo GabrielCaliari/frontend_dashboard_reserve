@@ -4,8 +4,8 @@ import { useEffect, ChangeEvent } from "react";
 import { Button, Input } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useFormik } from "formik";
-import { ReportSchema } from "@/src/common/schemas/report-schema";
-import type { Report } from "@/src/common/@types/@report";
+import { ReportSchema } from "@/src/shared/schemas/report-schema";
+import type { Report } from "@/src/shared/domain/types/@report";
 import {
   Sheet,
   SheetContent,

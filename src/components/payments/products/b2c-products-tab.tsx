@@ -37,7 +37,7 @@ import { GlobalFeesModal } from "./global-fees-modal";
 import { CategoriesModal } from "./categories-modal";
 import { ProductFeesModal } from "./product-fees-modal";
 import { B2CEffectiveFeeCell, B2CFinalPriceCell } from "./effective-fee-cell";
-import type { Product } from "@/src/common/@types/@b2c-products";
+import type { Product } from "@/src/shared/domain/types/@b2c-products";
 
 interface B2CProductsTabProps {
   refreshKey?: number;

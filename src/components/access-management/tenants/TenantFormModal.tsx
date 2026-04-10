@@ -16,8 +16,8 @@ import {
   updateTenantSchema,
   type CreateTenantFormData,
   type UpdateTenantFormData,
-} from "@/src/common/schemas/access-management/tenant-schema";
-import { Tenant } from "@/src/common/@types/@access-management";
+} from "@/src/shared/schemas/access-management/tenant-schema";
+import { Tenant } from "@/src/shared/domain/types/@access-management";
 import { useTranslations } from "next-intl";
 
 interface TenantFormModalProps {

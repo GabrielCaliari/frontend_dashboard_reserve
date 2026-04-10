@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getLeadAction } from "@/src/common/actions/leads/get-lead";
-import type { LeadDetailResponse } from "@/src/common/@types/@lead";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { LeadDetailResponse } from "@/src/shared/domain/types/@lead";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 interface UseGetLeadParams {
   id: string;

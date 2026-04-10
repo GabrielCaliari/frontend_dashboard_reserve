@@ -9,7 +9,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Article } from "@/src/common/@types/@cms-article";
+import { Article } from "@/src/shared/domain/types/@cms-article";
 import { ArticleContentRenderer } from "@/src/components/cms/articles/article-content-renderer";
 
 export interface PublicArticleContentProps {

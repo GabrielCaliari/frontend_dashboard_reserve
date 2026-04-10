@@ -64,12 +64,12 @@ import {
   useDetachAsset,
   useReorderRelations,
 } from "@/src/common/hooks/cms/use-relations";
-import { formatFileSize } from "@/src/common/utils/format-file-size";
+import { formatFileSize } from "@/src/shared/utils/format-file-size";
 import type {
   CmsMediaId,
   MediaAsset,
   MediaRelation,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 

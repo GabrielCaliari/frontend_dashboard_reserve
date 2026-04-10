@@ -1,7 +1,7 @@
 "use server";
 
 import { listCollectionsService } from "@/src/common/services/leads/list-collections-service";
-import type { CollectionListResponse } from "@/src/common/@types/@lead";
+import type { CollectionListResponse } from "@/src/shared/domain/types/@lead";
 
 interface ListCollectionsParams {
   page?: number;

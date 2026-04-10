@@ -9,8 +9,8 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import { useCreateLead } from "@/src/common/hooks/leads/use-create-lead";
-import type { CreateLeadDto } from "@/src/common/@types/@lead";
-import { EOriginLead } from "@/src/common/@types/@lead";
+import type { CreateLeadDto } from "@/src/shared/domain/types/@lead";
+import { EOriginLead } from "@/src/shared/domain/types/@lead";
 
 const ORIGIN_OPTIONS = [
   { value: String(EOriginLead.seo_tool), label: "SEO Tool" },

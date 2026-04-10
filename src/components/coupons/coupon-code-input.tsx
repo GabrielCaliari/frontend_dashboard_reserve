@@ -7,7 +7,7 @@ import { couponsService } from "@/src/common/services/coupons-service";
 import type {
   ValidateCouponPayload,
   CouponValidationResult,
-} from "@/src/common/@types/@coupons";
+} from "@/src/shared/domain/types/@coupons";
 import { isAxiosError } from "axios";
 
 const RATE_LIMIT_LOCKOUT_SECONDS = 60;

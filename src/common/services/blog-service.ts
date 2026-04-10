@@ -5,7 +5,7 @@ import type {
   BlogUpdateInput,
   BlogListResponse,
   BlogSecretKeyResponse,
-} from "@/src/common/@types/@blog";
+} from "@/src/shared/domain/types/@blog";
 
 export const blogService = {
   // List all blogs (tenant_id via header x-tenant-id)

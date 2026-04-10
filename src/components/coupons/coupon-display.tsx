@@ -2,7 +2,7 @@
 
 import { Chip } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
-import type { DiscountCoupon } from "@/src/common/@types/@coupons";
+import type { DiscountCoupon } from "@/src/shared/domain/types/@coupons";
 
 // ---------------------------------------------------------------------------
 // CouponBadgeStatus

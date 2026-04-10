@@ -4,7 +4,7 @@ import type {
   CreateStripePlanDto,
   UpdateStripePlanDto,
   ArchivePlanResponse,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export async function listPlansAdminService(): Promise<StripePlan[]> {
   // O tenant_id deve vir do header x-tenant-id (injetado automaticamente pelo interceptor)

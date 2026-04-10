@@ -6,7 +6,7 @@ import {
   deleteBlockedPeriodService,
   type ListBlockedPeriodsParams,
 } from "@/src/common/services/appointments/blocked-periods-service";
-import type { BlockedPeriod } from "@/src/common/@types/@appointment";
+import type { BlockedPeriod } from "@/src/shared/domain/types/@appointment";
 
 export function useListBlockedPeriods(params: ListBlockedPeriodsParams = {}) {
   return useQuery({

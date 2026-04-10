@@ -9,8 +9,8 @@ import {
   type CreateCollectionDto,
   type UpdateCollectionDto,
 } from "@/src/common/services/cms-media-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
-import type { CmsMediaId } from "@/src/common/@types/@cms-media";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
+import type { CmsMediaId } from "@/src/shared/domain/types/@cms-media";
 
 /**
  * Query key factory for collections

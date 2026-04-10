@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl";
 import type {
   Subscription,
   SubscriptionStatus,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 const STATUS_ICON: Record<SubscriptionStatus, any> = {
   active: CheckCircle,

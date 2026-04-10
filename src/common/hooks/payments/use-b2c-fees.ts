@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { b2cProductsService } from "@/src/common/services/b2c-products-service";
 import { b2bPaymentsService } from "@/src/common/services/b2b-payments-service";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import { toast } from "react-hot-toast";
 
 // ─── Tipo compartilhado de custo calculado ────────────────────────────────────

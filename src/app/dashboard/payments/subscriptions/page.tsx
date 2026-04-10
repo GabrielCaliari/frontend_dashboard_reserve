@@ -39,7 +39,7 @@ import type {
   PaymentMovement,
   MovementType,
   MovementStatus,
-} from "@/src/common/@types/@payment-movements";
+} from "@/src/shared/domain/types/@payment-movements";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

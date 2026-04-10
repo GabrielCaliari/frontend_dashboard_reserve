@@ -6,7 +6,7 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import { MoreVertical, Eye, Edit, Trash } from "lucide-react";
 import { Lead } from "../email-builder/modals/LeadDetailModal";
-import { displayOrigin } from "@/src/common/utils";
+import { displayOrigin } from "@/src/shared/utils";
 import { useTranslations } from "next-intl";
 
 // Componente de Menu de Ações

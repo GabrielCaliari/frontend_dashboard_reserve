@@ -1,5 +1,5 @@
 import { apiClient } from "@/src/common/config/api";
-import type { LeadListResponse } from "@/src/common/@types/@lead";
+import type { LeadListResponse } from "@/src/shared/domain/types/@lead";
 
 interface GetCollectionLeadsParams {
   page?: number;

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Button, Spinner } from "@heroui/react";
 import { Plus, LayoutGrid } from "lucide-react";
-import type { Blog } from "@/src/common/@types/@cms-blog";
+import type { Blog } from "@/src/shared/domain/types/@cms-blog";
 import BlogCard from "./blog-card";
 import { CmsPageHeader, CmsTabItem } from "../shared/cms-page-header";
 

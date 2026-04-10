@@ -25,7 +25,7 @@ import { BatchSizeConfigDialog } from "../email-builder/modals/batch-size-config
 import { CopyCreatedDialog } from "../email-builder/modals/copy-created-dialog";
 import { Input } from "./input";
 import { Label } from "./label";
-import { ISmtpServer } from "@/src/common/@types/@smtp-server";
+import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import {
   Select,
   SelectItem,
@@ -33,13 +33,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
-import { IEmail } from "@/src/common/@types/@email";
+import { IEmail } from "@/src/shared/domain/types/@email";
 import { Button } from "./button";
 import { CampaignSetupStatusDialog } from "../email-builder/modals/campaign-setup-status-dialog";
-import { EEmailCampaignStatus } from "@/src/common/enums/email-campaign";
+import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
 import { StartCampaignConfirmDialog } from "../email-builder/modals/start-campaign-confirm-dialog";
 import { BatchTable } from "../tables/batch-table";
-import { CampaignBatch } from "@/src/common/@types/@campaign-batch";
+import { CampaignBatch } from "@/src/shared/domain/types/@campaign-batch";
 import { closeSetupService } from "@/src/common/services/email-campaign/close-setup-service";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";

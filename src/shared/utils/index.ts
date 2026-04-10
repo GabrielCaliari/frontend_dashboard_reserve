@@ -1,6 +1,6 @@
 export const removeSpecialCharacters = (value: string) =>
   value.replace(/[^\d]/g, "");
-import { EOriginLead } from "@/src/common/@types/@lead";
+import { EOriginLead } from "@/src/shared/domain/types/@lead";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 

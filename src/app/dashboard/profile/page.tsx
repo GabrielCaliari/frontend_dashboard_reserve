@@ -13,9 +13,9 @@ import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
 import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
-import { useCurrentAdmin } from "@/src/common/hooks/use-current-admin";
+import { useCurrentAdmin } from "@/src/shared/hooks/use-current-admin";
 import { useAdminById } from "@/src/common/hooks/access-management/useAdmins";
-import { formatDate } from "@/src/common/lib/utils";
+import { formatDate } from "@/src/shared/lib/utils";
 import { CheckCircle, XCircle } from "lucide-react";
 
 export default function ProfilePage() {

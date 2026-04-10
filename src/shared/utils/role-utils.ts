@@ -1,4 +1,4 @@
-import { AdminRole } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 
 export type RoleColor =
   | "primary"

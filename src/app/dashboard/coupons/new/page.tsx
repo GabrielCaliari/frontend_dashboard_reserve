@@ -7,9 +7,9 @@ import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { CouponForm } from "@/src/components/coupons/coupon-form";
 import { useCreateCoupon } from "@/src/common/hooks/useCoupons";
-import { toast } from "@/src/common/hooks/use-toast";
-import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
-import type { CreateCouponPayload } from "@/src/common/@types/@coupons";
+import { toast } from "@/src/shared/hooks/use-toast";
+import { mapErrorMessage } from "@/src/shared/utils/error-message-mapper";
+import type { CreateCouponPayload } from "@/src/shared/domain/types/@coupons";
 
 export default function CouponsNewPage() {
   const t = useTranslations("coupons");

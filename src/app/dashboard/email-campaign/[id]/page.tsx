@@ -1,5 +1,5 @@
 import listEmailCampaignByIdService from "@/src/common/services/email-campaign/list-email-campaign-by-id-service";
-import { EEmailCampaignStatus } from "@/src/common/enums/email-campaign";
+import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
 import {
   AlertTriangle,
   CheckCircle,
@@ -11,7 +11,7 @@ import {
   Zap,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
-import { formatDate } from "@/src/common/lib/utils";
+import { formatDate } from "@/src/shared/lib/utils";
 import { CampaignSetupStatus } from "@/src/components/ui/campaign-setup-status";
 import {
   Card,
@@ -20,7 +20,7 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import listSmtpServers from "@/src/common/actions/smtp-server/list-smtp-servers";
-import { ISmtpServer } from "@/src/common/@types/@smtp-server";
+import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import listPrimaryCopyByEmailCampaignService from "@/src/common/services/email-campaign/list-primary-copy-by-email-campaign-service";
 import listBatchesByEmailCampaignService from "@/src/common/services/email-campaign/list-batches-by-email-campaign-service";
 import { BatchTable } from "@/src/components/tables/batch-table";

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { blogService } from "@/src/common/services/blog-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 export function useRegenerateSecretKey() {
   const queryClient = useQueryClient();

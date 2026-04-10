@@ -3,7 +3,7 @@ import type {
   Appointment,
   AppointmentListResponse,
   EAppointmentStatus,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 export interface ListAppointmentsParams {
   page?: number;

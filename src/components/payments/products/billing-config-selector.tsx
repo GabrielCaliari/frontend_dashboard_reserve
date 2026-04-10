@@ -15,7 +15,7 @@ import type {
   BillingConfiguration,
   BillingMode,
   BillingInterval,
-} from "@/src/common/@types/@billing-config";
+} from "@/src/shared/domain/types/@billing-config";
 
 type BillingPreset =
   | "monthly"

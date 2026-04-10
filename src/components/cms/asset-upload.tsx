@@ -16,7 +16,7 @@ import { useUploadAsset } from "@/src/common/hooks/cms/use-assets";
 import type {
   MediaCollection,
   UploadQueueItem,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 import { toast } from "sonner";
 
 interface AssetUploadProps {

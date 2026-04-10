@@ -11,7 +11,7 @@ import {
 } from "@/src/components/ui/card";
 import { StatKpiCard } from "./stat-kpi-card";
 import { MetadataTable } from "./metadata-table";
-import type { MetricGroupResponse } from "@/src/common/@types/@stats";
+import type { MetricGroupResponse } from "@/src/shared/domain/types/@stats";
 import { formatStatValue } from "./format-stat-value";
 
 interface StatGroupCardProps {

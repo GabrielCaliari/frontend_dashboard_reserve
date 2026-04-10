@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { IEmail } from "../common/@types/@email";
-import { ISmtpServer } from "../common/@types/@smtp-server";
-import { EEmailCampaignStatus } from "../common/enums/email-campaign";
+import { IEmail } from "@/src/shared/domain/types/@email";
+import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
+import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
 import { Button } from "./ui/button";
 import { StartCampaignConfirmDialog } from "./email-builder/modals/start-campaign-confirm-dialog";
 import { updateMetricsService } from "@/src/common/services/email-campaign/update-metrics-service";

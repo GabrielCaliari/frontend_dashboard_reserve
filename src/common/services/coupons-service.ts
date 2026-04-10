@@ -7,7 +7,7 @@ import type {
   ValidateCouponPayload,
   CouponValidationResult,
   CouponLinkResponse,
-} from "@/src/common/@types/@coupons";
+} from "@/src/shared/domain/types/@coupons";
 
 export const couponsService = {
   /**

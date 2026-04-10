@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { listMyTenantsService } from "../services/tenant";
-import type { Tenant } from "@/src/common/@types/@auth";
+import { listMyTenantsService } from "@/src/common/services/tenant";
+import type { Tenant } from "@/src/shared/domain/types/@auth";
 
 export default function useTenants() {
   const { data, isLoading, error, refetch } = useQuery<Tenant[] | string>({

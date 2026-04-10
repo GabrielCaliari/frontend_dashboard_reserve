@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBillingConfigAction } from "@/src/common/actions/payments/get-billing-config";
-import type { TenantBillingConfig } from "@/src/common/@types/@payments";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { TenantBillingConfig } from "@/src/shared/domain/types/@payments";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 export function useBillingConfig() {
   const tenantId = useSelectedTenantId();

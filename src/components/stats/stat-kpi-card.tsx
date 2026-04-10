@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/src/components/ui/card";
 import { TrendBadge } from "./trend-badge";
-import type { MetricValueResponse } from "@/src/common/@types/@stats";
+import type { MetricValueResponse } from "@/src/shared/domain/types/@stats";
 import { formatStatValue } from "./format-stat-value";
 
 interface StatKpiCardProps {

@@ -15,8 +15,8 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { Edit, Power, Trash2, ExternalLink } from "lucide-react";
-import { User } from "@/src/common/@types/@access-management";
-import { formatDate } from "@/src/common/lib/utils";
+import { User } from "@/src/shared/domain/types/@access-management";
+import { formatDate } from "@/src/shared/lib/utils";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
 
 interface UserTableProps {

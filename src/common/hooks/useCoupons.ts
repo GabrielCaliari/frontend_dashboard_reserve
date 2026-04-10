@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { couponsService } from "@/src/common/services/coupons-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import type {
   CreateCouponPayload,
   UpdateCouponPayload,
-} from "@/src/common/@types/@coupons";
+} from "@/src/shared/domain/types/@coupons";
 
 const QUERY_KEY = "coupons";
 

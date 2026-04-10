@@ -15,8 +15,8 @@ import { useTranslations } from "next-intl";
 import {
   userSchema,
   type UpdateUserFormData,
-} from "@/src/common/schemas/access-management/user-schema";
-import { User } from "@/src/common/@types/@access-management";
+} from "@/src/shared/schemas/access-management/user-schema";
+import { User } from "@/src/shared/domain/types/@access-management";
 
 interface UserFormModalProps {
   isOpen: boolean;

@@ -31,7 +31,7 @@ import {
   useUpdateBlockedPeriod,
   useDeleteBlockedPeriod,
 } from "@/src/common/hooks/appointments/use-blocked-periods";
-import type { BlockedPeriod } from "@/src/common/@types/@appointment";
+import type { BlockedPeriod } from "@/src/shared/domain/types/@appointment";
 
 // ─── LocalizedDateInput ──────────────────────────────────────────────────────
 

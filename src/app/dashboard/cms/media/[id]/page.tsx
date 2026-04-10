@@ -31,11 +31,11 @@ import {
 import { Upload, Pencil, Trash2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { formatFileSize } from "@/src/common/utils/format-file-size";
+import { formatFileSize } from "@/src/shared/utils/format-file-size";
 import type {
   MediaAsset,
   CollectionType,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 
 const TYPE_BADGES: Partial<
   Record<

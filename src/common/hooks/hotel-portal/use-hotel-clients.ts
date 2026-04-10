@@ -3,7 +3,7 @@ import { hotelPortalService } from "@/src/common/services/hotel-portal-service";
 import type {
   CreateHotelClientDto,
   UpdateHotelClientDto,
-} from "@/src/common/@types/@hotel-portal";
+} from "@/src/shared/domain/types/@hotel-portal";
 
 export function useHotelClients() {
   return useQuery({

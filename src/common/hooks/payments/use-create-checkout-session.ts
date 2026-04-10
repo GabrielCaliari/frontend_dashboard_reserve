@@ -3,7 +3,7 @@ import { apiClient } from "@/src/common/config/api";
 import type {
   CreateCheckoutSessionDto,
   CheckoutSessionResponse,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export function useCreateCheckoutSession() {
   return useMutation({

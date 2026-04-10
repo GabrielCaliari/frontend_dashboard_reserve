@@ -13,7 +13,7 @@ import { useListArticles } from "@/src/common/hooks/cms/use-list-articles";
 import { useListBlogs } from "@/src/common/hooks/cms/use-list-blogs";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import { useCollections } from "@/src/common/hooks/cms/use-collections";
-import type { Article } from "@/src/common/@types/@cms-article";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
 
 interface OverviewKpiProps {
   label: string;

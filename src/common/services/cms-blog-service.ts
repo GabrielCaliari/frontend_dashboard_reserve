@@ -2,16 +2,16 @@ import { cmsApiClient } from "@/src/common/config/api";
 import type {
   MediaAsset,
   PaginatedResponse,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 import type {
   Blog,
   CreateBlogDto,
   UpdateBlogDto,
-} from "@/src/common/@types/@cms-blog";
+} from "@/src/shared/domain/types/@cms-blog";
 import {
   withRetry,
   transformCMSError,
-} from "@/src/common/utils/cms-error-handler";
+} from "@/src/shared/utils/cms-error-handler";
 
 const getResponsePayload = <T>(payload: T | { data: T }): T => {
   if (

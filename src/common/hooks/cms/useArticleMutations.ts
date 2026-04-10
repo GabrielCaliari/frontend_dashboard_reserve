@@ -7,14 +7,14 @@ import {
   archiveArticle,
   unarchiveArticle,
 } from "@/src/common/services/cms-article-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import { ARTICLE_QUERY_KEYS } from "./useArticles";
 import { useCMSToast } from "./use-cms-toast";
 import type {
   CreateArticleDto,
   UpdateArticleDto,
   Article,
-} from "@/src/common/@types/@cms-article";
+} from "@/src/shared/domain/types/@cms-article";
 
 /**
  * Hook to create a new article

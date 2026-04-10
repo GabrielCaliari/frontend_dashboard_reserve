@@ -21,12 +21,12 @@ import {
   useDeleteBlog,
   useRegenerateBlogKey,
 } from "@/src/common/hooks/cms/useBlogMutations";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import type {
   Blog,
   CreateBlogDto,
   UpdateBlogDto,
-} from "@/src/common/@types/@cms-blog";
+} from "@/src/shared/domain/types/@cms-blog";
 
 export default function BlogsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);

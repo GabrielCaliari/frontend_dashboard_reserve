@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { paymentMovementsService } from "@/src/common/services/payments/payment-movements-service";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import type {
   PaymentMovement,
   MovementStatus,
-} from "@/src/common/@types/@payment-movements";
+} from "@/src/shared/domain/types/@payment-movements";
 
 // Status que indicam carrinho abandonado ou lead que não fechou
 const ABANDONED_STATUSES: MovementStatus[] = [

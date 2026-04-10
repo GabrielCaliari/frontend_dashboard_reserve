@@ -6,7 +6,7 @@ import { useDeleteCollection } from "@/src/common/hooks/leads/use-delete-collect
 import {
   LeadCollection,
   CollectionAccessMode,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 import {
   Table,
   TableHeader,

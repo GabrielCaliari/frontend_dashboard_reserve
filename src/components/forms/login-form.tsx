@@ -1,11 +1,11 @@
 "use client";
 
-import { loginSchema } from "@/src/common/schemas/login-schema";
+import { loginSchema } from "@/src/shared/schemas/login-schema";
 import { Input } from "@heroui/react";
 import { useFormik } from "formik";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
-import useAdminAuthentication from "@/src/common/hooks/use-user-authentication";
+import useAdminAuthentication from "@/src/shared/hooks/use-user-authentication";
 import { useTranslations } from "next-intl";
 import { PasswordInput } from "@/src/components/ui/password-input";
 import { Button } from "@/src/components/ui/button";

@@ -3,7 +3,7 @@ import type {
   TenantBillingConfig,
   CreateBillingConfigDto,
   UpdateBillingConfigDto,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export async function getBillingConfigService(): Promise<TenantBillingConfig> {
   const response = await apiClient.get<TenantBillingConfig>(

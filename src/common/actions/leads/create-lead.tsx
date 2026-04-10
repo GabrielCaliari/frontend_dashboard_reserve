@@ -4,7 +4,7 @@ import { createLeadService } from "@/src/common/services/leads/create-lead-servi
 import type {
   CreateLeadDto,
   LeadDetailResponse,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 
 export async function createLeadAction(
   data: CreateLeadDto,

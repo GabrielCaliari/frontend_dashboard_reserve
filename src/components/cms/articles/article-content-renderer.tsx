@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { cn } from "@/src/common/lib/utils";
-import { sanitizeHtml } from "@/src/common/utils/content-sanitizer";
+import { cn } from "@/src/shared/lib/utils";
+import { sanitizeHtml } from "@/src/shared/utils/content-sanitizer";
 
 interface ArticleContentRendererProps {
   content: string;

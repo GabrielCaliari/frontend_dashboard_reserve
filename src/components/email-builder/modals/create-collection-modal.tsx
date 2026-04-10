@@ -14,8 +14,8 @@ import { useCreateCollection } from "@/src/common/hooks/leads/use-create-collect
 import {
   createCollectionSchema,
   type CreateCollectionFormData,
-} from "@/src/common/schemas/lead-schema";
-import { CollectionAccessMode } from "@/src/common/@types/@lead";
+} from "@/src/shared/schemas/lead-schema";
+import { CollectionAccessMode } from "@/src/shared/domain/types/@lead";
 import { useState } from "react";
 
 interface CreateCollectionModalProps {

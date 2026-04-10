@@ -6,9 +6,9 @@ import { Card, CardBody, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useStatsGlobalDashboard } from "@/src/common/hooks/stats";
-import usePermissions from "@/src/common/hooks/use-permissions";
+import usePermissions from "@/src/shared/hooks/use-permissions";
 import { StatGroupCard, DateRangePicker } from "@/src/components/stats";
-import { formatDate } from "@/src/common/lib/utils";
+import { formatDate } from "@/src/shared/lib/utils";
 
 function getDefaultRange() {
   const to = new Date();

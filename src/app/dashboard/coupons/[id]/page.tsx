@@ -11,9 +11,9 @@ import { CouponSummaryCard } from "@/src/components/coupons/coupon-summary-card"
 import { CouponForm } from "@/src/components/coupons/coupon-form";
 import { CouponDeactivateModal } from "@/src/components/coupons/coupon-deactivate-modal";
 import { CouponLinkModal } from "@/src/components/coupons/coupon-link-modal";
-import { toast } from "@/src/common/hooks/use-toast";
-import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
-import type { UpdateCouponPayload } from "@/src/common/@types/@coupons";
+import { toast } from "@/src/shared/hooks/use-toast";
+import { mapErrorMessage } from "@/src/shared/utils/error-message-mapper";
+import type { UpdateCouponPayload } from "@/src/shared/domain/types/@coupons";
 import { useState } from "react";
 
 export default function CouponDetailPage() {

@@ -2,7 +2,7 @@
 
 import { useDrop } from "react-dnd";
 import { useTranslations } from "next-intl";
-import type { IEmailComponent } from "@/src/common/@types/@email-builder";
+import type { IEmailComponent } from "@/src/shared/domain/types/@email-builder";
 import EmailComponentItem from "./email-component-item";
 
 interface EmailCanvasProps {

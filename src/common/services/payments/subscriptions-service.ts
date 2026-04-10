@@ -6,7 +6,7 @@ import type {
   CheckoutSessionResponse,
   CancelSubscriptionDto,
   CancelSubscriptionResponse,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export async function getSubscriptionByTenantService(
   tenantId: string,

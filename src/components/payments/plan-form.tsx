@@ -20,7 +20,7 @@ import type {
   StripePlan,
   PlanBillingInterval,
   PlanCurrency,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

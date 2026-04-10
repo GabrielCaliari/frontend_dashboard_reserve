@@ -24,13 +24,13 @@ import {
 } from "@/src/components/ui/modal";
 
 import { Input } from "@heroui/react";
-import { useToast } from "@/src/common/hooks/use-toast";
+import { useToast } from "@/src/shared/hooks/use-toast";
 import { useTranslations } from "next-intl";
 
 import KanbanCard from "./kanban-card";
 import KanbanColumn from "./kanban-column";
 import toast from "react-hot-toast";
-import { ILeadQualificationMessage } from "@/src/common/interfaces/lead-qualification.interface";
+import { ILeadQualificationMessage } from "@/src/shared/interfaces/lead-qualification.interface";
 import { CardType } from "./kanban-board-with-autosave";
 
 // Tipos para nossos dados

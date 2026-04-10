@@ -5,7 +5,7 @@ import type {
   ListMovementsParams,
   MovementStatus,
   MovementType,
-} from "@/src/common/@types/@payment-movements";
+} from "@/src/shared/domain/types/@payment-movements";
 
 /**
  * Shape retornada pelo backend em GET /subscriptions/movements

@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { statsService } from "@/src/common/services/stats-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import type {
   CreateStatsIntegrationDto,
   UpdateStatsIntegrationDto,
-} from "@/src/common/@types/@stats";
+} from "@/src/shared/domain/types/@stats";
 import toast from "react-hot-toast";
 
 export function useStatsIntegrations() {

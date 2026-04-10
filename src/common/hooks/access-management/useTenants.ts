@@ -26,7 +26,7 @@ import type {
   ApiErrorResponse,
   AssignAdminDto,
   UpdateAdminRoleDto,
-} from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
 import type { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { adminKeys } from "@/src/common/hooks/access-management/useAdmins";

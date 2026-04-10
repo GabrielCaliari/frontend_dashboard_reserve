@@ -21,7 +21,7 @@ import Image from "next/image";
 import { Card, CardBody, Chip } from "@heroui/react";
 import { Calendar, Clock, Info } from "lucide-react";
 import { ArticleContentRenderer } from "@/src/components/cms/articles/article-content-renderer";
-import type { Article } from "@/src/common/@types/@cms-article";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
 
 interface ArticlePreviewProps {
   article: Article;

@@ -3,7 +3,7 @@ import { updateLeadAction } from "@/src/common/actions/leads/update-lead";
 import type {
   UpdateLeadDto,
   LeadDetailResponse,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 import { toast } from "react-hot-toast";
 
 interface UpdateLeadParams {

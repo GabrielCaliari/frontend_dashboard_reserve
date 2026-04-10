@@ -6,7 +6,7 @@ import {
   User,
   PaginatedResponse,
   UpdateUserDto,
-} from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
 
 export const fetchUsers = async (
   page: number = 1,

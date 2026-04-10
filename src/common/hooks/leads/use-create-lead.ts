@@ -3,7 +3,7 @@ import { createLeadAction } from "@/src/common/actions/leads/create-lead";
 import type {
   CreateLeadDto,
   LeadDetailResponse,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 import { toast } from "react-hot-toast";
 
 export function useCreateLead() {

@@ -5,11 +5,11 @@ import {
   CreateArticleDto,
   UpdateArticleDto,
   ArticleCoverImage,
-} from "@/src/common/@types/@cms-article";
+} from "@/src/shared/domain/types/@cms-article";
 import {
   withRetry,
   transformCMSError,
-} from "@/src/common/utils/cms-error-handler";
+} from "@/src/shared/utils/cms-error-handler";
 
 interface ArticleApiResponse {
   id: string | number;

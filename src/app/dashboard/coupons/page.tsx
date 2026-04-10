@@ -12,7 +12,7 @@ import { CouponPagination } from "@/src/components/coupons/coupon-pagination";
 import type {
   ECouponScope,
   ECouponAppliesTo,
-} from "@/src/common/@types/@coupons";
+} from "@/src/shared/domain/types/@coupons";
 
 const PAGE_SIZE = 50;
 

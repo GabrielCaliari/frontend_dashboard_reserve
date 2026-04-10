@@ -1,4 +1,4 @@
-import { ICreateEmailCampaign } from "../../@types/@email-campaign";
+import { ICreateEmailCampaign } from "@/src/shared/domain/types/@email-campaign";
 import api from "../../config/api";
 import { errorTypes } from "../../config/error-types";
 

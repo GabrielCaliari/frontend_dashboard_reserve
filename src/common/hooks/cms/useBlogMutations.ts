@@ -9,7 +9,7 @@ import type {
   Blog,
   CreateBlogDto,
   UpdateBlogDto,
-} from "@/src/common/@types/@cms-blog";
+} from "@/src/shared/domain/types/@cms-blog";
 import { BLOG_QUERY_KEYS } from "./useBlogs";
 import { useCMSToast } from "./use-cms-toast";
 

@@ -32,7 +32,7 @@ import { PlanForm } from "./plan-form";
 import type {
   StripePlan,
   PlanBillingInterval,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

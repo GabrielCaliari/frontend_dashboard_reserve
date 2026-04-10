@@ -12,7 +12,7 @@ import { cmsApiClient } from "@/src/common/config/api";
 import type {
   CreateArticleDto,
   UpdateArticleDto,
-} from "@/src/common/@types/@cms-article";
+} from "@/src/shared/domain/types/@cms-article";
 
 vi.mock("@/src/common/config/api", () => ({
   cmsApiClient: {

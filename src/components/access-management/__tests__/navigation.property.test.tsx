@@ -14,7 +14,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fc from "fast-check";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useRouter, useParams } from "next/navigation";
-import { AdminRole } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/shared/domain/types/@access-management";
 
 // Mock Next.js navigation hooks
 vi.mock("next/navigation", () => ({

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ShieldAlert } from "lucide-react";
-import type { ConfigSchemaField } from "@/src/common/@types/@stats";
+import type { ConfigSchemaField } from "@/src/shared/domain/types/@stats";
 
 interface DynamicConfigFormProps {
   configSchema: Record<string, ConfigSchemaField>;

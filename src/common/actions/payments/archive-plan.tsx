@@ -1,8 +1,8 @@
 "use server";
 
 import { archivePlanService } from "@/src/common/services/payments/plans-service";
-import { getTenantIdFromCookie } from "@/src/common/utils/get-tenant-id-server";
-import type { ArchivePlanResponse } from "@/src/common/@types/@payments";
+import { getTenantIdFromCookie } from "@/src/shared/utils/get-tenant-id-server";
+import type { ArchivePlanResponse } from "@/src/shared/domain/types/@payments";
 
 export async function archivePlanAction(
   id: string,

@@ -4,9 +4,9 @@ import {
   fetchAuthorById,
   CreateAuthorDto,
 } from "@/src/common/services/cms-author-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import { AUTHOR_QUERY_KEYS } from "./use-get-authors";
-import type { Author } from "@/src/common/@types/@cms-author";
+import type { Author } from "@/src/shared/domain/types/@cms-author";
 
 export function useCreateAuthor() {
   const queryClient = useQueryClient();

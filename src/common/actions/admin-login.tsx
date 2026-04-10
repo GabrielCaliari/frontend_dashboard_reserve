@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { adminLoginService } from "../services/admin-login";
-import { LoginCredentials, AuthResponse } from "@/src/common/@types/@auth";
+import { LoginCredentials, AuthResponse } from "@/src/shared/domain/types/@auth";
 import { redirect } from "next/navigation";
 import { errorTypes } from "../config/error-types";
 

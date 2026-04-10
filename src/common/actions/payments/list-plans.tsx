@@ -1,7 +1,7 @@
 "use server";
 
 import { listPlansAdminService } from "@/src/common/services/payments/plans-service";
-import type { StripePlan } from "@/src/common/@types/@payments";
+import type { StripePlan } from "@/src/shared/domain/types/@payments";
 
 export async function listPlansAction(): Promise<StripePlan[]> {
   try {

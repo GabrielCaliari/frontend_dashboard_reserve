@@ -11,7 +11,7 @@ import type {
   InsertOtaDataDto,
   PublishReportDto,
   CreateReportDto,
-} from "@/src/common/@types/@hotel-portal";
+} from "@/src/shared/domain/types/@hotel-portal";
 
 export const hotelPortalService = {
   // ── Admin: Clients ─────────────────────────────────────────────────────

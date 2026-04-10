@@ -5,11 +5,11 @@ import type {
   CreateAuthorDto,
   UpdateAuthorDto,
   AssignAvatarDto,
-} from "@/src/common/@types/@cms-author";
+} from "@/src/shared/domain/types/@cms-author";
 import {
   withRetry,
   transformCMSError,
-} from "@/src/common/utils/cms-error-handler";
+} from "@/src/shared/utils/cms-error-handler";
 
 export type { CreateAuthorDto, UpdateAuthorDto, AssignAvatarDto };
 

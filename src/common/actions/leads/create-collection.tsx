@@ -4,7 +4,7 @@ import { createCollectionService } from "@/src/common/services/leads/create-coll
 import type {
   CreateCollectionDto,
   CollectionDetailResponse,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 
 export async function createCollectionAction(
   data: CreateCollectionDto,

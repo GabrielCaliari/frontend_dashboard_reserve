@@ -1,7 +1,7 @@
 "use client";
 
 import useAdminDetails from "./useUserDatails";
-import type { AdminProfile } from "@/src/common/@types/@auth";
+import type { AdminProfile } from "@/src/shared/domain/types/@auth";
 
 export default function useAdminProfile() {
   const { data, isLoading, error, refetch } = useAdminDetails();

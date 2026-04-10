@@ -7,13 +7,13 @@ import {
   type CreateRelationDto,
   type ReorderRelationDto,
 } from "@/src/common/services/cms-media-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import { assetKeys } from "./use-assets";
 import type {
   CmsMediaId,
   MediaRelation,
   ReorderRelationsRequest,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 
 /**
  * Query key factory for relations

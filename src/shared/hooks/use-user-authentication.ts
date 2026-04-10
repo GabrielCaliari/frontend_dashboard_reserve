@@ -1,9 +1,9 @@
 "use client";
 
 import toast from "react-hot-toast";
-import { LoginCredentials } from "@/src/common/@types/@auth";
-import { adminLogin } from "../actions/admin-login";
-import { errorTypes } from "../config/error-types";
+import { LoginCredentials } from "@/src/shared/domain/types/@auth";
+import { adminLogin } from "@/src/common/actions/admin-login";
+import { errorTypes } from "@/src/common/config/error-types";
 
 export default function useAdminAuthentication() {
   const execAdminAuthentication = async ({

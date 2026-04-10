@@ -1,7 +1,7 @@
 "use server";
 
 import { getCollectionService } from "@/src/common/services/leads/get-collection-service";
-import type { CollectionDetailResponse } from "@/src/common/@types/@lead";
+import type { CollectionDetailResponse } from "@/src/shared/domain/types/@lead";
 
 export async function getCollectionAction(
   id: string,

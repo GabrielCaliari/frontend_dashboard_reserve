@@ -16,7 +16,7 @@ import type {
   StatsIntegration,
   AvailableIntegration,
   UpdateStatsIntegrationDto,
-} from "@/src/common/@types/@stats";
+} from "@/src/shared/domain/types/@stats";
 
 interface EditIntegrationModalProps {
   isOpen: boolean;

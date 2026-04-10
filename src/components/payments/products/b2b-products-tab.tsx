@@ -29,7 +29,7 @@ import { useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
 import { useListB2BProducts } from "@/src/common/hooks/useB2BPayments";
 import { useCategories } from "@/src/common/hooks/payments/use-b2c-fees";
-import type { B2BProduct } from "@/src/common/@types/@b2b-payments";
+import type { B2BProduct } from "@/src/shared/domain/types/@b2b-payments";
 import { GenerateCheckoutLinkModal } from "./generate-checkout-link-modal";
 import { B2BGlobalFeesModal } from "./b2b-global-fees-modal";
 import { CategoriesModal } from "./categories-modal";

@@ -5,7 +5,7 @@ import {
   type PublicArticlesParams,
   type PublicArticlesResponse,
 } from "@/src/common/services/cms-public-service";
-import type { Article } from "@/src/common/@types/@cms-article";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
 
 /**
  * Query keys for public article queries

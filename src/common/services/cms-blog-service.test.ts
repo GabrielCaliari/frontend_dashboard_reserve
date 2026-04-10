@@ -12,7 +12,7 @@ import type {
   Blog,
   CreateBlogDto,
   UpdateBlogDto,
-} from "@/src/common/@types/@cms-blog";
+} from "@/src/shared/domain/types/@cms-blog";
 
 // Mock the API client
 vi.mock("@/src/common/config/cms-api-client", () => ({

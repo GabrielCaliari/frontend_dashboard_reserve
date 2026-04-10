@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { Tenant } from "@/src/common/@types/@auth";
+import type { Tenant } from "@/src/shared/domain/types/@auth";
 
 export type DashboardScope = "tenant" | "global";
 

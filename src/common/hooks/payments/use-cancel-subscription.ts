@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cancelSubscriptionAction } from "@/src/common/actions/payments/cancel-subscription";
-import type { CancelSubscriptionDto } from "@/src/common/@types/@payments";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { CancelSubscriptionDto } from "@/src/shared/domain/types/@payments";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 export function useCancelSubscription() {
   const queryClient = useQueryClient();

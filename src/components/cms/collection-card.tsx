@@ -26,7 +26,7 @@ import {
 import type {
   MediaCollection,
   CollectionType,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 
 interface CollectionCardProps {
   collection: MediaCollection;

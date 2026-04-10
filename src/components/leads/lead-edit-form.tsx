@@ -8,7 +8,7 @@ import type {
   Lead,
   UpdateLeadDto,
   EOriginLead,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 
 const ORIGIN_OPTIONS = [
   { value: "1", label: "SEO Tool" },

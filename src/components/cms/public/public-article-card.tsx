@@ -10,8 +10,8 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Article } from "@/src/common/@types/@cms-article";
-import { truncateHtml } from "@/src/common/utils/content-sanitizer";
+import { Article } from "@/src/shared/domain/types/@cms-article";
+import { truncateHtml } from "@/src/shared/utils/content-sanitizer";
 import { Card, CardBody, CardFooter } from "@heroui/react";
 
 export interface PublicArticleCardProps {

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { blogService } from "@/src/common/services/blog-service";
-import type { BlogCreateInput } from "@/src/common/@types/@blog";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { BlogCreateInput } from "@/src/shared/domain/types/@blog";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 export function useCreateBlog() {
   const queryClient = useQueryClient();

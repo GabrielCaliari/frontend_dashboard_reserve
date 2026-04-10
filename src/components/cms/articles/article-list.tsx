@@ -16,8 +16,8 @@ import {
   Pagination,
 } from "@heroui/react";
 import { Search, FileText, Sparkles, Edit, Plus } from "lucide-react";
-import type { Article } from "@/src/common/@types/@cms-article";
-import type { Author } from "@/src/common/@types/@cms-author";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
+import type { Author } from "@/src/shared/domain/types/@cms-author";
 import ArticleStatusBadge from "./article-status-badge";
 import { CmsPageHeader, CmsTabItem } from "../shared/cms-page-header";
 

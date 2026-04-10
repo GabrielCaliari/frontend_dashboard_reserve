@@ -3,8 +3,8 @@ import {
   fetchBlogs,
   fetchBlogById,
 } from "@/src/common/services/cms-blog-service";
-import type { Blog } from "@/src/common/@types/@cms-blog";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import type { Blog } from "@/src/shared/domain/types/@cms-blog";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 /**
  * Query keys for blog-related queries

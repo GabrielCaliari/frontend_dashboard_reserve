@@ -11,7 +11,7 @@ import type {
   CreateReportDto,
   UpdateReportDto,
   ReportsListResponse,
-} from "@/src/common/@types/@report";
+} from "@/src/shared/domain/types/@report";
 
 export const reportService = {
   async list(

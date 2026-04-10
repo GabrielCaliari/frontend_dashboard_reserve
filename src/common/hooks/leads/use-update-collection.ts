@@ -3,7 +3,7 @@ import { updateCollectionAction } from "@/src/common/actions/leads/update-collec
 import type {
   UpdateCollectionDto,
   CollectionDetailResponse,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 import { toast } from "react-hot-toast";
 
 interface UpdateCollectionParams {

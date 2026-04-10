@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/src/components/ui/input";
-import { cn } from "@/src/common/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 
 interface SearchInputProps {
   value: string;

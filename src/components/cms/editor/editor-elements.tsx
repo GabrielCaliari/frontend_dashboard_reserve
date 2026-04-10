@@ -9,7 +9,7 @@ import {
 import { KEYS } from "platejs";
 import { upsertLink, unwrapLink } from "@platejs/link";
 import { ExternalLink, GripVertical, Link2Off, Pencil } from "lucide-react";
-import { cn } from "@/src/common/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 
 // ---------------------------------------------------------------------------
 // LinkElement — Trello-like floating card on click

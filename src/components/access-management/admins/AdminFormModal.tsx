@@ -19,17 +19,17 @@ import {
   type CreateAdminFormData,
   type UpdateAdminFormData,
   type AdminRoleType,
-} from "@/src/common/schemas/access-management/admin-schema";
+} from "@/src/shared/schemas/access-management/admin-schema";
 import {
   TenantScopedRole,
   type TenantScopedRoleType,
-} from "@/src/common/schemas/access-management/tenant-schema";
+} from "@/src/shared/schemas/access-management/tenant-schema";
 import {
   Admin,
   AdminRole,
   TenantAssignmentChange,
-} from "@/src/common/@types/@access-management";
-import usePermissions from "@/src/common/hooks/use-permissions";
+} from "@/src/shared/domain/types/@access-management";
+import usePermissions from "@/src/shared/hooks/use-permissions";
 import { useTenants } from "@/src/common/hooks/access-management/useTenants";
 import { fetchAdminById } from "@/src/common/services/access-management/admin-service";
 import { Plus, Building2, Trash2 } from "lucide-react";

@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import type { StatsTimeseriesItem } from "@/src/common/@types/@stats";
+import type { StatsTimeseriesItem } from "@/src/shared/domain/types/@stats";
 
 interface StatsTimeseriesCardProps {
   title: string;

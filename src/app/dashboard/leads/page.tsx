@@ -34,9 +34,9 @@ import { listLeadsService } from "@/src/common/services/leads/list-leads-service
 import { getCollectionLeadsService } from "@/src/common/services/leads/get-collection-leads-service";
 import { LeadDrawer } from "@/src/components/leads/lead-drawer";
 import { CreateLeadDialog } from "@/src/components/leads/create-lead-dialog";
-import type { Lead } from "@/src/common/@types/@lead";
-import { ELeadStatus, EOriginLead } from "@/src/common/@types/@lead";
-import { formatDate } from "@/src/common/lib/utils";
+import type { Lead } from "@/src/shared/domain/types/@lead";
+import { ELeadStatus, EOriginLead } from "@/src/shared/domain/types/@lead";
+import { formatDate } from "@/src/shared/lib/utils";
 
 export default function LeadsPage() {
   const router = useRouter();

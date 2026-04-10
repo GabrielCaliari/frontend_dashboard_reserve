@@ -4,7 +4,7 @@ import { createCheckoutSessionService } from "@/src/common/services/payments/sub
 import type {
   CreateCheckoutSessionDto,
   CheckoutSessionResponse,
-} from "@/src/common/@types/@payments";
+} from "@/src/shared/domain/types/@payments";
 
 export async function createCheckoutSessionAction(
   data: CreateCheckoutSessionDto,

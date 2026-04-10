@@ -2,7 +2,7 @@ import { apiClient } from "@/src/common/config/api";
 import type {
   LeadAttachment,
   AddAttachmentDto,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 
 export async function addLeadAttachmentService(
   leadId: string,

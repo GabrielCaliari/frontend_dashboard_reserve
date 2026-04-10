@@ -4,7 +4,7 @@ import { updateLeadService } from "@/src/common/services/leads/update-lead-servi
 import type {
   LeadDetailResponse,
   UpdateLeadDto,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 
 export async function updateLeadAction(
   id: string,

@@ -34,7 +34,7 @@ import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-st
 import { useDeleteLead } from "@/src/common/hooks/leads/use-delete-lead";
 import { LeadEditForm } from "./lead-edit-form";
 import { LeadAttachments } from "./lead-attachments";
-import { ELeadStatus, EOriginLead } from "@/src/common/@types/@lead";
+import { ELeadStatus, EOriginLead } from "@/src/shared/domain/types/@lead";
 
 const STATUS_LABELS: Record<number, string> = {
   [ELeadStatus.new]: "New",

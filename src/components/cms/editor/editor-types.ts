@@ -1,5 +1,5 @@
 import type { Value } from "platejs";
-import type { ContentStats } from "@/src/common/@types/cms";
+import type { ContentStats } from "@/src/shared/domain/types/cms";
 
 export type { ContentStats };
 export type { Value };

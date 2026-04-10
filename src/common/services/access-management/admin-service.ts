@@ -12,7 +12,7 @@ import {
   CreateAdminDto,
   UpdateAdminDto,
   AdminRole,
-} from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
 
 /** Fetch paginated list of admins. Client-side search/pagination because backend returns a flat array. */
 export const fetchAdmins = async (

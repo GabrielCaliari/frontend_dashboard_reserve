@@ -10,7 +10,7 @@
 
 import { Metadata } from "next";
 import { fetchPublicArticleBySlug } from "@/src/common/services/cms-public-service";
-import { stripHtml, truncateHtml } from "@/src/common/utils/content-sanitizer";
+import { stripHtml, truncateHtml } from "@/src/shared/utils/content-sanitizer";
 
 const BLOG_SECRET_KEY = process.env.NEXT_PUBLIC_BLOG_SECRET_KEY || "";
 

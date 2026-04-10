@@ -13,7 +13,7 @@ import {
 } from "@heroui/react";
 import { ExternalLink, DollarSign } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { B2BProduct } from "@/src/common/@types/@b2b-payments";
+import type { B2BProduct } from "@/src/shared/domain/types/@b2b-payments";
 
 interface B2BProductsTableProps {
   products: B2BProduct[];

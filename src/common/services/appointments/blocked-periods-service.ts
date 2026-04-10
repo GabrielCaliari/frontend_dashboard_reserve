@@ -2,7 +2,7 @@ import { apiClient } from "@/src/common/config/api";
 import type {
   BlockedPeriod,
   BlockedPeriodListResponse,
-} from "@/src/common/@types/@appointment";
+} from "@/src/shared/domain/types/@appointment";
 
 export interface ListBlockedPeriodsParams {
   page?: number;

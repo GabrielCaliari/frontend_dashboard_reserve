@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { hotelPortalService } from "@/src/common/services/hotel-portal-service";
-import type { InsertOtaDataDto } from "@/src/common/@types/@hotel-portal";
+import type { InsertOtaDataDto } from "@/src/shared/domain/types/@hotel-portal";
 
 export function useHotelPortalOtaData(clientId: string | null) {
   return useQuery({

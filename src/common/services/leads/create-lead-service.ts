@@ -2,7 +2,7 @@ import { apiClient } from "@/src/common/config/api";
 import type {
   CreateLeadDto,
   LeadDetailResponse,
-} from "@/src/common/@types/@lead";
+} from "@/src/shared/domain/types/@lead";
 
 export async function createLeadService(
   data: CreateLeadDto,

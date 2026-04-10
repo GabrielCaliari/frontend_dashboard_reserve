@@ -1,6 +1,6 @@
 "use client";
 import { useUnreadCount } from "@/src/common/hooks/notifications/use-unread-count";
-import { useTenantStore } from "@/src/common/stores/tenant-store";
+import { useTenantStore } from "@/src/shared/stores/tenant-store";
 
 export function NotificationBadge() {
   const selectedTenant = useTenantStore((s) => s.selectedTenant);

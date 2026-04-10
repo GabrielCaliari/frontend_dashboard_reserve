@@ -1,7 +1,7 @@
 "use client";
 
 import { Chip } from "@heroui/react";
-import type { Article } from "@/src/common/@types/@cms-article";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
 
 interface ArticleStatusBadgeProps {
   status: Article["status"];

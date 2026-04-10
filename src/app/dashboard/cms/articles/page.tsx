@@ -20,8 +20,8 @@ import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import {
   useHasSelectedTenant,
   useTenantStore,
-} from "@/src/common/stores/tenant-store";
-import type { Article } from "@/src/common/@types/@cms-article";
+} from "@/src/shared/stores/tenant-store";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
 import { toast } from "sonner";
 import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 

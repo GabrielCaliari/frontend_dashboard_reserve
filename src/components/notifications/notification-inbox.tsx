@@ -11,8 +11,8 @@ import {
 import { Bell, BellOff, CheckCheck } from "lucide-react";
 import { useNotificationInbox } from "@/src/common/hooks/notifications/use-notification-inbox";
 import { useNotificationSettings } from "@/src/common/hooks/notifications/use-notification-settings";
-import { useTenantStore } from "@/src/common/stores/tenant-store";
-import { formatInTenantTimezone } from "@/src/common/utils/format-timezone";
+import { useTenantStore } from "@/src/shared/stores/tenant-store";
+import { formatInTenantTimezone } from "@/src/shared/utils/format-timezone";
 import { CmsPageLayout } from "../cms/shared/cms-page-layout";
 import { CmsPageHeader } from "../cms/shared/cms-page-header";
 

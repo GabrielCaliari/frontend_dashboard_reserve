@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   handleUnauthorizedError,
   isUnauthorizedError,
-} from "@/src/common/utils/auth-error-handler";
+} from "@/src/shared/utils/auth-error-handler";
 import { buildApiBaseUrl } from "./build-api-base-url";
 import { injectAuthHeaders } from "./get-auth-headers";
 

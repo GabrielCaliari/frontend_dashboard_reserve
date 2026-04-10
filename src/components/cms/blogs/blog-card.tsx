@@ -22,7 +22,7 @@ import {
   CalendarDays,
   Clock,
 } from "lucide-react";
-import type { Blog } from "@/src/common/@types/@cms-blog";
+import type { Blog } from "@/src/shared/domain/types/@cms-blog";
 import BlogSecretKeyDisplay from "./blog-secret-key-display";
 
 interface BlogCardProps {

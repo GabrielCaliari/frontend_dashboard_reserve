@@ -5,7 +5,7 @@ import { Spinner, Button, Tooltip, Chip } from "@heroui/react";
 import { Pencil, Trash2, Eye, Link2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import type { DiscountCoupon } from "@/src/common/@types/@coupons";
+import type { DiscountCoupon } from "@/src/shared/domain/types/@coupons";
 import {
   CouponBadgeStatus,
   DiscountValueDisplay,

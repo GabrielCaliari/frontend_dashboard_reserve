@@ -33,8 +33,8 @@ import {
   SheetDescription,
 } from "@/src/components/ui/sheet";
 import ArticleStatusBadge from "./article-status-badge";
-import type { Article } from "@/src/common/@types/@cms-article";
-import type { Author } from "@/src/common/@types/@cms-author";
+import type { Article } from "@/src/shared/domain/types/@cms-article";
+import type { Author } from "@/src/shared/domain/types/@cms-author";
 
 interface ArticleQuickEditDrawerProps {
   article: Article | null;

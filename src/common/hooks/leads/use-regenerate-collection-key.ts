@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { regenerateCollectionKeyAction } from "@/src/common/actions/leads/regenerate-collection-key";
-import type { RegenerateKeyResponse } from "@/src/common/@types/@lead";
+import type { RegenerateKeyResponse } from "@/src/shared/domain/types/@lead";
 import { toast } from "react-hot-toast";
 
 export function useRegenerateCollectionKey() {

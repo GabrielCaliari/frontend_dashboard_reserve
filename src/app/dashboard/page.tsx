@@ -6,7 +6,7 @@ import { AlertCircle, BarChart3, Plug } from "lucide-react";
 import { Card, CardBody, Spinner, Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import {
   useStatsDashboard,
   useStatsTimeseriesModules,

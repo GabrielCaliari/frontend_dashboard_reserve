@@ -16,7 +16,7 @@ import { DynamicConfigForm } from "./dynamic-config-form";
 import type {
   AvailableIntegration,
   CreateStatsIntegrationDto,
-} from "@/src/common/@types/@stats";
+} from "@/src/shared/domain/types/@stats";
 
 interface AddIntegrationModalProps {
   isOpen: boolean;

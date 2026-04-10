@@ -12,7 +12,7 @@ import { Button } from "@/src/components/ui/button";
 import type {
   IEmailComponent,
   IEmailTemplate,
-} from "@/src/common/@types/@email-builder";
+} from "@/src/shared/domain/types/@email-builder";
 import type { EmailSettings } from "./email-settings-modal";
 import type { EmailMetadata } from "./email-save-modal";
 import { ArrowLeft, Check } from "lucide-react";

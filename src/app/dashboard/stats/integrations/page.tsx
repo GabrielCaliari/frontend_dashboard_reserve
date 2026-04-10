@@ -5,8 +5,8 @@ import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AlertCircle, Plus, Plug } from "lucide-react";
 import { Card, CardBody, Spinner, Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
-import usePermissions from "@/src/common/hooks/use-permissions";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
+import usePermissions from "@/src/shared/hooks/use-permissions";
 import {
   useStatsIntegrations,
   useStatsProviders,
@@ -25,7 +25,7 @@ import type {
   AvailableIntegration,
   CreateStatsIntegrationDto,
   UpdateStatsIntegrationDto,
-} from "@/src/common/@types/@stats";
+} from "@/src/shared/domain/types/@stats";
 
 export default function IntegrationsPage() {
   const t = useTranslations("stats.integrations");

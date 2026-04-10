@@ -1,5 +1,5 @@
 import { apiClient } from "@/src/common/config/api";
-import type { LeadAttachment } from "@/src/common/@types/@lead";
+import type { LeadAttachment } from "@/src/shared/domain/types/@lead";
 
 export async function listLeadAttachmentsService(
   leadId: string,

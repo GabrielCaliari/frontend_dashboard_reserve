@@ -23,11 +23,11 @@ import type {
   Tenant,
   CreateTenantDto,
   UpdateTenantDto,
-} from "@/src/common/@types/@access-management";
+} from "@/src/shared/domain/types/@access-management";
 import type {
   CreateTenantFormData,
   UpdateTenantFormData,
-} from "@/src/common/schemas/access-management/tenant-schema";
+} from "@/src/shared/schemas/access-management/tenant-schema";
 import { toast } from "react-hot-toast";
 
 export default function TenantListPage() {

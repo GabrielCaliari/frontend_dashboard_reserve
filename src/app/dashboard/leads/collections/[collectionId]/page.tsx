@@ -23,9 +23,9 @@ import { useListCollections } from "@/src/common/hooks/leads/use-list-collection
 import { useGetCollection } from "@/src/common/hooks/leads/use-get-collection";
 import { LeadDrawer } from "@/src/components/leads/lead-drawer";
 import { CreateLeadDialog } from "@/src/components/leads/create-lead-dialog";
-import type { Lead } from "@/src/common/@types/@lead";
-import { ELeadStatus, EOriginLead } from "@/src/common/@types/@lead";
-import { formatDate } from "@/src/common/lib/utils";
+import type { Lead } from "@/src/shared/domain/types/@lead";
+import { ELeadStatus, EOriginLead } from "@/src/shared/domain/types/@lead";
+import { formatDate } from "@/src/shared/lib/utils";
 
 const LIMIT_OPTIONS = [
   { value: "15", label: "15 per page" },

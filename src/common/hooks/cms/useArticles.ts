@@ -3,8 +3,8 @@ import {
   fetchArticles,
   fetchArticleById,
 } from "@/src/common/services/cms-article-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
-import type { ArticleStatus } from "@/src/common/@types/@cms-article";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
+import type { ArticleStatus } from "@/src/shared/domain/types/@cms-article";
 
 /**
  * Query key constants for article-related queries

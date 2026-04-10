@@ -29,8 +29,8 @@ import type {
   CmsMediaId,
   MediaAsset,
   MediaCollection,
-} from "@/src/common/@types/@cms-media";
-import { useDebounce } from "@/src/common/hooks/use-debounce";
+} from "@/src/shared/domain/types/@cms-media";
+import { useDebounce } from "@/src/shared/hooks/use-debounce";
 
 interface MediaPickerProps {
   isOpen: boolean;

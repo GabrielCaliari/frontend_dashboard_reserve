@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { AvailableIntegration } from "@/src/common/@types/@stats";
+import type { AvailableIntegration } from "@/src/shared/domain/types/@stats";
 
 interface ProviderSelectorProps {
   providers: AvailableIntegration[];

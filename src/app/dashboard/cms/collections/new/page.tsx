@@ -6,7 +6,7 @@ import { AlertCircle, ArrowLeft } from "lucide-react";
 import { Card, CardBody, CardHeader, Button } from "@heroui/react";
 import { CollectionForm } from "@/src/components/cms/collection-form";
 import { useCreateCollection } from "@/src/common/hooks/cms/use-collections";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import { toast } from "sonner";
 
 export default function CreateCollectionPage() {

@@ -17,7 +17,7 @@ import { useState } from "react";
 import type {
   B2BPurchase,
   PurchaseStatus,
-} from "@/src/common/@types/@b2b-payments";
+} from "@/src/shared/domain/types/@b2b-payments";
 import { useListB2BPurchases } from "@/src/common/hooks/useB2BPayments";
 
 const statusColorMap: Record<

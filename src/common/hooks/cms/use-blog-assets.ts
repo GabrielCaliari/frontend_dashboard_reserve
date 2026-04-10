@@ -3,12 +3,12 @@ import type {
   CmsMediaId,
   MediaAsset,
   PaginatedResponse,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 import {
   fetchBlogAssets,
   uploadBlogAsset,
 } from "@/src/common/services/cms-blog-service";
-import { useSelectedTenantId } from "@/src/common/stores/tenant-store";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 export const blogAssetKeys = {
   all: (tenantId: string | null, blogId: string | number) =>

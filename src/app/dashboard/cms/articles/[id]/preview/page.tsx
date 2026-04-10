@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
-import { useHasSelectedTenant } from "@/src/common/stores/tenant-store";
+import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 
 export default function ArticlePreviewPage() {
   const params = useParams();

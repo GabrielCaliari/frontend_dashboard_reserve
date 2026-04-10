@@ -1,5 +1,5 @@
 import { apiClient } from "@/src/common/config/api";
-import type { CollectionListResponse } from "@/src/common/@types/@lead";
+import type { CollectionListResponse } from "@/src/shared/domain/types/@lead";
 
 interface ListCollectionsParams {
   page?: number;

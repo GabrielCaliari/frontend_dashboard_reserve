@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useListLeads } from "@/src/common/hooks/leads/use-list-leads";
 import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
-import { Lead, LeadOrigin, LeadStatus } from "@/src/common/@types/@lead";
+import { Lead, LeadOrigin, LeadStatus } from "@/src/shared/domain/types/@lead";
 import {
   Table,
   TableHeader,

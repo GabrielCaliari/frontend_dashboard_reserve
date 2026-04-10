@@ -66,7 +66,7 @@ import type {
   MonthlyReport,
   PublishReportDto,
   ECampaignChannel,
-} from "@/src/common/@types/@hotel-portal";
+} from "@/src/shared/domain/types/@hotel-portal";
 
 function fmt(n: number, style: "currency" | "percent" | "decimal" = "decimal") {
   if (style === "currency")

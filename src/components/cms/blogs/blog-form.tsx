@@ -14,11 +14,11 @@ import type {
   Blog,
   CreateBlogDto,
   UpdateBlogDto,
-} from "@/src/common/@types/@cms-blog";
+} from "@/src/shared/domain/types/@cms-blog";
 import {
   createBlogSchema,
   updateBlogSchema,
-} from "@/src/common/schemas/cms-blog-schema";
+} from "@/src/shared/schemas/cms-blog-schema";
 import { useCollections } from "@/src/common/hooks/cms/use-collections";
 
 interface BlogFormProps {

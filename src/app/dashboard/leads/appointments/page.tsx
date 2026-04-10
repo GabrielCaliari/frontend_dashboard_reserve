@@ -12,7 +12,7 @@ import { DayAppointmentsPanel } from "@/src/components/appointments/day-appointm
 import { ScheduleConfigForm } from "@/src/components/appointments/schedule-config-form";
 import { BlockedPeriodsList } from "@/src/components/appointments/blocked-periods-list";
 import { useListBlockedPeriods } from "@/src/common/hooks/appointments/use-blocked-periods";
-import { EAppointmentStatus } from "@/src/common/@types/@appointment";
+import { EAppointmentStatus } from "@/src/shared/domain/types/@appointment";
 
 export default function AppointmentsPage() {
   const router = useRouter();

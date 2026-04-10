@@ -46,7 +46,7 @@ import {
   slugifyHeading,
 } from "./editor-utils";
 import type { Chapter, ViewMode } from "./editor-types";
-import type { ContentStats } from "@/src/common/@types/cms";
+import type { ContentStats } from "@/src/shared/domain/types/cms";
 
 interface UsePlateEditorStateOptions {
   initialContent?: string;

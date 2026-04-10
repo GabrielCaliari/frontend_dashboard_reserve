@@ -18,7 +18,7 @@ import {
   convertHtmlToMarkdown,
   convertHeaderToMarkdown,
   convertFooterToMarkdown,
-} from "@/src/common/lib/html-to-markdown";
+} from "@/src/shared/lib/html-to-markdown";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,13 +28,13 @@ import {
 import {
   IEmailComponent,
   IEmailTemplate,
-} from "@/src/common/@types/@email-builder";
+} from "@/src/shared/domain/types/@email-builder";
 import toast from "react-hot-toast";
 import EmailSaveModal from "./email-save-modal";
 import EmailPreviewSimulation from "./email-preview-simulation";
 import createPrimaryCopyService from "@/src/common/services/email-campaign/create-primary-copy-service";
-import { IEmailCampaign } from "@/src/common/@types/@email-campaign";
-import { IEmail } from "@/src/common/@types/@email";
+import { IEmailCampaign } from "@/src/shared/domain/types/@email-campaign";
+import { IEmail } from "@/src/shared/domain/types/@email";
 import listDeliveriesByCampaignBatchIdService from "@/src/common/services/campaign-batch/list-deliveries-by-campaign-batch-id-service";
 import updateCopyEmailByCampaignBatchIdService from "@/src/common/services/campaign-batch/update-copy-email-by-campaign-batch-id-service";
 

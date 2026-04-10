@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import { AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { StatsIntegration } from "@/src/common/@types/@stats";
+import type { StatsIntegration } from "@/src/shared/domain/types/@stats";
 
 interface DeleteIntegrationModalProps {
   isOpen: boolean;

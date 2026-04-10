@@ -2,7 +2,7 @@ import { cmsApiClient } from "@/src/common/config/api";
 import type {
   UserSubscription,
   SubscriptionMetrics,
-} from "@/src/common/@types/@b2c-products";
+} from "@/src/shared/domain/types/@b2c-products";
 
 export const b2cSubscriptionsService = {
   /**

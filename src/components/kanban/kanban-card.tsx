@@ -24,10 +24,10 @@ import {
 } from "@heroui/react";
 
 import { CardType } from "./kanban-board-with-autosave";
-import { formatDateTimeToBRL } from "@/src/common/utils";
+import { formatDateTimeToBRL } from "@/src/shared/utils";
 import useCompleteScreening from "@/src/common/hooks/use-complete-screening";
 import { useRouter } from "next/navigation";
-import { ETemperature } from "@/src/common/interfaces/lead-qualification.interface";
+import { ETemperature } from "@/src/shared/interfaces/lead-qualification.interface";
 import useTemperatureAnalysisByMessageId from "@/src/common/hooks/use-temperature-analysis-by-message-id";
 import { useTranslations } from "next-intl";
 

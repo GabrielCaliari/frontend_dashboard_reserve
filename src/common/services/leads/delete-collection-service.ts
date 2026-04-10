@@ -1,5 +1,5 @@
 import { apiClient } from "@/src/common/config/api";
-import type { CollectionDetailResponse } from "@/src/common/@types/@lead";
+import type { CollectionDetailResponse } from "@/src/shared/domain/types/@lead";
 
 export async function deleteCollectionService(
   id: string,

@@ -2,7 +2,7 @@
 
 import { Card, CardBody, Chip } from "@heroui/react";
 import { FileText, FileCheck, Archive, Files } from "lucide-react";
-import type { BlogWithStats } from "@/src/common/@types/@cms-blog";
+import type { BlogWithStats } from "@/src/shared/domain/types/@cms-blog";
 
 interface BlogStatsProps {
   blog: BlogWithStats;

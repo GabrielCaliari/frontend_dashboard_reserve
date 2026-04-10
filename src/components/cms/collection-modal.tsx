@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import type {
   CollectionType,
   MediaCollection,
-} from "@/src/common/@types/@cms-media";
+} from "@/src/shared/domain/types/@cms-media";
 
 interface CollectionFormData {
   name: string;

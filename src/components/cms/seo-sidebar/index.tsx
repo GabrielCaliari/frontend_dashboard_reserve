@@ -30,8 +30,8 @@ import {
   Image as ImageIcon,
   Trash2,
 } from "lucide-react";
-import type { ContentStats } from "@/src/common/@types/cms";
-import type { Author } from "@/src/common/@types/@cms-author";
+import type { ContentStats } from "@/src/shared/domain/types/cms";
+import type { Author } from "@/src/shared/domain/types/@cms-author";
 import { useAsset } from "@/src/common/hooks/cms/use-assets";
 import { BlogImageInsertDialog } from "@/src/components/cms/editor/blog-image-insert-dialog";
 
