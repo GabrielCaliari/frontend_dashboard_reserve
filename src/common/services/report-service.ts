@@ -5,7 +5,7 @@
  * Only accessible by super_admin users.
  */
 
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import type {
   Report,
   CreateReportDto,

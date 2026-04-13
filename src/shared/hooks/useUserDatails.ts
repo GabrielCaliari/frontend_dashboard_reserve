@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import api from "@/src/common/config/api";
+import api from "@/src/infraestructure/axios/api";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "nextjs-toploader/app";
 

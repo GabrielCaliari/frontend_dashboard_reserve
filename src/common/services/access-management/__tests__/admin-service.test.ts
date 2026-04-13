@@ -15,7 +15,7 @@ import {
   deactivateAdmin,
   deleteAdmin,
 } from "../admin-service";
-import { apiClient as accessManagementApiClient } from "@/src/common/config/api";
+import { apiClient as accessManagementApiClient } from "@/src/infraestructure/axios/api";
 import type {
   Admin,
   PaginatedResponse,

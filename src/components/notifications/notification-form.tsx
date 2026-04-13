@@ -14,7 +14,7 @@ import {
 } from "@heroui/react";
 import { Bell, Save, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import { CmsPageLayout } from "../cms/shared/cms-page-layout";
 import { CmsPageHeader } from "../cms/shared/cms-page-header";
 import toast from "react-hot-toast";

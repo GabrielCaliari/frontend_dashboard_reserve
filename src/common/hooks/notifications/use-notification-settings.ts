@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 
 export function useNotificationSettings(
   tenantId: string | null,

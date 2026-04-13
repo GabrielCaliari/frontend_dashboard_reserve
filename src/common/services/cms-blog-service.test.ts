@@ -7,7 +7,7 @@ import {
   deleteBlog,
   regenerateBlogSecretKey,
 } from "./cms-blog-service";
-import { cmsApiClient } from "@/src/common/config/api";
+import { cmsApiClient } from "@/src/infraestructure/axios/api";
 import type {
   Blog,
   CreateBlogDto,

@@ -1,4 +1,4 @@
-import api from "../config/api";
+import api from "../../infraestructure/axios/api";
 
 export const createBrandAnalytics = async (
   data: {

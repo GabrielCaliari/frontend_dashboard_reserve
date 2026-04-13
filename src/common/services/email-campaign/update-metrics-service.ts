@@ -1,4 +1,4 @@
-import api from "@/src/common/config/api";
+import api from "@/src/infraestructure/axios/api";
 
 interface IUpdateMetricsResponse {
   error?: boolean;

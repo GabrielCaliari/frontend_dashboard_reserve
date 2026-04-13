@@ -3,9 +3,9 @@ import {
   fetchPublicArticleBySlug,
   fetchPublicArticles,
 } from "./cms-public-service";
-import { createPublicCmsClient } from "@/src/common/config/cms-public-api-client";
+import { createPublicCmsClient } from "@/src/infraestructure/axios/cms-public-api-client";
 
-vi.mock("@/src/common/config/cms-public-api-client", () => ({
+vi.mock("@/src/infraestructure/axios/cms-public-api-client", () => ({
   createPublicCmsClient: vi.fn(),
 }));
 

@@ -1,5 +1,5 @@
-import api from "../config/api";
-import { errorTypes } from "../config/error-types";
+import api from "../../infraestructure/axios/api";
+import { errorTypes } from "../../infraestructure/axios/error-types";
 
 export const listLeadsService = async ({ page = 1 }: { page?: number }) => {
   try {

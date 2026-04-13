@@ -5,6 +5,7 @@ import {
 } from "@/src/shared/utils/auth-error-handler";
 import { buildApiBaseUrl } from "./build-api-base-url";
 import { injectAuthHeaders } from "./get-auth-headers";
+import { normalizeApiRequestUrl } from "./normalize-api-request-url";
 
 // In browser (client-side), only NEXT_PUBLIC_ variables are available
 const API_URL =
@@ -29,6 +30,7 @@ const api = axios.create({
 // Request interceptor - Adiciona headers de autenticação e tenant (client + server)
 api.interceptors.request.use(
   async (config) => {
+    config.url = normalizeApiRequestUrl(config.baseURL, config.url);
     if (typeof FormData !== "undefined" && config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }
@@ -75,6 +77,7 @@ const cmsApi = axios.create({
 // Request interceptor for CMS API - Same auth logic via shared helper
 cmsApi.interceptors.request.use(
   async (config) => {
+    config.url = normalizeApiRequestUrl(config.baseURL, config.url);
     if (typeof FormData !== "undefined" && config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }

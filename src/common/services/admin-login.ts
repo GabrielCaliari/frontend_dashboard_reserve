@@ -1,6 +1,6 @@
 import { LoginCredentials, AuthResponse } from "@/src/shared/domain/types/@auth";
-import api from "../config/api";
-import { errorTypes } from "../config/error-types";
+import api from "../../infraestructure/axios/api";
+import { errorTypes } from "../../infraestructure/axios/error-types";
 
 export async function adminLoginService({ email, password }: LoginCredentials) {
   try {

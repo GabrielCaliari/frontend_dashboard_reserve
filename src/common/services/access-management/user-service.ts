@@ -1,7 +1,7 @@
 /**
  * User Service — all IDs are strings (UUIDs)
  */
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import {
   User,
   PaginatedResponse,

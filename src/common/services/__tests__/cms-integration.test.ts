@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createBlog } from "../cms-blog-service";
 import { createArticle, publishArticle } from "../cms-article-service";
 import { fetchPublicArticles } from "../cms-public-service";
-import { cmsApiClient } from "@/src/common/config/api";
-import { createPublicCmsClient } from "@/src/common/config/cms-public-api-client";
+import { cmsApiClient } from "@/src/infraestructure/axios/api";
+import { createPublicCmsClient } from "@/src/infraestructure/axios/cms-public-api-client";
 
-vi.mock("@/src/common/config/api", () => ({
+vi.mock("@/src/infraestructure/axios/api", () => ({
   cmsApiClient: {
     get: vi.fn(),
     post: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock("@/src/common/config/api", () => ({
   },
 }));
 
-vi.mock("@/src/common/config/cms-public-api-client", () => ({
+vi.mock("@/src/infraestructure/axios/cms-public-api-client", () => ({
   createPublicCmsClient: vi.fn(),
 }));
 

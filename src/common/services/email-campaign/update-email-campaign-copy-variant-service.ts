@@ -1,6 +1,6 @@
 import { ECopyVariationType } from "@/src/shared/domain/types/@email-campaign";
-import api from "../../config/api";
-import { errorTypes } from "../../config/error-types";
+import api from "../../../infraestructure/axios/api";
+import { errorTypes } from "../../../infraestructure/axios/error-types";
 
 export const updateEmailCampaignCopyVariantService = async (
   campaignId: string,

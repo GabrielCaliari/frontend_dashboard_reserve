@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SendHorizontal, X } from "lucide-react";
 import { getCookie } from "cookies-next";
-import api from "@/src/common/config/api";
+import api from "@/src/infraestructure/axios/api";
 import { useTranslations } from "next-intl";
 
 import Markdown from "react-markdown";

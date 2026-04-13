@@ -1,4 +1,4 @@
-import api from "../../config/api";
+import api from "../../../infraestructure/axios/api";
 
 export default async function listBatchesByEmailCampaignService(
   emailCampaignId: string,

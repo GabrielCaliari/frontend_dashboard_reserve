@@ -15,7 +15,7 @@ import {
   deactivateTenant,
   deleteTenant,
 } from "../tenant-service";
-import { apiClient as accessManagementApiClient } from "@/src/common/config/api";
+import { apiClient as accessManagementApiClient } from "@/src/infraestructure/axios/api";
 import type {
   Tenant,
   PaginatedResponse,

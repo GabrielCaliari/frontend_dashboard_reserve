@@ -8,13 +8,13 @@ import {
   publishArticle,
   updateArticle,
 } from "./cms-article-service";
-import { cmsApiClient } from "@/src/common/config/api";
+import { cmsApiClient } from "@/src/infraestructure/axios/api";
 import type {
   CreateArticleDto,
   UpdateArticleDto,
 } from "@/src/shared/domain/types/@cms-article";
 
-vi.mock("@/src/common/config/api", () => ({
+vi.mock("@/src/infraestructure/axios/api", () => ({
   cmsApiClient: {
     get: vi.fn(),
     post: vi.fn(),

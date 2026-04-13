@@ -1,4 +1,4 @@
-import { apiClient, cmsApiClient } from "@/src/common/config/api";
+import { apiClient, cmsApiClient } from "@/src/infraestructure/axios/api";
 import type {
   DiscountCoupon,
   CouponListResponse,

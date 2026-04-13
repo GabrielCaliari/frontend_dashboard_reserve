@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import type {
   CreateCheckoutSessionDto,
   CheckoutSessionResponse,

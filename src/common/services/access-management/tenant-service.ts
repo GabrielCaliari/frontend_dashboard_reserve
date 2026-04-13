@@ -8,7 +8,7 @@
  * Authentication: Bearer token (handled by api interceptor)
  */
 
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import {
   Tenant,
   PaginatedResponse,

@@ -1,4 +1,4 @@
-import { cmsApiClient } from "@/src/common/config/api";
+import { cmsApiClient } from "@/src/infraestructure/axios/api";
 import {
   ArticleImage,
   UpdateArticleImageDto,

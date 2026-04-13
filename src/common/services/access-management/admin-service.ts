@@ -5,7 +5,7 @@
  * All IDs are strings (UUIDs) matching the backend.
  */
 
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import {
   Admin,
   PaginatedResponse,

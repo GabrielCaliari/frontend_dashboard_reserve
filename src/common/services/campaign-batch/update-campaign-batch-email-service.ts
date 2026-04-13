@@ -1,6 +1,6 @@
 import { ICreatePrimaryCopy } from "@/src/shared/domain/types/@email-builder";
-import api from "../../config/api";
-import { errorTypes } from "../../config/error-types";
+import api from "../../../infraestructure/axios/api";
+import { errorTypes } from "../../../infraestructure/axios/error-types";
 
 export default async function updateCampaignBatchEmailService(
   campaignBatchId: string,

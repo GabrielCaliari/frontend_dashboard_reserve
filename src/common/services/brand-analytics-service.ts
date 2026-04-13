@@ -1,4 +1,4 @@
-import api from "../config/api";
+import api from "../../infraestructure/axios/api";
 
 export const brandAnalyticsService = async (token: string, session: string) => {
   try {

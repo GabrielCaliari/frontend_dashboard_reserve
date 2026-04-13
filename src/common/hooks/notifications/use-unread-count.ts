@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 
 export function useUnreadCount(tenantId: string | null) {
   const [count, setCount] = useState(0);

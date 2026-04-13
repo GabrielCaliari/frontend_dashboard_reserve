@@ -2,7 +2,7 @@
 import { use, useEffect, useState } from "react";
 import { Spinner } from "@heroui/react";
 import { NotificationForm } from "@/src/components/notifications/notification-form";
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import { CmsPageLayout } from "@/src/components/cms/shared/cms-page-layout";
 
 export default function EditNotificationPage({

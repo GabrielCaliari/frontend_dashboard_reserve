@@ -1,4 +1,4 @@
-import { createPublicCmsClient } from "@/src/common/config/cms-public-api-client";
+import { createPublicCmsClient } from "@/src/infraestructure/axios/cms-public-api-client";
 import { Article } from "@/src/shared/domain/types/@cms-article";
 import {
   withRetry,

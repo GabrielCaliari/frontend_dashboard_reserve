@@ -13,7 +13,7 @@ import {
   deactivateUser,
   deleteUser,
 } from "../user-service";
-import { apiClient as accessManagementApiClient } from "@/src/common/config/api";
+import { apiClient as accessManagementApiClient } from "@/src/infraestructure/axios/api";
 import type {
   User,
   PaginatedResponse,

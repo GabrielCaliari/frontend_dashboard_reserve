@@ -1,4 +1,4 @@
-import { apiClient } from "@/src/common/config/api";
+import { apiClient } from "@/src/infraestructure/axios/api";
 import type { RegenerateKeyResponse } from "@/src/shared/domain/types/@lead";
 
 export async function regenerateCollectionKeyService(
