@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Tag } from "lucide-react";
 import { Card, CardBody } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useListCoupons } from "@/src/common/hooks/useCoupons";
 import { CouponTable } from "@/src/components/coupons/coupon-table";
 import { CouponFiltersBar } from "@/src/components/coupons/coupon-filters-bar";

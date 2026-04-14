@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 
 interface CmsPageLayoutProps {
   children: ReactNode;

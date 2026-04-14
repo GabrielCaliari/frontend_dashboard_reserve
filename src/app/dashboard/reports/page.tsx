@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "nextjs-toploader/app";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import usePermissions from "@/src/shared/hooks/use-permissions";
 import {
   useReports,

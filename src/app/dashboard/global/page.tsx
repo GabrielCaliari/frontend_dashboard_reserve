@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { AlertCircle, ShieldAlert } from "lucide-react";
 import { Card, CardBody, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useStatsGlobalDashboard } from "@/src/common/hooks/stats";
 import usePermissions from "@/src/shared/hooks/use-permissions";
 import { StatGroupCard, DateRangePicker } from "@/src/components/stats";

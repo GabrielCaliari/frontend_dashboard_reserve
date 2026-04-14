@@ -23,7 +23,7 @@ import {
   XCircle,
   AlertTriangle,
 } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { AdminFormModal } from "@/src/components/access-management/admins/AdminFormModal";
 import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";

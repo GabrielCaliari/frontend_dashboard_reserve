@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Button, Card, CardBody } from "@heroui/react";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 
 type IconColor = "warning" | "destructive";
 

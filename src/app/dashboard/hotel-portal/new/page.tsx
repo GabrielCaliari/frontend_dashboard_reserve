@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useCreateHotelClient } from "@/src/common/hooks/hotel-portal";
 import { useRouter } from "nextjs-toploader/app";
 import { Card, CardBody, Button, Input } from "@heroui/react";

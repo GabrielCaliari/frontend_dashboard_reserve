@@ -10,7 +10,7 @@ import {
   XCircle,
   Zap,
 } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { formatDate } from "@/src/shared/lib/utils";
 import { CampaignSetupStatus } from "@/src/components/ui/campaign-setup-status";
 import {

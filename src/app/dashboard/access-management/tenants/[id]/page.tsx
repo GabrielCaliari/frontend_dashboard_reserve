@@ -28,7 +28,7 @@ import {
   Mail,
   Shield,
 } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import {
   useTenantById,
   useUpdateTenant,

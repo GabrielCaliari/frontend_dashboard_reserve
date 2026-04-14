@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { LayoutScopeEditor } from "@/src/layout/root-layout";
+import { LayoutScopeEditor } from "@/src/presentation/components/layouts/root-layout";
 import {
   Button,
   Chip,

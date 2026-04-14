@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import { Card, CardBody, CardHeader, Button } from "@heroui/react";
 import { CollectionForm } from "@/src/components/cms/collection-form";

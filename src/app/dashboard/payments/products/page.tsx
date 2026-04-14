@@ -2,7 +2,7 @@
 
 import { Package } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { ProductsTabs } from "@/src/components/payments/products/products-tabs";
 
 export default function PaymentsProductsPage() {

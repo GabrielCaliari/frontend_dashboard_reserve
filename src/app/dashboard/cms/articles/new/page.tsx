@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { LayoutScopeEditor } from "@/src/layout/root-layout";
+import { LayoutScopeEditor } from "@/src/presentation/components/layouts/root-layout";
 import { Button } from "@heroui/react";
 import { Save, AlertCircle, FileText, User } from "lucide-react";
 import { useCreateArticle } from "@/src/common/hooks/cms/use-create-article";

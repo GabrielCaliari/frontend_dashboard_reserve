@@ -5,7 +5,7 @@ import { useRouter } from "nextjs-toploader/app";
 import { ArrowLeft, Tag, Trash2, Link2 } from "lucide-react";
 import { Button, Card, CardBody, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useGetCoupon, useUpdateCoupon } from "@/src/common/hooks/useCoupons";
 import { CouponSummaryCard } from "@/src/components/coupons/coupon-summary-card";
 import { CouponForm } from "@/src/components/coupons/coupon-form";

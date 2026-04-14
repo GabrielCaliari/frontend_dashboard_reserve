@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Settings } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { BillingConfigSection } from "@/src/components/payments/billing-config-section";
 
 export default function PaymentsConfigPage() {

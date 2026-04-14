@@ -12,7 +12,7 @@ import {
   ExternalLink,
   FolderOpen,
 } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
 import { useCreateCollection } from "@/src/common/hooks/leads/use-create-collection";
 import { useUpdateCollection } from "@/src/common/hooks/leads/use-update-collection";

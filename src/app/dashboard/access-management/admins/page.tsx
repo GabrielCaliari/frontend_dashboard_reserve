@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import AdminTable from "@/src/components/access-management/admins/AdminTable";
 import { AdminFormModal } from "@/src/components/access-management/admins/AdminFormModal";
 import { SearchInput } from "@/src/components/access-management/shared/search-input";

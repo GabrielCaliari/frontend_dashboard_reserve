@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import UserTable from "@/src/components/access-management/users/UserTable";
 import { UserFormModal } from "@/src/components/access-management/users/UserFormModal";
 import { SearchInput } from "@/src/components/access-management/shared/search-input";

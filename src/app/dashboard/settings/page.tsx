@@ -2,7 +2,7 @@
 
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { Settings } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
 
 export default function SettingsPage() {

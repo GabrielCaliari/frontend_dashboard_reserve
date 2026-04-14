@@ -17,7 +17,7 @@ import {
   Spinner,
 } from "@heroui/react";
 import { ArrowLeft, RefreshCw, ChevronDown, Plus } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collection-leads";
 import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
 import { useGetCollection } from "@/src/common/hooks/leads/use-get-collection";

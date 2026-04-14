@@ -7,7 +7,7 @@ import { AlertCircle, ArrowLeft, Bell } from "lucide-react";
 import { Button, Card, CardBody, CardHeader, Spinner } from "@heroui/react";
 import { isAxiosError } from "axios";
 import { useTranslations } from "next-intl";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useStatsTenantDashboard } from "@/src/common/hooks/stats";
 import { useTenantById } from "@/src/common/hooks/access-management/useTenants";
 import { StatGroupCard, DateRangePicker } from "@/src/components/stats";

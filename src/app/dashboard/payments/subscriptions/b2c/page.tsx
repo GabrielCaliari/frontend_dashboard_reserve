@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { B2CSubscriptionsTable } from "@/src/components/b2c/subscriptions-table";
 import { B2CMetricsCards } from "@/src/components/b2c/metrics-cards";
 import { TopProductsCard } from "@/src/components/b2c/top-products-card";

@@ -24,7 +24,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { UserFormModal } from "@/src/components/access-management/users/UserFormModal";
 import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";

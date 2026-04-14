@@ -1,4 +1,4 @@
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { AbandonedCartsTable } from "@/src/components/tables/abandoned-carts-table";
 import { getTranslations } from "next-intl/server";
 

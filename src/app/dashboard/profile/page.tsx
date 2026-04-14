@@ -9,7 +9,7 @@ import {
   Skeleton,
 } from "@heroui/react";
 import { Mail, Shield, Calendar, Building2 } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
 import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";

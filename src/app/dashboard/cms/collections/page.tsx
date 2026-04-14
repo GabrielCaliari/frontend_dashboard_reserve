@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { AlertCircle, Plus, Pencil, Trash2, Search } from "lucide-react";
 import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import {

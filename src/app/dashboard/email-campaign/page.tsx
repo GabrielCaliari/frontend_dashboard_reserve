@@ -1,6 +1,6 @@
 import CreateEmailCampaignButton from "@/src/components/email-builder/modals/actions/create-email-campaign-button";
 import { CampaignsTable } from "@/src/components/tables/campaigns-table";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { getTranslations } from "next-intl/server";
 
 export default async function EmailCampaignPage() {

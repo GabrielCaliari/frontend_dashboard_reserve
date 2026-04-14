@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { use } from "react";
 import { useSearchParams } from "next/navigation";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useRouter } from "nextjs-toploader/app";
 import {
   useHotelClient,

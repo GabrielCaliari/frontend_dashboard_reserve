@@ -26,7 +26,7 @@ import {
   ChevronRight,
   FileX,
 } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useListLeads } from "@/src/common/hooks/leads/use-list-leads";
 import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collection-leads";
 import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";

@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button, Tabs, Tab, Select, SelectItem } from "@heroui/react";
 import { RefreshCw, Calendar } from "lucide-react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useListAppointments } from "@/src/common/hooks/appointments/use-list-appointments";
 import { AppointmentsCalendar } from "@/src/components/appointments/appointments-calendar";
 import { DayAppointmentsPanel } from "@/src/components/appointments/day-appointments-panel";

@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useCollections } from "@/src/common/hooks/cms/use-collections";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";

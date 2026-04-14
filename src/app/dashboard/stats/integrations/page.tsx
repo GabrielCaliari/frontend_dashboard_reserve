@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutScopeRoot } from "@/src/layout/root-layout";
+import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { AlertCircle, Plus, Plug } from "lucide-react";
 import { Card, CardBody, Spinner, Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
