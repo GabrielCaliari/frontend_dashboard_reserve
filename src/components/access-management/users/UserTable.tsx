@@ -27,7 +27,6 @@ const UserTable: React.FC<UserTableProps> = ({ users, isLoading, onEdit, onRowCl
     { key: "name",       label: t("table.columns.name")      },
     { key: "email",      label: t("table.columns.email")     },
     { key: "phone",      label: t("table.columns.phone")     },
-    { key: "status",     label: t("table.columns.status")    },
     { key: "created_at", label: t("table.columns.createdAt") },
     { key: "actions",    label: t("table.columns.actions")   },
   ];

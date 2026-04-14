@@ -20,9 +20,15 @@ export const fetchAdmins = async (
   perPage: number = 10,
   search?: string,
 ): Promise<PaginatedResponse<Admin>> => {
-  const response = await apiClient.get('/admin/list', { headers: { 'x-tenant-id': undefined } } as any);
+  const response = await apiClient.get('/admin/list', { headers: { 'x-skip-tenant': 'true' } });
   const raw = response.data;
-  const allAdmins: Admin[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
+  const rawAdmins: any[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
+  
+  // Normalize: backend returns `active`, frontend expects `is_active`
+  const allAdmins: Admin[] = rawAdmins.map((a) => ({
+    ...a,
+    is_active: a.is_active ?? a.active ?? false,
+  }));
 
   const filtered = search
     ? allAdmins.filter(
@@ -48,8 +54,21 @@ export const fetchAdmins = async (
 
 /** Fetch a single admin by UUID. */
 export const fetchAdminById = async (id: string): Promise<Admin> => {
-  const response = await apiClient.get<Admin>(`/admin/${id}`);
-  return response.data;
+  const response = await apiClient.get(`/admin/${id}`);
+  const raw = response.data;
+
+  // Normalize tenants: backend returns flat [{ id, name, slug, domain, role }]
+  // Frontend expects [{ tenant_id, role, tenant: { name, slug } }]
+  const tenants = Array.isArray(raw.tenants)
+    ? raw.tenants.map((t: any) => ({
+        tenant_id: t.id,
+        admin_id: id,
+        role: t.role,
+        tenant: { id: t.id, name: t.name, slug: t.slug, domain: t.domain, is_active: t.is_active ?? t.active ?? true, created_at: t.created_at, updated_at: t.updated_at },
+      }))
+    : [];
+
+  return { ...raw, is_active: raw.is_active ?? raw.active ?? false, tenants };
 };
 
 /** Create a new admin account. */

@@ -21,12 +21,24 @@ const api = axios.create({
 
 // Request interceptor - Adiciona headers de autenticação e tenant (client + server)
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
     if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
       delete config.headers['Content-Type'];
     }
 
-    return injectAuthHeaders(config);
+    // Check skip flag BEFORE injecting (axios preserves headers object)
+    const skipTenant = config.headers['x-skip-tenant'] === 'true';
+    delete config.headers['x-skip-tenant'];
+
+    const result = await injectAuthHeaders(config);
+
+    if (skipTenant) {
+      delete result.headers['x-tenant-id'];
+    }
+
+    console.log('[API] skipTenant:', skipTenant, '| x-tenant-id:', result.headers['x-tenant-id'], '| Authorization:', result.headers['Authorization'] ? 'present' : 'MISSING', '| session-id:', result.headers['session-id'] ? 'present' : 'MISSING', '| url:', config.url);
+
+    return result;
   },
   (error) => Promise.reject(error),
 );
