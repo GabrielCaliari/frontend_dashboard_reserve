@@ -8,7 +8,7 @@ import {
   FolderOpen,
   ArrowRight,
 } from "lucide-react";
-import { Card, CardContent } from "@/src/components/ui/card";
+import { Card, CardContent } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import { useListArticles } from "@/src/common/hooks/cms/use-list-articles";
 import { useListBlogs } from "@/src/common/hooks/cms/use-list-blogs";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";

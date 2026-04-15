@@ -2,7 +2,7 @@
 
 import { Plug, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@heroui/react";
-import { Switch } from "@/src/components/ui/switch";
+import { Switch } from "@/src/presentation/components/atoms/shadcn-ui/switch";
 import type { StatsIntegration } from "@/src/shared/domain/types/@stats";
 import { useTranslations } from "next-intl";
 

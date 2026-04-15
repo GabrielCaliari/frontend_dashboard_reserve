@@ -2,8 +2,8 @@ import { AuthTabs } from "@/src/components/tabs/auth-tabs";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { LanguageSwitcher } from "@/src/components/ui/language-switcher";
-import { ThemeSwitcher } from "@/src/components/ui/theme-switcher";
+import { LanguageSwitcher } from "@/src/presentation/components/atoms/reserve/language-switcher";
+import { ThemeSwitcher } from "@/src/presentation/components/atoms/reserve/theme-switcher";
 
 export default async function Page() {
   const t = await getTranslations("auth");

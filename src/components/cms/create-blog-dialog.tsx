@@ -9,11 +9,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/src/components/ui/dialog";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Textarea } from "@/src/components/ui/textarea";
-import { Label } from "@/src/components/ui/label";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Textarea } from "@/src/presentation/components/atoms/shadcn-ui/textarea";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import { useCreateBlog } from "@/src/common/hooks/cms/use-create-blog";
 import {
   blogCreateSchema,

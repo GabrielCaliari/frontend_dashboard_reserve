@@ -12,9 +12,9 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/src/components/ui/sheet";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
+} from "@/src/presentation/components/atoms/shadcn-ui/sheet";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import { Pagination, Chip } from "@heroui/react";
 import { formatFileSize } from "@/src/shared/utils/format-file-size";
 import type {

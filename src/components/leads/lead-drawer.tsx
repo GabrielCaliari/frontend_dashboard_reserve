@@ -27,7 +27,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/src/components/ui/sheet";
+} from "@/src/presentation/components/atoms/shadcn-ui/sheet";
 import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
 import { useGetLead } from "@/src/common/hooks/leads/use-get-lead";
 import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";

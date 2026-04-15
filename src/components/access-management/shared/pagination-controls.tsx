@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { cn } from "@/src/shared/lib/utils";
 
 interface PaginationControlsProps {

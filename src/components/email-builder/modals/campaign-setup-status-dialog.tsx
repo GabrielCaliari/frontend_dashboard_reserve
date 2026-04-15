@@ -1,7 +1,7 @@
-import { Dialog, DialogContent } from "../../ui/dialog";
+import { Dialog, DialogContent } from "@/src/presentation/components/atoms/shadcn-ui/dialog";
 
-import { DialogFooter } from "../../ui/dialog";
-import { Button } from "../../ui/button";
+import { DialogFooter } from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { closeSetupService } from "@/src/common/services/email-campaign/close-setup-service";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

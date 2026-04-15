@@ -9,8 +9,8 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@/src/components/ui/modal";
-import { PasswordInput } from "@/src/components/ui/password-input";
+} from "@/src/presentation/components/atoms/reserve/modal";
+import { PasswordInput } from "@/src/presentation/components/atoms/reserve/password-input";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import {

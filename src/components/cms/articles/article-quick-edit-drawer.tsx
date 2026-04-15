@@ -31,7 +31,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/src/components/ui/sheet";
+} from "@/src/presentation/components/atoms/shadcn-ui/sheet";
 import ArticleStatusBadge from "./article-status-badge";
 import type { Article } from "@/src/shared/domain/types/@cms-article";
 import type { Author } from "@/src/shared/domain/types/@cms-author";

@@ -8,10 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/src/components/ui/dialog";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 
 interface LinkEditorModalProps {
   isOpen: boolean;

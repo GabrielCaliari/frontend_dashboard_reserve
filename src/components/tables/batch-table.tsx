@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/src/components/ui/dropdown-menu";
+} from "@/src/presentation/components/atoms/shadcn-ui/dropdown-menu";
 import { LeadListDialog } from "@/src/components/email-builder/modals/lead-list-dialog";
 import { EmailPreviewDialog } from "@/src/components/email-builder/modals/email-preview-dialog";
 import { formatDate } from "@/src/shared/lib/utils";

@@ -8,9 +8,9 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/src/components/ui/sheet";
-import { Button } from "@/src/components/ui/button";
-import { Input as ShadInput } from "@/src/components/ui/input";
+} from "@/src/presentation/components/atoms/shadcn-ui/sheet";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Input as ShadInput } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import {
   Input,
   Textarea,

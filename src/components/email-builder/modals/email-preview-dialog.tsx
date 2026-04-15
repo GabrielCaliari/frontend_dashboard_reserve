@@ -6,8 +6,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/presentation/components/atoms/shadcn-ui/tabs";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 

@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from "@/src/components/ui/dialog";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
 import { Input } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import type {

@@ -2,14 +2,14 @@
 
 import { HelpCircle } from "lucide-react";
 import { cn } from "@/src/shared/lib/utils";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@/src/components/ui/tooltip";
+} from "@/src/presentation/components/atoms/shadcn-ui/tooltip";
 
 interface ScoreCardProps {
   score: number;

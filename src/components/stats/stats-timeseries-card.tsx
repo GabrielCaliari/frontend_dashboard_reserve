@@ -16,7 +16,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/src/components/ui/card";
+} from "@/src/presentation/components/atoms/shadcn-ui/card";
 import type { StatsTimeseriesItem } from "@/src/shared/domain/types/@stats";
 
 interface StatsTimeseriesCardProps {

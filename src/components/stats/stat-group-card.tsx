@@ -8,7 +8,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/src/components/ui/card";
+} from "@/src/presentation/components/atoms/shadcn-ui/card";
 import { StatKpiCard } from "./stat-kpi-card";
 import { MetadataTable } from "./metadata-table";
 import type { MetricGroupResponse } from "@/src/shared/domain/types/@stats";

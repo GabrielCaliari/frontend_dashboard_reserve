@@ -21,7 +21,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@/src/components/ui/modal";
+} from "@/src/presentation/components/atoms/reserve/modal";
 
 import { Input } from "@heroui/react";
 import { useToast } from "@/src/shared/hooks/use-toast";

@@ -3,10 +3,10 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import type { IEmailComponent } from "@/src/shared/domain/types/@email-builder";
-import { Card, CardContent } from "@/src/components/ui/card";
-import { Button } from "@/src/components/ui/button";
+import { Card, CardContent } from "@/src/presentation/components/atoms/shadcn-ui/card";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { Trash2, Move, Edit } from "lucide-react";
-import { Checkbox } from "@/src/components/ui/checkbox";
+import { Checkbox } from "@/src/presentation/components/atoms/shadcn-ui/checkbox";
 
 interface EmailComponentItemProps {
   component: IEmailComponent;

@@ -16,7 +16,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@/src/components/ui/modal";
+} from "@/src/presentation/components/atoms/reserve/modal";
 import { Lead, LeadOrigin, LeadStatus } from "@/src/shared/domain/types/@lead";
 import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
 import { format } from "date-fns";

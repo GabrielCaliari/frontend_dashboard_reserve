@@ -1,5 +1,5 @@
 "use client";
-import { Input } from "@/src/components/ui/input";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 
 interface ColorPickerProps {
   color: string | undefined;

@@ -5,7 +5,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@/src/components/ui/modal";
+} from "@/src/presentation/components/atoms/reserve/modal";
 
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "nextjs-toploader/app";

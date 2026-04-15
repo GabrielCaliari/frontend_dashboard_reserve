@@ -19,7 +19,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@/src/components/ui/modal";
+} from "@/src/presentation/components/atoms/reserve/modal";
 import { Search } from "lucide-react";
 import { AssetGrid } from "./asset-grid";
 import { AssetUpload } from "./asset-upload";

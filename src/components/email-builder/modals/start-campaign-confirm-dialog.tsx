@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/src/components/ui/dialog";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
 import { startCampaignService } from "@/src/common/services/email-campaign/start-campaign-service";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";

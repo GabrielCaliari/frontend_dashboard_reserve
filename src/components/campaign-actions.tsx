@@ -4,7 +4,7 @@ import { useState } from "react";
 import { IEmail } from "@/src/shared/domain/types/@email";
 import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
-import { Button } from "./ui/button";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { StartCampaignConfirmDialog } from "./email-builder/modals/start-campaign-confirm-dialog";
 import { updateMetricsService } from "@/src/common/services/email-campaign/update-metrics-service";
 import { toast } from "sonner";

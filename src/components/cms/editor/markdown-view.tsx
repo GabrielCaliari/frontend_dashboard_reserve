@@ -8,7 +8,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/src/components/ui/tooltip";
+} from "@/src/presentation/components/atoms/shadcn-ui/tooltip";
 
 // ---------------------------------------------------------------------------
 // Types

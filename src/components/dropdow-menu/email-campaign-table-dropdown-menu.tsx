@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/src/presentation/components/atoms/shadcn-ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 

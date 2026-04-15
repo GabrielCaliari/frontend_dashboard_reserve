@@ -27,7 +27,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@/src/components/ui/modal";
+} from "@/src/presentation/components/atoms/reserve/modal";
 import { Upload, Pencil, Trash2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";

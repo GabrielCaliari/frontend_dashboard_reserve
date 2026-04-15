@@ -19,7 +19,7 @@ import {
   useB2BGlobalFees,
   useUpsertB2BGlobalFees,
 } from "@/src/common/hooks/payments/use-b2c-fees";
-import { CurrencyInput } from "@/src/components/ui/currency-input";
+import { CurrencyInput } from "@/src/presentation/components/atoms/reserve/currency-input";
 
 interface B2BGlobalFeesModalProps {
   isOpen: boolean;

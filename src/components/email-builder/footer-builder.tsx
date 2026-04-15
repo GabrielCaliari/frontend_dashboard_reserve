@@ -2,22 +2,22 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/src/components/ui/tabs";
+} from "@/src/presentation/components/atoms/shadcn-ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/src/components/ui/select";
-import { Button } from "@/src/components/ui/button";
+} from "@/src/presentation/components/atoms/shadcn-ui/select";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { ColorPicker } from "./color-picker";
 import { Trash2, Plus } from "lucide-react";
 

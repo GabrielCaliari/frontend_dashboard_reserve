@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { b2bPaymentsService } from "@/src/common/services/b2b-payments-service";
 import { b2cProductsService } from "@/src/common/services/b2c-products-service";
 import { BillingConfigSelector } from "./billing-config-selector";
-import { CurrencyInput } from "@/src/components/ui/currency-input";
+import { CurrencyInput } from "@/src/presentation/components/atoms/reserve/currency-input";
 import type { BillingConfiguration } from "@/src/shared/domain/types/@billing-config";
 
 type BillingType = "b2b" | "b2c";

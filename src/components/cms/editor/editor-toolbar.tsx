@@ -29,14 +29,14 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/src/components/ui/tooltip";
+} from "@/src/presentation/components/atoms/shadcn-ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/src/components/ui/dropdown-menu";
+} from "@/src/presentation/components/atoms/shadcn-ui/dropdown-menu";
 import {
   ViewModeToggle,
   type ViewMode,

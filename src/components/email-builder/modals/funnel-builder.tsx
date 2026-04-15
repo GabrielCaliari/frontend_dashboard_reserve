@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/src/components/ui/dialog";
-import { Input } from "@/src/components/ui/input";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/src/components/ui/select";
-import { Label } from "@/src/components/ui/label";
+} from "@/src/presentation/components/atoms/shadcn-ui/select";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import {
   Filter,
   Mail,

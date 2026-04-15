@@ -7,11 +7,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/src/components/ui/dialog";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
 import { useRouter } from "next/navigation";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {

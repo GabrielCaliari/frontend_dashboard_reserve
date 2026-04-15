@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Button } from "@/src/components/ui/button";
-import { ScrollArea } from "@/src/components/ui/scroll-area";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { ScrollArea } from "@/src/presentation/components/atoms/shadcn-ui/scroll-area";
 import type {
   IEmailComponent,
   IStylePreset,

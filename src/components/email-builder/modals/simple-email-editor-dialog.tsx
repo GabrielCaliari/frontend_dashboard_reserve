@@ -7,11 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "../../ui/dialog";
-import { Button } from "../../ui/button";
-import { Textarea } from "../../ui/textarea";
-import { Label } from "../../ui/label";
-import { Input } from "../../ui/input";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Textarea } from "@/src/presentation/components/atoms/shadcn-ui/textarea";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import { Eye, Settings, Save } from "lucide-react";
 import { IEmailCampaign } from "@/src/shared/domain/types/@email-campaign";
 import { IEmail } from "@/src/shared/domain/types/@email";

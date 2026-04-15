@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@/src/components/ui/tooltip";
+} from "@/src/presentation/components/atoms/shadcn-ui/tooltip";
 
 type Status = "success" | "error" | "warning";
 

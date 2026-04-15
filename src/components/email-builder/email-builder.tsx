@@ -7,7 +7,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import ComponentSidebar from "./component-sidebar";
 import EmailCanvas from "./email-canvas";
 import PropertiesPanel from "./properties-panel";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { Settings, Download, Save } from "lucide-react";
 import EmailPreviewModal from "./email-preview-modal";
 import EmailSettingsModal, {
@@ -24,7 +24,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/src/components/ui/dropdown-menu";
+} from "@/src/presentation/components/atoms/shadcn-ui/dropdown-menu";
 import {
   IEmailComponent,
   IEmailTemplate,

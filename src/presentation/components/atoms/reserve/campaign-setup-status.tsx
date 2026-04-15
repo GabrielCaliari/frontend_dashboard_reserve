@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "@/src/presentation/components/atoms/shadcn-ui/card";
 import {
   CheckCircle,
   Circle,
@@ -18,13 +18,13 @@ import {
   Settings,
   Filter,
 } from "lucide-react";
-import { VariationConfigDialog } from "../email-builder/modals/variation-config-dialog";
-import { LeadUploadDialog } from "../email-builder/modals/lead-upload-dialog";
-import { FunnelConfigDialog } from "../email-builder/modals/funnel-config-dialog";
-import { BatchSizeConfigDialog } from "../email-builder/modals/batch-size-config-dialog";
-import { CopyCreatedDialog } from "../email-builder/modals/copy-created-dialog";
-import { Input } from "./input";
-import { Label } from "./label";
+import { VariationConfigDialog } from "@/src/components/email-builder/modals/variation-config-dialog";
+import { LeadUploadDialog } from "@/src/components/email-builder/modals/lead-upload-dialog";
+import { FunnelConfigDialog } from "@/src/components/email-builder/modals/funnel-config-dialog";
+import { BatchSizeConfigDialog } from "@/src/components/email-builder/modals/batch-size-config-dialog";
+import { CopyCreatedDialog } from "@/src/components/email-builder/modals/copy-created-dialog";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import {
   Select,
@@ -32,13 +32,13 @@ import {
   SelectContent,
   SelectTrigger,
   SelectValue,
-} from "./select";
+} from "@/src/presentation/components/atoms/shadcn-ui/select";
 import { IEmail } from "@/src/shared/domain/types/@email";
-import { Button } from "./button";
-import { CampaignSetupStatusDialog } from "../email-builder/modals/campaign-setup-status-dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { CampaignSetupStatusDialog } from "@/src/components/email-builder/modals/campaign-setup-status-dialog";
 import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
-import { StartCampaignConfirmDialog } from "../email-builder/modals/start-campaign-confirm-dialog";
-import { BatchTable } from "../tables/batch-table";
+import { StartCampaignConfirmDialog } from "@/src/components/email-builder/modals/start-campaign-confirm-dialog";
+import { BatchTable } from "@/src/components/tables/batch-table";
 import { CampaignBatch } from "@/src/shared/domain/types/@campaign-batch";
 import { closeSetupService } from "@/src/common/services/email-campaign/close-setup-service";
 import { toast } from "sonner";

@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
-import { Header } from "../components/ui/header";
+import { Header } from "@/src/presentation/components/atoms/reserve/header";
 import { Inter, Bricolage_Grotesque } from "next/font/google";
 
 import NextTopLoader from "nextjs-toploader";

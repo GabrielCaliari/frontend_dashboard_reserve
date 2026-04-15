@@ -26,7 +26,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "@/src/components/ui/modal";
+} from "@/src/presentation/components/atoms/reserve/modal";
 
 import KanbanCard from "./kanban-card";
 import KanbanColumn from "./kanban-column";

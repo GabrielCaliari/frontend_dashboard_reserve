@@ -8,22 +8,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/src/components/ui/dialog";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/src/components/ui/tabs";
+} from "@/src/presentation/components/atoms/shadcn-ui/tabs";
 import { Edit } from "lucide-react";
 import HeaderBuilderModal from "./header-builder-modal";
 import FooterBuilderModal from "./footer-builder-modal";
 import type { HeaderConfig } from "./header-builder";
 import type { FooterConfig } from "./footer-builder";
-import { Switch } from "@/src/components/ui/switch";
+import { Switch } from "@/src/presentation/components/atoms/shadcn-ui/switch";
 
 export interface EmailSettings {
   defaultPadding: string;

@@ -9,13 +9,13 @@ import {
   SelectItem,
   Textarea,
 } from "@heroui/react";
-import { TooltipProvider } from "@/src/components/ui/tooltip";
+import { TooltipProvider } from "@/src/presentation/components/atoms/shadcn-ui/tooltip";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/src/components/ui/accordion";
+} from "@/src/presentation/components/atoms/shadcn-ui/accordion";
 import { ScoreCard } from "./score-card";
 import { SectionBadge } from "./section-badge";
 import { SeoAnalysisItem } from "./seo-analysis-item";

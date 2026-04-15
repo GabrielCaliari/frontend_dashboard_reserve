@@ -9,9 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/src/components/ui/dialog";
-import { Button } from "@/src/components/ui/button";
-import { Alert, AlertDescription } from "@/src/components/ui/alert";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Alert, AlertDescription } from "@/src/presentation/components/atoms/shadcn-ui/alert";
 import { useRouter } from "next/navigation";
 import { Upload, AlertCircle, CheckCircle, FileText } from "lucide-react";
 import { uploadLeads } from "@/src/presentation/actions/email-campaign/upload-leads";

@@ -5,7 +5,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-} from "@/src/components/ui/modal";
+} from "@/src/presentation/components/atoms/reserve/modal";
 import { AssetUpload } from "./asset-upload";
 import { useTranslations } from "next-intl";
 import type { MediaCollection } from "@/src/shared/domain/types/@cms-media";

@@ -11,7 +11,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/src/components/ui/sheet";
+} from "@/src/presentation/components/atoms/shadcn-ui/sheet";
 
 interface ReportDialogProps {
   isOpen: boolean;

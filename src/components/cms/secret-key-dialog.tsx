@@ -8,9 +8,9 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/src/components/ui/sheet";
-import { Button } from "@/src/components/ui/button";
-import { Alert, AlertDescription } from "@/src/components/ui/alert";
+} from "@/src/presentation/components/atoms/shadcn-ui/sheet";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { Alert, AlertDescription } from "@/src/presentation/components/atoms/shadcn-ui/alert";
 
 interface SecretKeyDialogProps {
   open: boolean;

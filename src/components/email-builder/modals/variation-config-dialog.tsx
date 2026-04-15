@@ -7,10 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/src/components/ui/dialog";
-import { Button } from "@/src/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/src/components/ui/radio-group";
-import { Label } from "@/src/components/ui/label";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { RadioGroup, RadioGroupItem } from "@/src/presentation/components/atoms/shadcn-ui/radio-group";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import { Cpu, Edit, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { updateEmailCampaignCopyVariant } from "@/src/presentation/actions/email-campaign/update-email-campaign-copy-variant";

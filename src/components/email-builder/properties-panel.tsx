@@ -4,27 +4,27 @@ import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import type { IEmailComponent } from "@/src/shared/domain/types/@email-builder";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
+import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/src/components/ui/select";
+} from "@/src/presentation/components/atoms/shadcn-ui/select";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/src/components/ui/tabs";
-import { Button } from "@/src/components/ui/button";
+} from "@/src/presentation/components/atoms/shadcn-ui/tabs";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { ColorPicker } from "./color-picker";
 import StylePresets from "./style-presets";
 import LinkEditorModal from "./link-editor-modal";
 import { LinkIcon } from "lucide-react";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/src/presentation/components/atoms/shadcn-ui/textarea";
 
 interface PropertiesPanelProps {
   component: IEmailComponent;

@@ -12,13 +12,13 @@ import {
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { formatDate } from "@/src/shared/lib/utils";
-import { CampaignSetupStatus } from "@/src/components/ui/campaign-setup-status";
+import { CampaignSetupStatus } from "@/src/presentation/components/atoms/reserve/campaign-setup-status";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/src/components/ui/card";
+} from "@/src/presentation/components/atoms/shadcn-ui/card";
 import listSmtpServers from "@/src/presentation/actions/smtp-server/list-smtp-servers";
 import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import listPrimaryCopyByEmailCampaignService from "@/src/common/services/email-campaign/list-primary-copy-by-email-campaign-service";

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Search, X } from "lucide-react";
-import { Input } from "@/src/components/ui/input";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import { cn } from "@/src/shared/lib/utils";
 
 interface SearchInputProps {

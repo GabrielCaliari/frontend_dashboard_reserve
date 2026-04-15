@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/src/components/ui/card";
+import { Card, CardContent } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import { TrendBadge } from "./trend-badge";
 import type { MetricValueResponse } from "@/src/shared/domain/types/@stats";
 import { formatStatValue } from "./format-stat-value";

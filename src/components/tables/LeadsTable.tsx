@@ -3,7 +3,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/src/components/ui/dropdown-menu";
+} from "@/src/presentation/components/atoms/shadcn-ui/dropdown-menu";
 import { MoreVertical, Eye, Edit, Trash } from "lucide-react";
 import { Lead } from "../email-builder/modals/LeadDetailModal";
 import { displayOrigin } from "@/src/shared/utils";

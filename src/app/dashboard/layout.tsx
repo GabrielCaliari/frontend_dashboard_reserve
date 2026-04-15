@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 const Sidebar = dynamic(
   () =>
-    import("@/src/components/ui/aside").then((m) => ({ default: m.Sidebar })),
+    import("@/src/presentation/components/atoms/reserve/aside").then((m) => ({ default: m.Sidebar })),
   { ssr: false },
 );
 

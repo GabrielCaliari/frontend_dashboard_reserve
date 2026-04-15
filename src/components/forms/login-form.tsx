@@ -7,8 +7,8 @@ import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import useAdminAuthentication from "@/src/shared/hooks/use-user-authentication";
 import { useTranslations } from "next-intl";
-import { PasswordInput } from "@/src/components/ui/password-input";
-import { Button } from "@/src/components/ui/button";
+import { PasswordInput } from "@/src/presentation/components/atoms/reserve/password-input";
+import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 
 export function LoginForm() {
   const { execAdminAuthentication } = useAdminAuthentication();

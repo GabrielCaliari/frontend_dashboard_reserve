@@ -2,7 +2,7 @@
 
 import { useDrag } from "react-dnd";
 import { useTranslations } from "next-intl";
-import { Card, CardContent } from "@/src/components/ui/card";
+import { Card, CardContent } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import type { IEmailComponent } from "@/src/shared/domain/types/@email-builder";
 import {
   Type,

@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/src/components/ui/dialog";
+} from "@/src/presentation/components/atoms/shadcn-ui/dialog";
 import {
   Table,
   TableBody,
@@ -13,8 +13,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/src/components/ui/table";
-import { Input } from "@/src/components/ui/input";
+} from "@/src/presentation/components/atoms/shadcn-ui/table";
+import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import { useState } from "react";
 import { Eye, MousePointer } from "lucide-react";
 import { IDelivery } from "@/src/shared/domain/types/@delivery";
