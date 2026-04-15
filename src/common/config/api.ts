@@ -36,8 +36,6 @@ api.interceptors.request.use(
       delete result.headers['x-tenant-id'];
     }
 
-    console.log('[API] skipTenant:', skipTenant, '| x-tenant-id:', result.headers['x-tenant-id'], '| Authorization:', result.headers['Authorization'] ? 'present' : 'MISSING', '| session-id:', result.headers['session-id'] ? 'present' : 'MISSING', '| url:', config.url);
-
     return result;
   },
   (error) => Promise.reject(error),

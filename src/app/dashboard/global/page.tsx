@@ -8,6 +8,7 @@ import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useStatsGlobalDashboard } from "@/src/common/hooks/stats";
 import usePermissions from "@/src/common/hooks/use-permissions";
 import { StatGroupCard, DateRangePicker } from "@/src/components/stats";
+import { formatDate } from "@/src/common/lib/utils";
 
 function getDefaultRange() {
   const to = new Date();
@@ -63,7 +64,7 @@ export default function GlobalDashboardPage() {
             <p className="mt-1 text-sm text-gray-400">{t("globalDescription")}</p>
             {data?.generatedAt ? (
               <p className="mt-2 text-xs text-gray-500">
-                {t("updatedAt", { date: new Date(data.generatedAt).toLocaleString() })}
+                {t("updatedAt", { date: formatDate(data.generatedAt) })}
               </p>
             ) : null}
           </div>

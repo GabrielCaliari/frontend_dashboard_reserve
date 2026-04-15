@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-  Chip, Button, Select, SelectItem, Skeleton,
+  Chip, Button, Select, SelectItem, Skeleton, Tabs, Tab,
 } from "@heroui/react";
-import { RefreshCw, Users, Plus, Download, X, ChevronLeft, ChevronRight, FileX } from "lucide-react";
+import { RefreshCw, Users, Plus, Download, X, ChevronLeft, ChevronRight, FileX, Calendar, FolderOpen } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useListLeads } from "@/src/common/hooks/leads/use-list-leads";
 import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collection-leads";
@@ -276,6 +276,48 @@ export default function LeadsPage() {
             </Button>
           </div>
         </div>
+
+        {/* Navigation Tabs */}
+        <Tabs
+          aria-label="Leads navigation"
+          color="primary"
+          classNames={{
+            tabList: "gap-4 w-full relative rounded-lg bg-default-100 p-1",
+            cursor: "w-full bg-primary",
+            tab: "max-w-fit px-4 h-10",
+          }}
+        >
+          <Tab
+            key="leads"
+            title={
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                <span>{t("tabLeads")}</span>
+              </div>
+            }
+          />
+
+          <Tab
+            key="collections"
+            title={
+              <div className="flex items-center gap-2">
+                <FolderOpen className="w-4 h-4" />
+                <span>{t("tabCollections")}</span>
+              </div>
+            }
+            onClick={() => router.push("/dashboard/leads/collections")}
+          />
+          <Tab
+            key="appointments"
+            title={
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span>{t("tabAppointments")}</span>
+              </div>
+            }
+            onClick={() => router.push("/dashboard/leads/appointments")}
+          />
+        </Tabs>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 items-center">

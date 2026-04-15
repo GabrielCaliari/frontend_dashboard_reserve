@@ -28,6 +28,7 @@ import {
   Settings,
   X,
   FileBarChart2,
+  Calendar,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -157,6 +158,12 @@ export function Sidebar({
                 label: t("leadCollections"),
                 icon: FolderOpen,
                 path: "/dashboard/leads/collections",
+              },
+              {
+                id: "appointments",
+                label: t("appointments"),
+                icon: Calendar,
+                path: "/dashboard/leads/appointments",
               },
               {
                 id: "abandoned-carts",
@@ -322,7 +329,7 @@ export function Sidebar({
         prev.includes("email") ? prev : [...prev, "email"],
       );
     }
-    if (activeTab === "leads" || activeTab === "lead-collections") {
+    if (activeTab === "leads" || activeTab === "lead-collections" || activeTab === "appointments") {
       setExpandedMenus((prev) =>
         prev.includes("leads-menu") ? prev : [...prev, "leads-menu"],
       );
