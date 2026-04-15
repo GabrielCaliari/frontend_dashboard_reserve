@@ -1,6 +1,6 @@
 "use server";
 
-import { updateEmailCampaignCopyVariantService } from "../../services/email-campaign/update-email-campaign-copy-variant-service";
+import { updateEmailCampaignCopyVariantService } from "@/src/common/services/email-campaign/update-email-campaign-copy-variant-service";
 import { ECopyVariationType } from "@/src/shared/domain/types/@email-campaign";
 
 export async function updateEmailCampaignCopyVariant(

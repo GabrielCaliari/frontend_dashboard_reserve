@@ -18,7 +18,7 @@ import {
   CreateCampaignFormData,
   createCampaignSchema,
 } from "@/src/shared/schemas/create-campaign-dialog";
-import { createEmailCampaign } from "@/src/common/actions/email-campaign/create-email-campaign";
+import { createEmailCampaign } from "@/src/presentation/actions/email-campaign/create-email-campaign";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 

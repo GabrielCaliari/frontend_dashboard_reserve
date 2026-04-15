@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { completeScreening } from "../actions/complete-screening";
+import { completeScreening } from "@/src/presentation/actions/complete-screening";
 
 export default function useCompleteScreening() {
   const { mutateAsync, isPending } = useMutation({

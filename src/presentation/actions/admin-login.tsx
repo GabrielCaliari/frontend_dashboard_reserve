@@ -1,10 +1,10 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { adminLoginService } from "../services/admin-login";
+import { adminLoginService } from "@/src/common/services/admin-login";
 import { LoginCredentials, AuthResponse } from "@/src/shared/domain/types/@auth";
 import { redirect } from "next/navigation";
-import { errorTypes } from "../../infraestructure/axios/error-types";
+import { errorTypes } from "@/src/infraestructure/axios/error-types";
 
 interface ActionResult {
   success: boolean;

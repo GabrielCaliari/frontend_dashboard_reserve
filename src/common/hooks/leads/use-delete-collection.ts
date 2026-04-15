@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCollectionAction } from "@/src/common/actions/leads/delete-collection";
+import { deleteCollectionAction } from "@/src/presentation/actions/leads/delete-collection";
 import { toast } from "react-hot-toast";
 
 export function useDeleteCollection() {

@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { listLeadAttachmentsAction } from "@/src/common/actions/leads/list-lead-attachments";
-import { addLeadAttachmentAction } from "@/src/common/actions/leads/add-lead-attachment";
-import { removeLeadAttachmentAction } from "@/src/common/actions/leads/remove-lead-attachment";
+import { listLeadAttachmentsAction } from "@/src/presentation/actions/leads/list-lead-attachments";
+import { addLeadAttachmentAction } from "@/src/presentation/actions/leads/add-lead-attachment";
+import { removeLeadAttachmentAction } from "@/src/presentation/actions/leads/remove-lead-attachment";
 import type {
   LeadAttachment,
   AddAttachmentDto,

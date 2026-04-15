@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateCollectionAction } from "@/src/common/actions/leads/update-collection";
+import { updateCollectionAction } from "@/src/presentation/actions/leads/update-collection";
 import type {
   UpdateCollectionDto,
   CollectionDetailResponse,

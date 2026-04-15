@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { listLeads } from "@/src/common/actions/list-leads";
+import { listLeads } from "@/src/presentation/actions/list-leads";
 
 export default function useListLeads() {
   const execListLeads = async (page: number = 1) => {

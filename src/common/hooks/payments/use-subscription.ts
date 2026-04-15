@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSubscriptionAction } from "@/src/common/actions/payments/get-subscription";
+import { getSubscriptionAction } from "@/src/presentation/actions/payments/get-subscription";
 import type {
   GetSubscriptionResponse,
   Subscription,

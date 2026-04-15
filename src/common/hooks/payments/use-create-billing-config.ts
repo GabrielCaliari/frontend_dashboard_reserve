@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBillingConfigAction } from "@/src/common/actions/payments/create-billing-config";
+import { createBillingConfigAction } from "@/src/presentation/actions/payments/create-billing-config";
 import type { CreateBillingConfigDto } from "@/src/shared/domain/types/@payments";
 import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 

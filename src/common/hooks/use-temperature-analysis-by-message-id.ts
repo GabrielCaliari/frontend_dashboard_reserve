@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { temperatureAnalysisByMessageId } from "../actions/temperature-analysis-by-message-id";
+import { temperatureAnalysisByMessageId } from "@/src/presentation/actions/temperature-analysis-by-message-id";
 
 export default function useTemperatureAnalysisByMessageId() {
   const { mutateAsync, isPending } = useMutation({

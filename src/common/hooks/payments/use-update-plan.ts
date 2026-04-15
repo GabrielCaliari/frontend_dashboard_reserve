@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updatePlanAction } from "@/src/common/actions/payments/update-plan";
+import { updatePlanAction } from "@/src/presentation/actions/payments/update-plan";
 import type { UpdateStripePlanDto } from "@/src/shared/domain/types/@payments";
 
 export function useUpdatePlan() {

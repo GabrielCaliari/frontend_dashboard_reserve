@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCollectionLeadsAction } from "@/src/common/actions/leads/get-collection-leads";
+import { getCollectionLeadsAction } from "@/src/presentation/actions/leads/get-collection-leads";
 import type { LeadListResponse } from "@/src/shared/domain/types/@lead";
 import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 

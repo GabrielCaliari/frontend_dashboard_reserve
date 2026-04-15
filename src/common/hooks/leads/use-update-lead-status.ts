@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateLeadStatusAction } from "@/src/common/actions/leads/update-lead-status";
+import { updateLeadStatusAction } from "@/src/presentation/actions/leads/update-lead-status";
 import type {
   UpdateLeadStatusDto,
   LeadDetailResponse,

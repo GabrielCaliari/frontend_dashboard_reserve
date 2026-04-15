@@ -13,7 +13,7 @@ import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Settings, CheckCircle, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { updateCampaignBatchSize } from "@/src/common/actions/email-campaign/update-campaign-batch-size";
+import { updateCampaignBatchSize } from "@/src/presentation/actions/email-campaign/update-campaign-batch-size";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 interface BatchSizeConfigDialogProps {

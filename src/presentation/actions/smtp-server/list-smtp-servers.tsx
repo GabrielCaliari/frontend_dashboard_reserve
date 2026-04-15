@@ -1,6 +1,6 @@
 "use server";
 
-import listSmtpServersServices from "../../services/smtp-server/list-smtp-servers-services";
+import listSmtpServersServices from "@/src/common/services/smtp-server/list-smtp-servers-services";
 
 export default async function listSmtpServers() {
   const response = await listSmtpServersServices();

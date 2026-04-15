@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createLeadAction } from "@/src/common/actions/leads/create-lead";
+import { createLeadAction } from "@/src/presentation/actions/leads/create-lead";
 import type {
   CreateLeadDto,
   LeadDetailResponse,

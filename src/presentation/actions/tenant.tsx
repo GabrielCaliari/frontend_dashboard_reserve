@@ -1,6 +1,6 @@
 "use server";
 
-import { listMyTenantsService } from "../services/tenant";
+import { listMyTenantsService } from "@/src/common/services/tenant";
 
 export async function listMyTenants() {
   return listMyTenantsService();

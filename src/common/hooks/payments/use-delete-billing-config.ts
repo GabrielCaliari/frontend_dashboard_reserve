@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteBillingConfigAction } from "@/src/common/actions/payments/delete-billing-config";
+import { deleteBillingConfigAction } from "@/src/presentation/actions/payments/delete-billing-config";
 import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 
 export function useDeleteBillingConfig() {

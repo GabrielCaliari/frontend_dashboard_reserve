@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePlanAction } from "@/src/common/actions/payments/delete-plan";
+import { deletePlanAction } from "@/src/presentation/actions/payments/delete-plan";
 
 export function useDeletePlan() {
   const queryClient = useQueryClient();

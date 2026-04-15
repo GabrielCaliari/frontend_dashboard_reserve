@@ -2,7 +2,7 @@
 
 import toast from "react-hot-toast";
 import { LoginCredentials } from "@/src/shared/domain/types/@auth";
-import { adminLogin } from "@/src/common/actions/admin-login";
+import { adminLogin } from "@/src/presentation/actions/admin-login";
 import { errorTypes } from "@/src/infraestructure/axios/error-types";
 
 export default function useAdminAuthentication() {

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteLeadAction } from "@/src/common/actions/leads/delete-lead";
+import { deleteLeadAction } from "@/src/presentation/actions/leads/delete-lead";
 import { toast } from "react-hot-toast";
 
 export function useDeleteLead() {

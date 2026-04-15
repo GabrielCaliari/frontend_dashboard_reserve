@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { updateLeadQualification } from "../actions/update-lead-qualification";
+import { updateLeadQualification } from "@/src/presentation/actions/update-lead-qualification";
 
 export default function useUpdateLeadQualification() {
   const { mutateAsync, isPending } = useMutation({

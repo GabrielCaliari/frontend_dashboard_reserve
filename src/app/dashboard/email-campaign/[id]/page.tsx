@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import listSmtpServers from "@/src/common/actions/smtp-server/list-smtp-servers";
+import listSmtpServers from "@/src/presentation/actions/smtp-server/list-smtp-servers";
 import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import listPrimaryCopyByEmailCampaignService from "@/src/common/services/email-campaign/list-primary-copy-by-email-campaign-service";
 import listBatchesByEmailCampaignService from "@/src/common/services/email-campaign/list-batches-by-email-campaign-service";

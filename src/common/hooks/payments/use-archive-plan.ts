@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { archivePlanAction } from "@/src/common/actions/payments/archive-plan";
+import { archivePlanAction } from "@/src/presentation/actions/payments/archive-plan";
 
 export function useArchivePlan() {
   const queryClient = useQueryClient();

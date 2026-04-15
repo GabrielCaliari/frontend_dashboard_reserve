@@ -14,7 +14,7 @@ import { Button } from "@/src/components/ui/button";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { useRouter } from "next/navigation";
 import { Upload, AlertCircle, CheckCircle, FileText } from "lucide-react";
-import { uploadLeads } from "@/src/common/actions/email-campaign/upload-leads";
+import { uploadLeads } from "@/src/presentation/actions/email-campaign/upload-leads";
 import { useTranslations } from "next-intl";
 
 interface LeadUploadDialogProps {

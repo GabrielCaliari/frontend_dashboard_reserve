@@ -30,7 +30,7 @@ import {
 
 import KanbanCard from "./kanban-card";
 import KanbanColumn from "./kanban-column";
-import { listLeadQualification } from "@/src/common/actions/list-lead-qualification";
+import { listLeadQualification } from "@/src/presentation/actions/list-lead-qualification";
 import { ILeadQualificationMessage } from "@/src/shared/interfaces/lead-qualification.interface";
 import useUpdateLeadQualification from "@/src/common/hooks/use-update-lead-qualification";
 import { useTranslations } from "next-intl";
