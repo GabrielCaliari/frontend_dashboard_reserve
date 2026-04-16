@@ -7,10 +7,11 @@ import {
   Chip, Button, Skeleton, Tooltip,
 } from "@heroui/react";
 import { Edit, Power, Trash2, ExternalLink } from "lucide-react";
-import { Admin } from "@/src/common/@types/@access-management";
+import { Admin, AdminRole } from "@/src/common/@types/@access-management";
 import { formatDate } from "@/src/common/lib/utils";
 import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
+import usePermissions from "@/src/common/hooks/use-permissions";
 
 interface AdminTableProps {
   admins: Admin[];
@@ -26,6 +27,11 @@ const AdminTable: React.FC<AdminTableProps> = ({
   admins, isLoading, currentAdminId, onEdit, onRowClick, onToggleActive, onDelete,
 }) => {
   const t = useTranslations("accessManagement");
+  const { isSuperAdmin } = usePermissions();
+
+  // Managers cannot act on super_admin or owner accounts
+  const canActOn = (admin: Admin) =>
+    isSuperAdmin || (admin.role !== AdminRole.super_admin && admin.role !== AdminRole.owner);
 
   const columns = [
     { key: "name",       label: t("table.columns.name")      },
@@ -59,6 +65,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
         return <span className="text-sm text-foreground-400">{formatDate(admin.created_at)}</span>;
       case "actions":
         const isSelf = admin.id === currentAdminId;
+        const canAct = canActOn(admin);
         return (
           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             <Tooltip content={t("table.tooltips.viewDetails")}>
@@ -66,27 +73,27 @@ const AdminTable: React.FC<AdminTableProps> = ({
                 <ExternalLink className="w-4 h-4" />
               </Button>
             </Tooltip>
-            <Tooltip content={t("table.tooltips.editAdmin")}>
-              <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(admin)} aria-label={t("table.ariaLabels.editAdmin")}>
+            <Tooltip content={!canAct ? t("table.tooltips.insufficientPermissions") || "Insufficient permissions" : t("table.tooltips.editAdmin")}>
+              <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(admin)} isDisabled={!canAct} aria-label={t("table.ariaLabels.editAdmin")}>
                 <Edit className="w-4 h-4" />
               </Button>
             </Tooltip>
-            <Tooltip content={isSelf ? t("table.tooltips.cannotDeactivateSelf") : (admin.is_active ? t("table.tooltips.deactivate") : t("table.tooltips.activate"))}>
+            <Tooltip content={isSelf ? t("table.tooltips.cannotDeactivateSelf") : !canAct ? t("table.tooltips.insufficientPermissions") || "Insufficient permissions" : (admin.is_active ? t("table.tooltips.deactivate") : t("table.tooltips.activate"))}>
               <Button
                 isIconOnly size="sm" variant="light"
                 color={admin.is_active ? "warning" : "success"}
                 onPress={() => onToggleActive(admin.id, admin.is_active)}
-                isDisabled={isSelf && admin.is_active}
+                isDisabled={(isSelf && admin.is_active) || !canAct}
                 aria-label={admin.is_active ? t("table.ariaLabels.deactivateAdmin") : t("table.ariaLabels.activateAdmin")}
               >
                 <Power className="w-4 h-4" />
               </Button>
             </Tooltip>
-            <Tooltip content={isSelf ? t("table.tooltips.cannotDeleteSelf") : t("table.tooltips.deleteAdmin")} color="danger">
+            <Tooltip content={isSelf ? t("table.tooltips.cannotDeleteSelf") : !canAct ? t("table.tooltips.insufficientPermissions") || "Insufficient permissions" : t("table.tooltips.deleteAdmin")} color="danger">
               <Button
                 isIconOnly size="sm" variant="light" color="danger"
                 onPress={() => onDelete(admin.id)}
-                isDisabled={isSelf}
+                isDisabled={isSelf || !canAct}
                 aria-label={t("table.ariaLabels.deleteAdmin")}
               >
                 <Trash2 className="w-4 h-4" />

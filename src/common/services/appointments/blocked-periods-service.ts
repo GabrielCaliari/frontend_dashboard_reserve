@@ -30,6 +30,14 @@ export async function createBlockedPeriodService(
   return response.data;
 }
 
+export async function updateBlockedPeriodService(
+  id: string,
+  period: Omit<BlockedPeriod, "id" | "tenantId" | "createdAt">
+): Promise<CreateBlockedPeriodResponse> {
+  const response = await apiClient.patch(`/leads/admin/appointments/blocked-periods/${id}`, period);
+  return response.data;
+}
+
 export async function deleteBlockedPeriodService(id: string): Promise<void> {
   await apiClient.delete(`/leads/admin/appointments/blocked-periods/${id}`);
 }

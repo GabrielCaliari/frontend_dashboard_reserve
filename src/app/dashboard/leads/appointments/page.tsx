@@ -34,11 +34,19 @@ export default function AppointmentsPage() {
   const appointments = data?.data?.data || [];
   const totalCount = data?.data?.count || 0;
 
-  // Extrai datas bloqueadas como "YYYY-MM-DD"
+  // Extrai datas bloqueadas como "YYYY-MM-DD" — só marca dias INTEIROS bloqueados
   const blockedDates = (blockedData?.data?.data || []).flatMap((period) => {
-    const dates: string[] = [];
     const start = new Date(period.startDatetime);
     const end = new Date(period.endDatetime);
+    
+    // Verifica se é full day (00:00 até 23:59)
+    const isFullDay = 
+      start.getHours() === 0 && start.getMinutes() === 0 &&
+      end.getHours() === 23 && end.getMinutes() >= 59;
+    
+    if (!isFullDay) return []; // Horário específico — não bloqueia o dia inteiro no calendário
+    
+    const dates: string[] = [];
     const cur = new Date(start);
     while (cur <= end) {
       dates.push(cur.toISOString().split("T")[0]);
@@ -107,14 +115,17 @@ export default function AppointmentsPage() {
                 <Select
                   size="sm"
                   variant="bordered"
-                  selectedKeys={[statusFilter]}
-                  onChange={(e) => updateParam("status", e.target.value)}
+                  selectedKeys={new Set([statusFilter])}
+                  onSelectionChange={(keys) => {
+                    const value = Array.from(keys)[0] as string;
+                    updateParam("status", value || "");
+                  }}
                   aria-label={t("allStatuses")}
                   className="w-44"
                   classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
                 >
                   {STATUS_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
+                    <SelectItem key={opt.value}>
                       {opt.label}
                     </SelectItem>
                   ))}

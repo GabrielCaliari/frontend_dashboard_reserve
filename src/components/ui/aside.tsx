@@ -263,6 +263,12 @@ export function Sidebar({
               icon: UsersRound,
               path: "/dashboard/leads",
             },
+            {
+              id: "appointments",
+              label: t("appointments"),
+              icon: Calendar,
+              path: "/dashboard/leads/appointments",
+            },
           ],
         },
         {
@@ -281,6 +287,43 @@ export function Sidebar({
               label: t("articles"),
               icon: FileText,
               path: "/dashboard/cms/articles",
+            },
+            {
+              id: "authors",
+              label: t("authors"),
+              icon: UserCircle,
+              path: "/dashboard/cms/authors",
+            },
+            {
+              id: "media",
+              label: t("media"),
+              icon: Image,
+              path: "/dashboard/cms/media",
+            },
+          ],
+        },
+        {
+          id: "profile",
+          label: t("profile"),
+          icon: Settings,
+          path: "/dashboard/profile",
+        },
+        {
+          id: "access-management",
+          label: t("accessManagement"),
+          icon: Shield,
+          subItems: [
+            {
+              id: "admins",
+              label: t("admins"),
+              icon: UserCog,
+              path: "/dashboard/access-management/admins",
+            },
+            {
+              id: "users",
+              label: t("users"),
+              icon: Users,
+              path: "/dashboard/access-management/users",
             },
           ],
         },

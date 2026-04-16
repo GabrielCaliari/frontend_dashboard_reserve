@@ -52,10 +52,10 @@ export function ScheduleConfigForm() {
   ];
 
   const INTERVAL_OPTIONS = [
-    { value: "15", label: "15 min" },
-    { value: "30", label: "30 min" },
-    { value: "45", label: "45 min" },
-    { value: "60", label: "1 hora" },
+    { value: "15", label: `15 ${t("minutes") || "min"}` },
+    { value: "30", label: `30 ${t("minutes") || "min"}` },
+    { value: "45", label: `45 ${t("minutes") || "min"}` },
+    { value: "60", label: `1 ${t("hour") || "hour"}` },
   ];
 
   // Convert from backend format to flexible format

@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Button, Chip, Skeleton } from "@heroui/react";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import type { Appointment, EAppointmentStatus } from "@/src/common/@types/@appointment";
 
 interface AppointmentsCalendarProps {
@@ -28,6 +28,7 @@ export function AppointmentsCalendar({
   blockedDates = [],
 }: AppointmentsCalendarProps) {
   const t = useTranslations("appointments");
+  const locale = useLocale(); // Pegar o idioma atual
   const today = new Date();
 
   const [viewDate, setViewDate] = useState(() => {
@@ -39,7 +40,14 @@ export function AppointmentsCalendar({
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
 
-  const monthLabel = viewDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  // Usar locale correto para o mês
+  const localeMap: Record<string, string> = {
+    'en': 'en-US',
+    'pt': 'pt-BR',
+  };
+  const dateLocale = localeMap[locale] || 'en-US';
+
+  const monthLabel = viewDate.toLocaleDateString(dateLocale, { month: "long", year: "numeric" });
 
   // Map appointments by date "YYYY-MM-DD"
   const appointmentsByDate = useMemo(() => {
@@ -90,7 +98,10 @@ export function AppointmentsCalendar({
 
   const isBlocked = (day: number) => blockedDates.includes(formatKey(day));
 
-  const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  // Dias da semana traduzidos
+  const WEEKDAYS = locale === 'en' 
+    ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    : ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
   if (isLoading) {
     return (

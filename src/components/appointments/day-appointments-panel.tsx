@@ -1,10 +1,10 @@
 "use client";
 
-import { Button, Chip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
-import { Clock, User, Package, MoreVertical, CheckCircle, XCircle, Calendar } from "lucide-react";
+import { useState } from "react";
+import { Chip } from "@heroui/react";
+import { Clock, User, Package, Calendar, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { toast } from "react-hot-toast";
-import { useCancelAppointment, useCompleteAppointment } from "@/src/common/hooks/appointments/use-appointment-actions";
+import { AppointmentDetailModal } from "./appointment-detail-modal";
 import type { Appointment, EAppointmentStatus } from "@/src/common/@types/@appointment";
 
 interface DayAppointmentsPanelProps {
@@ -21,12 +21,15 @@ const STATUS_COLORS: Record<EAppointmentStatus, "success" | "warning" | "default
 
 export function DayAppointmentsPanel({ date, appointments, onRefresh }: DayAppointmentsPanelProps) {
   const t = useTranslations("appointments");
-  const cancelMutation = useCancelAppointment();
-  const completeMutation = useCompleteAppointment();
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
-  const dayAppts = appointments.filter(
-    (a) => a.appointmentDate.split("T")[0] === date
-  );
+  // Debug: ver o que está chegando
+  console.log('📋 Appointments recebidos:', appointments);
+  console.log('📋 Primeiro appointment:', appointments[0]);
+
+  const dayAppts = appointments
+    .filter((a) => a.appointmentDate.split("T")[0] === date)
+    .sort((a, b) => a.slotStartTime.localeCompare(b.slotStartTime)); // Ordenar por horário
 
   const dateLabel = date
     ? new Date(date + "T12:00:00").toLocaleDateString("pt-BR", {
@@ -37,24 +40,12 @@ export function DayAppointmentsPanel({ date, appointments, onRefresh }: DayAppoi
       })
     : null;
 
-  const handleCancel = async (id: string) => {
-    try {
-      await cancelMutation.mutateAsync(id);
-      toast.success(t("cancelSuccess"));
-      onRefresh();
-    } catch {
-      toast.error(t("errorCancel"));
-    }
+  const handleOpenDetail = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
   };
 
-  const handleComplete = async (id: string) => {
-    try {
-      await completeMutation.mutateAsync(id);
-      toast.success(t("completeSuccess"));
-      onRefresh();
-    } catch {
-      toast.error(t("errorComplete"));
-    }
+  const handleCloseDetail = () => {
+    setSelectedAppointment(null);
   };
 
   if (!date) {
@@ -84,78 +75,63 @@ export function DayAppointmentsPanel({ date, appointments, onRefresh }: DayAppoi
         </div>
       ) : (
         <div className="space-y-2">
-          {dayAppts
-            .sort((a, b) => a.slotStartTime.localeCompare(b.slotStartTime))
-            .map((appt) => (
-              <div
+          {dayAppts.map((appt) => {
+            const hasLeadName = appt.Lead?.name;
+            const hasProduct = appt.selectedProduct;
+            
+            return (
+              <button
                 key={appt.id}
-                className="rounded-xl border border-divider bg-default-50 p-3 space-y-2"
+                onClick={() => handleOpenDetail(appt)}
+                className="w-full rounded-xl border border-divider bg-default-50 hover:bg-default-100 p-3 space-y-2.5 transition-all cursor-pointer text-left group"
               >
-                {/* Time + Status */}
+                {/* Horário + Status */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-sm font-medium">
-                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                    {appt.slotStartTime} – {appt.slotEndTime}
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <Clock className="w-4 h-4 text-primary" />
+                    <span>{appt.slotStartTime} – {appt.slotEndTime}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Chip color={STATUS_COLORS[appt.status]} variant="flat" size="sm">
                       {t(`status${appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}` as any)}
                     </Chip>
-                    {appt.status === "confirmed" && (
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button isIconOnly size="sm" variant="light">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Actions">
-                          <DropdownItem
-                            key="complete"
-                            startContent={<CheckCircle className="w-4 h-4" />}
-                            onPress={() => handleComplete(appt.id)}
-                          >
-                            {t("actionComplete")}
-                          </DropdownItem>
-                          <DropdownItem
-                            key="cancel"
-                            className="text-danger"
-                            color="danger"
-                            startContent={<XCircle className="w-4 h-4" />}
-                            onPress={() => handleCancel(appt.id)}
-                          >
-                            {t("actionCancel")}
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    )}
+                    <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
                 </div>
 
-                {/* Lead info */}
-                {appt.Lead && (
-                  <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
-                    <User className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-foreground font-medium">{appt.Lead.name}</p>
-                      <p className="text-xs">{appt.Lead.email}</p>
-                      {appt.Lead.phone_number && (
-                        <p className="text-xs">{appt.Lead.phone_number}</p>
-                      )}
-                    </div>
+                {/* Nome do Paciente */}
+                {hasLeadName ? (
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="w-4 h-4 text-success" />
+                    <span className="font-medium text-foreground truncate">{appt.Lead.name}</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="w-4 h-4 text-warning" />
+                    <span className="text-warning text-xs">Dados do paciente não disponíveis</span>
                   </div>
                 )}
 
-                {/* Product */}
-                {appt.selectedProduct && (
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                {/* Produto */}
+                {hasProduct && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Package className="w-3.5 h-3.5" />
-                    {appt.selectedProduct}
+                    <span className="truncate">{appt.selectedProduct}</span>
                   </div>
                 )}
-              </div>
-            ))}
+              </button>
+            );
+          })}
         </div>
       )}
+
+      {/* Modal de Detalhes */}
+      <AppointmentDetailModal
+        appointment={selectedAppointment}
+        isOpen={!!selectedAppointment}
+        onClose={handleCloseDetail}
+        onRefresh={onRefresh}
+      />
     </div>
   );
 }

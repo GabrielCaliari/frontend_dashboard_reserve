@@ -20,7 +20,15 @@ export const fetchAdmins = async (
   perPage: number = 10,
   search?: string,
 ): Promise<PaginatedResponse<Admin>> => {
-  const response = await apiClient.get('/admin/list', { headers: { 'x-skip-tenant': 'true' } });
+  // Check if user is super admin via cookie
+  const isSuperAdmin = typeof window !== 'undefined'
+    ? document.cookie.split('; ').find(row => row.startsWith('session-role='))?.split('=')[1] === 'super_admin'
+    : false;
+
+  // Only skip tenant header for super admins
+  const headers = isSuperAdmin ? { 'x-skip-tenant': 'true' } : {};
+  
+  const response = await apiClient.get('/admin/list', { headers });
   const raw = response.data;
   const rawAdmins: any[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
   
