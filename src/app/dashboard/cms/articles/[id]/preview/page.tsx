@@ -4,7 +4,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { Card, CardContent } from "@/src/presentation/components/atoms/shadcn-ui/card";
-import { ArticleContentRenderer } from "@/src/components/cms/articles/article-content-renderer";
+import { ArticleContentRenderer } from "@/src/presentation/components/organisms/cms/articles/article-content-renderer";
 import {
   ArrowLeft,
   Edit,

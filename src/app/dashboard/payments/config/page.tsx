@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Settings } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { BillingConfigSection } from "@/src/components/payments/billing-config-section";
+import { BillingConfigSection } from "@/src/presentation/components/organisms/payments/billing-config-section";
 
 export default function PaymentsConfigPage() {
   const t = useTranslations("payments");

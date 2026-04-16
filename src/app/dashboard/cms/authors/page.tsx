@@ -1,12 +1,12 @@
 "use client";
 
-import { CmsPageLayout } from "@/src/components/cms/shared/cms-page-layout";
+import { CmsPageLayout } from "@/src/presentation/components/organisms/cms/shared/cms-page-layout";
 import { useState } from "react";
 import { Card, CardBody } from "@heroui/react";
 import { AlertCircle } from "lucide-react";
-import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
-import { AuthorList } from "@/src/components/cms/authors/author-list";
-import { AuthorDrawer } from "@/src/components/cms/authors/author-drawer";
+import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
+import { AuthorList } from "@/src/presentation/components/organisms/cms/authors/author-list";
+import { AuthorDrawer } from "@/src/presentation/components/organisms/cms/authors/author-drawer";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import { useCreateAuthor } from "@/src/common/hooks/cms/use-create-author";
 import { useUpdateAuthor } from "@/src/common/hooks/cms/use-update-author";

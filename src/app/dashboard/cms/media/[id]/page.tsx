@@ -8,10 +8,10 @@ import {
   useDeleteCollection,
 } from "@/src/common/hooks/cms/use-collections";
 import { useCollectionAssets } from "@/src/common/hooks/cms/use-assets";
-import { AssetGrid } from "@/src/components/cms/asset-grid";
-import { AssetDrawer } from "@/src/components/cms/asset-drawer";
-import { CollectionModal } from "@/src/components/cms/collection-modal";
-import { UploadModal } from "@/src/components/cms/upload-modal";
+import { AssetGrid } from "@/src/presentation/components/organisms/cms/asset-grid";
+import { AssetDrawer } from "@/src/presentation/components/organisms/cms/asset-drawer";
+import { CollectionModal } from "@/src/presentation/components/organisms/cms/collection-modal";
+import { UploadModal } from "@/src/presentation/components/organisms/cms/upload-modal";
 import {
   Button,
   Pagination,

@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { AlertCircle, ArrowLeft, Trash2 } from "lucide-react";
 import { Card, CardBody, CardHeader, Button, Spinner } from "@heroui/react";
-import { CollectionForm } from "@/src/components/cms/collection-form";
+import { CollectionForm } from "@/src/presentation/components/organisms/cms/collection-form";
 import {
   useCollection,
   useUpdateCollection,

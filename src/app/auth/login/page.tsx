@@ -1,4 +1,4 @@
-import { AuthTabs } from "@/src/components/tabs/auth-tabs";
+import { AuthTabs } from "@/src/presentation/components/organisms/tabs/auth-tabs";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";

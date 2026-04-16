@@ -1,5 +1,5 @@
-import CreateEmailCampaignButton from "@/src/components/email-builder/modals/actions/create-email-campaign-button";
-import { CampaignsTable } from "@/src/components/tables/campaigns-table";
+import CreateEmailCampaignButton from "@/src/presentation/components/organisms/email-builder/modals/actions/create-email-campaign-button";
+import { CampaignsTable } from "@/src/presentation/components/organisms/tables/campaigns-table";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { getTranslations } from "next-intl/server";
 

@@ -7,8 +7,8 @@ import {
   useCollections,
   useDeleteCollection,
 } from "@/src/common/hooks/cms/use-collections";
-import { CollectionCard } from "@/src/components/cms/collection-card";
-import { CollectionModal } from "@/src/components/cms/collection-modal";
+import { CollectionCard } from "@/src/presentation/components/organisms/cms/collection-card";
+import { CollectionModal } from "@/src/presentation/components/organisms/cms/collection-modal";
 import { Button, Pagination, Spinner, useDisclosure } from "@heroui/react";
 import {
   Modal,

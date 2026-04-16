@@ -21,8 +21,8 @@ import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layo
 import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collection-leads";
 import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
 import { useGetCollection } from "@/src/common/hooks/leads/use-get-collection";
-import { LeadDrawer } from "@/src/components/leads/lead-drawer";
-import { CreateLeadDialog } from "@/src/components/leads/create-lead-dialog";
+import { LeadDrawer } from "@/src/presentation/components/organisms/leads/lead-drawer";
+import { CreateLeadDialog } from "@/src/presentation/components/organisms/leads/create-lead-dialog";
 import type { Lead } from "@/src/shared/domain/types/@lead";
 import { ELeadStatus, EOriginLead } from "@/src/shared/domain/types/@lead";
 import { formatDate } from "@/src/shared/lib/utils";

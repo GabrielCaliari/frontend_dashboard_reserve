@@ -3,9 +3,9 @@
 import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { B2CSubscriptionsTable } from "@/src/components/b2c/subscriptions-table";
-import { B2CMetricsCards } from "@/src/components/b2c/metrics-cards";
-import { TopProductsCard } from "@/src/components/b2c/top-products-card";
+import { B2CSubscriptionsTable } from "@/src/presentation/components/organisms/b2c/subscriptions-table";
+import { B2CMetricsCards } from "@/src/presentation/components/organisms/b2c/metrics-cards";
+import { TopProductsCard } from "@/src/presentation/components/organisms/b2c/top-products-card";
 
 export default function B2CSubscriptionsPage() {
   const t = useTranslations("payments.b2c");

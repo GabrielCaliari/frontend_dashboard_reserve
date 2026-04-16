@@ -22,7 +22,7 @@ import {
   Sun,
 } from "lucide-react";
 
-import { LogoutModal } from "@/src/components/email-builder/modals/logout-modal";
+import { LogoutModal } from "@/src/presentation/components/organisms/email-builder/modals/logout-modal";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 

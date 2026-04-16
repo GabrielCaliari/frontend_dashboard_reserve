@@ -25,10 +25,10 @@ import {
   XCircle,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { UserFormModal } from "@/src/components/access-management/users/UserFormModal";
-import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
-import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
-import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
+import { UserFormModal } from "@/src/presentation/components/organisms/access-management/users/UserFormModal";
+import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
+import { Breadcrumbs } from "@/src/presentation/components/organisms/access-management/shared/breadcrumbs";
+import { EntityAvatar } from "@/src/presentation/components/organisms/access-management/shared/entity-avatar";
 import {
   useUserById,
   useUpdateUser,

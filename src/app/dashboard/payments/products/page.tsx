@@ -3,7 +3,7 @@
 import { Package } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { ProductsTabs } from "@/src/components/payments/products/products-tabs";
+import { ProductsTabs } from "@/src/presentation/components/organisms/payments/products/products-tabs";
 
 export default function PaymentsProductsPage() {
   const t = useTranslations("payments.productsPage");

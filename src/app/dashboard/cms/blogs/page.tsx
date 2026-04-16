@@ -1,12 +1,12 @@
 "use client";
 
-import { CmsPageLayout } from "@/src/components/cms/shared/cms-page-layout";
+import { CmsPageLayout } from "@/src/presentation/components/organisms/cms/shared/cms-page-layout";
 import { useState } from "react";
 import { AlertCircle } from "lucide-react";
-import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
+import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
 import { Card, CardBody } from "@heroui/react";
-import { BlogList, BlogForm } from "@/src/components/cms/blogs";
-import { SecretKeyDialog } from "@/src/components/cms/secret-key-dialog";
+import { BlogList, BlogForm } from "@/src/presentation/components/organisms/cms/blogs";
+import { SecretKeyDialog } from "@/src/presentation/components/organisms/cms/secret-key-dialog";
 import {
   Sheet,
   SheetContent,

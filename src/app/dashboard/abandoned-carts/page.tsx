@@ -1,5 +1,5 @@
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { AbandonedCartsTable } from "@/src/components/tables/abandoned-carts-table";
+import { AbandonedCartsTable } from "@/src/presentation/components/organisms/tables/abandoned-carts-table";
 import { getTranslations } from "next-intl/server";
 
 export default async function AbandonedCartsPage() {

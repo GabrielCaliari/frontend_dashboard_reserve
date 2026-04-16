@@ -10,7 +10,7 @@
  */ "use client";
 
 import { usePublicArticleBySlug } from "@/src/common/hooks/cms/usePublicArticles";
-import PublicArticleContent from "@/src/components/cms/public/public-article-content";
+import PublicArticleContent from "@/src/presentation/components/organisms/cms/public/public-article-content";
 import { Button } from "@heroui/react";
 import Link from "next/link";
 

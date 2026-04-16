@@ -10,8 +10,8 @@ import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useStatsTenantDashboard } from "@/src/common/hooks/stats";
 import { useTenantById } from "@/src/common/hooks/access-management/useTenants";
-import { StatGroupCard, DateRangePicker } from "@/src/components/stats";
-import { TenantNotificationSettingsForm } from "@/src/components/notifications/tenant-notification-settings-form";
+import { StatGroupCard, DateRangePicker } from "@/src/presentation/components/organisms/stats";
+import { TenantNotificationSettingsForm } from "@/src/presentation/components/organisms/notifications/tenant-notification-settings-form";
 
 function getDefaultRange() {
   const to = new Date();

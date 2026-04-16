@@ -10,7 +10,7 @@
 
 import { useState } from "react";
 import { usePublicArticles } from "@/src/common/hooks/cms/usePublicArticles";
-import PublicArticleList from "@/src/components/cms/public/public-article-list";
+import PublicArticleList from "@/src/presentation/components/organisms/cms/public/public-article-list";
 
 // Blog secret key from environment variable
 // This should be configured in .env.local as NEXT_PUBLIC_BLOG_SECRET_KEY

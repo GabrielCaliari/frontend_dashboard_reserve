@@ -5,7 +5,7 @@ import { Button } from "@heroui/react";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import TenantSelector from "@/src/components/tenant-selector";
+import TenantSelector from "@/src/presentation/components/organisms/access-management/tenant-selector";
 import {
   Copyright,
   LayoutDashboardIcon,
@@ -47,7 +47,7 @@ import {
   useTenantStore,
 } from "@/src/shared/stores/tenant-store";
 import usePermissions from "@/src/shared/hooks/use-permissions";
-import { NotificationBadge } from "@/src/components/notifications/notification-badge";
+import { NotificationBadge } from "@/src/presentation/components/organisms/notifications/notification-badge";
 
 export interface SidebarProps {
   activeTab?: string; // opcional — derivado de usePathname() quando omitido

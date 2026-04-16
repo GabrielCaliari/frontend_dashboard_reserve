@@ -35,8 +35,8 @@ import {
   useDeleteReport,
 } from "@/src/common/hooks/reports/use-reports";
 import type { Report } from "@/src/shared/domain/types/@report";
-import { ReportDialog } from "@/src/components/reports/report-dialog";
-import { DeleteReportDialog } from "@/src/components/reports/delete-report-dialog";
+import { ReportDialog } from "@/src/presentation/components/organisms/reports/report-dialog";
+import { DeleteReportDialog } from "@/src/presentation/components/organisms/reports/delete-report-dialog";
 
 const LIMIT_OPTIONS = [10, 20, 50];
 

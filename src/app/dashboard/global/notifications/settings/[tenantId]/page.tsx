@@ -1,6 +1,6 @@
 import { use } from "react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { TenantNotificationSettingsForm } from "@/src/components/notifications/tenant-notification-settings-form";
+import { TenantNotificationSettingsForm } from "@/src/presentation/components/organisms/notifications/tenant-notification-settings-form";
 
 export default function TenantNotificationSettingsPage({
   params,

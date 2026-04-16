@@ -16,7 +16,7 @@ import {
   DateRangePicker,
   StatsTimeseriesCard,
   CmsOverviewCards,
-} from "@/src/components/stats";
+} from "@/src/presentation/components/organisms/stats";
 
 function getDefaultRange() {
   const to = new Date();

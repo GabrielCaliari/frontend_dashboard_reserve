@@ -1,13 +1,13 @@
 "use client";
 
-import { CmsPageLayout } from "@/src/components/cms/shared/cms-page-layout";
+import { CmsPageLayout } from "@/src/presentation/components/organisms/cms/shared/cms-page-layout";
 import { useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AlertCircle } from "lucide-react";
 import { Card, CardBody } from "@heroui/react";
-import { BlogSelector } from "@/src/components/cms/blog-selector";
-import { ArticleList } from "@/src/components/cms/articles";
-import { ArticleQuickEditDrawer } from "@/src/components/cms/articles/article-quick-edit-drawer";
+import { BlogSelector } from "@/src/presentation/components/organisms/cms/blog-selector";
+import { ArticleList } from "@/src/presentation/components/organisms/cms/articles";
+import { ArticleQuickEditDrawer } from "@/src/presentation/components/organisms/cms/articles/article-quick-edit-drawer";
 import { useListArticles } from "@/src/common/hooks/cms/use-list-articles";
 import { useDeleteArticle } from "@/src/common/hooks/cms/use-delete-article";
 import {
@@ -23,7 +23,7 @@ import {
 } from "@/src/shared/stores/tenant-store";
 import type { Article } from "@/src/shared/domain/types/@cms-article";
 import { toast } from "sonner";
-import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
+import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
 
 type ArticleStatus = "draft" | "published" | "archived";
 

@@ -4,16 +4,16 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import UserTable from "@/src/components/access-management/users/UserTable";
-import { UserFormModal } from "@/src/components/access-management/users/UserFormModal";
-import { SearchInput } from "@/src/components/access-management/shared/search-input";
-import { PaginationControls } from "@/src/components/access-management/shared/pagination-controls";
-import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
+import UserTable from "@/src/presentation/components/organisms/access-management/users/UserTable";
+import { UserFormModal } from "@/src/presentation/components/organisms/access-management/users/UserFormModal";
+import { SearchInput } from "@/src/presentation/components/organisms/access-management/shared/search-input";
+import { PaginationControls } from "@/src/presentation/components/organisms/access-management/shared/pagination-controls";
+import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
 import {
   StatusFilterControl,
   type StatusFilter,
-} from "@/src/components/access-management/shared/status-filter";
-import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
+} from "@/src/presentation/components/organisms/access-management/shared/status-filter";
+import { Breadcrumbs } from "@/src/presentation/components/organisms/access-management/shared/breadcrumbs";
 import {
   useUsers,
   useUpdateUser,

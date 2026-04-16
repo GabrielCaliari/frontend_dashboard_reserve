@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useStatsGlobalDashboard } from "@/src/common/hooks/stats";
 import usePermissions from "@/src/shared/hooks/use-permissions";
-import { StatGroupCard, DateRangePicker } from "@/src/components/stats";
+import { StatGroupCard, DateRangePicker } from "@/src/presentation/components/organisms/stats";
 import { formatDate } from "@/src/shared/lib/utils";
 
 function getDefaultRange() {

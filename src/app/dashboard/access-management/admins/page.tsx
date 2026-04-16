@@ -6,16 +6,16 @@ import { Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import AdminTable from "@/src/components/access-management/admins/AdminTable";
-import { AdminFormModal } from "@/src/components/access-management/admins/AdminFormModal";
-import { SearchInput } from "@/src/components/access-management/shared/search-input";
-import { PaginationControls } from "@/src/components/access-management/shared/pagination-controls";
-import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
+import AdminTable from "@/src/presentation/components/organisms/access-management/admins/AdminTable";
+import { AdminFormModal } from "@/src/presentation/components/organisms/access-management/admins/AdminFormModal";
+import { SearchInput } from "@/src/presentation/components/organisms/access-management/shared/search-input";
+import { PaginationControls } from "@/src/presentation/components/organisms/access-management/shared/pagination-controls";
+import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
 import {
   StatusFilterControl,
   type StatusFilter,
-} from "@/src/components/access-management/shared/status-filter";
-import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
+} from "@/src/presentation/components/organisms/access-management/shared/status-filter";
+import { Breadcrumbs } from "@/src/presentation/components/organisms/access-management/shared/breadcrumbs";
 import {
   useAdmins,
   useCreateAdmin,

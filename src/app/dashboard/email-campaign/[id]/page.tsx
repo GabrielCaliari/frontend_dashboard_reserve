@@ -23,9 +23,9 @@ import listSmtpServers from "@/src/presentation/actions/smtp-server/list-smtp-se
 import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import listPrimaryCopyByEmailCampaignService from "@/src/common/services/email-campaign/list-primary-copy-by-email-campaign-service";
 import listBatchesByEmailCampaignService from "@/src/common/services/email-campaign/list-batches-by-email-campaign-service";
-import { BatchTable } from "@/src/components/tables/batch-table";
-import { StartCampaignConfirmDialog } from "@/src/components/email-builder/modals/start-campaign-confirm-dialog";
-import CampaignActions from "@/src/components/campaign-actions";
+import { BatchTable } from "@/src/presentation/components/organisms/tables/batch-table";
+import { StartCampaignConfirmDialog } from "@/src/presentation/components/organisms/email-builder/modals/start-campaign-confirm-dialog";
+import CampaignActions from "@/src/presentation/components/organisms/leads/campaign-actions";
 import { getTranslations } from "next-intl/server";
 
 export default async function EmailCampaignPage({

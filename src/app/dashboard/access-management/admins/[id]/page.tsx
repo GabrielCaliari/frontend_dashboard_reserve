@@ -24,11 +24,11 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { AdminFormModal } from "@/src/components/access-management/admins/AdminFormModal";
-import { ConfirmationDialog } from "@/src/components/access-management/shared/confirmation-dialog";
-import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
-import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
-import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
+import { AdminFormModal } from "@/src/presentation/components/organisms/access-management/admins/AdminFormModal";
+import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
+import { Breadcrumbs } from "@/src/presentation/components/organisms/access-management/shared/breadcrumbs";
+import { RoleBadge } from "@/src/presentation/components/organisms/access-management/shared/role-badge";
+import { EntityAvatar } from "@/src/presentation/components/organisms/access-management/shared/entity-avatar";
 import {
   useAdminById,
   useUpdateAdmin,

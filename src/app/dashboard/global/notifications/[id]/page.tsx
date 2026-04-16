@@ -1,9 +1,9 @@
 "use client";
 import { use, useEffect, useState } from "react";
 import { Spinner } from "@heroui/react";
-import { NotificationForm } from "@/src/components/notifications/notification-form";
+import { NotificationForm } from "@/src/presentation/components/organisms/notifications/notification-form";
 import { apiClient } from "@/src/infraestructure/axios/api";
-import { CmsPageLayout } from "@/src/components/cms/shared/cms-page-layout";
+import { CmsPageLayout } from "@/src/presentation/components/organisms/cms/shared/cms-page-layout";
 
 export default function EditNotificationPage({
   params,

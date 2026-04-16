@@ -35,8 +35,8 @@ import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
 import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import { useArticleEditorState } from "@/src/common/hooks/cms/use-article-editor-state";
 import { articleLanguagePattern } from "@/src/shared/schemas/cms-article-schema";
-import { ArticleEditorShell } from "@/src/components/cms/articles/article-editor-shell";
-import { ArticleEditorGuard } from "@/src/components/cms/articles/article-editor-guard";
+import { ArticleEditorShell } from "@/src/presentation/components/organisms/cms/articles/article-editor-shell";
+import { ArticleEditorGuard } from "@/src/presentation/components/organisms/cms/articles/article-editor-guard";
 import { useArticleStatus } from "@/src/common/hooks/cms/use-article-status";
 import { toast } from "sonner";
 

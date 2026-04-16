@@ -2,7 +2,7 @@
 
 import KanbanBoardWithAutosave, {
   CardType,
-} from "@/src/components/kanban/kanban-board-with-autosave";
+} from "@/src/presentation/components/organisms/kanban/kanban-board-with-autosave";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useTranslations } from "next-intl";
 

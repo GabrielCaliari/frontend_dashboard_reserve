@@ -12,7 +12,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
+import { Breadcrumbs } from "@/src/presentation/components/organisms/access-management/shared/breadcrumbs";
 import { useAdmins } from "@/src/common/hooks/access-management/useAdmins";
 import { useUsers } from "@/src/common/hooks/access-management/useUsers";
 

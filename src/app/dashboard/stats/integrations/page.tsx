@@ -19,7 +19,7 @@ import {
   AddIntegrationModal,
   EditIntegrationModal,
   DeleteIntegrationModal,
-} from "@/src/components/stats";
+} from "@/src/presentation/components/organisms/stats";
 import type {
   StatsIntegration,
   AvailableIntegration,

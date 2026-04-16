@@ -32,8 +32,8 @@ import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collecti
 import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
 import { listLeadsService } from "@/src/common/services/leads/list-leads-service";
 import { getCollectionLeadsService } from "@/src/common/services/leads/get-collection-leads-service";
-import { LeadDrawer } from "@/src/components/leads/lead-drawer";
-import { CreateLeadDialog } from "@/src/components/leads/create-lead-dialog";
+import { LeadDrawer } from "@/src/presentation/components/organisms/leads/lead-drawer";
+import { CreateLeadDialog } from "@/src/presentation/components/organisms/leads/create-lead-dialog";
 import type { Lead } from "@/src/shared/domain/types/@lead";
 import { ELeadStatus, EOriginLead } from "@/src/shared/domain/types/@lead";
 import { formatDate } from "@/src/shared/lib/utils";

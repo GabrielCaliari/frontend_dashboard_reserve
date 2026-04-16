@@ -5,7 +5,7 @@ import { useCollections } from "@/src/common/hooks/cms/use-collections";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { AssetUpload } from "@/src/components/cms/asset-upload";
+import { AssetUpload } from "@/src/presentation/components/organisms/cms/asset-upload";
 import {
   Button,
   Select,

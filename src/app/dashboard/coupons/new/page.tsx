@@ -5,7 +5,7 @@ import { ArrowLeft, Tag } from "lucide-react";
 import { Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { CouponForm } from "@/src/components/coupons/coupon-form";
+import { CouponForm } from "@/src/presentation/components/organisms/coupons/coupon-form";
 import { useCreateCoupon } from "@/src/common/hooks/useCoupons";
 import { toast } from "@/src/shared/hooks/use-toast";
 import { mapErrorMessage } from "@/src/shared/utils/error-message-mapper";
