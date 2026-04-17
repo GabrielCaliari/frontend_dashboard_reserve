@@ -12,7 +12,7 @@ import {
   updateUser,
   deactivateUser,
   deleteUser,
-} from "../user-service";
+} from "../adapters";
 import { apiClient as accessManagementApiClient } from "@/src/infraestructure/axios/api";
 import type {
   User,

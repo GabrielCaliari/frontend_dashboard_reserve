@@ -1,6 +1,6 @@
 "use server";
 
-import { getAdminProfileService } from "@/src/common/services/admin-profile";
+import { getAdminProfileService } from "@/src/modules/access-management/infrastructure/adapters";
 
 export async function getAdminProfile() {
   return getAdminProfileService();

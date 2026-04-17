@@ -68,7 +68,19 @@
       "Bash(bash C:/Users/gabri/.claude/plugins/cache/superpowers-marketplace/superpowers/6.1.1/skills/subagent-driven-development/scripts/review-package a720e6e HEAD)",
       "PowerShell(npm run *)",
       "Bash(git mv *)",
-      "Bash(npx jest *)"
+      "Bash(npx jest *)",
+      "Bash(\"C:\\\\Users\\\\gabri\\\\.claude\\\\plugins\\\\cache\\\\superpowers-marketplace\\\\superpowers\\\\6.1.1\\\\skills\\\\subagent-driven-development\\\\scripts\\\\task-brief\" docs/superpowers/plans/2026-07-26-fase1-backend-hardening.md 13)",
+      "Bash(\"C:\\\\Users\\\\gabri\\\\.claude\\\\plugins\\\\cache\\\\superpowers-marketplace\\\\superpowers\\\\6.1.1\\\\skills\\\\subagent-driven-development\\\\scripts\\\\task-brief\" docs/superpowers/plans/2026-07-26-fase1-backend-hardening.md 14)",
+      "Bash(\"C:\\\\Users\\\\gabri\\\\.claude\\\\plugins\\\\cache\\\\superpowers-marketplace\\\\superpowers\\\\6.1.1\\\\skills\\\\subagent-driven-development\\\\scripts\\\\task-brief\" docs/superpowers/plans/2026-07-26-fase1-backend-hardening.md 15)",
+      "Bash(git stash *)",
+      "Bash(rmdir src/components/dropdow-menu)",
+      "Bash(rmdir src/components)",
+      "Bash(npm ls *)",
+      "Read(//c/Users/gabri/AppData/Local/Temp/claude/C--Users-gabri-OneDrive-Documents-GitHub-frontend-dashboard-reserve/5db161df-e734-4449-84f6-6da694cdd12a/tasks/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3002/api/docs-json --max-time 3)",
+      "Bash(curl *)",
+      "Bash(git *)",
+      "Bash(echo \"BUILD EXIT: $?\")"
     ]
   },
   "enabledPlugins": {

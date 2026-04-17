@@ -14,7 +14,7 @@ import { Breadcrumbs } from "@/src/presentation/components/organisms/access-mana
 import { RoleBadge } from "@/src/presentation/components/organisms/access-management/shared/role-badge";
 import { EntityAvatar } from "@/src/presentation/components/organisms/access-management/shared/entity-avatar";
 import { useCurrentAdmin } from "@/src/shared/hooks/use-current-admin";
-import { useAdminById } from "@/src/common/hooks/access-management/useAdmins";
+import { useAdminById } from "@/src/shared/hooks/access-management/useAdmins";
 import { formatDate } from "@/src/shared/lib/utils";
 import { CheckCircle, XCircle } from "lucide-react";
 

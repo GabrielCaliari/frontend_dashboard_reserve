@@ -18,7 +18,7 @@ import {
   useDeleteTenant,
   useScheduleTenantDeletion,
   useRestoreTenantDeletion,
-} from "@/src/common/hooks/access-management/useTenants";
+} from "@/src/shared/hooks/access-management/useTenants";
 import type {
   Tenant,
   CreateTenantDto,

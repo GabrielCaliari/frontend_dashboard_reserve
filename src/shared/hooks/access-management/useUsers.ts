@@ -9,7 +9,7 @@ import {
   updateUser,
   deactivateUser,
   deleteUser,
-} from "@/src/common/services/access-management/user-service";
+} from "@/src/modules/access-management/infrastructure/adapters";
 import type {
   PaginatedResponse,
   User,

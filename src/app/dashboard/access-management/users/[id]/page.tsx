@@ -34,7 +34,7 @@ import {
   useUpdateUser,
   useDeactivateUser,
   useDeleteUser,
-} from "@/src/common/hooks/access-management/useUsers";
+} from "@/src/shared/hooks/access-management/useUsers";
 import type { UpdateUserDto } from "@/src/shared/domain/types/@access-management";
 import type { UpdateUserFormData } from "@/src/shared/schemas/access-management/user-schema";
 import { formatDate } from "@/src/shared/lib/utils";

@@ -19,7 +19,7 @@ import {
   useUpdateUser,
   useDeactivateUser,
   useDeleteUser,
-} from "@/src/common/hooks/access-management/useUsers";
+} from "@/src/shared/hooks/access-management/useUsers";
 import type {
   User,
   UpdateUserDto,

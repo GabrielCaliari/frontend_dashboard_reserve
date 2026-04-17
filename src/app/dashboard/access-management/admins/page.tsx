@@ -25,12 +25,12 @@ import {
   useDeleteAdmin,
   useScheduleAdminDeletion,
   useRestoreAdminDeletion,
-} from "@/src/common/hooks/access-management/useAdmins";
+} from "@/src/shared/hooks/access-management/useAdmins";
 import {
   useAssignAdminToTenant,
   useUnassignAdminFromTenant,
   useUpdateAdminTenantRole,
-} from "@/src/common/hooks/access-management/useTenants";
+} from "@/src/shared/hooks/access-management/useTenants";
 import { useCurrentAdmin } from "@/src/shared/hooks/use-current-admin";
 import type {
   Admin,

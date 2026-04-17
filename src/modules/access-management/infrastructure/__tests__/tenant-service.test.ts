@@ -14,7 +14,7 @@ import {
   activateTenant,
   deactivateTenant,
   deleteTenant,
-} from "../tenant-service";
+} from "../adapters";
 import { apiClient as accessManagementApiClient } from "@/src/infraestructure/axios/api";
 import type {
   Tenant,

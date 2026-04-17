@@ -30,8 +30,8 @@ import {
   TenantAssignmentChange,
 } from "@/src/shared/domain/types/@access-management";
 import usePermissions from "@/src/shared/hooks/use-permissions";
-import { useTenants } from "@/src/common/hooks/access-management/useTenants";
-import { fetchAdminById } from "@/src/common/services/access-management/admin-service";
+import { useTenants } from "@/src/shared/hooks/access-management/useTenants";
+import { fetchAdminById } from "@/src/modules/access-management/infrastructure/adapters";
 import { Plus, Building2, Trash2 } from "lucide-react";
 
 interface AdminFormModalProps {

@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { adminLoginService } from "@/src/common/services/admin-login";
+import { adminLoginService } from "@/src/modules/access-management/infrastructure/adapters";
 import { LoginCredentials, AuthResponse } from "@/src/shared/domain/types/@auth";
 import { redirect } from "next/navigation";
 import { errorTypes } from "@/src/infraestructure/axios/error-types";

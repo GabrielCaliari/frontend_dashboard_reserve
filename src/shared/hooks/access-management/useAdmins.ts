@@ -15,7 +15,7 @@ import {
   scheduleAdminDeletion,
   restoreAdminDeletion,
   getAdminDeletionStatus,
-} from "@/src/common/services/access-management/admin-service";
+} from "@/src/modules/access-management/infrastructure/adapters";
 import type {
   PaginatedResponse,
   Admin,

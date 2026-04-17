@@ -17,7 +17,7 @@ import {
   scheduleTenantDeletion,
   restoreTenantDeletion,
   getTenantDeletionStatus,
-} from "@/src/common/services/access-management/tenant-service";
+} from "@/src/modules/access-management/infrastructure/adapters";
 import type {
   PaginatedResponse,
   Tenant,
@@ -29,7 +29,7 @@ import type {
 } from "@/src/shared/domain/types/@access-management";
 import type { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { adminKeys } from "@/src/common/hooks/access-management/useAdmins";
+import { adminKeys } from "@/src/shared/hooks/access-management/useAdmins";
 
 // ============================================================================
 // Query Key Factory

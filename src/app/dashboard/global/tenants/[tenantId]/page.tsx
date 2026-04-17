@@ -9,7 +9,7 @@ import { isAxiosError } from "axios";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useStatsTenantDashboard } from "@/src/common/hooks/stats";
-import { useTenantById } from "@/src/common/hooks/access-management/useTenants";
+import { useTenantById } from "@/src/shared/hooks/access-management/useTenants";
 import { StatGroupCard, DateRangePicker } from "@/src/presentation/components/organisms/stats";
 import { TenantNotificationSettingsForm } from "@/src/presentation/components/organisms/notifications/tenant-notification-settings-form";
 
