@@ -27,11 +27,11 @@ import {
   FileX,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { useListLeads } from "@/src/common/hooks/leads/use-list-leads";
-import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collection-leads";
-import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
-import { listLeadsService } from "@/src/common/services/leads/list-leads-service";
-import { getCollectionLeadsService } from "@/src/common/services/leads/get-collection-leads-service";
+import { useListLeads } from "@/src/shared/hooks/leads/use-list-leads";
+import { useGetCollectionLeads } from "@/src/shared/hooks/leads/use-get-collection-leads";
+import { useListCollections } from "@/src/shared/hooks/leads/use-list-collections";
+import { listLeadsService } from "@/src/modules/leads/infrastructure/adapters";
+import { getCollectionLeadsService } from "@/src/modules/leads/infrastructure/adapters";
 import { LeadDrawer } from "@/src/presentation/components/organisms/leads/lead-drawer";
 import { CreateLeadDialog } from "@/src/presentation/components/organisms/leads/create-lead-dialog";
 import type { Lead } from "@/src/shared/domain/types/@lead";

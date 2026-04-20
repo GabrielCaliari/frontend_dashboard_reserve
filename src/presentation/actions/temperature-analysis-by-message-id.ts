@@ -1,6 +1,6 @@
 "use server";
 
-import { temperatureAnalysisByMessageIdService } from "@/src/common/services/temperature-analysis-by-message-id-service";
+import { temperatureAnalysisByMessageIdService } from "@/src/modules/leads/infrastructure/adapters";
 
 export async function temperatureAnalysisByMessageId(messageId: string) {
   return temperatureAnalysisByMessageIdService({

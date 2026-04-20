@@ -1,6 +1,6 @@
 "use server";
 
-import { updateCollectionService } from "@/src/common/services/leads/update-collection-service";
+import { updateCollectionService } from "@/src/modules/leads/infrastructure/adapters";
 import type {
   UpdateCollectionDto,
   CollectionDetailResponse,

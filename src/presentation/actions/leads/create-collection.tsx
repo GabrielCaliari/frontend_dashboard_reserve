@@ -1,6 +1,6 @@
 "use server";
 
-import { createCollectionService } from "@/src/common/services/leads/create-collection-service";
+import { createCollectionService } from "@/src/modules/leads/infrastructure/adapters";
 import type {
   CreateCollectionDto,
   CollectionDetailResponse,

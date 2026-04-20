@@ -13,11 +13,11 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
-import { useCreateCollection } from "@/src/common/hooks/leads/use-create-collection";
-import { useUpdateCollection } from "@/src/common/hooks/leads/use-update-collection";
-import { useDeleteCollection } from "@/src/common/hooks/leads/use-delete-collection";
-import { useRegenerateCollectionKey } from "@/src/common/hooks/leads/use-regenerate-collection-key";
+import { useListCollections } from "@/src/shared/hooks/leads/use-list-collections";
+import { useCreateCollection } from "@/src/shared/hooks/leads/use-create-collection";
+import { useUpdateCollection } from "@/src/shared/hooks/leads/use-update-collection";
+import { useDeleteCollection } from "@/src/shared/hooks/leads/use-delete-collection";
+import { useRegenerateCollectionKey } from "@/src/shared/hooks/leads/use-regenerate-collection-key";
 import {
   Dialog,
   DialogContent,

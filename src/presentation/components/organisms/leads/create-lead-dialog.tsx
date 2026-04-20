@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/src/presentation/components/atoms/shadcn-ui/dialog";
-import { useCreateLead } from "@/src/common/hooks/leads/use-create-lead";
+import { useCreateLead } from "@/src/shared/hooks/leads/use-create-lead";
 import type { CreateLeadDto } from "@/src/shared/domain/types/@lead";
 import { EOriginLead } from "@/src/shared/domain/types/@lead";
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { deleteLeadService } from "@/src/common/services/leads/delete-lead-service";
+import { deleteLeadService } from "@/src/modules/leads/infrastructure/adapters";
 
 export async function deleteLeadAction(
   id: string,

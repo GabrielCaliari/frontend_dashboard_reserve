@@ -18,9 +18,9 @@ import {
 } from "@heroui/react";
 import { ArrowLeft, RefreshCw, ChevronDown, Plus } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { useGetCollectionLeads } from "@/src/common/hooks/leads/use-get-collection-leads";
-import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
-import { useGetCollection } from "@/src/common/hooks/leads/use-get-collection";
+import { useGetCollectionLeads } from "@/src/shared/hooks/leads/use-get-collection-leads";
+import { useListCollections } from "@/src/shared/hooks/leads/use-list-collections";
+import { useGetCollection } from "@/src/shared/hooks/leads/use-get-collection";
 import { LeadDrawer } from "@/src/presentation/components/organisms/leads/lead-drawer";
 import { CreateLeadDialog } from "@/src/presentation/components/organisms/leads/create-lead-dialog";
 import type { Lead } from "@/src/shared/domain/types/@lead";

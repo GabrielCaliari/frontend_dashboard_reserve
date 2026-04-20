@@ -1,6 +1,6 @@
 "use server";
 
-import { regenerateCollectionKeyService } from "@/src/common/services/leads/regenerate-collection-key-service";
+import { regenerateCollectionKeyService } from "@/src/modules/leads/infrastructure/adapters";
 import type { RegenerateKeyResponse } from "@/src/shared/domain/types/@lead";
 
 export async function regenerateCollectionKeyAction(

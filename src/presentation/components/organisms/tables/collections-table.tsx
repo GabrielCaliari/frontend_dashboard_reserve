@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useListCollections } from "@/src/common/hooks/leads/use-list-collections";
-import { useDeleteCollection } from "@/src/common/hooks/leads/use-delete-collection";
+import { useListCollections } from "@/src/shared/hooks/leads/use-list-collections";
+import { useDeleteCollection } from "@/src/shared/hooks/leads/use-delete-collection";
 import {
   LeadCollection,
   CollectionAccessMode,

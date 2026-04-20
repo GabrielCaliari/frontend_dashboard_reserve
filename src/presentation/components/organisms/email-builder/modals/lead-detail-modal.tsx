@@ -18,7 +18,7 @@ import {
   ModalFooter,
 } from "@/src/presentation/components/atoms/reserve/modal";
 import { Lead, LeadOrigin, LeadStatus } from "@/src/shared/domain/types/@lead";
-import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
+import { useUpdateLeadStatus } from "@/src/shared/hooks/leads/use-update-lead-status";
 import { format } from "date-fns";
 import { Mail, Phone, Calendar, Tag } from "lucide-react";
 import { useState } from "react";

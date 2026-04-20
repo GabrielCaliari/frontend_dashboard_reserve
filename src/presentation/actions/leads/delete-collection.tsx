@@ -1,6 +1,6 @@
 "use server";
 
-import { deleteCollectionService } from "@/src/common/services/leads/delete-collection-service";
+import { deleteCollectionService } from "@/src/modules/leads/infrastructure/adapters";
 
 export async function deleteCollectionAction(id: string): Promise<void> {
   try {

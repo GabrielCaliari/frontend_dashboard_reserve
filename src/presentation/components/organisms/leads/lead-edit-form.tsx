@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, Textarea, Select, SelectItem } from "@heroui/react";
-import { useUpdateLead } from "@/src/common/hooks/leads/use-update-lead";
+import { useUpdateLead } from "@/src/shared/hooks/leads/use-update-lead";
 import type {
   Lead,
   UpdateLeadDto,

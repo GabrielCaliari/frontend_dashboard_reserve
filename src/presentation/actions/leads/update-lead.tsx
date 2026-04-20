@@ -1,6 +1,6 @@
 "use server";
 
-import { updateLeadService } from "@/src/common/services/leads/update-lead-service";
+import { updateLeadService } from "@/src/modules/leads/infrastructure/adapters";
 import type {
   LeadDetailResponse,
   UpdateLeadDto,

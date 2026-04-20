@@ -1,6 +1,6 @@
 "use server";
 
-import { listLeadQualificationService } from "@/src/common/services/list-lead-qualification-service";
+import { listLeadQualificationService } from "@/src/modules/leads/infrastructure/adapters";
 import { ILeadQualificationMessage } from "@/src/shared/interfaces/lead-qualification.interface";
 
 export async function listLeadQualification() {

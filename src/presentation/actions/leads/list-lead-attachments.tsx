@@ -1,6 +1,6 @@
 "use server";
 
-import { listLeadAttachmentsService } from "@/src/common/services/leads/list-lead-attachments-service";
+import { listLeadAttachmentsService } from "@/src/modules/leads/infrastructure/adapters";
 import type { LeadAttachment } from "@/src/shared/domain/types/@lead";
 
 export async function listLeadAttachmentsAction(

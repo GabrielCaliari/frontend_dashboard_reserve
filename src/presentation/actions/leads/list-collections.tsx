@@ -1,6 +1,6 @@
 "use server";
 
-import { listCollectionsService } from "@/src/common/services/leads/list-collections-service";
+import { listCollectionsService } from "@/src/modules/leads/infrastructure/adapters";
 import type { CollectionListResponse } from "@/src/shared/domain/types/@lead";
 
 interface ListCollectionsParams {

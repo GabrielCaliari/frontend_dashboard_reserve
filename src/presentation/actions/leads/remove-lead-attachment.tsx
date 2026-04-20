@@ -1,6 +1,6 @@
 "use server";
 
-import { removeLeadAttachmentService } from "@/src/common/services/leads/remove-lead-attachment-service";
+import { removeLeadAttachmentService } from "@/src/modules/leads/infrastructure/adapters";
 
 export async function removeLeadAttachmentAction(
   leadId: string,

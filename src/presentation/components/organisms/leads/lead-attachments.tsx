@@ -7,7 +7,7 @@ import {
   useLeadAttachments,
   useAddLeadAttachment,
   useRemoveLeadAttachment,
-} from "@/src/common/hooks/leads/use-lead-attachments";
+} from "@/src/shared/hooks/leads/use-lead-attachments";
 import {
   Dialog,
   DialogContent,

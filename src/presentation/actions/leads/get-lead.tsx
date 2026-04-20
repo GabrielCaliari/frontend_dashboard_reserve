@@ -1,6 +1,6 @@
 "use server";
 
-import { getLeadService } from "@/src/common/services/leads/get-lead-service";
+import { getLeadService } from "@/src/modules/leads/infrastructure/adapters";
 import type { LeadDetailResponse } from "@/src/shared/domain/types/@lead";
 
 export async function getLeadAction(id: string): Promise<LeadDetailResponse> {

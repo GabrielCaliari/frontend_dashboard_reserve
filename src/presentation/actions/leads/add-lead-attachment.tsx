@@ -1,6 +1,6 @@
 "use server";
 
-import { addLeadAttachmentService } from "@/src/common/services/leads/add-lead-attachment-service";
+import { addLeadAttachmentService } from "@/src/modules/leads/infrastructure/adapters";
 import type {
   LeadAttachment,
   AddAttachmentDto,

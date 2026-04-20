@@ -1,6 +1,6 @@
 "use server";
 
-import { completeScreeningService } from "@/src/common/services/complete-screening-service";
+import { completeScreeningService } from "@/src/modules/leads/infrastructure/adapters";
 
 export async function completeScreening(leadId: string) {
   return completeScreeningService({

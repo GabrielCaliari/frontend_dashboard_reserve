@@ -10,7 +10,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@/src/presentation/components/atoms/reserve/modal";
-import { useCreateCollection } from "@/src/common/hooks/leads/use-create-collection";
+import { useCreateCollection } from "@/src/shared/hooks/leads/use-create-collection";
 import {
   createCollectionSchema,
   type CreateCollectionFormData,

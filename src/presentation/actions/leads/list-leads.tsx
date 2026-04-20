@@ -1,6 +1,6 @@
 "use server";
 
-import { listLeadsService } from "@/src/common/services/leads/list-leads-service";
+import { listLeadsService } from "@/src/modules/leads/infrastructure/adapters";
 import type { LeadListResponse } from "@/src/shared/domain/types/@lead";
 
 interface ListLeadsParams {

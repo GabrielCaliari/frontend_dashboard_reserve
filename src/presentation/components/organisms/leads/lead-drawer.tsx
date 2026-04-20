@@ -29,9 +29,9 @@ import {
   SheetDescription,
 } from "@/src/presentation/components/atoms/shadcn-ui/sheet";
 import { ConfirmationDialog } from "@/src/presentation/components/organisms/access-management/shared/confirmation-dialog";
-import { useGetLead } from "@/src/common/hooks/leads/use-get-lead";
-import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
-import { useDeleteLead } from "@/src/common/hooks/leads/use-delete-lead";
+import { useGetLead } from "@/src/shared/hooks/leads/use-get-lead";
+import { useUpdateLeadStatus } from "@/src/shared/hooks/leads/use-update-lead-status";
+import { useDeleteLead } from "@/src/shared/hooks/leads/use-delete-lead";
 import { LeadEditForm } from "./lead-edit-form";
 import { LeadAttachments } from "./lead-attachments";
 import { ELeadStatus, EOriginLead } from "@/src/shared/domain/types/@lead";

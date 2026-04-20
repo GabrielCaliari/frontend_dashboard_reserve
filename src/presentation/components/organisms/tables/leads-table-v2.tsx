@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useListLeads } from "@/src/common/hooks/leads/use-list-leads";
-import { useUpdateLeadStatus } from "@/src/common/hooks/leads/use-update-lead-status";
+import { useListLeads } from "@/src/shared/hooks/leads/use-list-leads";
+import { useUpdateLeadStatus } from "@/src/shared/hooks/leads/use-update-lead-status";
 import { Lead, LeadOrigin, LeadStatus } from "@/src/shared/domain/types/@lead";
 import {
   Table,

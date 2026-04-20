@@ -1,6 +1,6 @@
 "use server";
 
-import { createLeadService } from "@/src/common/services/leads/create-lead-service";
+import { createLeadService } from "@/src/modules/leads/infrastructure/adapters";
 import type {
   CreateLeadDto,
   LeadDetailResponse,
