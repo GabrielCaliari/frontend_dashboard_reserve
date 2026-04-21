@@ -5,7 +5,7 @@ import { Tag } from "lucide-react";
 import { Card, CardBody } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { useListCoupons } from "@/src/common/hooks/useCoupons";
+import { useListCoupons } from "@/src/shared/hooks/coupons/use-coupons";
 import { CouponTable } from "@/src/presentation/components/organisms/coupons/coupon-table";
 import { CouponFiltersBar } from "@/src/presentation/components/organisms/coupons/coupon-filters-bar";
 import { CouponPagination } from "@/src/presentation/components/organisms/coupons/coupon-pagination";

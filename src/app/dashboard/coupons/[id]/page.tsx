@@ -6,7 +6,7 @@ import { ArrowLeft, Tag, Trash2, Link2 } from "lucide-react";
 import { Button, Card, CardBody, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { useGetCoupon, useUpdateCoupon } from "@/src/common/hooks/useCoupons";
+import { useGetCoupon, useUpdateCoupon } from "@/src/shared/hooks/coupons/use-coupons";
 import { CouponSummaryCard } from "@/src/presentation/components/organisms/coupons/coupon-summary-card";
 import { CouponForm } from "@/src/presentation/components/organisms/coupons/coupon-form";
 import { CouponDeactivateModal } from "@/src/presentation/components/organisms/coupons/coupon-deactivate-modal";

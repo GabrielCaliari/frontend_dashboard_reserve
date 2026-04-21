@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Input, Button, Chip } from "@heroui/react";
 import { Tag, X, Check, AlertCircle, Clock } from "lucide-react";
-import { couponsService } from "@/src/common/services/coupons-service";
+import { couponsService } from "@/src/modules/coupons/infrastructure/adapters";
 import type {
   ValidateCouponPayload,
   CouponValidationResult,

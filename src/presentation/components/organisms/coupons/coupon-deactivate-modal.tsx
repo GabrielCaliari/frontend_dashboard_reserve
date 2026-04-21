@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import { AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useDeactivateCoupon } from "@/src/common/hooks/useCoupons";
+import { useDeactivateCoupon } from "@/src/shared/hooks/coupons/use-coupons";
 import { toast } from "@/src/shared/hooks/use-toast";
 import type { DiscountCoupon } from "@/src/shared/domain/types/@coupons";
 import { isAxiosError } from "axios";

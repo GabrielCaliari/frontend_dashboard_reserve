@@ -6,7 +6,7 @@ import { Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { CouponForm } from "@/src/presentation/components/organisms/coupons/coupon-form";
-import { useCreateCoupon } from "@/src/common/hooks/useCoupons";
+import { useCreateCoupon } from "@/src/shared/hooks/coupons/use-coupons";
 import { toast } from "@/src/shared/hooks/use-toast";
 import { mapErrorMessage } from "@/src/shared/utils/error-message-mapper";
 import type { CreateCouponPayload } from "@/src/shared/domain/types/@coupons";

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { couponsService } from "@/src/common/services/coupons-service";
+import { couponsService } from "@/src/modules/coupons/infrastructure/adapters";
 import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import type {
   CreateCouponPayload,

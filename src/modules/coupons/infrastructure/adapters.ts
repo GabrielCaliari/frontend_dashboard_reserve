@@ -9,6 +9,36 @@ import type {
   CouponLinkResponse,
 } from "@/src/shared/domain/types/@coupons";
 
+/**
+ * Adapter para o domínio `coupons`.
+ *
+ * NOTA (Task 16): o codegen (`src/infraestructure/server/services/admin-coupons`
+ * e `.../public-coupons`) foi inspecionado antes de decidir esta implementação.
+ * Optou-se por manter a implementação `apiClient`/`cmsApiClient` verbatim em vez
+ * de delegar para o serviço gerado, pelas seguintes divergências estruturais
+ * encontradas:
+ *
+ * 1. Todos os `Response` types gerados são `unknown` (ex.: `ListResponse`,
+ *    `GetByIdResponse`, `ValidateResponse`) — delegar perderia a tipagem forte
+ *    hoje garantida por `@/src/shared/domain/types/@coupons`.
+ * 2. Nomes de método divergentes: gerado usa `remove`/`generateLink`, o código
+ *    atual (e os componentes que o consomem) usa `deactivate`/`getLink`.
+ * 3. `generateLink` gerado recebe `{ baseUrl?: string }` como `params` de query,
+ *    enquanto a assinatura atual é `getLink(id, baseUrl?: string)` — usada assim
+ *    pelos componentes (`coupon-link-modal.tsx`).
+ * 4. `ValidateCouponDTO` gerado (`public-coupons/types.ts`) tem `context:
+ *    'b2b' | 'b2c' | 'unified'` e `cartItems[].itemType`, enquanto o payload
+ *    atual (`ValidateCouponPayload`) usa `context: 'b2b' | 'b2c'` sem
+ *    `itemType` — shapes incompatíveis sem um mapeamento adicional.
+ * 5. O serviço gerado usa `apiClient` para TODAS as chamadas, inclusive `list`.
+ *    O código atual usa deliberadamente `cmsApiClient` para `list`, `getById`,
+ *    `validate` e `getLink` — ver comentário original abaixo — para evitar o
+ *    redirect global em 401 do `apiClient`. Delegar quebraria esse
+ *    comportamento.
+ *
+ * Dado o volume de divergências (tipagem, nomes de método e assinatura, e
+ * comportamento de erro), a delegação para o código gerado foi descartada.
+ */
 export const couponsService = {
   /**
    * Lista cupons paginados.
