@@ -30,7 +30,7 @@ import { formatDate } from "@/src/shared/lib/utils";
 import {
   useCancelAppointment,
   useCompleteAppointment,
-} from "@/src/common/hooks/appointments/use-appointment-actions";
+} from "@/src/shared/hooks/appointments/use-appointment-actions";
 import type {
   Appointment,
   EAppointmentStatus,

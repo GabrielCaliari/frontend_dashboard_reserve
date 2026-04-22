@@ -28,7 +28,7 @@ import { toast } from "react-hot-toast";
 import {
   useCancelAppointment,
   useCompleteAppointment,
-} from "@/src/common/hooks/appointments/use-appointment-actions";
+} from "@/src/shared/hooks/appointments/use-appointment-actions";
 import type {
   Appointment,
   EAppointmentStatus,
