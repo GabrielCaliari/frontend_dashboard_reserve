@@ -6,12 +6,12 @@ import { useTranslations } from "next-intl";
 import { Button, Tabs, Tab, Select, SelectItem } from "@heroui/react";
 import { RefreshCw, Calendar } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { useListAppointments } from "@/src/common/hooks/appointments/use-list-appointments";
+import { useListAppointments } from "@/src/shared/hooks/appointments/use-list-appointments";
 import { AppointmentsCalendar } from "@/src/presentation/components/organisms/appointments/appointments-calendar";
 import { DayAppointmentsPanel } from "@/src/presentation/components/organisms/appointments/day-appointments-panel";
 import { ScheduleConfigForm } from "@/src/presentation/components/organisms/appointments/schedule-config-form";
 import { BlockedPeriodsList } from "@/src/presentation/components/organisms/appointments/blocked-periods-list";
-import { useListBlockedPeriods } from "@/src/common/hooks/appointments/use-blocked-periods";
+import { useListBlockedPeriods } from "@/src/shared/hooks/appointments/use-blocked-periods";
 import { EAppointmentStatus } from "@/src/shared/domain/types/@appointment";
 
 export default function AppointmentsPage() {

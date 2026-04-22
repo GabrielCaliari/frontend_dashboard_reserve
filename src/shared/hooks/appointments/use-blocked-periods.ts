@@ -5,7 +5,7 @@ import {
   updateBlockedPeriodService,
   deleteBlockedPeriodService,
   type ListBlockedPeriodsParams,
-} from "@/src/common/services/appointments/blocked-periods-service";
+} from "@/src/modules/appointments/infrastructure/adapters";
 import type { BlockedPeriod } from "@/src/shared/domain/types/@appointment";
 
 export function useListBlockedPeriods(params: ListBlockedPeriodsParams = {}) {

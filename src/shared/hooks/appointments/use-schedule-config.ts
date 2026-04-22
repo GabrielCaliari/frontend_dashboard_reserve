@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getScheduleConfigService,
   saveScheduleConfigService,
-} from "@/src/common/services/appointments/schedule-config-service";
+} from "@/src/modules/appointments/infrastructure/adapters";
 import type {
   ScheduleConfig,
   LegacyScheduleConfig,

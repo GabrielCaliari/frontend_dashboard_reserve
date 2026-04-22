@@ -17,7 +17,7 @@ import { toast } from "react-hot-toast";
 import {
   useScheduleConfig,
   useSaveScheduleConfig,
-} from "@/src/common/hooks/appointments/use-schedule-config";
+} from "@/src/shared/hooks/appointments/use-schedule-config";
 import type { ScheduleConfig } from "@/src/shared/domain/types/@appointment";
 
 interface DaySchedule {
