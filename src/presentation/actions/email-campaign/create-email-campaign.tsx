@@ -1,6 +1,6 @@
 "use server";
 
-import { createEmailCampaignService } from "@/src/common/services/email-campaign/create-email-campaign-service";
+import { createEmailCampaignService } from "@/src/modules/mailer/infrastructure/adapters";
 
 export async function createEmailCampaign(name: string) {
   const response = await createEmailCampaignService({ name });

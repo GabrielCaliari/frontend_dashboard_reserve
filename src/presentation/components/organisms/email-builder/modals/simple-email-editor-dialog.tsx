@@ -17,7 +17,7 @@ import { IEmailCampaign } from "@/src/shared/domain/types/@email-campaign";
 import { IEmail } from "@/src/shared/domain/types/@email";
 import { ICreatePrimaryCopy } from "@/src/shared/domain/types/@email-builder";
 import EmailSettingsModal, { EmailSettings } from "../email-settings-modal";
-import createPrimaryCopyService from "@/src/common/services/email-campaign/create-primary-copy-service";
+import { createPrimaryCopyService } from "@/src/modules/mailer/infrastructure/adapters";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 

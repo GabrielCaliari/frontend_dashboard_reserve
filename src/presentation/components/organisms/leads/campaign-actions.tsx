@@ -6,7 +6,7 @@ import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
 import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
 import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { StartCampaignConfirmDialog } from "@/src/presentation/components/organisms/email-builder/modals/start-campaign-confirm-dialog";
-import { updateMetricsService } from "@/src/common/services/email-campaign/update-metrics-service";
+import { updateMetricsService } from "@/src/modules/mailer/infrastructure/adapters";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 

@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/src/presentation/components/atoms/shadcn-ui/dialog";
-import { startCampaignService } from "@/src/common/services/email-campaign/start-campaign-service";
+import { startCampaignService } from "@/src/modules/mailer/infrastructure/adapters";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 

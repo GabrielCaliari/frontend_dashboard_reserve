@@ -40,7 +40,7 @@ import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
 import { StartCampaignConfirmDialog } from "@/src/presentation/components/organisms/email-builder/modals/start-campaign-confirm-dialog";
 import { BatchTable } from "@/src/presentation/components/organisms/tables/batch-table";
 import { CampaignBatch } from "@/src/shared/domain/types/@campaign-batch";
-import { closeSetupService } from "@/src/common/services/email-campaign/close-setup-service";
+import { closeSetupService } from "@/src/modules/mailer/infrastructure/adapters";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 

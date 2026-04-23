@@ -18,7 +18,7 @@ import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import { useState } from "react";
 import { Eye, MousePointer } from "lucide-react";
 import { IDelivery } from "@/src/shared/domain/types/@delivery";
-import listDeliveriesByCampaignBatchIdService from "@/src/common/services/campaign-batch/list-deliveries-by-campaign-batch-id-service";
+import { listDeliveriesByCampaignBatchIdService } from "@/src/modules/mailer/infrastructure/adapters";
 import { EDeliveryStatus } from "@/src/shared/domain/types/@delivery";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
