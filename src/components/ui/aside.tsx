@@ -29,6 +29,7 @@ import {
   X,
   FileBarChart2,
   Calendar,
+  CreditCard,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -217,6 +218,12 @@ export function Sidebar({
             ],
           },
           {
+            id: "payments",
+            label: t("payments"),
+            icon: CreditCard,
+            path: "/dashboard/payments",
+          },
+          {
             id: "profile",
             label: t("profile"),
             icon: Settings,
@@ -301,6 +308,12 @@ export function Sidebar({
               path: "/dashboard/cms/media",
             },
           ],
+        },
+        {
+          id: "payments",
+          label: t("payments"),
+          icon: CreditCard,
+          path: "/dashboard/payments",
         },
         {
           id: "profile",
