@@ -7,7 +7,8 @@ export async function getSubscriptionAction(
   tenantId: string
 ): Promise<GetSubscriptionResponse> {
   try {
-    return await getSubscriptionByTenantService(tenantId);
+    const result = await getSubscriptionByTenantService(tenantId);
+    return result;
   } catch (error: any) {
     if (error?.response?.status === 404) {
       return { subscription: null };

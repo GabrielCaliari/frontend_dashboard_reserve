@@ -100,6 +100,8 @@ export interface Subscription {
 export interface GetSubscriptionResponse {
   message?: string;
   subscription: Subscription | null;
+  // Backend may return the subscription object directly without wrapper
+  id?: string;
 }
 
 export interface CreateCheckoutSessionDto {
