@@ -1,6 +1,6 @@
 "use server";
 
-import listEmailCampaignService from "@/src/common/services/email-campaign/list-email-campaign-service";
+import { listEmailCampaignService } from "@/src/modules/mailer/infrastructure/adapters";
 import EmailCampaignTableDropdownMenu from "./email-campaign-table-dropdown-menu";
 import CampaignsTableRow from "./campaigns-table-row";
 import { formatDate, getEnumLabel } from "@/src/shared/lib/utils";

@@ -1,4 +1,8 @@
-import listEmailCampaignByIdService from "@/src/common/services/email-campaign/list-email-campaign-by-id-service";
+import {
+  listEmailCampaignByIdService,
+  listPrimaryCopyByEmailCampaignService,
+  listBatchesByEmailCampaignService,
+} from "@/src/modules/mailer/infrastructure/adapters";
 import { EEmailCampaignStatus } from "@/src/shared/enums/email-campaign";
 import {
   AlertTriangle,
@@ -21,8 +25,6 @@ import {
 } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import listSmtpServers from "@/src/presentation/actions/smtp-server/list-smtp-servers";
 import { ISmtpServer } from "@/src/shared/domain/types/@smtp-server";
-import listPrimaryCopyByEmailCampaignService from "@/src/common/services/email-campaign/list-primary-copy-by-email-campaign-service";
-import listBatchesByEmailCampaignService from "@/src/common/services/email-campaign/list-batches-by-email-campaign-service";
 import { BatchTable } from "@/src/presentation/components/organisms/tables/batch-table";
 import { StartCampaignConfirmDialog } from "@/src/presentation/components/organisms/email-builder/modals/start-campaign-confirm-dialog";
 import CampaignActions from "@/src/presentation/components/organisms/leads/campaign-actions";

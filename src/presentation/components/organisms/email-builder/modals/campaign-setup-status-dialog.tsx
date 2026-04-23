@@ -2,7 +2,7 @@ import { Dialog, DialogContent } from "@/src/presentation/components/atoms/shadc
 
 import { DialogFooter } from "@/src/presentation/components/atoms/shadcn-ui/dialog";
 import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
-import { closeSetupService } from "@/src/common/services/email-campaign/close-setup-service";
+import { closeSetupService } from "@/src/modules/mailer/infrastructure/adapters";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";

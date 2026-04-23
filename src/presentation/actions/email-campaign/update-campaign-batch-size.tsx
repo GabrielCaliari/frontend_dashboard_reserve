@@ -1,6 +1,6 @@
 "use server";
 
-import { updateCampaignBatchSizeService } from "@/src/common/services/email-campaign/update-campaign-batch-size-service";
+import { updateCampaignBatchSizeService } from "@/src/modules/mailer/infrastructure/adapters";
 
 export async function updateCampaignBatchSize(
   campaignId: string,

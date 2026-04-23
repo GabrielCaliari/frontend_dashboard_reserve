@@ -1,6 +1,6 @@
 "use server";
 
-import listSmtpServersServices from "@/src/common/services/smtp-server/list-smtp-servers-services";
+import { listSmtpServersServices } from "@/src/modules/mailer/infrastructure/adapters";
 
 export default async function listSmtpServers() {
   const response = await listSmtpServersServices();
