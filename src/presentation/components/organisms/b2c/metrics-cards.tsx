@@ -3,7 +3,7 @@
 import { Card, CardBody, Skeleton } from "@heroui/react";
 import { Users, TrendingUp, DollarSign, UserX } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useB2CMetrics } from "@/src/common/hooks/useB2CSubscriptions";
+import { useB2CMetrics } from "@/src/shared/hooks/b2c-subscriptions/use-b2c-subscriptions";
 
 export function B2CMetricsCards() {
   const { data: metrics, isLoading } = useB2CMetrics();

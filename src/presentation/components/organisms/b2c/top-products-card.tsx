@@ -3,7 +3,7 @@
 import { Card, CardBody, CardHeader, Divider, Skeleton } from "@heroui/react";
 import { TrendingUp, Package } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useB2CMetrics } from "@/src/common/hooks/useB2CSubscriptions";
+import { useB2CMetrics } from "@/src/shared/hooks/b2c-subscriptions/use-b2c-subscriptions";
 
 export function TopProductsCard() {
   const { data: metrics, isLoading } = useB2CMetrics();
