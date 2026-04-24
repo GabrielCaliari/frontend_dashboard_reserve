@@ -18,7 +18,7 @@ import { useTranslations } from "next-intl";
 import {
   useListB2CSubscriptions,
   useCancelB2CSubscription,
-} from "@/src/common/hooks/useB2CSubscriptions";
+} from "@/src/shared/hooks/b2c-subscriptions/use-b2c-subscriptions";
 import type { UserSubscription } from "@/src/shared/domain/types/@b2c-products";
 import { ConfirmModal } from "@/src/presentation/components/organisms/modals/confirm-modal";
 
