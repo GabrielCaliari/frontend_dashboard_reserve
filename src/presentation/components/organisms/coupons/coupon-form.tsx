@@ -29,7 +29,7 @@ import { useListB2BProducts } from "@/src/common/hooks/useB2BPayments";
 import {
   useListB2CProducts,
   useListB2CCategories,
-} from "@/src/common/hooks/useB2CProducts";
+} from "@/src/shared/hooks/b2c-products/use-b2c-products";
 
 // ---------------------------------------------------------------------------
 // Helpers

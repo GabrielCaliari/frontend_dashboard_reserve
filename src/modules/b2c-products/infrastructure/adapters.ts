@@ -1,3 +1,39 @@
+/**
+ * B2C Products — Infrastructure Adapters
+ *
+ * Ports the former `common/services/b2c-products-service.ts` into this module.
+ * Every exported name and signature is preserved unchanged so consuming hooks
+ * (now under `src/shared/hooks/b2c-products/` and `src/shared/hooks/payments/`)
+ * only need their import path updated.
+ *
+ * Backend module: `b2c-products`. Generated typed clients live in
+ * `src/infraestructure/server/services/{admin-bc-products,admin-bc-fee-config,
+ * bc-products,public-bc-products}` (OpenAPI tags "Admin B2C Products",
+ * "Admin B2C Fee Config", "B2C Products", "Public B2C Products" — codegen
+ * slugified "B2C" to "Bc"). They are NOT delegated to here because, after
+ * inspecting all four:
+ *   - every mutation/query response type in the generated clients is `unknown`
+ *     (no structural overlap with the `Product` / `B2CFeeConfig` / `B2CCategory`
+ *     domain types this module returns), so delegating would require an unsafe
+ *     cast at every call site with no behavioral gain;
+ *   - `admin-bc-products`'s generated `CreateProductBody` (`CreateB2CProductDTO`)
+ *     is missing fields the hand-written `CreateB2CProductDto` sends today
+ *     (`billingMode`, `priceName`, `maxBillingCycles`, `accessDurationDays`);
+ *   - `admin-bc-products`'s generated `calculateCost(id)` posts with NO body,
+ *     dropping the optional `priceId` the original `calculateProductCost`
+ *     sends — a real behavior loss;
+ *   - `bc-products` (tag "B2C Products") hits a differently-scoped resource
+ *     (`/products`, `/products/{id}/calculate-cost` — no `/b2c` prefix) than
+ *     the admin-facing `/b2c/products/...` endpoints this service targets;
+ *   - `public-bc-products` hits the unauthenticated storefront endpoints
+ *     (`/public/b2c/products/...`), not the tenant-scoped admin endpoints used
+ *     here via `cmsApiClient`/`apiClient` with auth+tenant headers.
+ * Delegating to any of the four would silently change the request shape or
+ * response typing, so this adapter keeps the original implementation verbatim.
+ * All URL paths, HTTP clients (`apiClient` vs `cmsApiClient`), and payloads
+ * below match the pre-migration service exactly.
+ */
+
 import { apiClient, cmsApiClient } from "@/src/infraestructure/axios/api";
 import type {
   Product,
