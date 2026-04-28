@@ -4,7 +4,7 @@ import { Card, CardBody, CardHeader, Divider, Button } from "@heroui/react";
 import { Briefcase, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useListB2BProducts } from "@/src/common/hooks/useB2BPayments";
+import { useListB2BProducts } from "@/src/shared/hooks/b2b-payments/use-b2b-payments";
 import { B2BProductsTable } from "./b2b-products-table";
 import { CreateB2BProductModal } from "./create-b2b-product-modal";
 

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { b2bPaymentsService } from "@/src/common/services/b2b-payments-service";
+import { b2bPaymentsService } from "@/src/modules/b2b-payments/infrastructure/adapters";
 import type { PurchaseStatus } from "@/src/shared/domain/types/@b2b-payments";
 import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 

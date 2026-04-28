@@ -12,7 +12,7 @@ import {
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { ExternalLink, Copy, Check, Link } from "lucide-react";
-import { b2bPaymentsService } from "@/src/common/services/b2b-payments-service";
+import { b2bPaymentsService } from "@/src/modules/b2b-payments/infrastructure/adapters";
 import type { B2BProduct } from "@/src/shared/domain/types/@b2b-payments";
 
 interface GenerateCheckoutLinkModalProps {

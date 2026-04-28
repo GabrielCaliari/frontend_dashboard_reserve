@@ -17,7 +17,7 @@ import { Package } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useQueryClient } from "@tanstack/react-query";
-import { b2bPaymentsService } from "@/src/common/services/b2b-payments-service";
+import { b2bPaymentsService } from "@/src/modules/b2b-payments/infrastructure/adapters";
 import { b2cProductsService } from "@/src/common/services/b2c-products-service";
 import { BillingConfigSelector } from "./billing-config-selector";
 import { CurrencyInput } from "@/src/presentation/components/atoms/reserve/currency-input";

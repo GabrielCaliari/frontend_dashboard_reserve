@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
-import { useListB2BProducts } from "@/src/common/hooks/useB2BPayments";
+import { useListB2BProducts } from "@/src/shared/hooks/b2b-payments/use-b2b-payments";
 import { useCategories } from "@/src/common/hooks/payments/use-b2c-fees";
 import type { B2BProduct } from "@/src/shared/domain/types/@b2b-payments";
 import { GenerateCheckoutLinkModal } from "./generate-checkout-link-modal";
