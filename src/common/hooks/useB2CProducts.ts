@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { b2cProductsService } from '@/common/services/b2c-products-service';
+import { b2cProductsService } from '@/src/common/services/b2c-products-service';
 
 export function useListB2CProducts() {
   return useQuery({

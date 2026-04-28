@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Product } from '@/common/@types/@b2c-products';
+import type { Product } from '@/src/common/@types/@b2c-products';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.seudominio.com/api';
 

@@ -5,6 +5,7 @@ import { Package } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { PlansSection } from "@/src/components/payments/plans-section";
 import { B2CProductsSection } from "@/src/components/b2c/b2c-products-section";
+import { B2BProductsSection } from "@/src/components/b2b/b2b-products-section";
 
 export default function PaymentsProductsPage() {
   const t = useTranslations("payments");
@@ -21,6 +22,8 @@ export default function PaymentsProductsPage() {
           </div>
           <p className="text-sm text-gray-400 ml-11">{t("products.subtitle")}</p>
         </div>
+        
+        <B2BProductsSection />
         
         <B2CProductsSection />
         

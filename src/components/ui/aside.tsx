@@ -31,6 +31,7 @@ import {
   Calendar,
   CreditCard,
   Package,
+  Briefcase,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -236,6 +237,12 @@ export function Sidebar({
                 path: "/dashboard/payments/subscriptions",
               },
               {
+                id: "payments-subscriptions-b2c",
+                label: "Assinaturas B2C",
+                icon: Users,
+                path: "/dashboard/payments/subscriptions/b2c",
+              },
+              {
                 id: "payments-config",
                 label: t("paymentsConfig"),
                 icon: Settings,
@@ -345,6 +352,12 @@ export function Sidebar({
               label: t("paymentsSubscriptions"),
               icon: CreditCard,
               path: "/dashboard/payments/subscriptions",
+            },
+            {
+              id: "payments-subscriptions-b2c",
+              label: "Assinaturas B2C",
+              icon: Users,
+              path: "/dashboard/payments/subscriptions/b2c",
             },
             {
               id: "payments-config",
