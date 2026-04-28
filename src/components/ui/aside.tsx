@@ -30,6 +30,7 @@ import {
   FileBarChart2,
   Calendar,
   CreditCard,
+  Package,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -218,10 +219,29 @@ export function Sidebar({
             ],
           },
           {
-            id: "payments",
+            id: "payments-menu",
             label: t("payments"),
             icon: CreditCard,
-            path: "/dashboard/payments",
+            subItems: [
+              {
+                id: "payments-products",
+                label: t("paymentsProducts"),
+                icon: Package,
+                path: "/dashboard/payments/products",
+              },
+              {
+                id: "payments-subscriptions",
+                label: t("paymentsSubscriptions"),
+                icon: CreditCard,
+                path: "/dashboard/payments/subscriptions",
+              },
+              {
+                id: "payments-config",
+                label: t("paymentsConfig"),
+                icon: Settings,
+                path: "/dashboard/payments/config",
+              },
+            ],
           },
           {
             id: "profile",
@@ -310,10 +330,29 @@ export function Sidebar({
           ],
         },
         {
-          id: "payments",
+          id: "payments-menu",
           label: t("payments"),
           icon: CreditCard,
-          path: "/dashboard/payments",
+          subItems: [
+            {
+              id: "payments-products",
+              label: t("paymentsProducts"),
+              icon: Package,
+              path: "/dashboard/payments/products",
+            },
+            {
+              id: "payments-subscriptions",
+              label: t("paymentsSubscriptions"),
+              icon: CreditCard,
+              path: "/dashboard/payments/subscriptions",
+            },
+            {
+              id: "payments-config",
+              label: t("paymentsConfig"),
+              icon: Settings,
+              path: "/dashboard/payments/config",
+            },
+          ],
         },
         {
           id: "profile",
@@ -411,6 +450,15 @@ export function Sidebar({
         prev.includes("access-management")
           ? prev
           : [...prev, "access-management"],
+      );
+    }
+    if (
+      activeTab === "payments-products" ||
+      activeTab === "payments-subscriptions" ||
+      activeTab === "payments-config"
+    ) {
+      setExpandedMenus((prev) =>
+        prev.includes("payments-menu") ? prev : [...prev, "payments-menu"],
       );
     }
   }, [activeTab]);

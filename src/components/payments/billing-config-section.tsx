@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Chip, Skeleton, Divider } from "@heroui/react";
+import { Button, Chip, Skeleton } from "@heroui/react";
 import { toast } from "react-hot-toast";
-import { CheckCircle, XCircle, Pencil, Trash2, RefreshCw } from "lucide-react";
+import { CheckCircle, XCircle, Pencil, Trash2, RefreshCw, Package } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useBillingConfig } from "@/src/common/hooks/payments/use-billing-config";
 import { useDeleteBillingConfig } from "@/src/common/hooks/payments/use-delete-billing-config";
+import { usePlans } from "@/src/common/hooks/payments/use-plans";
 import { BillingConfigForm } from "./billing-config-form";
-import type { BillingInterval, BillingCollectionMode } from "@/src/common/@types/@payments";
 
 interface StatusBadgeProps {
   label: string;
@@ -44,19 +44,10 @@ export function BillingConfigSection() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const { data: config, isLoading, refetch } = useBillingConfig();
+  const { data: plans = [] } = usePlans();
   const deleteConfig = useDeleteBillingConfig();
 
-  const INTERVAL_LABELS: Record<BillingInterval, string> = {
-    monthly: t("intervalMonthly"),
-    quarterly: t("intervalQuarterly"),
-    semiannual: t("intervalSemiannual"),
-    annual: t("intervalAnnual"),
-  };
-
-  const MODE_LABELS: Record<BillingCollectionMode, string> = {
-    upfront: t("modeUpfront"),
-    installments: t("modeInstallments"),
-  };
+  const activePlans = plans.filter((p) => p.active);
 
   const handleDelete = async () => {
     try {
@@ -142,88 +133,53 @@ export function BillingConfigSection() {
         </div>
       </div>
 
-      {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Stripe Status */}
-        <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-3">
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            {t("statusStripe")}
-          </h3>
-          <StatusBadge
-            label="Stripe Secret Key"
-            configured={config.hasStripeSecretKey}
-            configuredLabel={t("statusConfigured")}
-            notConfiguredLabel={t("statusNotConfigured")}
-          />
-          <StatusBadge
-            label="Webhook Secret"
-            configured={config.hasStripeWebhookSecret}
-            configuredLabel={t("statusConfigured")}
-            notConfiguredLabel={t("statusNotConfigured")}
-          />
-          {config.stripePublishableKey && (
-            <div className="pt-1">
-              <p className="text-xs text-gray-500">Publishable Key</p>
-              <p className="text-xs text-gray-300 font-mono truncate">
-                {config.stripePublishableKey}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Billing Settings */}
-        <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-3">
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            {t("settingsLabel")}
-          </h3>
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-400">{t("intervalLabel")}</span>
-              <Chip size="sm" variant="flat" color="primary">
-                {INTERVAL_LABELS[config.billingInterval]}
-              </Chip>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-400">{t("collectionModeLabel")}</span>
-              <Chip size="sm" variant="flat">
-                {MODE_LABELS[config.billingCollectionMode]}
-              </Chip>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-400">{t("trialLabel")}</span>
-              <Chip
-                size="sm"
-                variant="flat"
-                color={config.trialEnabled ? "success" : "default"}
-              >
-                {config.trialEnabled
-                  ? t("trialDaysValue", { days: config.trialDays ?? 0 })
-                  : t("trialDisabled")}
-              </Chip>
-            </div>
-            {config.currency && (
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-400">{t("currencyLabel")}</span>
-                <span className="text-sm text-gray-200 uppercase">{config.currency}</span>
-              </div>
-            )}
+      {/* Stripe Status */}
+      <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-3">
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          {t("statusStripe")}
+        </h3>
+        <StatusBadge
+          label="Stripe Secret Key"
+          configured={config.hasStripeSecretKey}
+          configuredLabel={t("statusConfigured")}
+          notConfiguredLabel={t("statusNotConfigured")}
+        />
+        <StatusBadge
+          label="Webhook Secret"
+          configured={config.hasStripeWebhookSecret}
+          configuredLabel={t("statusConfigured")}
+          notConfiguredLabel={t("statusNotConfigured")}
+        />
+        {config.stripePublishableKey && (
+          <div className="pt-1">
+            <p className="text-xs text-gray-500">Publishable Key</p>
+            <p className="text-xs text-gray-300 font-mono truncate">
+              {config.stripePublishableKey}
+            </p>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Price IDs */}
-      {config.stripePriceIds && Object.keys(config.stripePriceIds).length > 0 && (
+      {/* Products created */}
+      {activePlans.length > 0 && (
         <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e]">
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-            {t("priceIdsLabel")}
+            {t("productsLabel")}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {Object.entries(config.stripePriceIds).map(([interval, priceId]) => (
-              <div key={interval} className="flex flex-col gap-0.5">
-                <span className="text-xs text-gray-500 capitalize">
-                  {INTERVAL_LABELS[interval as BillingInterval] || interval}
-                </span>
-                <span className="text-xs text-gray-300 font-mono truncate">{priceId}</span>
+          <div className="space-y-2">
+            {activePlans.map((plan) => (
+              <div
+                key={plan.id}
+                className="flex items-center gap-3 p-2 rounded-lg bg-[#0f0f1a] border border-[#2a2a3e]"
+              >
+                <Package className="w-4 h-4 text-primary flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-200 truncate">{plan.plan_name}</p>
+                  <p className="text-xs text-gray-500 font-mono truncate">{plan.stripe_product_id}</p>
+                </div>
+                <Chip size="sm" color="success" variant="flat">
+                  {plan.currency.toUpperCase()}
+                </Chip>
               </div>
             ))}
           </div>

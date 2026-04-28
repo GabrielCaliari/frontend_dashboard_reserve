@@ -1,7 +1,57 @@
 /**
  * Payments Types
- * Based on backend API - /payments and /subscriptions endpoints
+ * Based on backend API - /payments, /subscriptions and /plans endpoints
  */
+
+// ─── Plans (Stripe Products) ──────────────────────────────────────────────────
+
+export type PlanBillingInterval = 1 | 2 | 3 | 4; // 1=weekly 2=monthly 3=quarterly 4=annual
+export type PlanCurrency = 'brl' | 'usd';
+
+export interface StripePlan {
+  id: string;
+  slug: string;
+  plan_name: string;
+  description?: string | null;
+  stripe_product_id: string;
+  stripe_price_id: string;
+  stripe_trial_price_id?: string | null;
+  billing_interval: PlanBillingInterval;
+  unit_amount: number; // in cents
+  currency: PlanCurrency;
+  released_credits: number;
+  credits_released_trial_period: number;
+  guest_limit: number;
+  trial_days: number;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateStripePlanDto {
+  tenant_id: string;
+  slug: string;
+  plan_name: string;
+  description?: string;
+  unit_amount: number; // in cents
+  currency: PlanCurrency;
+  billing_interval: PlanBillingInterval;
+  released_credits: number;
+  guest_limit: number;
+  credits_released_trial_period?: number;
+  trial_days?: number;
+}
+
+export interface UpdateStripePlanDto {
+  plan_name?: string;
+  description?: string;
+  credits_released_trial_period?: number;
+  trial_days?: number;
+}
+
+export interface ArchivePlanResponse {
+  archived: boolean;
+}
 
 export type BillingInterval = 'monthly' | 'quarterly' | 'semiannual' | 'annual';
 export type BillingCollectionMode = 'upfront' | 'installments';
