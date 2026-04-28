@@ -33,7 +33,7 @@ import {
   useCreateReport,
   useUpdateReport,
   useDeleteReport,
-} from "@/src/common/hooks/reports/use-reports";
+} from "@/src/shared/hooks/reports/use-reports";
 import type { Report } from "@/src/shared/domain/types/@report";
 import { ReportDialog } from "@/src/presentation/components/organisms/reports/report-dialog";
 import { DeleteReportDialog } from "@/src/presentation/components/organisms/reports/delete-report-dialog";
