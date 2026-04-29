@@ -15,7 +15,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { b2bPaymentsService } from "@/src/common/services/b2b-payments-service";
+import { b2bPaymentsService } from "@/src/modules/b2b-payments/infrastructure/adapters";
 
 interface CreateB2BProductModalProps {
   isOpen: boolean;

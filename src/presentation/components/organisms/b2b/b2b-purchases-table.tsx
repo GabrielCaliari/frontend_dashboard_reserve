@@ -18,7 +18,7 @@ import type {
   B2BPurchase,
   PurchaseStatus,
 } from "@/src/shared/domain/types/@b2b-payments";
-import { useListB2BPurchases } from "@/src/common/hooks/useB2BPayments";
+import { useListB2BPurchases } from "@/src/shared/hooks/b2b-payments/use-b2b-payments";
 
 const statusColorMap: Record<
   PurchaseStatus,

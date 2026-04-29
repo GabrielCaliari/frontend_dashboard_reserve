@@ -8,7 +8,7 @@ import {
   TrendingDown,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useB2BMetrics } from "@/src/common/hooks/useB2BPayments";
+import { useB2BMetrics } from "@/src/shared/hooks/b2b-payments/use-b2b-payments";
 
 export function B2BMetricsCards() {
   const t = useTranslations("payments.b2b");
