@@ -1,14 +1,9 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { apiClient } from "@/src/infraestructure/axios/api";
-
-interface NotificationsFilter {
-  type?: string;
-  scope?: string;
-  published?: boolean;
-  page?: number;
-  limit?: number;
-}
+import {
+  listNotifications,
+  NotificationsFilter,
+} from "@/src/modules/notifications/infrastructure/adapters";
 
 export function useNotifications(filters: NotificationsFilter = {}) {
   const [data, setData] = useState<any[]>([]);
@@ -18,9 +13,9 @@ export function useNotifications(filters: NotificationsFilter = {}) {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await apiClient.get("/notifications", { params: filters });
-      setData(res.data?.data ?? []);
-      setTotal(res.data?.total ?? 0);
+      const res: any = await listNotifications(filters);
+      setData(res?.data ?? []);
+      setTotal(res?.total ?? 0);
     } finally {
       setLoading(false);
     }

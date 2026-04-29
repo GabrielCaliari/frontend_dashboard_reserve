@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { apiClient } from "@/src/infraestructure/axios/api";
+import {
+  listTenantNotifications,
+  markNotificationViewed,
+} from "@/src/modules/notifications/infrastructure/adapters";
 
 export function useNotificationInbox(
   tenantId: string | null,
@@ -15,12 +18,9 @@ export function useNotificationInbox(
     if (!tenantId) return;
     setLoading(true);
     try {
-      const res = await apiClient.get(`/notifications/tenant`, {
-        params: { page, limit },
-        headers: { "x-tenant-id": tenantId },
-      });
-      setData(res.data?.data ?? []);
-      setTotal(res.data?.total ?? 0);
+      const res = await listTenantNotifications(tenantId, page, limit);
+      setData(res.data ?? []);
+      setTotal(res.total ?? 0);
     } finally {
       setLoading(false);
     }
@@ -36,9 +36,7 @@ export function useNotificationInbox(
   }, [load]);
 
   const markAsViewed = async (notificationId: string) => {
-    await apiClient.post(`/notifications/tenant/${notificationId}/view`, null, {
-      headers: { "x-tenant-id": tenantId! },
-    });
+    await markNotificationViewed(tenantId!, notificationId);
     load();
   };
 

@@ -1,5 +1,5 @@
 "use client";
-import { useUnreadCount } from "@/src/common/hooks/notifications/use-unread-count";
+import { useUnreadCount } from "@/src/shared/hooks/notifications/use-unread-count";
 import { useTenantStore } from "@/src/shared/stores/tenant-store";
 
 export function NotificationBadge() {

@@ -9,8 +9,8 @@ import {
   Skeleton,
 } from "@heroui/react";
 import { Bell, BellOff, CheckCheck } from "lucide-react";
-import { useNotificationInbox } from "@/src/common/hooks/notifications/use-notification-inbox";
-import { useNotificationSettings } from "@/src/common/hooks/notifications/use-notification-settings";
+import { useNotificationInbox } from "@/src/shared/hooks/notifications/use-notification-inbox";
+import { useNotificationSettings } from "@/src/shared/hooks/notifications/use-notification-settings";
 import { useTenantStore } from "@/src/shared/stores/tenant-store";
 import { formatInTenantTimezone } from "@/src/shared/utils/format-timezone";
 import { CmsPageLayout } from "../cms/shared/cms-page-layout";
