@@ -232,15 +232,9 @@ export function Sidebar({
               },
               {
                 id: "payments-subscriptions",
-                label: t("paymentsSubscriptions"),
+                label: t("paymentsMovements"),
                 icon: CreditCard,
                 path: "/dashboard/payments/subscriptions",
-              },
-              {
-                id: "payments-subscriptions-b2c",
-                label: "Assinaturas B2C",
-                icon: Users,
-                path: "/dashboard/payments/subscriptions/b2c",
               },
               {
                 id: "payments-config",
@@ -349,15 +343,9 @@ export function Sidebar({
             },
             {
               id: "payments-subscriptions",
-              label: t("paymentsSubscriptions"),
+              label: t("paymentsMovements"),
               icon: CreditCard,
               path: "/dashboard/payments/subscriptions",
-            },
-            {
-              id: "payments-subscriptions-b2c",
-              label: "Assinaturas B2C",
-              icon: Users,
-              path: "/dashboard/payments/subscriptions/b2c",
             },
             {
               id: "payments-config",

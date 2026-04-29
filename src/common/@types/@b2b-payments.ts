@@ -18,19 +18,21 @@ export type PurchaseStatus = 'pending' | 'completed' | 'abandoned' | 'refunded';
 
 export interface B2BPurchase {
   id: string;
-  productId: string;
-  productName: string;
-  userId?: string;
+  tenantId: string;
+  productId?: string;
+  productName?: string;
   customerEmail: string;
   customerName?: string;
+  customerPhone?: string;
   amount: number; // em centavos
   currency: string;
   status: PurchaseStatus;
   stripeCheckoutId?: string;
   stripePaymentIntentId?: string;
+  checkoutStartedAt?: string;
+  checkoutCompletedAt?: string;
   createdAt: string;
-  completedAt?: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export interface B2BMetrics {
