@@ -160,9 +160,34 @@ function LinkInsertPopover({ editor, onClose, savedSelection }: LinkInsertPopove
     // Restore the saved selection so the link wraps the correct text
     restoreSelection();
 
+    // Contract selection to exclude trailing whitespace (e.g. double-click selects word + space)
+    if (editor.selection) {
+      let { focus } = editor.selection;
+      try {
+        while (true) {
+          const before = editor.api.before(focus, { unit: "character" });
+          if (!before) break;
+          const range = { anchor: before, focus };
+          const char = editor.api.string(range);
+          if (char && /\s$/.test(char)) {
+            focus = before;
+          } else {
+            break;
+          }
+        }
+        if (focus !== editor.selection.focus) {
+          editor.tf.select({ anchor: editor.selection.anchor, focus });
+        }
+      } catch { /* noop */ }
+    }
+
+    // Only pass text when the user explicitly changed it from the original
+    // selection — otherwise let upsertLink preserve the selected content as-is
+    const userChangedText = text !== selectionText;
+
     upsertLink(editor, {
       url: normalized,
-      text: text.trim() || undefined,
+      text: userChangedText && text ? text : undefined,
       target: normalized.startsWith("http") ? "_blank" : undefined,
       skipValidation: true,
     });
