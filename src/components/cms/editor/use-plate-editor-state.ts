@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { usePlateEditor } from "platejs/react";
+import { ParagraphPlugin, usePlateEditor } from "platejs/react";
 import {
   BoldPlugin,
   ItalicPlugin,
@@ -23,7 +23,18 @@ import {
   H3Element,
   BlockquoteElement,
   ImageElement,
+  ParagraphElement,
+  ListElement,
+  ListItemElement,
+  ListItemContentElement,
 } from "./editor-elements";
+import {
+  BulletedListPlugin,
+  ListItemContentPlugin,
+  ListItemPlugin,
+  ListPlugin,
+  NumberedListPlugin,
+} from "@platejs/list-classic/react";
 import {
   parseHtmlToSlate,
   extractChapters,
@@ -31,6 +42,7 @@ import {
   analyzeMarkdownFallback,
   validateMarkdown,
   EMPTY_SLATE_VALUE,
+  slugifyHeading,
 } from "./editor-utils";
 import type { Chapter, ViewMode } from "./editor-types";
 import type { ContentStats } from "@/src/common/@types/cms";
@@ -83,6 +95,7 @@ export function usePlateEditorState({
   // --- Plate editor instance ---
   const editor = usePlateEditor({
     plugins: [
+      ParagraphPlugin.withComponent(ParagraphElement),
       BoldPlugin,
       ItalicPlugin,
       UnderlinePlugin,
@@ -92,6 +105,11 @@ export function usePlateEditorState({
       H2Plugin.withComponent(H2Element),
       H3Plugin.withComponent(H3Element),
       BlockquotePlugin.withComponent(BlockquoteElement),
+      ListPlugin,
+      ListItemPlugin.withComponent(ListItemElement),
+      ListItemContentPlugin.withComponent(ListItemContentElement),
+      BulletedListPlugin.withComponent(ListElement),
+      NumberedListPlugin.withComponent(ListElement),
       ImagePlugin.withComponent(ImageElement),
       MarkdownPlugin,
     ],
@@ -139,6 +157,29 @@ export function usePlateEditorState({
     [focusKeyword, onContentChange],
   );
 
+  const ensureHeadingIds = React.useCallback(() => {
+    if (!editor) return;
+    const nodes = editor.children as any[];
+    let updated = false;
+
+    nodes.forEach((node, index) => {
+      if (node?.type === "h1" || node?.type === "h2" || node?.type === "h3") {
+        if (!node.id) {
+          const text = (node.children as Array<{ text?: string }>)
+            .map((c) => c.text || "")
+            .join("")
+            .trim();
+          const slug = slugifyHeading(text);
+          const id = `heading-${index}-${slug}`;
+          Transforms.setNodes(editor as any, { id }, { at: [index] });
+          updated = true;
+        }
+      }
+    });
+
+    return updated;
+  }, [editor]);
+
   const publishFromMarkdown = React.useCallback(
     (md: string, warning?: string) => {
       onContentChange?.(analyzeMarkdownFallback(md, focusKeyword));
@@ -161,6 +202,7 @@ export function usePlateEditorState({
       try {
         const slateValue = editor.api.markdown.deserialize(parsedInitial);
         editor.tf.setValue(slateValue);
+        ensureHeadingIds();
         publishFromSlate(slateValue, parsedInitial);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Invalid markdown in initial content.";
@@ -176,6 +218,7 @@ export function usePlateEditorState({
       const md = editor.api.markdown.serialize({ value: initialSlateValue });
       setMarkdownContent(md);
       lastValidMarkdownRef.current = md;
+      ensureHeadingIds();
       publishFromSlate(initialSlateValue, md);
     } catch {
       // Empty or unparseable — just seed empty markdown
@@ -190,6 +233,7 @@ export function usePlateEditorState({
     if (analyzeTimerRef.current) clearTimeout(analyzeTimerRef.current);
     analyzeTimerRef.current = setTimeout(() => {
       try {
+        ensureHeadingIds();
         const value = editor.children as Value;
         const md = editor.api.markdown.serialize();
         setMarkdownContent(md);

@@ -14,30 +14,48 @@ function DragHandle() {
 }
 
 export function H1Element({ children, ...props }: PlateElementProps) {
+  const element = props.element as any;
   return (
     <PlateElement {...props} className="relative group mt-8 mb-4 first:mt-0">
       <DragHandle />
-      <h1 className="text-4xl font-bold text-foreground border-b border-border pb-3">
+      <h1
+        id={element?.id}
+        className="text-4xl font-bold text-foreground border-b border-border pb-3 scroll-mt-24"
+      >
         {children}
       </h1>
     </PlateElement>
   );
 }
 
+export function ParagraphElement({ children, ...props }: PlateElementProps) {
+  return (
+    <PlateElement {...props} className="relative group my-4">
+      <p className="text-base text-foreground leading-relaxed">{children}</p>
+    </PlateElement>
+  );
+}
+
 export function H2Element({ children, ...props }: PlateElementProps) {
+  const element = props.element as any;
   return (
     <PlateElement {...props} className="relative group mt-6 mb-3">
       <DragHandle />
-      <h2 className="text-3xl font-semibold text-foreground">{children}</h2>
+      <h2 id={element?.id} className="text-3xl font-semibold text-foreground scroll-mt-24">
+        {children}
+      </h2>
     </PlateElement>
   );
 }
 
 export function H3Element({ children, ...props }: PlateElementProps) {
+  const element = props.element as any;
   return (
     <PlateElement {...props} className="relative group mt-5 mb-2">
       <DragHandle />
-      <h3 className="text-2xl font-medium text-foreground/90">{children}</h3>
+      <h3 id={element?.id} className="text-2xl font-medium text-foreground/90 scroll-mt-24">
+        {children}
+      </h3>
     </PlateElement>
   );
 }
@@ -83,25 +101,31 @@ export function ListElement({ children, ...props }: PlateElementProps) {
   const element = props.element as any;
   const Tag = element.type === "ol" ? "ol" : "ul";
   return (
-    <PlateElement {...props} asChild>
-      <Tag
-        className={cn(
-          "my-4 space-y-2",
-          element.type === "ol"
-            ? "list-decimal list-inside"
-            : "list-disc list-inside",
-        )}
-      >
-        {children}
-      </Tag>
+    <PlateElement
+      {...props}
+      as={Tag}
+      className={cn(
+        "my-4 space-y-1 pl-6",
+        element.type === "ol" ? "list-decimal list-outside" : "list-disc list-outside",
+      )}
+    >
+      {children}
     </PlateElement>
   );
 }
 
 export function ListItemElement({ children, ...props }: PlateElementProps) {
   return (
-    <PlateElement {...props} asChild>
-      <li className="text-muted-foreground leading-relaxed pl-2">{children}</li>
+    <PlateElement {...props} as="li" className="text-muted-foreground leading-relaxed [&>*]:my-0">
+      {children}
+    </PlateElement>
+  );
+}
+
+export function ListItemContentElement({ children, ...props }: PlateElementProps) {
+  return (
+    <PlateElement {...props} as="div" className="m-0">
+      {children}
     </PlateElement>
   );
 }

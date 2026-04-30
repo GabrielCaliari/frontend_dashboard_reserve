@@ -8,8 +8,11 @@ export type ViewMode = "formatted" | "markdown";
 
 export interface Chapter {
   id: string;
+  anchorId: string;
   title: string;
   type: "h1" | "h2" | "h3";
+  order: number;
+  hasChildren: boolean;
   collapsed: boolean;
 }
 

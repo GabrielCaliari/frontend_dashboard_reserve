@@ -46,6 +46,15 @@ export function PlateEditor({
     triggerAnalysis,
   } = usePlateEditorState({ initialContent, focusKeyword, onContentChange });
 
+  const handleChapterNavigate = React.useCallback((anchorId: string) => {
+    const target = document.getElementById(anchorId);
+    if (!target) {
+      console.warn("[PlateEditor] Chapter target not found:", anchorId);
+      return;
+    }
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   return (
     <div className="flex h-full">
       {/* Chapter Navigation Sidebar */}
@@ -71,10 +80,14 @@ export function PlateEditor({
               </p>
             )}
             {chapters.map((chapter) => (
-              <button
+              <a
                 key={chapter.id}
-                type="button"
-                onClick={() => setActiveChapter(chapter.id)}
+                href={`#${chapter.anchorId}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  setActiveChapter(chapter.id);
+                  handleChapterNavigate(chapter.anchorId);
+                }}
                 className={cn(
                   "w-full flex items-center gap-2 px-3 py-2 rounded-md text-left transition-colors",
                   "hover:bg-accent/50",
@@ -84,23 +97,26 @@ export function PlateEditor({
                   chapter.type === "h3" && "pl-10 text-xs text-muted-foreground",
                 )}
               >
-                <span
-                  role="button"
-                  aria-label={chapter.collapsed ? "Expand" : "Collapse"}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleChapter(chapter.id);
-                  }}
-                  className="shrink-0 cursor-pointer hover:text-foreground"
-                >
-                  {chapter.collapsed ? (
-                    <ChevronRight className="w-3 h-3" />
-                  ) : (
-                    <ChevronDown className="w-3 h-3" />
-                  )}
-                </span>
+                {chapter.hasChildren && (
+                  <span
+                    role="button"
+                    aria-label={chapter.collapsed ? "Expand" : "Collapse"}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleChapter(chapter.id);
+                    }}
+                    className="shrink-0 cursor-pointer hover:text-foreground"
+                  >
+                    {chapter.collapsed ? (
+                      <ChevronRight className="w-3 h-3" />
+                    ) : (
+                      <ChevronDown className="w-3 h-3" />
+                    )}
+                  </span>
+                )}
                 <span className="truncate">{chapter.title}</span>
-              </button>
+              </a>
             ))}
           </nav>
         </aside>
@@ -174,19 +190,6 @@ export function PlateEditor({
                   <PlateContent
                     className="outline-none min-h-[200px] text-foreground bg-content1 [&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:opacity-50"
                     placeholder="Start writing your article content…"
-                    renderElement={({ attributes, children, element }) => {
-                      if (!element.type || element.type === "p") {
-                        return (
-                          <p
-                            {...attributes}
-                            className="my-4 text-base text-foreground leading-relaxed"
-                          >
-                            {children}
-                          </p>
-                        );
-                      }
-                      return <div {...attributes}>{children}</div>;
-                    }}
                     renderLeaf={({ attributes, children, leaf }) => {
                       let node = children;
                       if (leaf.bold) node = <strong className="font-semibold">{node}</strong>;

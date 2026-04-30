@@ -277,7 +277,12 @@ select {
 }
 
 .markdown-container li {
-  @apply text-sm text-foreground p-1 list-disc ml-3;
+  @apply text-sm text-foreground py-1;
+}
+
+.markdown-container ul,
+.markdown-container ol {
+  @apply pl-6 ml-1;
 }
 
 .markdown-container th:nth-child(1) {

@@ -6,6 +6,25 @@ export const EMPTY_SLATE_VALUE: Value = [
   { type: "p", children: [{ text: "" }] },
 ];
 
+const headingLevelMap: Record<string, number> = { h1: 1, h2: 2, h3: 3 };
+
+function getHeadingText(node: any): string {
+  return (node.children as Array<{ text?: string }>)
+    .map((c) => c.text || "")
+    .join("")
+    .trim();
+}
+
+export function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80) || "heading";
+}
+
 // ---------------------------------------------------------------------------
 // HTML parser (used only for legacy HTML initial content)
 // ---------------------------------------------------------------------------
@@ -88,15 +107,34 @@ export function parseHtmlToSlate(html: string): Value {
 export function extractChapters(value: Value): Chapter[] {
   if (!Array.isArray(value)) return [];
 
-  return value.reduce<Chapter[]>((acc, node, index) => {
+  const chapters = value.reduce<Chapter[]>((acc, node, index) => {
     if (node.type === "h1" || node.type === "h2" || node.type === "h3") {
-      const title = (node.children as Array<{ text?: string }>)
-        .map((c) => c.text || "")
-        .join("");
-      acc.push({ id: `chapter-${index}`, title, type: node.type, collapsed: false });
+      const title = getHeadingText(node);
+      const slug = slugifyHeading(title);
+      const order = acc.length;
+      const anchorId = (node as any).id || `heading-${order}-${slug}`;
+      acc.push({
+        id: `chapter-${index}`,
+        anchorId,
+        title,
+        type: node.type,
+        order,
+        hasChildren: false,
+        collapsed: false,
+      });
     }
     return acc;
   }, []);
+
+  return chapters.map((chapter, idx) => {
+    const next = chapters[idx + 1];
+    const currentLevel = headingLevelMap[chapter.type] || 0;
+    const nextLevel = next ? headingLevelMap[next.type] || 0 : 0;
+    return {
+      ...chapter,
+      hasChildren: next ? nextLevel > currentLevel : false,
+    };
+  });
 }
 
 // ---------------------------------------------------------------------------

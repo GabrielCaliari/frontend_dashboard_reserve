@@ -1,15 +1,14 @@
 "use client";
 
 import { loginSchema } from "@/src/common/schemas/login-schema";
-import { Button, Input, Spinner } from "@heroui/react";
+import { Input } from "@heroui/react";
 import { useFormik } from "formik";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
-import toast from "react-hot-toast";
-import Link from "next/link";
 import useAdminAuthentication from "@/src/common/hooks/use-user-authentication";
 import { useTranslations } from "next-intl";
 import { PasswordInput } from "@/src/components/ui/password-input";
+import { Button } from "@/src/components/ui/button";
 
 export function LoginForm() {
   const { execAdminAuthentication } = useAdminAuthentication();
@@ -26,13 +25,18 @@ export function LoginForm() {
     },
     validationSchema: loginSchema(t),
     onSubmit: async (values) => {
-      const result = await execAdminAuthentication({
-        email: values.email,
-        password: values.password,
-      });
+      setLoading(true);
+      try {
+        const result = await execAdminAuthentication({
+          email: values.email,
+          password: values.password,
+        });
 
-      if (result) {
-        replace("/dashboard");
+        if (result) {
+          replace("/dashboard");
+        }
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -74,14 +78,13 @@ export function LoginForm() {
 
         <div className="flex w-full mt-2">
           <Button
-            fullWidth
-            color="primary"
             size="lg"
             type="submit"
-            isDisabled={loading}
+            className="w-full"
+            isLoading={loading}
+            disabled={loading}
           >
-            {!loading && t("auth.login")}
-            {loading && <Spinner color="white" size="md" />}
+            {t("auth.login")}
           </Button>
         </div>
       </form>
