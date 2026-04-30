@@ -547,37 +547,68 @@ export function SeoSidebar({
               </div>
             </div>
 
-            {/* Internal Links manager section */}
-            <div className="p-3 bg-default-100 border border-border rounded-lg">
-              <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
-                <ExternalLink className="h-3 w-3" />
-                Internal Links
-              </label>
-              <p
-                className={`mt-2 text-xs ${hasInternalLinks ? "text-green-500" : "text-muted-foreground"}`}
-              >
-                {hasInternalLinks
-                  ? "Internal links detected."
-                  : "No internal links detected."}
-              </p>
-              <div className="mt-3 space-y-2">
-                <button className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-default-50 border border-border text-foreground rounded hover:bg-accent hover:text-accent-foreground transition-colors">
-                  <Plus className="h-3 w-3" />
-                  Add Internal Link
-                </button>
+            {/* Internal & External Links manager section */}
+            <div className="p-3 bg-default-100 border border-border rounded-lg space-y-3">
+              {/* Internal Links */}
+              <div>
+                <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
+                  <ExternalLink className="h-3 w-3" />
+                  Internal Links
+                  <span className={`ml-auto text-[10px] font-semibold tabular-nums ${hasInternalLinks ? "text-green-500" : "text-muted-foreground"}`}>
+                    {contentStats?.internalLinks?.length ?? 0}
+                  </span>
+                </label>
+                {(contentStats?.internalLinks?.length ?? 0) > 0 ? (
+                  <div className="mt-2 space-y-1">
+                    {contentStats!.internalLinks.map((link, i) => (
+                      <div
+                        key={`internal-${i}`}
+                        className="flex items-center gap-2 px-2 py-1.5 text-xs bg-default-50 rounded border border-border group"
+                      >
+                        <Link2 className="h-3 w-3 shrink-0 text-green-500" />
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="text-foreground font-medium truncate">{link.text || "Untitled"}</span>
+                          <span className="text-muted-foreground truncate text-[10px]">{link.url}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    No internal links detected. Link to your other content to improve SEO.
+                  </p>
+                )}
               </div>
-              <div className="mt-3 pt-3 border-t border-border">
-                <p className="text-xs text-muted-foreground mb-2">
-                  Suggested links:
-                </p>
-                <div className="space-y-1.5">
-                  <button className="w-full text-left px-2 py-1.5 text-xs text-muted-foreground bg-default-50 rounded hover:bg-accent hover:text-accent-foreground transition-colors truncate">
-                    /blog/ai-agents-explained
-                  </button>
-                  <button className="w-full text-left px-2 py-1.5 text-xs text-muted-foreground bg-default-50 rounded hover:bg-accent hover:text-accent-foreground transition-colors truncate">
-                    /blog/automation-best-practices
-                  </button>
-                </div>
+
+              {/* External Links */}
+              <div className="pt-2 border-t border-border">
+                <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium flex items-center gap-1.5">
+                  <ExternalLink className="h-3 w-3" />
+                  External Links
+                  <span className={`ml-auto text-[10px] font-semibold tabular-nums ${hasExternalLinks ? "text-blue-500" : "text-muted-foreground"}`}>
+                    {contentStats?.externalLinks?.length ?? 0}
+                  </span>
+                </label>
+                {(contentStats?.externalLinks?.length ?? 0) > 0 ? (
+                  <div className="mt-2 space-y-1">
+                    {contentStats!.externalLinks.map((link, i) => (
+                      <div
+                        key={`external-${i}`}
+                        className="flex items-center gap-2 px-2 py-1.5 text-xs bg-default-50 rounded border border-border group"
+                      >
+                        <ExternalLink className="h-3 w-3 shrink-0 text-blue-500" />
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="text-foreground font-medium truncate">{link.text || "Untitled"}</span>
+                          <span className="text-muted-foreground truncate text-[10px]">{link.url}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    No external links found. Link to authoritative sources.
+                  </p>
+                )}
               </div>
             </div>
 

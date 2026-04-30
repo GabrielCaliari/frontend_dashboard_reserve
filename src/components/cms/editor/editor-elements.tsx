@@ -59,6 +59,7 @@ export function LinkElement({ children, element, ...props }: PlateElementProps) 
 
   return (
     <PlateElement
+      asChild
       {...props}
       element={element}
       className="relative inline"

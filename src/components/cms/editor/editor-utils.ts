@@ -169,11 +169,55 @@ export function analyzeContent(
   let plainText = "";
   const headings: ContentStats["headings"] = [];
   let keywordInSubheadings = false;
+  const externalLinks: ContentStats["externalLinks"] = [];
+  const internalLinks: ContentStats["internalLinks"] = [];
+  let hasImages = false;
+  let keywordInImageAlt = false;
 
+  // Recursively extract plain text from a node tree
+  function extractText(node: any): string {
+    if (typeof node.text === "string") return node.text;
+    if (Array.isArray(node.children)) {
+      return (node.children as any[]).map(extractText).join("");
+    }
+    return "";
+  }
+
+  // Walk the tree recursively to find links and images at any depth
+  function walkNodes(nodes: any[]) {
+    for (const node of nodes) {
+      // Collect link nodes
+      if (node.type === "a" && node.url) {
+        const linkText = extractText(node);
+        const isExternal = /^https?:\/\//.test(node.url);
+        if (isExternal) {
+          externalLinks.push({ url: node.url, text: linkText });
+        } else {
+          internalLinks.push({ url: node.url, text: linkText });
+        }
+      }
+
+      // Collect images
+      if (node.type === "img") {
+        hasImages = true;
+        if (
+          keywordLower &&
+          (node.alt || "").toLowerCase().includes(keywordLower)
+        ) {
+          keywordInImageAlt = true;
+        }
+      }
+
+      // Recurse into children
+      if (Array.isArray(node.children)) {
+        walkNodes(node.children);
+      }
+    }
+  }
+
+  // First pass: top-level blocks for text extraction and headings
   for (const node of value as any[]) {
-    const nodeText = (node.children as Array<{ text?: string }>)
-      ?.map((c) => c.text || "")
-      .join("") ?? "";
+    const nodeText = extractText(node);
 
     if (node.type === "h1" || node.type === "h2" || node.type === "h3") {
       headings.push({ type: node.type, text: nodeText });
@@ -187,6 +231,9 @@ export function analyzeContent(
     }
     plainText += nodeText + " ";
   }
+
+  // Second pass: deep walk for links and images
+  walkNodes(value as any[]);
 
   plainText = plainText.trim();
   const words = plainText.split(/\s+/).filter(Boolean);
@@ -204,35 +251,28 @@ export function analyzeContent(
 
   const paragraphs = (value as any[]).filter((n) => n.type === "p");
   const shortParagraphs = paragraphs.every((p: any) => {
-    const text = (p.children as Array<{ text?: string }>)
-      ?.map((c) => c.text || "")
-      .join("") ?? "";
+    const text = extractText(p);
     return text.split(/\s+/).filter(Boolean).length < 120;
   });
 
   const firstParagraph = (value as any[]).find((n) => n.type === "p");
   const metaDescription = firstParagraph
-    ? (firstParagraph.children as Array<{ text?: string }>)
-        ?.map((c) => c.text || "")
-        .join("")
-        .slice(0, 160) ?? ""
+    ? extractText(firstParagraph).slice(0, 160)
     : "";
 
   return {
     wordCount,
     headings,
-    hasImages: (value as any[]).some((n) => n.type === "img"),
-    hasExternalLinks: /https?:\/\//.test(plainText),
-    hasInternalLinks: false,
+    hasImages,
+    hasExternalLinks: externalLinks.length > 0,
+    hasInternalLinks: internalLinks.length > 0,
+    externalLinks,
+    internalLinks,
     keywordCount,
     keywordDensity: Math.round(keywordDensity * 100) / 100,
     keywordInFirstTenPercent,
     keywordInSubheadings,
-    keywordInImageAlt: keywordLower
-      ? (value as any[]).some(
-          (n) => n.type === "img" && (n.alt || "").toLowerCase().includes(keywordLower),
-        )
-      : false,
+    keywordInImageAlt,
     shortParagraphs,
     plainText,
     metaDescription,
@@ -266,12 +306,31 @@ export function analyzeMarkdownFallback(md: string, keyword: string): ContentSta
 
   const paragraphs = plainText.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 
+  // Extract links from markdown
+  const externalLinks: ContentStats["externalLinks"] = [];
+  const internalLinks: ContentStats["internalLinks"] = [];
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let linkMatch: RegExpExecArray | null;
+  while ((linkMatch = linkRegex.exec(md)) !== null) {
+    const text = linkMatch[1];
+    const url = linkMatch[2];
+    // Skip image links
+    if (md[linkMatch.index - 1] === "!") continue;
+    if (/^https?:\/\//.test(url)) {
+      externalLinks.push({ url, text });
+    } else {
+      internalLinks.push({ url, text });
+    }
+  }
+
   return {
     wordCount,
     headings,
     hasImages: /!\[[^\]]*\]\([^)]+\)/.test(md),
-    hasExternalLinks: /\[[^\]]+\]\(https?:\/\/[^)]+\)/i.test(md),
-    hasInternalLinks: /\[[^\]]+\]\((?!https?:\/\/)[^)]+\)/i.test(md),
+    hasExternalLinks: externalLinks.length > 0,
+    hasInternalLinks: internalLinks.length > 0,
+    externalLinks,
+    internalLinks,
     keywordCount,
     keywordDensity: Math.round(keywordDensity * 100) / 100,
     keywordInFirstTenPercent: keywordLower ? firstTenPercent.includes(keywordLower) : false,

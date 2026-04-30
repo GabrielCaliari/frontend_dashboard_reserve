@@ -4,6 +4,10 @@ export interface ContentStats {
   hasImages: boolean;
   hasExternalLinks: boolean;
   hasInternalLinks: boolean;
+  /** All external link URLs found in the content */
+  externalLinks: Array<{ url: string; text: string }>;
+  /** All internal link URLs found in the content */
+  internalLinks: Array<{ url: string; text: string }>;
   keywordCount: number;
   keywordDensity: number;
   keywordInFirstTenPercent: boolean;
