@@ -61,22 +61,25 @@ export function LinkElement({ children, element, ...props }: PlateElementProps) 
     <PlateElement
       {...props}
       element={element}
-      as="a"
-      href={href}
-      target={isExternal ? "_blank" : undefined}
-      rel={isExternal ? "noopener noreferrer" : undefined}
-      className={cn(
-        "relative cursor-pointer text-primary underline underline-offset-4",
-        "hover:text-primary/80 transition-colors",
-      )}
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault();
-        setShowCard((v) => !v);
-        setIsEditing(false);
-        setEditUrl(href);
-      }}
+      className="relative inline"
     >
+      <a
+        href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        className={cn(
+          "cursor-pointer text-primary underline underline-offset-4",
+          "hover:text-primary/80 transition-colors",
+        )}
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault();
+          setShowCard((v) => !v);
+          setIsEditing(false);
+          setEditUrl(href);
+        }}
+      >
       {children}
+      </a>
 
       {/* contentEditable=false keeps Slate from treating this as editor content */}
       <span
