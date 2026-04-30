@@ -11,8 +11,8 @@ export const fetchUsers = async (
 ): Promise<PaginatedResponse<User>> => {
   const response = await apiClient.get('/admin/users', { 
     params: { page, limit: perPage },
-    headers: { 'x-tenant-id': undefined },
-  } as any);
+    headers: { 'x-skip-tenant': 'true' },
+  });
   const raw = response.data;
   // Backend returns { data: User[], total, page, limit }
   let users: User[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);

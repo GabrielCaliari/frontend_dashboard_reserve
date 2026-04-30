@@ -21,11 +21,12 @@ import {
   type AdminRoleType,
 } from "@/src/common/schemas/access-management/admin-schema";
 import { Admin, AdminRole } from "@/src/common/@types/@access-management";
+import usePermissions from "@/src/common/hooks/use-permissions";
 
 interface AdminFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  admin?: Admin; // undefined for create, defined for edit
+  admin?: Admin;
   onSubmit: (data: CreateAdminFormData | UpdateAdminFormData) => Promise<void>;
   isLoading?: boolean;
 }
@@ -55,7 +56,13 @@ export function AdminFormModal({
 }: AdminFormModalProps) {
   const isEditMode = !!admin;
   const t = useTranslations("accessManagement.adminForm");
+  const { isSuperAdmin } = usePermissions();
   const schema = isEditMode ? updateAdminSchema : createAdminSchema;
+
+  // Managers can only assign manager-and-below roles
+  const allowedRoles = isSuperAdmin
+    ? Object.values(AdminRole)
+    : [AdminRole.manager, AdminRole.editor, AdminRole.viewer];
 
   const {
     register,
@@ -188,8 +195,8 @@ export function AdminFormModal({
                 errorMessage={errors.role?.message}
                 isRequired
               >
-                {Object.entries(roleLabels).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
+                {allowedRoles.map((value) => (
+                  <SelectItem key={value}>
                     {t(`roles.${value}` as any)}
                   </SelectItem>
                 ))}

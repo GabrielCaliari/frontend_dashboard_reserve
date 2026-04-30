@@ -33,13 +33,26 @@ export default function TenantSelector() {
 
   // Auto-select first tenant if none selected and tenants are loaded
   useEffect(() => {
-    if (!selectedTenant && !isLoading && isMounted) {
-      if (isSuperAdmin && dashboardScope !== "global") {
-        setDashboardScope("global");
-        push("/dashboard/global");
-      } else if (!isSuperAdmin && tenants.length > 0) {
-        setSelectedTenant(tenants[0]);
+    if (!isLoading && isMounted && tenants.length > 0) {
+      // Check if current selectedTenant belongs to this admin's tenants
+      const tenantBelongsToAdmin = selectedTenant
+        ? tenants.some((t) => t.id.toString() === selectedTenant.id.toString())
+        : false;
+
+      if (isSuperAdmin) {
+        if (dashboardScope !== "global" && !tenantBelongsToAdmin) {
+          setDashboardScope("global");
+          push("/dashboard/global");
+        }
+      } else {
+        // For non-super-admins: auto-select first tenant if none selected or current doesn't belong
+        if (!selectedTenant || !tenantBelongsToAdmin) {
+          setSelectedTenant(tenants[0]);
+          setDashboardScope("tenant");
+        }
       }
+    } else if (!isLoading && isMounted && !isSuperAdmin && tenants.length === 0 && !selectedTenant) {
+      // No tenants available for non-super-admin
     }
   }, [
     tenants,

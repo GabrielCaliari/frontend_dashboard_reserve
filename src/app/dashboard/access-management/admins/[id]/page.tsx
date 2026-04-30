@@ -198,8 +198,8 @@ export default function AdminDetailPage() {
             <CardBody>
               {admin.tenants && admin.tenants.length > 0 ? (
                 <div className="space-y-3">
-                  {admin.tenants.map((rel) => (
-                    <div key={rel.tenant_id} className="flex items-center justify-between p-4 bg-content2 rounded-lg border border-border">
+                  {admin.tenants.map((rel, idx) => (
+                    <div key={rel.tenant_id ?? idx} className="flex items-center justify-between p-4 bg-content2 rounded-lg border border-border">
                       <div>
                         <h3 className="font-semibold text-foreground">{rel.tenant?.name || "Unknown Tenant"}</h3>
                         <p className="text-xs text-muted-foreground">{rel.tenant?.slug}</p>

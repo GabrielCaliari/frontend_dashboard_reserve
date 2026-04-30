@@ -28,6 +28,7 @@ import {
   Settings,
   X,
   FileBarChart2,
+  Calendar,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -159,6 +160,12 @@ export function Sidebar({
                 path: "/dashboard/leads/collections",
               },
               {
+                id: "appointments",
+                label: t("appointments"),
+                icon: Calendar,
+                path: "/dashboard/leads/appointments",
+              },
+              {
                 id: "abandoned-carts",
                 label: t("abandonedCarts"),
                 icon: ShoppingCart,
@@ -256,6 +263,12 @@ export function Sidebar({
               icon: UsersRound,
               path: "/dashboard/leads",
             },
+            {
+              id: "appointments",
+              label: t("appointments"),
+              icon: Calendar,
+              path: "/dashboard/leads/appointments",
+            },
           ],
         },
         {
@@ -274,6 +287,43 @@ export function Sidebar({
               label: t("articles"),
               icon: FileText,
               path: "/dashboard/cms/articles",
+            },
+            {
+              id: "authors",
+              label: t("authors"),
+              icon: UserCircle,
+              path: "/dashboard/cms/authors",
+            },
+            {
+              id: "media",
+              label: t("media"),
+              icon: Image,
+              path: "/dashboard/cms/media",
+            },
+          ],
+        },
+        {
+          id: "profile",
+          label: t("profile"),
+          icon: Settings,
+          path: "/dashboard/profile",
+        },
+        {
+          id: "access-management",
+          label: t("accessManagement"),
+          icon: Shield,
+          subItems: [
+            {
+              id: "admins",
+              label: t("admins"),
+              icon: UserCog,
+              path: "/dashboard/access-management/admins",
+            },
+            {
+              id: "users",
+              label: t("users"),
+              icon: Users,
+              path: "/dashboard/access-management/users",
             },
           ],
         },
@@ -322,7 +372,7 @@ export function Sidebar({
         prev.includes("email") ? prev : [...prev, "email"],
       );
     }
-    if (activeTab === "leads" || activeTab === "lead-collections") {
+    if (activeTab === "leads" || activeTab === "lead-collections" || activeTab === "appointments") {
       setExpandedMenus((prev) =>
         prev.includes("leads-menu") ? prev : [...prev, "leads-menu"],
       );

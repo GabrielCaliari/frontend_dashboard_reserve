@@ -12,7 +12,7 @@ export default function usePermissions() {
     const isEditor     = role === AdminRole.editor;
     const isViewer     = role === AdminRole.viewer;
 
-    const canManageAdmins    = isSuperAdmin;
+    const canManageAdmins    = isSuperAdmin || isManager;
     const canManageTenants   = isSuperAdmin;
     const canViewReports     = isSuperAdmin || isOwner;
     const canManageCampaigns = isSuperAdmin || isOwner || isManager;

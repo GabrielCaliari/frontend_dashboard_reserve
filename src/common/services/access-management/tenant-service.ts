@@ -30,7 +30,13 @@ export const fetchTenants = async (
   
   // Normalize response — backend may return array directly or wrapped in { data: [...] }
   const raw = response.data;
-  const allTenants: Tenant[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
+  const rawTenants: any[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
+
+  // Normalize: backend returns `active`, frontend expects `is_active`
+  const allTenants: Tenant[] = rawTenants.map((t) => ({
+    ...t,
+    is_active: t.is_active ?? t.active ?? false,
+  }));
   const filteredTenants = search 
     ? allTenants.filter(tenant => 
         tenant.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -58,8 +64,9 @@ export const fetchTenants = async (
  * Fetch a single tenant by ID with detailed information
  */
 export const fetchTenantById = async (id: string): Promise<Tenant> => {
-  const response = await apiClient.get<Tenant>(`/tenants/${id}`);
-  return response.data;
+  const response = await apiClient.get(`/tenants/${id}`);
+  const raw = response.data;
+  return { ...raw, is_active: raw.is_active ?? raw.active ?? false };
 };
 
 /**
