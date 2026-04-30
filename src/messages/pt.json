@@ -29,7 +29,8 @@
     "createdAt": "Data de Criação",
     "notConfigured": "Não configurado",
     "settings": "Configurações",
-    "preview": "Visualizar"
+    "preview": "Visualizar",
+    "refresh": "Atualizar"
   },
   "sidebar": {
     "workspace": "Espaço de trabalho admin",
@@ -565,7 +566,17 @@
     "gateway": "Gateway",
     "emailStatus": "Status Email",
     "smsStatus": "Status SMS",
-    "options": "Opções"
+    "options": "Opções",
+    "actions": "Ações",
+    "customer": "Cliente",
+    "product": "Produto",
+    "type": "Tipo",
+    "amount": "Valor",
+    "status": "Status",
+    "date": "Data",
+    "noAbandoned": "Nenhum carrinho abandonado encontrado",
+    "oneAbandoned": "1 carrinho abandonado",
+    "countAbandoned": "{count} carrinhos abandonados"
   },
   "leadsTable": {
     "view": "Ver",

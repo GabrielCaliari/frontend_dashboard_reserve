@@ -12,29 +12,18 @@ export interface CreateB2CProductDto {
 }
 
 export const b2cProductsService = {
-  /**
-   * Lista todos os produtos ativos com seus preços.
-   * Usa cmsApiClient para não disparar redirect global em 401
-   * (endpoint pode não estar disponível em todos os tenants).
-   */
   async listProducts(): Promise<Product[]> {
-    const response = await cmsApiClient.get<Product[]>('/products');
+    const response = await cmsApiClient.get<Product[]>('/b2c/products');
     return response.data;
   },
 
-  /**
-   * Obtém um produto específico por slug
-   */
   async getProductBySlug(slug: string): Promise<Product> {
-    const response = await cmsApiClient.get<Product>(`/products/${slug}`);
+    const response = await cmsApiClient.get<Product>(`/b2c/products/${slug}`);
     return response.data;
   },
 
-  /**
-   * Cria um novo produto recorrente (B2C)
-   */
   async createProduct(data: CreateB2CProductDto): Promise<Product> {
-    const response = await apiClient.post<Product>('/products', data);
+    const response = await apiClient.post<Product>('/b2c/products', data);
     return response.data;
   },
 };

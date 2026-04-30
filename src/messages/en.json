@@ -29,7 +29,8 @@
     "createdAt": "Created At",
     "notConfigured": "Not configured",
     "settings": "Settings",
-    "preview": "Preview"
+    "preview": "Preview",
+    "refresh": "Refresh"
   },
 
   "sidebar": {
@@ -587,7 +588,17 @@
     "gateway": "Gateway",
     "emailStatus": "Email Status",
     "smsStatus": "SMS Status",
-    "options": "Options"
+    "options": "Options",
+    "actions": "Actions",
+    "customer": "Customer",
+    "product": "Product",
+    "type": "Type",
+    "amount": "Amount",
+    "status": "Status",
+    "date": "Date",
+    "noAbandoned": "No abandoned carts found",
+    "oneAbandoned": "1 abandoned cart",
+    "countAbandoned": "{count} abandoned carts"
   },
 
   "leadsTable": {

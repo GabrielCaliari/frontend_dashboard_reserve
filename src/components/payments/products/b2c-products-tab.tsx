@@ -11,17 +11,65 @@ import {
   Button,
   Skeleton,
 } from '@heroui/react';
-import { ExternalLink, DollarSign, FileX } from 'lucide-react';
+import { ExternalLink, DollarSign, FileX, Copy, Check, Link as LinkIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useState, useCallback } from 'react';
 import { useListB2CProducts } from '@/src/common/hooks/useB2CProducts';
+import { GenerateB2CCheckoutLinkModal } from './generate-b2c-checkout-link-modal';
 
 interface B2CProductsTabProps {
   refreshKey?: number;
 }
 
+// ─── Copy button ──────────────────────────────────────────────────────────────
+
+function CopyButton({ value, label }: { value: string; label: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch {
+      const el = document.createElement('textarea');
+      el.value = value;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }, [value]);
+
+  return (
+    <div className="flex items-center gap-1.5 group">
+      <code className="text-xs font-mono text-gray-300 truncate max-w-[160px]">
+        {value}
+      </code>
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={label}
+        className="flex-shrink-0"
+      >
+        {copied ? (
+          <Check className="w-3 h-3 text-green-400" />
+        ) : (
+          <Copy className="w-3 h-3 text-gray-500 hover:text-gray-200 transition-colors" />
+        )}
+      </button>
+    </div>
+  );
+}
+
+// ─── Tab ──────────────────────────────────────────────────────────────────────
+
 export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps) {
   const t = useTranslations('payments.productsPage');
   const { data: products, isLoading, error } = useListB2CProducts();
+  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
+  const [isGenerateLinkModalOpen, setIsGenerateLinkModalOpen] = useState(false);
 
   const formatPrice = (amount: number, currency: string) =>
     new Intl.NumberFormat('pt-BR', {
@@ -44,7 +92,7 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
     return (
       <div className="space-y-3">
         {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full rounded-lg" />
+          <Skeleton key={i} className="h-14 w-full rounded-lg" />
         ))}
       </div>
     );
@@ -69,6 +117,7 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
   }
 
   return (
+    <>
     <Table
       aria-label={t('tabRecurring')}
       classNames={{
@@ -79,27 +128,27 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
     >
       <TableHeader>
         <TableColumn>{t('columnName').toUpperCase()}</TableColumn>
-        <TableColumn>{t('columnSlug').toUpperCase()}</TableColumn>
         <TableColumn>{t('columnStatus').toUpperCase()}</TableColumn>
         <TableColumn>{t('columnPrices').toUpperCase()}</TableColumn>
+        <TableColumn>{t('columnStripeIds').toUpperCase()}</TableColumn>
         <TableColumn>{t('columnActions').toUpperCase()}</TableColumn>
       </TableHeader>
       <TableBody>
         {products.map((product) => (
           <TableRow key={product.id}>
+            {/* Nome + descrição */}
             <TableCell>
               <div>
                 <p className="font-semibold text-gray-100">{product.name}</p>
                 {product.description && (
-                  <p className="text-xs text-gray-500 line-clamp-1">{product.description}</p>
+                  <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                    {product.description}
+                  </p>
                 )}
               </div>
             </TableCell>
-            <TableCell>
-              <code className="text-xs bg-[#1a1a2e] px-2 py-1 rounded text-gray-300">
-                {product.slug}
-              </code>
-            </TableCell>
+
+            {/* Status */}
             <TableCell>
               <Chip
                 color={product.active ? 'success' : 'default'}
@@ -109,6 +158,8 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
                 {product.active ? t('statusActive') : t('statusInactive')}
               </Chip>
             </TableCell>
+
+            {/* Preços + periodicidade */}
             <TableCell>
               <div className="flex flex-col gap-1">
                 {product.prices.length === 0 && (
@@ -132,24 +183,89 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
                 ))}
               </div>
             </TableCell>
+
+            {/* IDs do Stripe — Product ID + Price ID(s) para o site final */}
             <TableCell>
-              <Button
-                size="sm"
-                variant="light"
-                startContent={<ExternalLink className="w-3.5 h-3.5" />}
-                onPress={() =>
-                  window.open(
-                    `https://dashboard.stripe.com/products/${product.stripeProductId}`,
-                    '_blank'
-                  )
-                }
-              >
-                {t('viewOnStripe')}
-              </Button>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-600 w-16 flex-shrink-0 whitespace-nowrap">
+                    {t('stripeProductId')}
+                  </span>
+                  {product.stripeProductId ? (
+                    <CopyButton
+                      value={product.stripeProductId}
+                      label={t('copyProductId')}
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-600">—</span>
+                  )}
+                </div>
+                {product.prices.map((price, idx) => (
+                  <div key={price.id} className="flex items-center gap-2">
+                    <span className="text-xs text-gray-600 w-16 flex-shrink-0 whitespace-nowrap">
+                      {t('stripePriceId')}{product.prices.length > 1 ? ` ${idx + 1}` : ''}
+                    </span>
+                    {price.stripePriceId ? (
+                      <CopyButton
+                        value={price.stripePriceId}
+                        label={t('copyPriceId')}
+                      />
+                    ) : (
+                      <span className="text-xs text-gray-600">—</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </TableCell>
+
+            {/* Ações */}
+            <TableCell>
+              <div className="flex items-center gap-1">
+                <Button
+                  size="sm"
+                  variant="light"
+                  isIconOnly
+                  onPress={() => {
+                    setSelectedProduct(product);
+                    setIsGenerateLinkModalOpen(true);
+                  }}
+                  aria-label={t('generateLink')}
+                  title={t('generateLink')}
+                >
+                  <LinkIcon className="w-3.5 h-3.5" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="light"
+                  isIconOnly
+                  onPress={() =>
+                    window.open(
+                      `https://dashboard.stripe.com/products/${product.stripeProductId}`,
+                      '_blank'
+                    )
+                  }
+                  aria-label={t('viewOnStripe')}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
+
+    {/* Modal de gerar link */}
+    {selectedProduct && (
+      <GenerateB2CCheckoutLinkModal
+        isOpen={isGenerateLinkModalOpen}
+        onClose={() => {
+          setIsGenerateLinkModalOpen(false);
+          setSelectedProduct(null);
+        }}
+        product={selectedProduct}
+      />
+    )}
+  </>
   );
 }

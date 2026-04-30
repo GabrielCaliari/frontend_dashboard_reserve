@@ -760,6 +760,76 @@ th, td {
 
 ---
 
+---
+
+## 🔄 Endpoint de Checkout B2C (Assinaturas Recorrentes)
+
+### 📍 Rota
+```
+POST /api/subscriptions/checkout
+```
+
+### 🔐 Headers Obrigatórios
+```
+Authorization: Bearer <session_token>
+session-id: <session_id>
+x-tenant-id: <tenantId>
+Content-Type: application/json
+```
+
+### 📦 Body
+```json
+{
+  "priceId": "cm5price123"
+}
+```
+
+⚠️ **IMPORTANTE**: O `priceId` é o ID interno da tabela `ProductPrice` (campo `id`), **NÃO** o `stripePriceId`.
+
+### ✅ Response (200 OK)
+```json
+{
+  "checkoutUrl": "https://checkout.stripe.com/c/pay/cs_test_..."
+}
+```
+
+### ❌ Erros Possíveis
+- **404**: Price não encontrado ou inativo
+- **409**: Usuário já possui assinatura ativa para este produto
+- **400**: Stripe não configurado para o tenant
+
+### 🔄 Diferença entre B2B e B2C
+
+| Aspecto | B2B (Pagamentos Avulsos) | B2C (Assinaturas Recorrentes) |
+|---------|--------------------------|-------------------------------|
+| **Rota** | `POST /api/b2b/payments/create-link` | `POST /api/subscriptions/checkout` |
+| **Autenticação** | Admin JWT | User JWT + session-id |
+| **Parâmetro** | `stripePriceId` (direto do Stripe) | `priceId` (ID interno do ProductPrice) |
+| **Tipo** | Pagamento único | Assinatura recorrente |
+| **Retorno** | `{ paymentLink: string }` | `{ checkoutUrl: string }` |
+
+### 💡 Exemplo de Uso (Frontend)
+
+```typescript
+async function comprarCurso(priceId: string) {
+  const response = await fetch('/api/subscriptions/checkout', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${sessionToken}`,
+      'session-id': sessionId,
+      'x-tenant-id': tenantId,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ priceId })
+  });
+
+  const { checkoutUrl } = await response.json();
+  window.location.href = checkoutUrl; // Redireciona para Stripe
+}
+```
+
+---
+
 ## 📞 Suporte
 
 Dúvidas? Consulte:
