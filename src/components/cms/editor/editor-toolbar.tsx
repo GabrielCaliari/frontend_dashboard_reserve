@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { useEditorState } from "platejs/react";
+import { KEYS } from "platejs";
+import { upsertLink, unwrapLink } from "@platejs/link";
 import { toggleList } from "@platejs/list-classic";
 import {
   Bold,
@@ -18,6 +20,8 @@ import {
   X,
   Type,
   Quote,
+  Link,
+  Link2Off,
 } from "lucide-react";
 import { cn } from "@/src/common/lib/utils";
 import {
@@ -37,6 +41,7 @@ import {
   ViewModeToggle,
   type ViewMode,
 } from "@/src/components/cms/editor/view-mode-toggle";
+import { KbdKey } from "@/src/components/cms/editor/editor-kbd-key";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -89,7 +94,7 @@ function ToolbarBtn({ icon, label, isActive, onClick, shortcut, className }: Too
       <TooltipContent side="top" className="flex items-center gap-1.5 text-xs">
         {label}
         {shortcut && (
-          <kbd className="px-1 py-0.5 rounded bg-muted font-mono text-[10px]">{shortcut}</kbd>
+          <KbdKey>{shortcut}</KbdKey>
         )}
       </TooltipContent>
     </Tooltip>
@@ -98,6 +103,145 @@ function ToolbarBtn({ icon, label, isActive, onClick, shortcut, className }: Too
 
 function Separator() {
   return <div className="w-px h-5 bg-border mx-0.5 shrink-0" />;
+}
+
+// ---------------------------------------------------------------------------
+// LinkInsertPopover — inline URL input triggered from the toolbar
+// ---------------------------------------------------------------------------
+
+interface LinkInsertPopoverProps {
+  editor: ReturnType<typeof import("platejs/react").useEditorState>;
+  onClose: () => void;
+  savedSelection: any;
+}
+
+function LinkInsertPopover({ editor, onClose, savedSelection }: LinkInsertPopoverProps) {
+  // Detect an existing link node at the current selection
+  const existingLink = React.useMemo(() => {
+    if (!editor?.selection && !savedSelection) return null;
+    try {
+      const entries = Array.from(
+        editor.api.nodes({ match: (n: any) => n.type === KEYS.link }) ?? []
+      );
+      return (entries[0]?.[0] as any) ?? null;
+    } catch { return null; }
+  }, [editor, savedSelection]);
+
+  // Pre-fill display text from selection when in insert mode
+  const selectionText = React.useMemo(() => {
+    if (!editor?.selection || existingLink) return "";
+    try {
+      return editor.api.string(editor.selection) ?? "";
+    } catch { return ""; }
+  }, [editor, existingLink]);
+
+  const isEditMode = Boolean(existingLink);
+
+  const [url, setUrl] = React.useState<string>(() => existingLink?.url ?? "");
+  const [text, setText] = React.useState<string>(selectionText);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => { inputRef.current?.focus(); }, []);
+
+  const restoreSelection = () => {
+    if (savedSelection) {
+      try {
+        editor.tf.select(savedSelection as any);
+        editor.tf.focus();
+      } catch { /* noop */ }
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!url.trim()) return;
+    const normalized = url.trim().startsWith("http") ? url.trim() : `https://${url.trim()}`;
+
+    // Restore the saved selection so the link wraps the correct text
+    restoreSelection();
+
+    upsertLink(editor, {
+      url: normalized,
+      text: text.trim() || undefined,
+      target: normalized.startsWith("http") ? "_blank" : undefined,
+      skipValidation: true,
+    });
+
+    onClose();
+  };
+
+  const handleUnlink = () => {
+    restoreSelection();
+    unwrapLink(editor);
+    onClose();
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-2 p-3 w-72 bg-popover border border-border rounded-lg shadow-lg"
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      <p className="text-xs font-semibold text-foreground/80 flex items-center gap-1.5">
+        <Link className="w-3.5 h-3.5" />
+        {isEditMode ? "Edit link" : "Insert link"}
+      </p>
+
+      <label className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">
+        URL
+      </label>
+      <input
+        ref={inputRef}
+        type="text"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="https://example.com"
+        className="h-8 px-2.5 text-sm rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+      />
+
+      {!isEditMode && (
+        <>
+          <label className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">
+            Display text <span className="normal-case font-normal">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Link text…"
+            className="h-8 px-2.5 text-sm rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+          />
+        </>
+      )}
+
+      <div className="flex items-center gap-2 mt-1">
+        <button
+          type="submit"
+          disabled={!url.trim()}
+          className="flex-1 h-8 px-3 rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          {isEditMode ? "Save" : "Apply"}
+        </button>
+        {isEditMode && (
+          <button
+            type="button"
+            onClick={handleUnlink}
+            className="flex items-center gap-1 h-8 px-2.5 rounded-md text-xs font-medium text-destructive hover:bg-destructive/10 border border-destructive/30 transition-colors"
+          >
+            <Link2Off className="w-3.5 h-3.5" />
+            Remove
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={onClose}
+          className="h-8 px-2.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-accent transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -116,11 +260,59 @@ export function EditorToolbar({
 }: EditorToolbarProps) {
   const editor = useEditorState();
   const isFormatted = viewMode === "formatted";
+  const savedSelectionRef = React.useRef<typeof editor.selection | null>(null);
   const lastSelectionRef = React.useRef<typeof editor.selection | null>(null);
+  const [linkPopoverOpen, setLinkPopoverOpen] = React.useState(false);
+  const linkBtnRef = React.useRef<HTMLButtonElement>(null);
+  const popoverRef = React.useRef<HTMLDivElement>(null);
+  const [popoverPos, setPopoverPos] = React.useState<{ top: number; left: number } | null>(null);
+
+  // Close popover on outside click
+  React.useEffect(() => {
+    if (!linkPopoverOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (
+        !popoverRef.current?.contains(e.target as Node) &&
+        !linkBtnRef.current?.contains(e.target as Node)
+      ) {
+        setLinkPopoverOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [linkPopoverOpen]);
 
   React.useEffect(() => {
     if (editor?.selection) lastSelectionRef.current = editor.selection;
   }, [editor?.selection]);
+
+  // Ctrl+K to open link popover (only in formatted mode)
+  React.useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k" && isFormatted) {
+        e.preventDefault();
+        openLinkPopover();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isFormatted]);
+
+  // Helper to open the link popover — saves selection and computes position
+  const openLinkPopover = React.useCallback(() => {
+    // Save selection before the popover steals focus
+    if (editor?.selection) {
+      savedSelectionRef.current = JSON.parse(JSON.stringify(editor.selection));
+    } else if (lastSelectionRef.current) {
+      savedSelectionRef.current = JSON.parse(JSON.stringify(lastSelectionRef.current));
+    }
+    // Compute position relative to the link button
+    if (linkBtnRef.current) {
+      const rect = linkBtnRef.current.getBoundingClientRect();
+      setPopoverPos({ top: rect.bottom + 4, left: rect.left });
+    }
+    setLinkPopoverOpen((v) => !v);
+  }, [editor]);
 
   const refocusEditor = React.useCallback(() => {
     editor?.tf.focus();
@@ -178,6 +370,16 @@ export function EditorToolbar({
 
     return Boolean((editor.api as any).node?.(match));
   };
+
+  // Detect if the cursor/selection is currently inside a link node
+  const isLinkActive = React.useMemo(() => {
+    if (!editor?.selection) return false;
+    try {
+      return Array.from(
+        editor.api.nodes({ match: (n: any) => n.type === KEYS.link }) ?? []
+      ).length > 0;
+    } catch { return false; }
+  }, [editor]);
 
   const currentBlockLabel = (): string => {
     if (isBlockActive("h1")) return "Heading 1";
@@ -354,9 +556,7 @@ export function EditorToolbar({
                     >
                       <Underline className="w-4 h-4 mr-2 shrink-0" />
                       <span>Underline</span>
-                      <kbd className="ml-auto pl-2 text-[10px] font-mono text-muted-foreground">
-                        Ctrl+U
-                      </kbd>
+                      <KbdKey>Ctrl+U</KbdKey>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => toggleMark("strikethrough")}
@@ -442,6 +642,38 @@ export function EditorToolbar({
                   label="Insert image"
                   onClick={onInsertImage}
                 />
+
+                <Separator />
+
+                {/* Insert link */}
+                <div className="relative">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        ref={linkBtnRef}
+                        type="button"
+                        aria-label="Insert link"
+                        aria-pressed={linkPopoverOpen}
+                        data-plate-focus="true"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          openLinkPopover();
+                        }}
+                        className={cn(
+                          "inline-flex items-center justify-center w-8 h-8 rounded transition-colors",
+                          "text-foreground/70 hover:text-foreground hover:bg-accent",
+                          (linkPopoverOpen || isLinkActive) && "bg-accent text-foreground",
+                        )}
+                      >
+                        <Link className="w-4 h-4" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="flex items-center gap-1.5 text-xs">
+                      Insert link
+                      <KbdKey>Ctrl+K</KbdKey>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </>
             ) : (
               <span className="text-xs text-muted-foreground font-mono px-1">
@@ -476,6 +708,21 @@ export function EditorToolbar({
           </div>
         )}
       </div>
+
+      {/* Link popover — rendered outside overflow container as a fixed portal */}
+      {linkPopoverOpen && popoverPos && (
+        <div
+          ref={popoverRef}
+          className="fixed z-[9999]"
+          style={{ top: popoverPos.top, left: popoverPos.left }}
+        >
+          <LinkInsertPopover
+            editor={editor}
+            savedSelection={savedSelectionRef.current}
+            onClose={() => setLinkPopoverOpen(false)}
+          />
+        </div>
+      )}
     </TooltipProvider>
   );
 }

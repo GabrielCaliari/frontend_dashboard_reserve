@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
+import { KbdKey } from "@/src/components/cms/editor/editor-kbd-key";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -88,11 +89,9 @@ export function ViewModeToggle({
           </div>
         </TooltipTrigger>
         <TooltipContent side="bottom">
-          <span className="text-xs">
-            Switch view mode{" "}
-            <kbd className="ml-1 px-1 py-0.5 rounded bg-default-200 text-[10px] font-mono">
-              Ctrl+Shift+M
-            </kbd>
+          <span className="text-xs flex items-center gap-1.5">
+            Switch view mode
+            <KbdKey>Ctrl+Shift+M</KbdKey>
           </span>
         </TooltipContent>
       </Tooltip>

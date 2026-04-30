@@ -3,8 +3,16 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { LayoutScopeEditor } from "@/src/layout/root-layout";
-import { Button, Chip, Spinner } from "@heroui/react";
-import { Eye, Save, AlertCircle, FileText } from "lucide-react";
+import {
+  Button,
+  Chip,
+  Spinner,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@heroui/react";
+import { Save, AlertCircle, FileText, ChevronDown, Globe, Archive, FileEdit } from "lucide-react";
 import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
 import { useUpdateArticle } from "@/src/common/hooks/cms/use-update-article";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
@@ -13,6 +21,7 @@ import { useArticleEditorState } from "@/src/common/hooks/cms/use-article-editor
 import { articleLanguagePattern } from "@/src/common/schemas/cms-article-schema";
 import { ArticleEditorShell } from "@/src/components/cms/articles/article-editor-shell";
 import { ArticleEditorGuard } from "@/src/components/cms/articles/article-editor-guard";
+import { useArticleStatus } from "@/src/common/hooks/cms/use-article-status";
 import { toast } from "sonner";
 
 export default function ArticleEditorPage() {
@@ -33,6 +42,7 @@ export default function ArticleEditorPage() {
   const { mutate: updateArticle, isPending } = useUpdateArticle(effectiveBlogIdValue);
 
   const editorState = useArticleEditorState();
+  const articleStatus = useArticleStatus(articleId);
 
   // Initialize form when article loads
   useEffect(() => {
@@ -136,23 +146,6 @@ export default function ArticleEditorPage() {
     );
   };
 
-  const handlePreview = () => {
-    if (hasUnsavedChanges) {
-      toast.info("You have unsaved changes", {
-        description: "Consider saving before previewing.",
-        action: {
-          label: "Save & Preview",
-          onClick: () => {
-            handleSave();
-            router.push(`/dashboard/cms/articles/${articleId}/preview?blogId=${effectiveBlogId}`);
-          },
-        },
-      });
-      return;
-    }
-    router.push(`/dashboard/cms/articles/${articleId}/preview?blogId=${effectiveBlogId}`);
-  };
-
   const handleBack = () => {
     if (hasUnsavedChanges) {
       if (confirm("You have unsaved changes. Are you sure you want to leave?")) {
@@ -242,17 +235,79 @@ export default function ArticleEditorPage() {
     </>
   );
 
+  const statusActions = (
+    <Dropdown>
+      <DropdownTrigger>
+        <Button
+          variant="bordered"
+          size="sm"
+          isDisabled={isPending || articleStatus.isPending}
+          endContent={<ChevronDown className="h-3.5 w-3.5" />}
+        >
+          Actions
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Article status actions">
+        <DropdownItem
+          key="publish"
+          description="Make article publicly visible"
+          startContent={<Globe className="h-4 w-4 text-success" />}
+          isDisabled={article.status === "published" || articleStatus.isPending}
+          onPress={() =>
+            articleStatus.publish.mutate(undefined, {
+              onSuccess: () => toast.success("Article published"),
+              onError: (err: any) =>
+                toast.error("Failed to publish", {
+                  description: err?.response?.data?.message || err.message,
+                }),
+            })
+          }
+        >
+          Publish
+        </DropdownItem>
+        <DropdownItem
+          key="draft"
+          description="Revert article back to draft"
+          startContent={<FileEdit className="h-4 w-4 text-warning" />}
+          isDisabled={article.status === "draft" || articleStatus.isPending}
+          onPress={() =>
+            articleStatus.draft.mutate(undefined, {
+              onSuccess: () => toast.success("Article reverted to draft"),
+              onError: (err: any) =>
+                toast.error("Failed to revert to draft", {
+                  description: err?.response?.data?.message || err.message,
+                }),
+            })
+          }
+        >
+          Draft
+        </DropdownItem>
+        <DropdownItem
+          key="archive"
+          description="Hide article from public access"
+          startContent={<Archive className="h-4 w-4 text-default-500" />}
+          isDisabled={article.status === "archived" || articleStatus.isPending}
+          className="text-danger"
+          color="danger"
+          onPress={() =>
+            articleStatus.archive.mutate(undefined, {
+              onSuccess: () => toast.success("Article archived"),
+              onError: (err: any) =>
+                toast.error("Failed to archive", {
+                  description: err?.response?.data?.message || err.message,
+                }),
+            })
+          }
+        >
+          Archive
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+
   const actions = (
     <>
-      <Button
-        variant="bordered"
-        size="sm"
-        onPress={handlePreview}
-        isDisabled={isPending}
-        startContent={<Eye className="h-4 w-4" />}
-      >
-        Preview
-      </Button>
+      {statusActions}
       <Button
         color="primary"
         size="sm"

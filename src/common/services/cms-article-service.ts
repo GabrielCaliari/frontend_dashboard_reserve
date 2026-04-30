@@ -103,6 +103,7 @@ const serializeArticlePayload = (data: CreateArticleDto | UpdateArticleDto) => {
     content: data.content,
     coverImageId: data.coverImageId,
     language: normalizeLanguage(data.language),
+    ...('status' in data && data.status ? { status: data.status } : {}),
   };
 
   return Object.fromEntries(
@@ -244,7 +245,7 @@ export const publishArticle = async (
  * @returns Promise<Article>
  */
 export const archiveArticle = async (
-  articleId: number
+  articleId: string
 ): Promise<Article> => {
   try {
     const response = await cmsApiClient.post(`cms/articles/${articleId}/archive`);
@@ -260,7 +261,7 @@ export const archiveArticle = async (
  * @returns Promise<Article>
  */
 export const unarchiveArticle = async (
-  articleId: number
+  articleId: string
 ): Promise<Article> => {
   try {
     const response = await cmsApiClient.post(`cms/articles/${articleId}/unarchive`);

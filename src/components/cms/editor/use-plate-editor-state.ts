@@ -14,6 +14,7 @@ import {
   BlockquotePlugin,
 } from "@platejs/basic-nodes/react";
 import { ImagePlugin } from "@platejs/media/react";
+import { LinkPlugin } from "@platejs/link/react";
 import { MarkdownPlugin } from "@platejs/markdown";
 import { Transforms } from "slate";
 import type { Value } from "platejs";
@@ -23,6 +24,7 @@ import {
   H3Element,
   BlockquoteElement,
   ImageElement,
+  LinkElement,
   ParagraphElement,
   ListElement,
   ListItemElement,
@@ -111,6 +113,7 @@ export function usePlateEditorState({
       BulletedListPlugin.withComponent(ListElement),
       NumberedListPlugin.withComponent(ListElement),
       ImagePlugin.withComponent(ImageElement),
+      LinkPlugin.withComponent(LinkElement),
       MarkdownPlugin,
     ],
     // When parsedInitial is a markdown string, don't pass value — MarkdownPlugin

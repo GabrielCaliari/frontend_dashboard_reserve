@@ -267,7 +267,7 @@ export function useArchiveArticle() {
 
   return useMutation({
     mutationFn: ({ blogId, articleId }: { blogId: number; articleId: number }) =>
-      archiveArticle(articleId),
+      archiveArticle(String(articleId)),
     onSuccess: (updatedArticle, variables) => {
       // Update the article in cache with new status
       queryClient.setQueryData<Article>(
@@ -298,7 +298,7 @@ export function useUnarchiveArticle() {
 
   return useMutation({
     mutationFn: ({ blogId, articleId }: { blogId: number; articleId: number }) =>
-      unarchiveArticle(articleId),
+      unarchiveArticle(String(articleId)),
     onSuccess: (updatedArticle, variables) => {
       queryClient.setQueryData<Article>(
         ARTICLE_QUERY_KEYS.detail(tenantId, variables.blogId, variables.articleId),

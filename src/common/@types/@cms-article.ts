@@ -55,6 +55,7 @@ export interface UpdateArticleDto {
   content?: string;
   coverImageId?: string;
   language?: ArticleLanguage;
+  status?: ArticleStatus;
 }
 
 export interface ArticleListItem extends Omit<Article, 'content' | 'images'> {
