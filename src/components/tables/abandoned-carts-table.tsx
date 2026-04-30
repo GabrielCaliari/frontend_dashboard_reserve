@@ -159,7 +159,7 @@ export function AbandonedCartsTable() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   {t("abandonedCart.product")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                   {t("abandonedCart.type")}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -211,7 +211,7 @@ export function AbandonedCartsTable() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                       {cart.products[0]?.name || "—"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
                       <Chip 
                         size="sm" 
                         variant="flat"
