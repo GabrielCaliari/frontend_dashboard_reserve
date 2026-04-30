@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { ContentStats } from "@/src/types/cms";
+import type { ContentStats } from "@/src/common/@types/cms";
 import { generateSlug } from "@/src/common/utils/slug-generator";
 
 export interface ArticleEditorValues {

@@ -13,7 +13,7 @@ import { ScoreCard } from "./score-card";
 import { SectionBadge } from "./section-badge";
 import { SeoAnalysisItem } from "./seo-analysis-item";
 import { Link2, Plus, ExternalLink, Type, BarChart3, FileText, User, Image as ImageIcon, Trash2 } from "lucide-react";
-import type { ContentStats } from "@/src/types/cms";
+import type { ContentStats } from "@/src/common/@types/cms";
 import type { Author } from "@/src/common/@types/@cms-author";
 import { useAsset } from "@/src/common/hooks/cms/use-assets";
 import { BlogImageInsertDialog } from "@/src/components/cms/editor/blog-image-insert-dialog";

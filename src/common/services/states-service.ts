@@ -1,4 +1,4 @@
-import { City, State } from "../../interfaces/states.interface";
+import { City, State } from "../interfaces/states.interface";
 
 export const fetchStates = async (): Promise<State[]> => {
   try {

@@ -1,7 +1,7 @@
 'use server'
 
 import { listLeadQualificationService } from '../services/list-lead-qualification-service';
-import { ILeadQualificationMessage } from '@/src/interfaces/lead-qualification.interface';
+import { ILeadQualificationMessage } from '@/src/common/interfaces/lead-qualification.interface';
 
 export async function listLeadQualification() {
     const result = await listLeadQualificationService();

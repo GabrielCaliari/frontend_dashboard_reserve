@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { ArticleEditorHeader } from "./article-editor-header";
 import { PlateEditor } from "@/src/components/cms/editor/plate-editor";
 import { SeoSidebar } from "@/src/components/cms/seo-sidebar";
-import type { ContentStats } from "@/src/types/cms";
+import type { ContentStats } from "@/src/common/@types/cms";
 import type { Author } from "@/src/common/@types/@cms-author";
 
 interface ArticleEditorShellProps {

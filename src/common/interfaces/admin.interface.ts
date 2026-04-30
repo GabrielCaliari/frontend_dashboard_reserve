@@ -1,4 +1,4 @@
-// DEPRECATED: Use LoginCredentials from @/src/common/@types/@auth
+// DEPRECATED: Use LoginCredentials from @/src/common/types/@auth
 // Mantido para compatibilidade com código legado
 export interface IAuthenticateAdmin {
     email: string;

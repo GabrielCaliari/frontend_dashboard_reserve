@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchStates, fetchCities } from "@/src/common/services/states-service";
-import { State, City } from "@/src/interfaces/states.interface";
+import { State, City } from "@/src/common/interfaces/states.interface";
 
 export const useLocation = () => {
   const [selectedState, setSelectedState] = useState<string | undefined>();
