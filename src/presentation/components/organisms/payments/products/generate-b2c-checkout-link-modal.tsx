@@ -16,7 +16,7 @@ import { Copy, Check, ExternalLink, DollarSign, Link } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
-import { createCheckoutSessionService } from "@/src/common/services/payments/subscriptions-service";
+import { createCheckoutSessionService } from "@/src/modules/payments/infrastructure/adapters";
 
 interface ProductPrice {
   id: string;

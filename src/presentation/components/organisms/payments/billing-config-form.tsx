@@ -6,8 +6,8 @@ import { z } from "zod";
 import { Button, Input, Textarea, Divider } from "@heroui/react";
 import { toast } from "react-hot-toast";
 import { useTranslations } from "next-intl";
-import { useCreateBillingConfig } from "@/src/common/hooks/payments/use-create-billing-config";
-import { useUpdateBillingConfig } from "@/src/common/hooks/payments/use-update-billing-config";
+import { useCreateBillingConfig } from "@/src/shared/hooks/payments/use-create-billing-config";
+import { useUpdateBillingConfig } from "@/src/shared/hooks/payments/use-update-billing-config";
 import type { TenantBillingConfig } from "@/src/shared/domain/types/@payments";
 
 const billingConfigSchema = z.object({

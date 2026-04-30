@@ -1,6 +1,6 @@
 "use server";
 
-import { cancelSubscriptionService } from "@/src/common/services/payments/subscriptions-service";
+import { cancelSubscriptionService } from "@/src/modules/payments/infrastructure/adapters";
 import type {
   CancelSubscriptionDto,
   CancelSubscriptionResponse,

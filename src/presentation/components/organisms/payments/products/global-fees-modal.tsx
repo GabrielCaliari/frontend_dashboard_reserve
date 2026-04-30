@@ -18,7 +18,7 @@ import { useTranslations } from "next-intl";
 import {
   useGlobalFees,
   useUpsertGlobalFees,
-} from "@/src/common/hooks/payments/use-b2c-fees";
+} from "@/src/shared/hooks/payments/use-b2c-fees";
 import { CurrencyInput } from "@/src/presentation/components/atoms/reserve/currency-input";
 
 interface GlobalFeesModalProps {

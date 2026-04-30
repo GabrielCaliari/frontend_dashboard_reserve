@@ -7,7 +7,7 @@ import {
   useB2BProductCost,
   useB2CProductCost,
   type CalculatedCost,
-} from "@/src/common/hooks/payments/use-b2c-fees";
+} from "@/src/shared/hooks/payments/use-b2c-fees";
 
 type FeeSource = "product" | "category" | "global" | "none";
 

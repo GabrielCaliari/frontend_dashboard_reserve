@@ -1,6 +1,6 @@
 "use server";
 
-import { createBillingConfigService } from "@/src/common/services/payments/billing-config-service";
+import { createBillingConfigService } from "@/src/modules/payments/infrastructure/adapters";
 import type {
   CreateBillingConfigDto,
   TenantBillingConfig,

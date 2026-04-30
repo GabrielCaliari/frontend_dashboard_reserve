@@ -34,7 +34,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { usePaymentMovements } from "@/src/common/hooks/payments/use-payment-movements";
+import { usePaymentMovements } from "@/src/shared/hooks/payments/use-payment-movements";
 import type {
   PaymentMovement,
   MovementType,

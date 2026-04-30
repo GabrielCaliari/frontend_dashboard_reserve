@@ -1,6 +1,6 @@
 "use server";
 
-import { archivePlanService } from "@/src/common/services/payments/plans-service";
+import { archivePlanService } from "@/src/modules/payments/infrastructure/adapters";
 import { getTenantIdFromCookie } from "@/src/shared/utils/get-tenant-id-server";
 import type { ArchivePlanResponse } from "@/src/shared/domain/types/@payments";
 

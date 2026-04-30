@@ -1,6 +1,6 @@
 "use server";
 
-import { getBillingConfigService } from "@/src/common/services/payments/billing-config-service";
+import { getBillingConfigService } from "@/src/modules/payments/infrastructure/adapters";
 import type { TenantBillingConfig } from "@/src/shared/domain/types/@payments";
 
 export async function getBillingConfigAction(): Promise<TenantBillingConfig | null> {

@@ -17,7 +17,7 @@ import { useTranslations, useLocale } from "next-intl";
 import {
   useAbandonedCarts,
   type AbandonedCart,
-} from "@/src/common/hooks/payments/use-abandoned-carts";
+} from "@/src/shared/hooks/payments/use-abandoned-carts";
 import { Button, Chip, Skeleton } from "@heroui/react";
 
 function formatPrice(amount: number, currency: string) {

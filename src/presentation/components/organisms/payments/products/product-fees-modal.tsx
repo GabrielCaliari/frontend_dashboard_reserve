@@ -18,7 +18,7 @@ import { useTranslations } from "next-intl";
 import {
   useCategories,
   useUpdateProductFees,
-} from "@/src/common/hooks/payments/use-b2c-fees";
+} from "@/src/shared/hooks/payments/use-b2c-fees";
 import type { Product } from "@/src/shared/domain/types/@b2c-products";
 
 interface ProductFeesModalProps {

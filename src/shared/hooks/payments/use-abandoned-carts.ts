@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { paymentMovementsService } from "@/src/common/services/payments/payment-movements-service";
+import { paymentMovementsService } from "@/src/modules/payments/infrastructure/adapters";
 import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import type {
   PaymentMovement,

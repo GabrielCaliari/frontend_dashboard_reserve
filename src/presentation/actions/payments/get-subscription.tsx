@@ -1,6 +1,6 @@
 "use server";
 
-import { getSubscriptionByTenantService } from "@/src/common/services/payments/subscriptions-service";
+import { getSubscriptionByTenantService } from "@/src/modules/payments/infrastructure/adapters";
 import type { GetSubscriptionResponse } from "@/src/shared/domain/types/@payments";
 
 export async function getSubscriptionAction(

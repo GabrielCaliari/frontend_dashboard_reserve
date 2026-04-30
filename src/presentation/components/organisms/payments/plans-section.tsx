@@ -25,9 +25,9 @@ import {
   Trash2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { usePlans } from "@/src/common/hooks/payments/use-plans";
-import { useArchivePlan } from "@/src/common/hooks/payments/use-archive-plan";
-import { useDeletePlan } from "@/src/common/hooks/payments/use-delete-plan";
+import { usePlans } from "@/src/shared/hooks/payments/use-plans";
+import { useArchivePlan } from "@/src/shared/hooks/payments/use-archive-plan";
+import { useDeletePlan } from "@/src/shared/hooks/payments/use-delete-plan";
 import { PlanForm } from "./plan-form";
 import type {
   StripePlan,

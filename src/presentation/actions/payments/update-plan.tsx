@@ -1,6 +1,6 @@
 "use server";
 
-import { updatePlanService } from "@/src/common/services/payments/plans-service";
+import { updatePlanService } from "@/src/modules/payments/infrastructure/adapters";
 import { getTenantIdFromCookie } from "@/src/shared/utils/get-tenant-id-server";
 import type {
   UpdateStripePlanDto,

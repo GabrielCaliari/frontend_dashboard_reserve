@@ -28,7 +28,7 @@ import {
   useCreateCategory,
   useUpdateCategory,
   useDeleteCategory,
-} from "@/src/common/hooks/payments/use-b2c-fees";
+} from "@/src/shared/hooks/payments/use-b2c-fees";
 import type { B2CCategory } from "@/src/shared/domain/types/@b2c-products";
 
 interface CategoriesModalProps {

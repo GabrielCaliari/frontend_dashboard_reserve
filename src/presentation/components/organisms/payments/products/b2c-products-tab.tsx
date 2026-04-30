@@ -31,7 +31,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
 import { useListB2CProducts } from "@/src/common/hooks/useB2CProducts";
-import { useCategories } from "@/src/common/hooks/payments/use-b2c-fees";
+import { useCategories } from "@/src/shared/hooks/payments/use-b2c-fees";
 import { GenerateB2CCheckoutLinkModal } from "./generate-b2c-checkout-link-modal";
 import { GlobalFeesModal } from "./global-fees-modal";
 import { CategoriesModal } from "./categories-modal";
