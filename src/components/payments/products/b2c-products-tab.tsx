@@ -99,9 +99,47 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
   }
 
   if (error) {
+    const errorMessage = error instanceof Error ? error.message : t('errorUnknown');
+    const isAxiosError = (error as any)?.isAxiosError;
+    const statusCode = (error as any)?.response?.status;
+    const responseData = (error as any)?.response?.data;
+    
     return (
-      <div className="py-10 text-center text-red-400 text-sm">
-        {t('errorLoading')}: {error instanceof Error ? error.message : t('errorUnknown')}
+      <div className="py-10 px-6">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6">
+            <div className="flex items-start gap-3">
+              <FileX className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-red-300 mb-2">
+                  {t('errorLoading')}
+                </h3>
+                <p className="text-sm text-red-400 mb-3">
+                  {errorMessage}
+                </p>
+                {isAxiosError && (
+                  <div className="space-y-2">
+                    {statusCode && (
+                      <p className="text-xs text-red-400/70">
+                        Status: {statusCode}
+                      </p>
+                    )}
+                    {responseData?.message && (
+                      <p className="text-xs text-red-400/70">
+                        Detalhes: {responseData.message}
+                      </p>
+                    )}
+                    {statusCode === 500 && (
+                      <p className="text-xs text-red-400/70 mt-3">
+                        💡 Dica: Verifique se o backend está rodando e se o endpoint /b2c/products está funcionando.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

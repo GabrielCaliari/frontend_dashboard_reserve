@@ -17,6 +17,9 @@ import { useTranslations } from 'next-intl';
 import { useQueryClient } from '@tanstack/react-query';
 import { b2bPaymentsService } from '@/src/common/services/b2b-payments-service';
 import { b2cProductsService } from '@/src/common/services/b2c-products-service';
+import { BillingConfigSelector } from './billing-config-selector';
+import { CurrencyInput } from '@/src/components/ui/currency-input';
+import type { BillingConfiguration } from '@/src/common/@types/@billing-config';
 
 type BillingType = 'b2b' | 'b2c';
 type RecurringInterval = 'month' | 'year' | 'quarter' | 'week';
@@ -53,20 +56,30 @@ export function CreateProductModal({
     intervalCount: '1',
     unitAmount: '',
     b2cCurrency: 'brl',
+    priceName: '', // NOVO: Nome do preço
+    categories: [] as string[], // NOVO: Categorias do produto
+    billingConfig: {
+      mode: 'recurring_infinite',
+      interval: 'month',
+      intervalCount: 1,
+    } as BillingConfiguration,
   };
 
   const [form, setForm] = useState(emptyForm);
+  const [categoryInput, setCategoryInput] = useState('');
 
   // Reset form whenever the modal opens or the type changes
   useEffect(() => {
     if (isOpen) {
       setForm(emptyForm);
+      setCategoryInput('');
       setError(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, defaultType]);
 
-  const set = (field: keyof typeof emptyForm, value: string) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const set = (field: keyof typeof emptyForm, value: any) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const autoSlug = (name: string) =>
@@ -85,6 +98,31 @@ export function CreateProductModal({
       name: value,
       slug: !currentSlug || currentSlug === expectedSlug ? autoSlug(value) : currentSlug,
     }));
+  };
+
+  const handleAddCategory = () => {
+    const trimmed = categoryInput.trim().toLowerCase();
+    if (trimmed && !form.categories.includes(trimmed)) {
+      setForm((prev) => ({
+        ...prev,
+        categories: [...prev.categories, trimmed],
+      }));
+      setCategoryInput('');
+    }
+  };
+
+  const handleRemoveCategory = (category: string) => {
+    setForm((prev) => ({
+      ...prev,
+      categories: prev.categories.filter((c) => c !== category),
+    }));
+  };
+
+  const handleCategoryKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddCategory();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -111,6 +149,7 @@ export function CreateProductModal({
           slug: form.slug.trim(),
           price: priceInCents,
           currency: form.currency,
+          categories: form.categories, // NOVO: Enviar categorias
         });
         queryClient.invalidateQueries({ queryKey: ['b2b-products'] });
       } else {
@@ -119,13 +158,52 @@ export function CreateProductModal({
           setIsLoading(false);
           return;
         }
+        
         const amountInCents = Math.round(parseFloat(form.unitAmount) * 100);
+        
+        // Mapear modo do frontend para backend
+        const billingModeMap = {
+          'recurring_infinite': 'unlimited',
+          'recurring_limited': 'limited',
+          'one_time_expiring': 'one_time_exp',
+        } as const;
+        
+        const backendBillingMode = billingModeMap[form.billingConfig.mode];
+        
+        // Calcular accessDurationDays se for one_time_expiring
+        let accessDurationDays: number | undefined;
+        if (form.billingConfig.mode === 'one_time_expiring' && form.billingConfig.accessDuration) {
+          const unit = form.billingConfig.accessDurationUnit || 'month';
+          const duration = form.billingConfig.accessDuration;
+          
+          // Converter para dias
+          if (unit === 'day') {
+            accessDurationDays = duration;
+          } else if (unit === 'month') {
+            accessDurationDays = duration * 30;
+          } else if (unit === 'year') {
+            accessDurationDays = duration * 365;
+          }
+        }
+        
         await b2cProductsService.createProduct({
           name: form.name.trim(),
           description: form.description.trim(),
           slug: form.slug.trim(),
-          interval: form.interval,
-          intervalCount: parseInt(form.intervalCount, 10),
+          priceName: form.priceName.trim() || form.name.trim(), // Usar nome do produto se priceName vazio
+          categories: form.categories, // NOVO: Enviar categorias
+          billingMode: backendBillingMode,
+          // Interval só para unlimited e limited
+          interval: (form.billingConfig.mode !== 'one_time_expiring') 
+            ? form.billingConfig.interval 
+            : undefined,
+          intervalCount: (form.billingConfig.mode !== 'one_time_expiring')
+            ? form.billingConfig.intervalCount
+            : undefined,
+          // maxBillingCycles só para limited
+          maxBillingCycles: form.billingConfig.maxCharges,
+          // accessDurationDays só para one_time_exp
+          accessDurationDays,
           unitAmount: amountInCents,
           currency: form.b2cCurrency,
         });
@@ -150,13 +228,6 @@ export function CreateProductModal({
     onClose();
   };
 
-  const intervalOptions: { value: RecurringInterval; labelKey: string; descKey: string }[] = [
-    { value: 'month', labelKey: 'intervalMonthLabel', descKey: 'intervalMonthDesc' },
-    { value: 'year', labelKey: 'intervalYearLabel', descKey: 'intervalYearDesc' },
-    { value: 'quarter', labelKey: 'intervalQuarterLabel', descKey: 'intervalQuarterDesc' },
-    { value: 'week', labelKey: 'intervalWeekLabel', descKey: 'intervalWeekDesc' },
-  ];
-
   const modalTitle =
     billingType === 'b2b'
       ? `${t('title')} — ${t('typeOneTime')}`
@@ -166,10 +237,12 @@ export function CreateProductModal({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      size="2xl"
+      size="3xl"
+      scrollBehavior="inside"
       classNames={{
-        base: 'bg-[#0f0f1a] border border-[#1f1f2e]',
+        base: 'bg-[#0f0f1a] border border-[#1f1f2e] max-h-[90vh]',
         header: 'border-b border-[#1f1f2e]',
+        body: 'overflow-y-auto',
         footer: 'border-t border-[#1f1f2e]',
       }}
     >
@@ -220,22 +293,63 @@ export function CreateProductModal({
               classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
             />
 
+            {/* Categorias - para B2B e B2C */}
+            <div className="space-y-2">
+              <div className="flex gap-2 items-end">
+                <div className="flex-1">
+                  <Input
+                    label={t('categoriesLabel')}
+                    placeholder={t('categoriesPlaceholder')}
+                    value={categoryInput}
+                    onValueChange={setCategoryInput}
+                    onKeyDown={handleCategoryKeyDown}
+                    description={t('categoriesDesc')}
+                    isDisabled={isLoading}
+                    classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  />
+                </div>
+                <Button
+                  color="primary"
+                  variant="flat"
+                  onPress={handleAddCategory}
+                  isDisabled={isLoading || !categoryInput.trim()}
+                  className="mb-6"
+                >
+                  {t('addCategory')}
+                </Button>
+              </div>
+              
+              {form.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 p-3 bg-[#1a1a2e] rounded-lg border border-[#2a2a3e]">
+                  {form.categories.map((category) => (
+                    <div
+                      key={category}
+                      className="flex items-center gap-1 px-3 py-1 bg-primary/20 text-primary rounded-full text-sm"
+                    >
+                      <span>{category}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCategory(category)}
+                        className="hover:text-primary-600 transition-colors"
+                        disabled={isLoading}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* B2B: price + currency */}
             {billingType === 'b2b' && (
               <div className="grid grid-cols-2 gap-3">
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
+                <CurrencyInput
                   label={t('priceLabel')}
-                  placeholder={t('pricePlaceholder')}
+                  placeholder="49,90"
                   value={form.price}
                   onValueChange={(v) => set('price', v)}
-                  startContent={
-                    <span className="text-gray-400 text-sm">
-                      {form.currency === 'brl' ? 'R$' : '$'}
-                    </span>
-                  }
+                  currency={form.currency as 'brl' | 'usd'}
                   isRequired
                   isDisabled={isLoading}
                   classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
@@ -247,50 +361,41 @@ export function CreateProductModal({
                   isDisabled={isLoading}
                   classNames={{ trigger: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
                 >
-                  <SelectItem key="brl" value="brl">{t('currencyBrl')}</SelectItem>
-                  <SelectItem key="usd" value="usd">{t('currencyUsd')}</SelectItem>
+                  <SelectItem key="brl">{t('currencyBrl')}</SelectItem>
+                  <SelectItem key="usd">{t('currencyUsd')}</SelectItem>
                 </Select>
               </div>
             )}
 
-            {/* B2C: periodicity + amount + currency */}
+            {/* B2C: billing config + amount + currency */}
             {billingType === 'b2c' && (
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm font-medium text-gray-300 mb-2">{t('periodicityLabel')}</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {intervalOptions.map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() => set('interval', opt.value)}
-                        className={`p-3 rounded-xl border text-left transition-colors ${
-                          form.interval === opt.value
-                            ? 'border-primary bg-primary/10'
-                            : 'border-[#2a2a3e] bg-[#1a1a2e] hover:border-[#3a3a4e]'
-                        }`}
-                      >
-                        <p className="text-sm font-medium text-gray-200">{t(opt.labelKey as any)}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{t(opt.descKey as any)}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              <div className="space-y-4">
+                {/* Nome do Preço */}
+                <Input
+                  label={t('priceNameLabel')}
+                  placeholder={t('priceNamePlaceholder')}
+                  value={form.priceName}
+                  onValueChange={(v) => set('priceName', v)}
+                  description={t('priceNameDesc')}
+                  isDisabled={isLoading}
+                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                />
 
+                {/* Configuração de Billing */}
+                <BillingConfigSelector
+                  value={form.billingConfig}
+                  onChange={(config) => set('billingConfig', config)}
+                  isDisabled={isLoading}
+                />
+
+                {/* Valor e Moeda */}
                 <div className="grid grid-cols-2 gap-3">
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
+                  <CurrencyInput
                     label={t('amountLabel')}
-                    placeholder={t('amountPlaceholder')}
+                    placeholder="49,90"
                     value={form.unitAmount}
                     onValueChange={(v) => set('unitAmount', v)}
-                    startContent={
-                      <span className="text-gray-400 text-sm">
-                        {form.b2cCurrency === 'brl' ? 'R$' : '$'}
-                      </span>
-                    }
+                    currency={form.b2cCurrency as 'brl' | 'usd'}
                     isRequired
                     isDisabled={isLoading}
                     classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
@@ -302,8 +407,8 @@ export function CreateProductModal({
                     isDisabled={isLoading}
                     classNames={{ trigger: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
                   >
-                    <SelectItem key="brl" value="brl">{t('currencyBrl')}</SelectItem>
-                    <SelectItem key="usd" value="usd">{t('currencyUsd')}</SelectItem>
+                    <SelectItem key="brl">{t('currencyBrl')}</SelectItem>
+                    <SelectItem key="usd">{t('currencyUsd')}</SelectItem>
                   </Select>
                 </div>
               </div>

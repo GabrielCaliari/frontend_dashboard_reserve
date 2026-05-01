@@ -1,14 +1,23 @@
 import { apiClient, cmsApiClient } from '@/src/common/config/api';
 import type { Product } from '@/src/common/@types/@b2c-products';
 
+// Modos de billing do backend
+type BackendBillingMode = 'unlimited' | 'limited' | 'one_time' | 'one_time_exp';
+
 export interface CreateB2CProductDto {
   name: string;
   description?: string;
   slug: string;
-  interval: 'month' | 'year' | 'quarter' | 'week';
-  intervalCount: number;
+  priceName: string; // NOVO: Nome do preço (exibido no checkout)
+  categories?: string[]; // NOVO: Categorias do produto
+  billingMode: BackendBillingMode; // NOVO: Modo de cobrança
+  interval?: 'month' | 'year' | 'quarter' | 'week' | 'day'; // Opcional para one_time
+  intervalCount?: number; // Opcional para one_time
   unitAmount: number; // em centavos
   currency: string;
+  // Campos específicos por modo
+  maxBillingCycles?: number; // Apenas para 'limited'
+  accessDurationDays?: number; // Apenas para 'one_time_exp'
 }
 
 export const b2cProductsService = {

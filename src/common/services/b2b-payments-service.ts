@@ -25,6 +25,7 @@ export const b2bPaymentsService = {
     slug: string;
     price: number;
     currency: string;
+    categories?: string[]; // NOVO: Categorias do produto
   }): Promise<B2BProduct> {
     const response = await apiClient.post<B2BProduct>('/b2b/payments/products', data);
     return response.data;
