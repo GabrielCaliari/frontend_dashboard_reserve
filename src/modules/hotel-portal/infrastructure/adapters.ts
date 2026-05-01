@@ -1,3 +1,49 @@
+/**
+ * Hotel Portal — Infrastructure Adapters
+ *
+ * Ports the former `common/services/hotel-portal-service.ts` into this module,
+ * preserving the exported `hotelPortalService` object's shape (method names and
+ * signatures) unchanged so consuming hooks (now under
+ * `src/shared/hooks/hotel-portal/`) only need their import path updated.
+ *
+ * Backend module: `reserve-client-portal`. Its 9 controllers have no `@ApiTags`
+ * decorator, so NestJS Swagger auto-tags each by class name, producing one
+ * generated service directory per controller under
+ * `src/infraestructure/server/services/`: `adminhotelclient`, `adminhotelmetrics`,
+ * `adminreservations`, `clientportal`, `guestcrm`, `report`, `whatsapp`,
+ * `whatsappredirect`, `whatsapptracking`.
+ *
+ * Of these, only `adminhotelclient`, `clientportal`, and `report` overlap with
+ * what this hand-written service actually calls today (`adminhotelmetrics`,
+ * `adminreservations`, `guestcrm`, `whatsapp*` back features not yet wired up
+ * on the frontend). Even for the overlapping ones, this adapter keeps the
+ * original `api`-based implementations verbatim rather than delegating,
+ * because of real behavioral mismatches found on inspection:
+ *
+ *   - Every method here explicitly sends `headers: { "x-skip-tenant": "true" }`
+ *     so admin/portal hotel-portal calls bypass tenant-scoping. None of the
+ *     generated services (`adminhotelclient`, `clientportal`, `report`) set
+ *     this header — delegating would silently reintroduce tenant-header
+ *     injection and likely break these cross-tenant admin/portal calls.
+ *   - All generated response types are `unknown` and DTOs are
+ *     `Record<string, unknown>` (see `adminhotelclient/types.ts`), so there is
+ *     no structural-typing benefit to delegating.
+ *   - `report`'s generated `create(body)` posts to `/api/admin/hotel-portal/reports`
+ *     with the client id expected inside the body, while `createReport` here
+ *     posts to `/admin/hotel-portal/clients/{clientId}/reports`; `findByClientId`
+ *     hits `/admin/hotel-portal/reports/client/{clientId}` instead of
+ *     `/admin/hotel-portal/clients/{clientId}/reports`. Different URL shapes,
+ *     not a drop-in swap.
+ *   - The generated `report` service has no generic "update" operation at all
+ *     (only `submitForReview` and `publish`), so `updateReport`
+ *     (`PATCH /admin/hotel-portal/reports/{reportId}`) has no generated
+ *     counterpart to delegate to.
+ *
+ * Forcing delegation here would change behavior with no typing gain, so all
+ * methods below are ported verbatim. All URL paths and header logic match the
+ * pre-migration service exactly.
+ */
+
 import api from "@/src/infraestructure/axios/api";
 import type {
   HotelClient,
