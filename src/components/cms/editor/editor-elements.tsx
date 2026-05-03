@@ -239,6 +239,10 @@ export function BlockquoteElement({ children, ...props }: PlateElementProps) {
 
 export function ImageElement({ children, ...props }: PlateElementProps) {
   const element = props.element as any;
+  // Plate MarkdownPlugin stores alt in `caption` (array of {text}); fall back to legacy `alt` string
+  const captionText = Array.isArray(element.caption)
+    ? element.caption.map((c: { text?: string }) => c.text || "").join("")
+    : (element.alt as string | undefined) || "";
   return (
     <PlateElement {...props} className="relative group my-6">
       <div className="absolute -left-8 top-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
@@ -247,13 +251,13 @@ export function ImageElement({ children, ...props }: PlateElementProps) {
       <div className="rounded-lg overflow-hidden border border-border">
         <img
           src={element.url}
-          alt={element.alt || ""}
+          alt={captionText}
           className="w-full h-auto"
           contentEditable={false}
         />
-        {element.alt && (
+        {captionText && (
           <p className="px-4 py-2 bg-muted/50 text-sm text-muted-foreground">
-            {element.alt}
+            {captionText}
           </p>
         )}
       </div>

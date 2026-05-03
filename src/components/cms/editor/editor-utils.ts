@@ -71,10 +71,11 @@ export function parseHtmlToSlate(html: string): Value {
       return { type: blockMap[tag], children: safeChildren };
     }
     if (tag === "img") {
+      const altText = el.getAttribute("alt") || "";
       return {
         type: "img",
         url: el.getAttribute("src") || "",
-        alt: el.getAttribute("alt") || "",
+        caption: altText ? [{ text: altText }] : [{ text: "" }],
         children: [{ text: "" }],
       };
     }
@@ -200,11 +201,14 @@ export function analyzeContent(
       // Collect images
       if (node.type === "img") {
         hasImages = true;
-        if (
-          keywordLower &&
-          (node.alt || "").toLowerCase().includes(keywordLower)
-        ) {
-          keywordInImageAlt = true;
+        if (keywordLower) {
+          // caption is the Plate-native field; fall back to alt for legacy nodes
+          const altText = Array.isArray(node.caption)
+            ? (node.caption as Array<{ text?: string }>).map((c) => c.text || "").join("")
+            : (node.alt as string | undefined) || "";
+          if (altText.toLowerCase().includes(keywordLower)) {
+            keywordInImageAlt = true;
+          }
         }
       }
 

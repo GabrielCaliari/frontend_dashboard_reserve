@@ -6,7 +6,20 @@
       "Bash(find /c/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src -name *profile* -o -name *email-campaign*page*)",
       "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
       "Bash(grep -r getCookie.*ass*string c:/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src --include=*.ts --include=*.tsx)",
-      "Bash(grep -n \"AbortController\\\\|signal\" c:/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src -r --include=*.ts --include=*.tsx)"
+      "Bash(grep -n \"AbortController\\\\|signal\" c:/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src -r --include=*.ts --include=*.tsx)",
+      "Bash(grep -n \"{ children, element, \\\\.\\\\.\\\\.props }\" \"c:\\\\Users\\\\guilh\\\\Documents\\\\working_repos\\\\frontend_dashboard_zarp-admin\\\\src\\\\components\\\\cms\\\\editor\\\\editor-elements.tsx\")",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "Bash(git commit -m ' *)",
+      "Bash(grep -o \"node\\\\s*=\\\\s*{[^}]*}\\\\|type:[^,}]*\" node_modules/@platejs/media/dist/index.js)",
+      "Bash(node -e \"const m = require\\('./node_modules/@platejs/media/dist/index.js'\\); const p = m.ImagePlugin; console.log\\('key:', p?.key, 'type:', p?.type, 'node:', JSON.stringify\\(p?.node\\)\\)\")",
+      "Bash(node -e \"const m = require\\('./node_modules/@platejs/media/dist/index.js'\\); const p = m.ImagePlugin; console.log\\(JSON.stringify\\(Object.keys\\(p || {}\\)\\)\\)\")",
+      "Bash(node -e \"const m = require\\('./node_modules/@platejs/media/dist/index.js'\\); console.log\\(typeof m.ImagePlugin, Object.keys\\(m\\).join\\(','\\)\\)\")",
+      "Bash(node -e \"const m = require\\('./node_modules/@platejs/media/dist/react/index.js'\\); console.log\\(Object.keys\\(m\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const {ImagePlugin} = require\\('./node_modules/@platejs/media/dist/react/index.js'\\); console.log\\('key:', ImagePlugin?.key, 'node:', JSON.stringify\\(ImagePlugin?.node\\)\\)\")",
+      "Bash(node -e \"const m = require\\('./node_modules/@platejs/markdown/dist/index.js'\\); console.log\\(Object.keys\\(m\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const {defaultRules,mediaRules} = require\\('./node_modules/@platejs/markdown/dist/index.js'\\); console.log\\('defaultRules keys:', Object.keys\\(defaultRules\\).join\\(','\\)\\); console.log\\('mediaRules keys:', Object.keys\\(mediaRules\\).join\\(','\\)\\)\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

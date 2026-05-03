@@ -237,8 +237,14 @@ export function usePlateEditorState({
       try {
         ensureHeadingIds();
         const value = editor.children as Value;
-        const md = editor.api.markdown.serialize();
+        let md = lastValidMarkdownRef.current;
+        try {
+          md = editor.api.markdown.serialize();
+        } catch (serErr) {
+          console.warn("[PlateEditor] Serialize failed during analysis, keeping last markdown:", serErr);
+        }
         setMarkdownContent(md);
+        if (md) lastValidMarkdownRef.current = md;
         publishFromSlate(value, md);
       } catch (err) {
         console.error("[PlateEditor] Analysis failed:", err);
@@ -261,10 +267,18 @@ export function usePlateEditorState({
       setTimeout(() => {
         try {
           if (newMode === "markdown") {
-            // Serialize current Slate state → markdown
-            const md = editor.api.markdown.serialize();
+            // Prefer the already-tracked markdownContent if it's fresh;
+            // only re-serialize when the Slate editor has been modified since last sync.
+            let md = lastValidMarkdownRef.current || markdownContent;
+            try {
+              md = editor.api.markdown.serialize();
+            } catch {
+              // serialize failed — fall back to the last known-good markdown
+            }
             setMarkdownContent(md);
             lastValidMarkdownRef.current = md;
+            setViewMode(newMode);
+            localStorage.setItem("plate-editor-view-mode", newMode);
             announce("Switched to markdown source view");
           } else {
             // Validate markdown before attempting to parse
@@ -275,11 +289,10 @@ export function usePlateEditorState({
             const slateValue = editor.api.markdown.deserialize(markdownContent);
             editor.tf.setValue(slateValue);
             publishFromSlate(slateValue, markdownContent);
+            setViewMode(newMode);
+            localStorage.setItem("plate-editor-view-mode", newMode);
             announce("Switched to formatted view");
           }
-
-          setViewMode(newMode);
-          localStorage.setItem("plate-editor-view-mode", newMode);
         } catch (err) {
           console.error("[PlateEditor] View switch error:", err);
 
@@ -290,11 +303,8 @@ export function usePlateEditorState({
             setMarkdownWarning(message);
             publishFromMarkdown(markdownContent, message);
             announce("Markdown contains errors. Fix them before leaving source view.");
-          } else {
-            setMarkdownWarning("Failed to convert content. Keeping the latest markdown.");
-            setMarkdownContent(lastValidMarkdownRef.current || markdownContent);
-            setViewMode("markdown");
           }
+          // For markdown mode: we already handle serialize failure above inline
         } finally {
           setTimeout(() => setIsTransitioning(false), TRANSITION_MS);
         }
@@ -340,8 +350,10 @@ export function usePlateEditorState({
   const handleInsertImage = React.useCallback(
     (url: string, alt: string) => {
       if (!editor) return;
+      // MarkdownPlugin serializer reads `caption` (array of {text}) for the alt attribute
+      const caption = alt ? [{ text: alt }] : [{ text: "" }];
       editor.tf.insertNodes([
-        { type: "img", url, alt, children: [{ text: "" }] } as any,
+        { type: "img", url, caption, children: [{ text: "" }] } as any,
         { type: "p", children: [{ text: "" }] } as any,
       ]);
     },
