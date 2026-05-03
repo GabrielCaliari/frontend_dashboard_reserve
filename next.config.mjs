@@ -18,6 +18,13 @@ const nextConfig = {
       'framer-motion',
     ],
   },
+
+   api: {
+    bodyParser: {
+      sizeLimit: '50mb',
+    },
+    responseLimit: '50mb',
+  },
 };
 
 export default withNextIntl(nextConfig);
