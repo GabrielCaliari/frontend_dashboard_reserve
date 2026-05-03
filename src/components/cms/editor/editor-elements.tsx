@@ -10,7 +10,8 @@ import { cn } from "@/src/common/lib/utils";
 // ---------------------------------------------------------------------------
 // LinkElement — Trello-like floating card on click
 // ---------------------------------------------------------------------------
-export function LinkElement({ children, element, ...props }: PlateElementProps) {
+export function LinkElement(props: PlateElementProps) {
+  const { children, element } = props;
   const href = (element as any)?.url ?? "";
   const isExternal = href.startsWith("http");
 
@@ -58,12 +59,7 @@ export function LinkElement({ children, element, ...props }: PlateElementProps) 
   };
 
   return (
-    <PlateElement
-      asChild
-      {...props}
-      element={element}
-      className="relative inline"
-    >
+    <PlateElement {...props} as="span" className="relative inline">
       <a
         href={href}
         target={isExternal ? "_blank" : undefined}
@@ -79,7 +75,7 @@ export function LinkElement({ children, element, ...props }: PlateElementProps) 
           setEditUrl(href);
         }}
       >
-      {children}
+        {children}
       </a>
 
       {/* contentEditable=false keeps Slate from treating this as editor content */}

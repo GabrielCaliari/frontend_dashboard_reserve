@@ -48,16 +48,13 @@ export function PlateEditor({
 
   const handleChapterNavigate = React.useCallback((anchorId: string) => {
     const target = document.getElementById(anchorId);
-    if (!target) {
-      console.warn("[PlateEditor] Chapter target not found:", anchorId);
-      return;
-    }
+    if (!target) return;
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   return (
     <div className="flex h-full">
-      {/* Chapter Navigation Sidebar */}
+      {/* Chapter sidebar */}
       {viewMode === "formatted" && !sidebarCollapsed && (
         <aside className="w-56 shrink-0 border-r border-border overflow-y-auto hidden lg:block bg-content1">
           <div className="p-4 border-b border-border flex items-center justify-between">
@@ -83,8 +80,8 @@ export function PlateEditor({
               <a
                 key={chapter.id}
                 href={`#${chapter.anchorId}`}
-                onClick={(event) => {
-                  event.preventDefault();
+                onClick={(e) => {
+                  e.preventDefault();
                   setActiveChapter(chapter.id);
                   handleChapterNavigate(chapter.anchorId);
                 }}

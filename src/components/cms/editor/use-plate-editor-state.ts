@@ -16,7 +16,6 @@ import {
 import { ImagePlugin } from "@platejs/media/react";
 import { LinkPlugin } from "@platejs/link/react";
 import { MarkdownPlugin } from "@platejs/markdown";
-import { Transforms } from "slate";
 import type { Value } from "platejs";
 import {
   H1Element,
@@ -113,12 +112,12 @@ export function usePlateEditorState({
       BulletedListPlugin.withComponent(ListElement),
       NumberedListPlugin.withComponent(ListElement),
       ImagePlugin.withComponent(ImageElement),
-      LinkPlugin.withComponent(LinkElement),
+      LinkPlugin.configure({ render: { node: LinkElement } }),
       MarkdownPlugin,
     ],
-    // When parsedInitial is a markdown string, don't pass value — MarkdownPlugin
-    // will deserialize on first render via the init effect below.
-    value: typeof parsedInitial === "string" ? undefined : initialSlateValue,
+    value: typeof parsedInitial === "string" && parsedInitial
+      ? (ed) => ed.getApi(MarkdownPlugin).markdown.deserialize(parsedInitial)
+      : initialSlateValue,
   });
 
   // --- Persisted view mode ---
@@ -174,7 +173,7 @@ export function usePlateEditorState({
             .trim();
           const slug = slugifyHeading(text);
           const id = `heading-${index}-${slug}`;
-          Transforms.setNodes(editor as any, { id }, { at: [index] });
+          editor.tf.setNodes({ id } as any, { at: [index] });
           updated = true;
         }
       }
@@ -341,16 +340,10 @@ export function usePlateEditorState({
   const handleInsertImage = React.useCallback(
     (url: string, alt: string) => {
       if (!editor) return;
-      Transforms.insertNodes(editor as any, {
-        type: "img",
-        url,
-        alt,
-        children: [{ text: "" }],
-      } as any);
-      Transforms.insertNodes(editor as any, {
-        type: "p",
-        children: [{ text: "" }],
-      } as any);
+      editor.tf.insertNodes([
+        { type: "img", url, alt, children: [{ text: "" }] } as any,
+        { type: "p", children: [{ text: "" }] } as any,
+      ]);
     },
     [editor],
   );

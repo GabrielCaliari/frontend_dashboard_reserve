@@ -8,91 +8,21 @@ import {
   Clock,
   Send,
   MessageSquare,
+  RefreshCw,
+  ExternalLink,
+  ShoppingCart,
 } from "lucide-react";
 import { AbandonedCartModal } from "../email-builder/modals/abandoned-cart-modal";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useAbandonedCarts, type AbandonedCart } from "@/src/common/hooks/payments/use-abandoned-carts";
+import { Button, Chip, Skeleton } from "@heroui/react";
 
-// Tipos para os dados
-interface AbandonedCart {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  country: string;
-  gateway: string;
-  products: { id: string; name: string; price: number }[];
-  emailSequence: {
-    step1: "sent" | "pending" | "failed";
-    step2: "sent" | "pending" | "failed";
-    step3: "sent" | "pending" | "failed";
-  };
-  smsStatus: "sent" | "pending" | "failed";
+function formatPrice(amount: number, currency: string) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
 }
-
-// Dados de exemplo
-const mockData: AbandonedCart[] = [
-  {
-    id: "AC001",
-    name: "João Silva",
-    email: "joao.silva@email.com",
-    phone: "+55 11 99999-9999",
-    address: "Rua das Flores, 123 - São Paulo, SP",
-    country: "Brasil",
-    gateway: "Stripe",
-    products: [],
-    emailSequence: { step1: "sent", step2: "sent", step3: "pending" },
-    smsStatus: "sent",
-  },
-  {
-    id: "AC002",
-    name: "Maria Santos",
-    email: "maria.santos@email.com",
-    phone: "+351 21 123-4567",
-    address: "Rua da Liberdade, 456 - Lisboa, Portugal",
-    country: "Portugal",
-    gateway: "PayPal",
-    products: [],
-    emailSequence: { step1: "sent", step2: "pending", step3: "pending" },
-    smsStatus: "pending",
-  },
-  {
-    id: "AC003",
-    name: "Pedro Costa",
-    email: "pedro.costa@email.com",
-    phone: "+55 21 88888-8888",
-    address: "Av. Copacabana, 789 - Rio de Janeiro, RJ",
-    country: "Brasil",
-    gateway: "PagSeguro",
-    products: [],
-    emailSequence: { step1: "sent", step2: "sent", step3: "failed" },
-    smsStatus: "failed",
-  },
-  {
-    id: "AC004",
-    name: "Ana Oliveira",
-    email: "ana.oliveira@email.com",
-    phone: "+244 912 345 678",
-    address: "Rua da Independência, 321 - Luanda, Angola",
-    country: "Angola",
-    gateway: "Stripe",
-    products: [],
-    emailSequence: { step1: "sent", step2: "sent", step3: "sent" },
-    smsStatus: "sent",
-  },
-  {
-    id: "AC005",
-    name: "Carlos Ferreira",
-    email: "carlos.ferreira@email.com",
-    phone: "+55 11 77777-7777",
-    address: "Rua Augusta, 654 - São Paulo, SP",
-    country: "Brasil",
-    gateway: "Mercado Pago",
-    products: [],
-    emailSequence: { step1: "failed", step2: "pending", step3: "pending" },
-    smsStatus: "pending",
-  },
-];
 
 // Componente para status visual
 const StatusIcon = ({ status }: { status: "sent" | "pending" | "failed" }) => {
@@ -147,79 +77,199 @@ export function AbandonedCartsTable() {
   const [selectedCart, setSelectedCart] = useState<AbandonedCart | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useTranslations();
+  const locale = useLocale();
+  
+  const { data: carts = [], isLoading, refetch } = useAbandonedCarts();
+
+  const formatDate = (dateString: string) =>
+    new Intl.DateTimeFormat(locale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(dateString));
 
   const handleOptionsClick = (cart: AbandonedCart) => {
     setSelectedCart(cart);
     setIsModalOpen(true);
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'warning';
+      case 'abandoned':
+        return 'danger';
+      case 'incomplete':
+        return 'warning';
+      case 'past_due':
+        return 'danger';
+      default:
+        return 'default';
+    }
+  };
+
+  const getTypeLabel = (type: 'subscription' | 'one_time') => {
+    return type === 'subscription' ? t("payments.movementsPage.typeSubscription") : t("payments.movementsPage.typeOneTime");
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[...Array(5)].map((_, i) => (
+          <Skeleton key={i} className="h-16 w-full rounded-lg" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="overflow-x-auto rounded-lg border border-gray-800">
-        <table className="min-w-full divide-y divide-gray-800">
-          <thead className="bg-[#1a1a2e]">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                #
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                {t("common.name")}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                {t("abandonedCart.country")}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                {t("abandonedCart.gateway")}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                {t("abandonedCart.emailStatus")}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                {t("abandonedCart.smsStatus")}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                {t("abandonedCart.options")}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-[#12121f] divide-y divide-gray-800">
-            {mockData.map((cart) => (
-              <tr
-                key={cart.id}
-                className="hover:bg-[#1e1e3a] transition-colors"
-              >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
-                  {cart.id}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
-                  {cart.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                  {cart.country}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/40 text-blue-300 border border-blue-700/50">
-                    {cart.gateway}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                  <EmailSequenceStatus sequence={cart.emailSequence} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                  <SmsStatus status={cart.smsStatus} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                  <button
-                    onClick={() => handleOptionsClick(cart)}
-                    className="p-2 rounded-full hover:bg-[#1a1a2e] transition-colors"
-                  >
-                    <MoreHorizontal className="w-5 h-5 text-gray-400" />
-                  </button>
-                </td>
+      <div className="space-y-4">
+        {/* Header com botão de refresh */}
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-400">
+              {carts.length === 0 
+                ? t("abandonedCart.noAbandoned") 
+                : carts.length === 1
+                ? t("abandonedCart.oneAbandoned")
+                : t("abandonedCart.countAbandoned", { count: carts.length })}
+            </p>
+          </div>
+          <Button
+            size="sm"
+            variant="flat"
+            startContent={<RefreshCw className="w-4 h-4" />}
+            onPress={() => refetch()}
+          >
+            {t("common.refresh")}
+          </Button>
+        </div>
+
+        {/* Tabela */}
+        <div className="overflow-x-auto rounded-lg border border-gray-800">
+          <table className="min-w-full divide-y divide-gray-800">
+            <thead className="bg-[#1a1a2e]">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.customer")}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.product")}
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.type")}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.amount")}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.status")}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.date")}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.emailStatus")}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.smsStatus")}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  {t("abandonedCart.actions")}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-[#12121f] divide-y divide-gray-800">
+              {carts.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center gap-3 text-gray-500">
+                      <ShoppingCart className="w-12 h-12 opacity-40" />
+                      <p className="text-sm font-medium">
+                        {t("abandonedCart.noAbandoned")}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                carts.map((cart) => (
+                  <tr
+                    key={cart.id}
+                    className="hover:bg-[#1e1e3a] transition-colors"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <p className="text-sm font-medium text-gray-200">
+                          {cart.name}
+                        </p>
+                        <p className="text-xs text-gray-500">{cart.email}</p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
+                      {cart.products[0]?.name || "—"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <Chip 
+                        size="sm" 
+                        variant="flat"
+                        color={cart.type === 'subscription' ? 'secondary' : 'primary'}
+                      >
+                        {getTypeLabel(cart.type)}
+                      </Chip>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-100">
+                      {formatPrice(cart.amount, cart.currency)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Chip 
+                        size="sm" 
+                        variant="flat"
+                        color={getStatusColor(cart.status)}
+                      >
+                        {t(`payments.movementsPage.status${cart.status.charAt(0).toUpperCase() + cart.status.slice(1)}`)}
+                      </Chip>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                      {formatDate(cart.createdAt)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      {cart.emailSequence && (
+                        <EmailSequenceStatus sequence={cart.emailSequence} />
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      {cart.smsStatus && <SmsStatus status={cart.smsStatus} />}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      <div className="flex items-center gap-2">
+                        {cart.stripeLink && (
+                          <Button
+                            size="sm"
+                            variant="light"
+                            isIconOnly
+                            onPress={() => window.open(cart.stripeLink!, "_blank")}
+                            aria-label="View on Stripe"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                        <button
+                          onClick={() => handleOptionsClick(cart)}
+                          className="p-2 rounded-full hover:bg-[#1a1a2e] transition-colors"
+                        >
+                          <MoreHorizontal className="w-5 h-5 text-gray-400" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal */}

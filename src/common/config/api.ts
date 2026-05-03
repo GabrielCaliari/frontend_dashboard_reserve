@@ -67,7 +67,7 @@ const cmsApi = axios.create({
 
 // Request interceptor for CMS API - Same auth logic via shared helper
 cmsApi.interceptors.request.use(
-  (config) => {
+  async (config) => {
     if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
       delete config.headers['Content-Type'];
     }

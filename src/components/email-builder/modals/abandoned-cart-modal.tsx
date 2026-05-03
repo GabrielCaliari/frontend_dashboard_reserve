@@ -81,48 +81,8 @@ export function AbandonedCartModal({
 
   if (!isOpen || !cart) return null;
 
-  // Dados mockados mais completos para demonstração
-  const mockCartData: AbandonedCart = {
-    ...cart,
-    email: "joao.silva@email.com",
-    phone: "+55 11 99999-9999",
-    address: "Rua das Flores, 123 - São Paulo, SP",
-    products: [
-      { id: "PROD001", name: "Smartphone Samsung Galaxy", price: 1299.99 },
-      { id: "PROD002", name: "Capinha Protetora", price: 49.9 },
-      { id: "PROD003", name: "Película de Vidro", price: 29.9 },
-    ],
-    accessOrigin: {
-      agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      ip: "192.168.1.100",
-    },
-    paymentProviderData: {
-      session_id: "cs_test_123456789",
-      customer: {
-        id: "cus_123456",
-        email: "joao.silva@email.com",
-        name: "João Silva",
-      },
-      line_items: [
-        {
-          price_data: {
-            currency: "brl",
-            product_data: {
-              name: "Smartphone Samsung Galaxy",
-            },
-            unit_amount: 129999,
-          },
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        cart_id: cart.id,
-        source: "website",
-      },
-    },
-  };
-
-  const totalPrice = mockCartData.products.reduce(
+  // Usa os dados reais do cart
+  const totalPrice = cart.products.reduce(
     (sum, product) => sum + product.price,
     0,
   );
@@ -173,25 +133,25 @@ export function AbandonedCartModal({
             <label className="block text-sm font-medium text-gray-500 mb-1">
               {t("common.name")}
             </label>
-            <p className="text-gray-200">{mockCartData.name}</p>
+            <p className="text-gray-200">{cart.name}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">
               {t("common.email")}
             </label>
-            <p className="text-gray-200">{mockCartData.email}</p>
+            <p className="text-gray-200">{cart.email}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">
               {t("common.phone")}
             </label>
-            <p className="text-gray-200">{mockCartData.phone}</p>
+            <p className="text-gray-200">{cart.phone || "—"}</p>
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-500 mb-1">
               {t("abandonedCart.address")}
             </label>
-            <p className="text-gray-200">{mockCartData.address}</p>
+            <p className="text-gray-200">{cart.address || "—"}</p>
           </div>
         </div>
       </div>
@@ -215,11 +175,11 @@ export function AbandonedCartModal({
 
         {showProductsJson ? (
           <div className="bg-[#0a0a0f] text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-gray-800">
-            <pre>{JSON.stringify(mockCartData.products, null, 2)}</pre>
+            <pre>{JSON.stringify(cart.products, null, 2)}</pre>
           </div>
         ) : (
           <div className="space-y-3">
-            {mockCartData.products.map((product) => (
+            {cart.products.map((product) => (
               <div
                 key={product.id}
                 className="flex items-center justify-between p-3 bg-[#1a1a2e] rounded-lg border border-gray-800"
@@ -229,7 +189,7 @@ export function AbandonedCartModal({
                   <p className="text-sm text-gray-500">ID: {product.id}</p>
                 </div>
                 <p className="font-semibold text-gray-200">
-                  R$ {product.price.toFixed(2).replace(".", ",")}
+                  R$ {(product.price / 100).toFixed(2).replace(".", ",")}
                 </p>
               </div>
             ))}
@@ -238,7 +198,7 @@ export function AbandonedCartModal({
                 {t("abandonedCart.total")}
               </span>
               <span className="font-bold text-lg text-gray-100">
-                R$ {totalPrice.toFixed(2).replace(".", ",")}
+                R$ {(totalPrice / 100).toFixed(2).replace(".", ",")}
               </span>
             </div>
           </div>
@@ -246,7 +206,7 @@ export function AbandonedCartModal({
       </div>
 
       {/* Origem de Acesso */}
-      {mockCartData.accessOrigin && (
+      {cart.accessOrigin && (
         <div>
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold text-gray-100">
@@ -266,28 +226,28 @@ export function AbandonedCartModal({
           {showOriginJson ? (
             <div className="bg-[#0a0a0f] text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-gray-800">
               <pre>
-                {JSON.stringify(mockCartData.paymentProviderData, null, 2)}
+                {JSON.stringify(cart.accessOrigin, null, 2)}
               </pre>
             </div>
           ) : (
             <div className="space-y-2">
-              {mockCartData.accessOrigin.ip && (
+              {cart.accessOrigin.ip && (
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     IP
                   </label>
                   <p className="text-gray-200 font-mono text-sm">
-                    {mockCartData.accessOrigin.ip}
+                    {cart.accessOrigin.ip}
                   </p>
                 </div>
               )}
-              {mockCartData.accessOrigin.agent && (
+              {cart.accessOrigin.agent && (
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     User Agent
                   </label>
                   <p className="text-gray-200 font-mono text-sm break-all">
-                    {mockCartData.accessOrigin.agent}
+                    {cart.accessOrigin.agent}
                   </p>
                 </div>
               )}
@@ -303,25 +263,25 @@ export function AbandonedCartModal({
       {
         id: 1,
         title: t("abandonedCart.email1"),
-        status: mockCartData.emailSequence.step1,
+        status: cart.emailSequence?.step1 || "pending",
         sentAt:
-          mockCartData.emailSequence.step1 === "sent"
+          cart.emailSequence?.step1 === "sent"
             ? "2024-01-15 14:30"
             : null,
         subject: "Você esqueceu alguns itens no seu carrinho!",
         template: "abandoned_cart_reminder_1",
-        opened: mockCartData.emailSequence.step1 === "sent" ? true : false,
+        opened: cart.emailSequence?.step1 === "sent" ? true : false,
         openedAt:
-          mockCartData.emailSequence.step1 === "sent"
+          cart.emailSequence?.step1 === "sent"
             ? "2024-01-15 15:45"
             : null,
-        clicked: mockCartData.emailSequence.step1 === "sent" ? true : false,
+        clicked: cart.emailSequence?.step1 === "sent" ? true : false,
         clickedAt:
-          mockCartData.emailSequence.step1 === "sent"
+          cart.emailSequence?.step1 === "sent"
             ? "2024-01-15 16:20"
             : null,
         clickedLinks:
-          mockCartData.emailSequence.step1 === "sent"
+          cart.emailSequence?.step1 === "sent"
             ? [
                 {
                   url: "https://loja.com/carrinho",
@@ -351,30 +311,30 @@ export function AbandonedCartModal({
       {
         id: 2,
         title: t("abandonedCart.email2"),
-        status: mockCartData.emailSequence.step2,
+        status: cart.emailSequence?.step2 || "pending",
         sentAt:
-          mockCartData.emailSequence.step2 === "sent"
+          cart.emailSequence?.step2 === "sent"
             ? "2024-01-16 10:15"
             : null,
         subject: "Oferta especial: 10% de desconto nos seus produtos!",
         template: "abandoned_cart_discount_10",
-        opened: mockCartData.emailSequence.step2 === "sent" ? true : false,
+        opened: cart.emailSequence?.step2 === "sent" ? true : false,
         openedAt:
-          mockCartData.emailSequence.step2 === "sent"
+          cart.emailSequence?.step2 === "sent"
             ? "2024-01-16 11:30"
             : null,
-        clicked: mockCartData.emailSequence.step2 === "sent" ? false : false,
+        clicked: cart.emailSequence?.step2 === "sent" ? false : false,
         clickedAt: null,
         clickedLinks: [],
         providerResponse: {
           messageId: "msg_2345678901",
           provider: "SendGrid",
           status:
-            mockCartData.emailSequence.step2 === "sent"
+            cart.emailSequence?.step2 === "sent"
               ? "delivered"
               : "pending",
           deliveredAt:
-            mockCartData.emailSequence.step2 === "sent"
+            cart.emailSequence?.step2 === "sent"
               ? "2024-01-16 10:16:45"
               : null,
         },
@@ -382,30 +342,30 @@ export function AbandonedCartModal({
       {
         id: 3,
         title: t("abandonedCart.email3"),
-        status: mockCartData.emailSequence.step3,
+        status: cart.emailSequence?.step3 || "pending",
         sentAt:
-          mockCartData.emailSequence.step3 === "sent"
+          cart.emailSequence?.step3 === "sent"
             ? "2024-01-17 16:45"
             : null,
         subject: "Ultima chance! Seus produtos estao quase esgotando",
         template: "abandoned_cart_final_warning",
-        opened: mockCartData.emailSequence.step3 === "sent" ? false : false,
+        opened: cart.emailSequence?.step3 === "sent" ? false : false,
         openedAt: null,
         clicked: false,
         clickedAt: null,
         clickedLinks: [],
         providerResponse: {
           messageId:
-            mockCartData.emailSequence.step3 === "sent"
+            cart.emailSequence?.step3 === "sent"
               ? "msg_3456789012"
               : null,
           provider: "SendGrid",
           status:
-            mockCartData.emailSequence.step3 === "failed"
+            cart.emailSequence?.step3 === "failed"
               ? "bounced"
-              : mockCartData.emailSequence.step3,
+              : cart.emailSequence?.step3 || "pending",
           error:
-            mockCartData.emailSequence.step3 === "failed"
+            cart.emailSequence?.step3 === "failed"
               ? "Invalid email address"
               : null,
         },
@@ -692,7 +652,7 @@ export function AbandonedCartModal({
         </h4>
         <div className="text-sm text-gray-400">
           {t("abandonedCart.totalSms")}{" "}
-          {mockCartData.smsStatus === "sent" ? 1 : 0}
+          {cart.smsStatus === "sent" ? 1 : 0}
         </div>
       </div>
 
@@ -724,7 +684,7 @@ export function AbandonedCartModal({
             <tbody className="bg-[#16162a] divide-y divide-gray-800">
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                  {mockCartData.smsStatus === "sent"
+                  {cart.smsStatus === "sent"
                     ? t("abandonedCart.sent")
                     : t("abandonedCart.pending")}
                 </td>
@@ -732,7 +692,7 @@ export function AbandonedCartModal({
                   {t("abandonedCart.cartReminder")}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                  {mockCartData.smsStatus === "sent"
+                  {cart.smsStatus === "sent"
                     ? "2024-01-15 14:30"
                     : "---"}
                 </td>

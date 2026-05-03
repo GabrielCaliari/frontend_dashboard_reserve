@@ -29,6 +29,9 @@ import {
   X,
   FileBarChart2,
   Calendar,
+  CreditCard,
+  Package,
+  Briefcase,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -217,6 +220,31 @@ export function Sidebar({
             ],
           },
           {
+            id: "payments-menu",
+            label: t("payments"),
+            icon: CreditCard,
+            subItems: [
+              {
+                id: "payments-products",
+                label: t("paymentsProducts"),
+                icon: Package,
+                path: "/dashboard/payments/products",
+              },
+              {
+                id: "payments-subscriptions",
+                label: t("paymentsMovements"),
+                icon: CreditCard,
+                path: "/dashboard/payments/subscriptions",
+              },
+              {
+                id: "payments-config",
+                label: t("paymentsConfig"),
+                icon: Settings,
+                path: "/dashboard/payments/config",
+              },
+            ],
+          },
+          {
             id: "profile",
             label: t("profile"),
             icon: Settings,
@@ -299,6 +327,31 @@ export function Sidebar({
               label: t("media"),
               icon: Image,
               path: "/dashboard/cms/media",
+            },
+          ],
+        },
+        {
+          id: "payments-menu",
+          label: t("payments"),
+          icon: CreditCard,
+          subItems: [
+            {
+              id: "payments-products",
+              label: t("paymentsProducts"),
+              icon: Package,
+              path: "/dashboard/payments/products",
+            },
+            {
+              id: "payments-subscriptions",
+              label: t("paymentsMovements"),
+              icon: CreditCard,
+              path: "/dashboard/payments/subscriptions",
+            },
+            {
+              id: "payments-config",
+              label: t("paymentsConfig"),
+              icon: Settings,
+              path: "/dashboard/payments/config",
             },
           ],
         },
@@ -398,6 +451,15 @@ export function Sidebar({
         prev.includes("access-management")
           ? prev
           : [...prev, "access-management"],
+      );
+    }
+    if (
+      activeTab === "payments-products" ||
+      activeTab === "payments-subscriptions" ||
+      activeTab === "payments-config"
+    ) {
+      setExpandedMenus((prev) =>
+        prev.includes("payments-menu") ? prev : [...prev, "payments-menu"],
       );
     }
   }, [activeTab]);
