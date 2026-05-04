@@ -10,7 +10,7 @@ import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import {
   useStatsDashboard,
   useStatsTimeseriesModules,
-} from "@/src/common/hooks/stats";
+} from "@/src/shared/hooks/stats";
 import {
   StatGroupCard,
   DateRangePicker,
