@@ -3,7 +3,7 @@
 import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import { GraduationCap } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useListB2CProducts } from "@/src/common/hooks/useB2CProducts";
+import { useListB2CProducts } from "@/src/shared/hooks/b2c-products/use-b2c-products";
 import { ProductsTable } from "./products-table";
 
 export function B2CProductsSection() {
