@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Chip, Button, Skeleton, Tooltip,
 } from "@heroui/react";
-import { Edit, Power, Trash2 } from "lucide-react";
+import { Edit, Power, Trash2, Copy, Check } from "lucide-react";
 import { Tenant } from "@/src/common/@types/@access-management";
 import { formatDate } from "@/src/common/lib/utils";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
@@ -23,8 +23,16 @@ const TenantTable: React.FC<TenantTableProps> = ({
   tenants, isLoading, onEdit, onToggleActive, onDelete,
 }) => {
   const t = useTranslations("accessManagement");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyId = (id: string) => {
+    navigator.clipboard.writeText(id);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   const columns = [
+    { key: "id",         label: "ID"                         },
     { key: "name",       label: t("table.columns.name")      },
     { key: "slug",       label: t("table.columns.slug")      },
     { key: "domain",     label: t("table.columns.domain")    },
@@ -35,6 +43,30 @@ const TenantTable: React.FC<TenantTableProps> = ({
 
   const renderCell = (tenant: Tenant, columnKey: React.Key) => {
     switch (columnKey) {
+      case "id":
+        return (
+          <div className="flex items-center gap-1">
+            <Tooltip content={tenant.id}>
+              <span className="text-xs text-foreground-400 font-mono cursor-default">
+                {tenant.id.slice(0, 8)}…
+              </span>
+            </Tooltip>
+            <Tooltip content={copiedId === tenant.id ? "Copiado!" : "Copiar ID"}>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                onPress={() => handleCopyId(tenant.id)}
+                aria-label="Copiar ID"
+              >
+                {copiedId === tenant.id
+                  ? <Check className="w-3 h-3 text-success" />
+                  : <Copy className="w-3 h-3" />
+                }
+              </Button>
+            </Tooltip>
+          </div>
+        );
       case "name":
         return (
           <div className="flex items-center gap-3">
