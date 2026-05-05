@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
-import { useHotelClients } from "@/src/common/hooks/hotel-portal";
+import { useHotelClients } from "@/src/shared/hooks/hotel-portal";
 import type { HotelClient } from "@/src/shared/domain/types/@hotel-portal";
 import { useRouter } from "nextjs-toploader/app";
 import { Card, CardBody, Button, Spinner, Chip } from "@heroui/react";

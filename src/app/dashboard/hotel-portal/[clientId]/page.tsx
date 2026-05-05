@@ -16,7 +16,7 @@ import {
   usePublishReport,
   useCreateReport,
   useUpdateHotelClient,
-} from "@/src/common/hooks/hotel-portal";
+} from "@/src/shared/hooks/hotel-portal";
 import {
   Card,
   CardBody,
