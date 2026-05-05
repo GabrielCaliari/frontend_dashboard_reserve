@@ -15,6 +15,12 @@ import {
   Select,
   SelectItem,
   Skeleton,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Tooltip,
 } from "@heroui/react";
 import {
   RefreshCw,
@@ -24,6 +30,8 @@ import {
   FileX,
   X,
   ExternalLink,
+  Eye,
+  ShoppingCart,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { usePaymentMovements } from "@/src/common/hooks/payments/use-payment-movements";
@@ -62,6 +70,268 @@ const STATUS_COLORS: Record<
   refunded: "default",
 };
 
+// ─── Product cell ─────────────────────────────────────────────────────────────
+
+function ProductCell({
+  movement,
+  onExpand,
+  tooltipLabel,
+}: {
+  movement: PaymentMovement;
+  onExpand: (m: PaymentMovement) => void;
+  tooltipLabel: string;
+}) {
+  const extra = (movement.products?.length ?? 0) - 1;
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-gray-200 truncate max-w-[160px]">
+        {movement.productName || "—"}
+      </span>
+      {extra > 0 && (
+        <Tooltip content={tooltipLabel}>
+          <button
+            type="button"
+            onClick={() => onExpand(movement)}
+            className="flex-shrink-0 text-xs font-semibold px-1.5 py-0.5 rounded-full bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
+          >
+            +{extra}
+          </button>
+        </Tooltip>
+      )}
+    </div>
+  );
+}
+
+// ─── Detail modal ─────────────────────────────────────────────────────────────
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-4 py-2 border-b border-white/5 last:border-0">
+      <span className="text-xs text-gray-500 shrink-0">{label}</span>
+      <span className="text-sm text-gray-100 text-right">{children}</span>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-2 px-1">
+        {title}
+      </p>
+      <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] px-4 py-1">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function MovementDetailModal({
+  movement,
+  isOpen,
+  onClose,
+  typeLabels,
+  statusLabels,
+}: {
+  movement: PaymentMovement | null;
+  isOpen: boolean;
+  onClose: () => void;
+  typeLabels: Record<MovementType, string>;
+  statusLabels: Record<MovementStatus, string>;
+}) {
+  const t = useTranslations("payments.movementsPage");
+  const locale = useLocale();
+
+  if (!movement) return null;
+
+  const fmt = (d?: string) =>
+    d
+      ? new Intl.DateTimeFormat(locale, {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }).format(new Date(d))
+      : "—";
+
+  const products =
+    movement.products && movement.products.length > 0
+      ? movement.products
+      : [{ id: movement.productId ?? "", name: movement.productName }];
+
+  const stripeLink =
+    movement.stripeLink ??
+    (movement.stripeSubscriptionId
+      ? `https://dashboard.stripe.com/subscriptions/${movement.stripeSubscriptionId}`
+      : null);
+
+  const hasStripeRefs =
+    movement.stripeCheckoutId ||
+    movement.stripeSubscriptionId ||
+    movement.stripePaymentIntentId;
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="2xl"
+      classNames={{
+        base: "bg-[#0e0e1a] border border-white/10",
+        header: "border-b border-white/[0.07] py-4",
+        footer: "border-t border-white/[0.07] py-3",
+        body: "py-5",
+      }}
+    >
+      <ModalContent>
+        <ModalHeader className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
+            <ShoppingCart className="w-3.5 h-3.5 text-primary" />
+          </div>
+          <span className="text-base font-semibold text-gray-100">{t("detailTitle")}</span>
+          <div className="ml-auto flex items-center gap-2">
+            <Chip color={STATUS_COLORS[movement.status]} variant="flat" size="sm">
+              {statusLabels[movement.status] ?? movement.status}
+            </Chip>
+            <Chip color={TYPE_COLORS[movement.type]} variant="flat" size="sm">
+              {typeLabels[movement.type]}
+            </Chip>
+          </div>
+        </ModalHeader>
+
+        <ModalBody className="space-y-4">
+          {/* Amount hero */}
+          <div className="rounded-xl bg-primary/5 border border-primary/10 px-5 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-0.5">
+                {t("detailLabelTotal")}
+              </p>
+              <p className="text-2xl font-bold text-gray-100">
+                {formatPrice(movement.amount, movement.currency)}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-0.5">
+                {t("detailLabelCreatedAt")}
+              </p>
+              <p className="text-sm text-gray-300">{fmt(movement.createdAt)}</p>
+              {movement.completedAt && (
+                <>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mt-2 mb-0.5">
+                    {t("detailLabelCompletedAt")}
+                  </p>
+                  <p className="text-sm text-gray-300">{fmt(movement.completedAt)}</p>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Two columns */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* LEFT */}
+            <div className="space-y-4">
+              <Section title={t("detailSectionCustomer")}>
+                <Row label={t("detailLabelName")}>{movement.customerName || "—"}</Row>
+                <Row label={t("detailLabelEmail")}>
+                  <span className="truncate max-w-[160px] block">{movement.customerEmail || "—"}</span>
+                </Row>
+                {movement.customerPhone && (
+                  <Row label={t("detailLabelPhone")}>{movement.customerPhone}</Row>
+                )}
+              </Section>
+
+              <Section title={t("detailProductsCount", { count: products.length })}>
+                {products.map((prod, i) => (
+                  <div
+                    key={prod.id || i}
+                    className="flex items-center justify-between gap-3 py-2 border-b border-white/5 last:border-0"
+                  >
+                    <span className="text-sm text-gray-100 truncate">{prod.name}</span>
+                    {prod.id && (
+                      <code className="text-[11px] text-gray-600 font-mono shrink-0">
+                        {prod.id.slice(0, 8)}…
+                      </code>
+                    )}
+                  </div>
+                ))}
+              </Section>
+            </div>
+
+            {/* RIGHT */}
+            <div className="space-y-4">
+              <Section title={t("detailSectionPayment")}>
+                <Row label={t("detailLabelCurrency")}>
+                  <span className="uppercase font-medium">{movement.currency}</span>
+                </Row>
+                <Row label={t("detailLabelType")}>
+                  <Chip color={TYPE_COLORS[movement.type]} variant="flat" size="sm">
+                    {typeLabels[movement.type]}
+                  </Chip>
+                </Row>
+                <Row label={t("detailLabelStatus")}>
+                  <Chip color={STATUS_COLORS[movement.status]} variant="flat" size="sm">
+                    {statusLabels[movement.status] ?? movement.status}
+                  </Chip>
+                </Row>
+                {movement.currentPeriodStart && (
+                  <Row label={t("detailLabelPeriod")}>
+                    <span className="text-xs">
+                      {fmt(movement.currentPeriodStart)} → {fmt(movement.currentPeriodEnd)}
+                    </span>
+                  </Row>
+                )}
+              </Section>
+
+              {hasStripeRefs && (
+                <Section title={t("detailSectionStripe")}>
+                  {movement.stripeCheckoutId && (
+                    <Row label={t("detailLabelCheckoutId")}>
+                      <code className="text-[11px] font-mono text-gray-400 truncate max-w-[150px] block">
+                        {movement.stripeCheckoutId}
+                      </code>
+                    </Row>
+                  )}
+                  {movement.stripePaymentIntentId && (
+                    <Row label={t("detailLabelPaymentIntent")}>
+                      <code className="text-[11px] font-mono text-gray-400 truncate max-w-[150px] block">
+                        {movement.stripePaymentIntentId}
+                      </code>
+                    </Row>
+                  )}
+                  {movement.stripeSubscriptionId && (
+                    <Row label={t("detailLabelSubscriptionId")}>
+                      <code className="text-[11px] font-mono text-gray-400 truncate max-w-[150px] block">
+                        {movement.stripeSubscriptionId}
+                      </code>
+                    </Row>
+                  )}
+                </Section>
+              )}
+            </div>
+          </div>
+        </ModalBody>
+
+        <ModalFooter className="gap-2 justify-end">
+          <Button size="sm" variant="flat" color="default" onPress={onClose}>
+            {t("detailClose")}
+          </Button>
+          {stripeLink && (
+            <Button
+              size="sm"
+              color="primary"
+              startContent={<ExternalLink className="w-3.5 h-3.5" />}
+              onPress={() => window.open(stripeLink, "_blank")}
+            >
+              {t("detailViewStripe")}
+            </Button>
+          )}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const PAGE_SIZE = 30;
@@ -71,6 +341,18 @@ export default function PaymentsSubscriptionsPage() {
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const [selectedMovement, setSelectedMovement] = useState<PaymentMovement | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const openDetail = (movement: PaymentMovement) => {
+    setSelectedMovement(movement);
+    setIsDetailOpen(true);
+  };
+  const closeDetail = () => {
+    setIsDetailOpen(false);
+    setSelectedMovement(null);
+  };
 
   const formatDate = (dateString: string) =>
     new Intl.DateTimeFormat(locale, {
@@ -103,18 +385,13 @@ export default function PaymentsSubscriptionsPage() {
 
   const updateParam = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (value && value !== "all") {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
+    if (value && value !== "all") params.set(key, value);
+    else params.delete(key);
     params.set("page", "1");
     router.push(`/dashboard/payments/subscriptions?${params.toString()}`);
   };
 
-  const clearFilters = () => {
-    router.push("/dashboard/payments/subscriptions");
-  };
+  const clearFilters = () => router.push("/dashboard/payments/subscriptions");
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
@@ -147,28 +424,28 @@ export default function PaymentsSubscriptionsPage() {
 
   const COLUMNS = [
     { key: "customer", label: t("columnCustomer") },
-    { key: "product", label: t("columnProduct") },
-    { key: "type", label: t("columnType") },
-    { key: "amount", label: t("columnAmount") },
-    { key: "status", label: t("columnStatus") },
-    { key: "date", label: t("columnDate") },
-    { key: "actions", label: "" },
+    { key: "product",  label: t("columnProduct")  },
+    { key: "type",     label: t("columnType")     },
+    { key: "amount",   label: t("columnAmount")   },
+    { key: "status",   label: t("columnStatus")   },
+    { key: "date",     label: t("columnDate")     },
+    { key: "actions",  label: ""                  },
   ];
 
   const TYPE_LABELS: Record<MovementType, string> = {
     subscription: t("typeSubscription"),
-    one_time: t("typeOneTime"),
+    one_time:     t("typeOneTime"),
   };
 
   const STATUS_LABELS: Record<MovementStatus, string> = {
-    completed: t("statusCompleted"),
-    active: t("statusActive"),
-    pending: t("statusPending"),
-    abandoned: t("statusAbandoned"),
-    canceled: t("statusCanceled"),
-    refunded: t("statusRefunded"),
-    trialing: t("statusTrialing"),
-    past_due: t("statusPastDue"),
+    completed:  t("statusCompleted"),
+    active:     t("statusActive"),
+    pending:    t("statusPending"),
+    abandoned:  t("statusAbandoned"),
+    canceled:   t("statusCanceled"),
+    refunded:   t("statusRefunded"),
+    trialing:   t("statusTrialing"),
+    past_due:   t("statusPastDue"),
     incomplete: t("statusIncomplete"),
   };
 
@@ -185,22 +462,32 @@ export default function PaymentsSubscriptionsPage() {
             )}
           </div>
         );
+
       case "product":
         return (
-          <p className="text-sm text-gray-200">{movement.productName || "—"}</p>
+          <ProductCell
+            movement={movement}
+            onExpand={openDetail}
+            tooltipLabel={t("detailViewAllProducts", {
+              count: movement.products?.length ?? 1,
+            })}
+          />
         );
+
       case "type":
         return (
           <Chip color={TYPE_COLORS[movement.type]} variant="flat" size="sm">
             {TYPE_LABELS[movement.type]}
           </Chip>
         );
+
       case "amount":
         return (
           <span className="font-semibold text-gray-100">
             {formatPrice(movement.amount, movement.currency)}
           </span>
         );
+
       case "status":
         return (
           <div className="flex flex-col gap-1">
@@ -214,34 +501,49 @@ export default function PaymentsSubscriptionsPage() {
             )}
           </div>
         );
+
       case "date":
         return (
-          <span className="text-sm text-gray-400">
-            {formatDate(movement.createdAt)}
-          </span>
+          <span className="text-sm text-gray-400">{formatDate(movement.createdAt)}</span>
         );
+
       case "actions": {
-        // Use pre-computed stripeLink if available, otherwise build from subscription id
         const link =
           movement.stripeLink ??
           (movement.stripeSubscriptionId
-            ? `https://dashboard.stripe.com/test/subscriptions/${movement.stripeSubscriptionId}`
+            ? `https://dashboard.stripe.com/subscriptions/${movement.stripeSubscriptionId}`
             : null);
 
-        if (!link) return null;
-
         return (
-          <Button
-            size="sm"
-            variant="light"
-            isIconOnly
-            onPress={() => window.open(link, "_blank")}
-            aria-label={t("viewOnStripe")}
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Tooltip content={t("detailTooltip")}>
+              <Button
+                size="sm"
+                variant="light"
+                isIconOnly
+                onPress={() => openDetail(movement)}
+                aria-label={t("detailTooltip")}
+              >
+                <Eye className="w-3.5 h-3.5" />
+              </Button>
+            </Tooltip>
+            {link && (
+              <Tooltip content={t("viewOnStripe")}>
+                <Button
+                  size="sm"
+                  variant="light"
+                  isIconOnly
+                  onPress={() => window.open(link, "_blank")}
+                  aria-label={t("viewOnStripe")}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Button>
+              </Tooltip>
+            )}
+          </div>
         );
       }
+
       default:
         return null;
     }
@@ -281,9 +583,9 @@ export default function PaymentsSubscriptionsPage() {
             className="w-44"
             classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
           >
-            <SelectItem key="all" value="all">{t("allTypes")}</SelectItem>
+            <SelectItem key="all"          value="all">{t("allTypes")}</SelectItem>
             <SelectItem key="subscription" value="subscription">{t("typeSubscription")}</SelectItem>
-            <SelectItem key="one_time" value="one_time">{t("typeOneTime")}</SelectItem>
+            <SelectItem key="one_time"     value="one_time">{t("typeOneTime")}</SelectItem>
           </Select>
 
           <Select
@@ -295,15 +597,15 @@ export default function PaymentsSubscriptionsPage() {
             className="w-48"
             classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
           >
-            <SelectItem key="all" value="all">{t("allStatuses")}</SelectItem>
-            <SelectItem key="active" value="active">{t("statusActive")}</SelectItem>
+            <SelectItem key="all"       value="all">{t("allStatuses")}</SelectItem>
+            <SelectItem key="active"    value="active">{t("statusActive")}</SelectItem>
             <SelectItem key="completed" value="completed">{t("statusCompleted")}</SelectItem>
-            <SelectItem key="pending" value="pending">{t("statusPending")}</SelectItem>
-            <SelectItem key="trialing" value="trialing">{t("statusTrialing")}</SelectItem>
+            <SelectItem key="pending"   value="pending">{t("statusPending")}</SelectItem>
+            <SelectItem key="trialing"  value="trialing">{t("statusTrialing")}</SelectItem>
             <SelectItem key="abandoned" value="abandoned">{t("statusAbandoned")}</SelectItem>
-            <SelectItem key="canceled" value="canceled">{t("statusCanceled")}</SelectItem>
-            <SelectItem key="refunded" value="refunded">{t("statusRefunded")}</SelectItem>
-            <SelectItem key="past_due" value="past_due">{t("statusPastDue")}</SelectItem>
+            <SelectItem key="canceled"  value="canceled">{t("statusCanceled")}</SelectItem>
+            <SelectItem key="refunded"  value="refunded">{t("statusRefunded")}</SelectItem>
+            <SelectItem key="past_due"  value="past_due">{t("statusPastDue")}</SelectItem>
           </Select>
 
           {hasAnyFilter && (
@@ -384,9 +686,7 @@ export default function PaymentsSubscriptionsPage() {
             {totalPages > 1 && (
               <div className="flex items-center gap-1">
                 <Button
-                  isIconOnly
-                  size="sm"
-                  variant="flat"
+                  isIconOnly size="sm" variant="flat"
                   isDisabled={page <= 1}
                   onPress={() => handlePageChange(page - 1)}
                   aria-label={t("previous")}
@@ -396,17 +696,11 @@ export default function PaymentsSubscriptionsPage() {
 
                 {pageNumbers.map((p, i) =>
                   p === "..." ? (
-                    <span
-                      key={`ellipsis-${i}`}
-                      className="px-2 text-sm text-gray-500 select-none"
-                    >
-                      …
-                    </span>
+                    <span key={`ellipsis-${i}`} className="px-2 text-sm text-gray-500 select-none">…</span>
                   ) : (
                     <Button
                       key={p}
-                      isIconOnly
-                      size="sm"
+                      isIconOnly size="sm"
                       variant={p === page ? "solid" : "flat"}
                       color={p === page ? "primary" : "default"}
                       onPress={() => handlePageChange(p as number)}
@@ -417,9 +711,7 @@ export default function PaymentsSubscriptionsPage() {
                 )}
 
                 <Button
-                  isIconOnly
-                  size="sm"
-                  variant="flat"
+                  isIconOnly size="sm" variant="flat"
                   isDisabled={page >= totalPages}
                   onPress={() => handlePageChange(page + 1)}
                   aria-label={t("next")}
@@ -431,6 +723,14 @@ export default function PaymentsSubscriptionsPage() {
           </div>
         )}
       </div>
+
+      <MovementDetailModal
+        movement={selectedMovement}
+        isOpen={isDetailOpen}
+        onClose={closeDetail}
+        typeLabels={TYPE_LABELS as Record<MovementType, string>}
+        statusLabels={STATUS_LABELS as Record<MovementStatus, string>}
+      />
     </LayoutScopeRoot>
   );
 }

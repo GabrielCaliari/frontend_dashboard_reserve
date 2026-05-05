@@ -58,13 +58,31 @@ export const paymentMovementsService = {
               ? `${stripeBase}/checkout/sessions/${p.stripeCheckoutId}`
               : null;
 
+            // Produtos vêm em metadata.cart_items (multi-produto) ou legado productId/productName
+            const cartItems: any[] = Array.isArray(p.metadata?.cart_items) && p.metadata.cart_items.length > 0
+              ? p.metadata.cart_items
+              : [];
+
+            const productsArray: Array<{ id: string; name: string }> = cartItems.length > 0
+              ? cartItems.map((item: any) => ({
+                  id: item.productId ?? '',
+                  name: item.productName ?? productMap[item.productId] ?? '—',
+                }))
+              : p.productId
+              ? [{ id: p.productId, name: p.productName ?? productMap[p.productId] ?? '—' }]
+              : [];
+
+            const firstProduct = productsArray[0];
+
             results.push({
               id: p.id,
               type: 'one_time',
               customerEmail: p.customerEmail ?? '',
               customerName: p.customerName,
-              productName: p.productName ?? productMap[p.productId] ?? '—',
-              productId: p.productId,
+              customerPhone: p.customerPhone,
+              productName: firstProduct?.name ?? p.productName ?? productMap[p.productId] ?? '—',
+              productId: firstProduct?.id ?? p.productId,
+              products: productsArray.length > 0 ? productsArray : undefined,
               amount: p.amount ?? 0,
               currency: p.currency ?? 'brl',
               status: (p.status ?? 'pending') as MovementStatus,

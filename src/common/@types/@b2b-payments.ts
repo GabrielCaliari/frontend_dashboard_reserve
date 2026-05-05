@@ -21,6 +21,7 @@ export interface B2BPurchase {
   tenantId: string;
   productId?: string;
   productName?: string;
+  products?: Array<{ id: string; name: string; price?: number }>; // multi-produto
   customerEmail: string;
   customerName?: string;
   customerPhone?: string;

@@ -106,7 +106,23 @@ export function B2BPurchasesTable() {
             {purchases.map((purchase) => (
               <TableRow key={purchase.id}>
                 <TableCell>
-                  <div className="font-medium">{purchase.productName}</div>
+                  {(() => {
+                    const cartItems: any[] = Array.isArray((purchase as any).metadata?.cart_items)
+                      ? (purchase as any).metadata.cart_items
+                      : [];
+                    if (cartItems.length > 1) {
+                      return (
+                        <div className="flex flex-col gap-0.5">
+                          {cartItems.map((item: any, i: number) => (
+                            <div key={item.productId || i} className="font-medium text-sm leading-tight">
+                              {item.productName || '—'}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+                    return <div className="font-medium">{purchase.productName || '—'}</div>;
+                  })()}
                 </TableCell>
                 <TableCell>
                   <div>

@@ -17,8 +17,10 @@ export interface PaymentMovement {
   type: MovementType;
   customerEmail: string;
   customerName?: string;
-  productName: string;
-  productId?: string;
+  customerPhone?: string;
+  productName: string;       // nome do primeiro produto (retrocompatibilidade)
+  productId?: string;        // id do primeiro produto (retrocompatibilidade)
+  products?: Array<{ id: string; name: string }>; // todos os produtos da compra
   amount: number; // em centavos
   currency: string;
   status: MovementStatus;
