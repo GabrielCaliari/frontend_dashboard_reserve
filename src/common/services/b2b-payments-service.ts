@@ -25,7 +25,8 @@ export const b2bPaymentsService = {
     slug: string;
     price: number;
     currency: string;
-    categories?: string[]; // NOVO: Categorias do produto
+    categories?: string[];
+    requiresShipping?: boolean;
   }): Promise<B2BProduct> {
     const response = await apiClient.post<B2BProduct>('/b2b/payments/products', data);
     return response.data;
@@ -77,6 +78,41 @@ export const b2bPaymentsService = {
   },
   async getMetrics(): Promise<B2BMetrics> {
     const response = await cmsApiClient.get<B2BMetrics>('/b2b/payments/metrics');
+    return response.data;
+  },
+
+  async updateProductFees(productId: string, data: {
+    categoryId?: string | null;
+    chipCostOverride?: number | null;
+    shippingFeeOverride?: number | null;
+    requiresShipping?: boolean;
+  }): Promise<B2BProduct> {
+    const response = await apiClient.patch<B2BProduct>(`/b2b/fees/products/${productId}`, data);
+    return response.data;
+  },
+
+  async getGlobalFees(): Promise<{ id: string; tenantId: string; chipCostPercent: number; shippingFee: number } | null> {
+    const response = await cmsApiClient.get('/b2b/fees/global');
+    return response.data;
+  },
+
+  async upsertGlobalFees(data: { chipCostPercent: number; shippingFee: number }): Promise<{ id: string; tenantId: string; chipCostPercent: number; shippingFee: number }> {
+    const response = await apiClient.put('/b2b/fees/global', data);
+    return response.data;
+  },
+
+  async calculateProductCost(productId: string): Promise<{
+    basePrice: number;
+    chipCostAmount: number;
+    shippingFee: number;
+    total: number;
+    currency: string;
+    chipCostPercent: number;
+    chipCostSource: 'product' | 'category' | 'global' | 'none';
+    shippingFeeSource: 'product' | 'category' | 'global' | 'none';
+    requiresShipping: boolean;
+  }> {
+    const response = await cmsApiClient.post(`/b2b/fees/products/${productId}/calculate-cost`, {});
     return response.data;
   },
 };

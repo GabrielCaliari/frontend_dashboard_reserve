@@ -10,6 +10,11 @@ export interface B2BProduct {
   stripeProductId: string;
   stripePriceId: string;
   slug: string;
+  // Fees & shipping
+  categoryId?: string | null;
+  requiresShipping?: boolean;
+  chipCostOverride?: number | null;
+  shippingFeeOverride?: number | null;
   createdAt: string;
   updatedAt: string;
 }

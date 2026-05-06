@@ -11,7 +11,9 @@ import {
   Textarea,
   Select,
   SelectItem,
+  Switch,
 } from '@heroui/react';
+import { Package } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useQueryClient } from '@tanstack/react-query';
@@ -56,8 +58,9 @@ export function CreateProductModal({
     intervalCount: '1',
     unitAmount: '',
     b2cCurrency: 'brl',
-    priceName: '', // NOVO: Nome do preço
-    categories: [] as string[], // NOVO: Categorias do produto
+    priceName: '',
+    categories: [] as string[],
+    requiresShipping: false,
     billingConfig: {
       mode: 'recurring_infinite',
       interval: 'month',
@@ -149,7 +152,8 @@ export function CreateProductModal({
           slug: form.slug.trim(),
           price: priceInCents,
           currency: form.currency,
-          categories: form.categories, // NOVO: Enviar categorias
+          categories: form.categories,
+          requiresShipping: form.requiresShipping,
         });
         queryClient.invalidateQueries({ queryKey: ['b2b-products'] });
       } else {
@@ -190,8 +194,9 @@ export function CreateProductModal({
           name: form.name.trim(),
           description: form.description.trim(),
           slug: form.slug.trim(),
-          priceName: form.priceName.trim() || form.name.trim(), // Usar nome do produto se priceName vazio
-          categories: form.categories, // NOVO: Enviar categorias
+          priceName: form.priceName.trim() || form.name.trim(),
+          categories: form.categories,
+          requiresShipping: form.requiresShipping,
           billingMode: backendBillingMode,
           // Interval só para unlimited e limited
           interval: (form.billingConfig.mode !== 'one_time_expiring') 
@@ -339,6 +344,23 @@ export function CreateProductModal({
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Toggle produto físico */}
+            <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e]">
+              <div className="flex items-center gap-2">
+                <Package className="w-4 h-4 text-gray-500" />
+                <div>
+                  <p className="text-sm text-gray-200">{t('physicalProductLabel')}</p>
+                  <p className="text-xs text-gray-600">{t('physicalProductDesc')}</p>
+                </div>
+              </div>
+              <Switch
+                isSelected={form.requiresShipping}
+                onValueChange={(v) => set('requiresShipping', v)}
+                isDisabled={isLoading}
+                size="sm"
+              />
             </div>
 
             {/* B2B: price + currency */}

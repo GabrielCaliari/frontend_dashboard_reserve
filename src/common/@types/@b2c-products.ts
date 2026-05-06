@@ -20,8 +20,32 @@ export interface Product {
   slug: string;
   active: boolean;
   prices: ProductPrice[];
+  // Fees & shipping
+  categoryId?: string | null;
+  requiresShipping?: boolean;
+  chipCostOverride?: number | null;
+  shippingFeeOverride?: number | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface B2CFeeConfig {
+  id: string;
+  tenantId: string;
+  chipCostPercent: number;
+  shippingFee: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface B2CCategory {
+  id: string;
+  tenantId: string;
+  name: string;
+  slug: string;
+  chipCostPercent: number | null;
+  shippingFee: number | null;
+  active: boolean;
 }
 
 export interface UserSubscription {
