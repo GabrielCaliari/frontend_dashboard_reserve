@@ -8,7 +8,7 @@ import {
   Chip,
 } from "@heroui/react";
 import { Bell, Mail, Zap, Clock } from "lucide-react";
-import { useNotificationSettings } from "@/src/common/hooks/notifications/use-notification-settings";
+import { useNotificationSettings } from "@/src/shared/hooks/notifications/use-notification-settings";
 import toast from "react-hot-toast";
 
 const EVENT_KEYS: Array<{ key: string; label: string; description: string }> = [

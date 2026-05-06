@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { Bell, Plus, Send, Pencil, Trash2, Globe, Target } from "lucide-react";
-import { useNotifications } from "@/src/common/hooks/notifications/use-notifications";
+import { useNotifications } from "@/src/shared/hooks/notifications/use-notifications";
 import { apiClient } from "@/src/infraestructure/axios/api";
 import { CmsPageLayout } from "../cms/shared/cms-page-layout";
 import { CmsPageHeader } from "../cms/shared/cms-page-header";

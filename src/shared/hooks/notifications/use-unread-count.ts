@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { apiClient } from "@/src/infraestructure/axios/api";
+import { getUnreadCount } from "@/src/modules/notifications/infrastructure/adapters";
 
 export function useUnreadCount(tenantId: string | null) {
   const [count, setCount] = useState(0);
@@ -9,13 +9,8 @@ export function useUnreadCount(tenantId: string | null) {
     if (!tenantId) return;
     const load = async () => {
       try {
-        const res = await apiClient.get(
-          "/notifications/tenant/me/unread-count",
-          {
-            headers: { "x-tenant-id": tenantId },
-          },
-        );
-        setCount(res.data?.count ?? 0);
+        const result = await getUnreadCount(tenantId);
+        setCount(result ?? 0);
       } catch {}
     };
     load();
