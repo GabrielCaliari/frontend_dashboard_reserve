@@ -14,8 +14,8 @@ import {
 } from "@heroui/react";
 import { toast } from "react-hot-toast";
 import { useTranslations } from "next-intl";
-import { useCreatePlan } from "@/src/common/hooks/payments/use-create-plan";
-import { useUpdatePlan } from "@/src/common/hooks/payments/use-update-plan";
+import { useCreatePlan } from "@/src/shared/hooks/payments/use-create-plan";
+import { useUpdatePlan } from "@/src/shared/hooks/payments/use-update-plan";
 import type {
   StripePlan,
   PlanBillingInterval,

@@ -19,11 +19,11 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useSubscription } from "@/src/common/hooks/payments/use-subscription";
-import { useBillingConfig } from "@/src/common/hooks/payments/use-billing-config";
-import { usePlans } from "@/src/common/hooks/payments/use-plans";
-import { useCreateCheckoutSession } from "@/src/common/hooks/payments/use-create-checkout-session";
-import { useCancelSubscription } from "@/src/common/hooks/payments/use-cancel-subscription";
+import { useSubscription } from "@/src/shared/hooks/payments/use-subscription";
+import { useBillingConfig } from "@/src/shared/hooks/payments/use-billing-config";
+import { usePlans } from "@/src/shared/hooks/payments/use-plans";
+import { useCreateCheckoutSession } from "@/src/shared/hooks/payments/use-create-checkout-session";
+import { useCancelSubscription } from "@/src/shared/hooks/payments/use-cancel-subscription";
 import { SubscriptionCard } from "./subscription-card";
 import { useTenantStore } from "@/src/shared/stores/tenant-store";
 

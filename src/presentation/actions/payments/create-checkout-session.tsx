@@ -1,6 +1,6 @@
 "use server";
 
-import { createCheckoutSessionService } from "@/src/common/services/payments/subscriptions-service";
+import { createCheckoutSessionService } from "@/src/modules/payments/infrastructure/adapters";
 import type {
   CreateCheckoutSessionDto,
   CheckoutSessionResponse,

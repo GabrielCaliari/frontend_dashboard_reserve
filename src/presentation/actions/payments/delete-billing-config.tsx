@@ -1,6 +1,6 @@
 "use server";
 
-import { deleteBillingConfigService } from "@/src/common/services/payments/billing-config-service";
+import { deleteBillingConfigService } from "@/src/modules/payments/infrastructure/adapters";
 
 export async function deleteBillingConfigAction(): Promise<void> {
   try {

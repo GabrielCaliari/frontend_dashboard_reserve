@@ -5,8 +5,8 @@ import { Button, Chip, Skeleton } from "@heroui/react";
 import { toast } from "react-hot-toast";
 import { CheckCircle, XCircle, Pencil, Trash2, RefreshCw } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useBillingConfig } from "@/src/common/hooks/payments/use-billing-config";
-import { useDeleteBillingConfig } from "@/src/common/hooks/payments/use-delete-billing-config";
+import { useBillingConfig } from "@/src/shared/hooks/payments/use-billing-config";
+import { useDeleteBillingConfig } from "@/src/shared/hooks/payments/use-delete-billing-config";
 import { BillingConfigForm } from "./billing-config-form";
 
 interface StatusBadgeProps {
