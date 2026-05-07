@@ -3,7 +3,7 @@
  * Only accessible by super_admin users.
  */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { reportService } from "@/src/common/services/report-service";
+import { reportService } from "@/src/modules/reports/infrastructure/adapters";
 import type {
   Report,
   CreateReportDto,
