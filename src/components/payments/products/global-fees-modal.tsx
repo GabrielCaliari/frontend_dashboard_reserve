@@ -1,6 +1,6 @@
 'use client';
 
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Spinner } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem, Spinner } from '@heroui/react';
 import { Settings, Percent } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
@@ -22,8 +22,8 @@ export function GlobalFeesModal({ isOpen, onClose }: GlobalFeesModalProps) {
   });
 
   const [chipCost, setChipCost] = useState('');
-  // CurrencyInput trabalha com string decimal "15.00" internamente
   const [shipping, setShipping] = useState('');
+  const [currency, setCurrency] = useState<'usd' | 'brl'>('usd');
 
   useEffect(() => {
     if (isOpen && config) {
@@ -32,6 +32,7 @@ export function GlobalFeesModal({ isOpen, onClose }: GlobalFeesModalProps) {
     } else if (isOpen && !config) {
       setChipCost('');
       setShipping('');
+      setCurrency('usd');
     }
   }, [isOpen, config]);
 
@@ -71,14 +72,30 @@ export function GlobalFeesModal({ isOpen, onClose }: GlobalFeesModalProps) {
                 classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }}
               />
 
-              <CurrencyInput
-                label={t('feesGlobalShippingLabel')}
-                placeholder="15,00"
-                value={shipping}
-                onValueChange={setShipping}
-                description={t('feesGlobalShippingDesc')}
-                classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }}
-              />
+              <div className="flex gap-2 items-end">
+                <div className="flex-1">
+                  <CurrencyInput
+                    label={t('feesGlobalShippingLabel')}
+                    placeholder="15,00"
+                    value={shipping}
+                    onValueChange={setShipping}
+                    currency={currency}
+                    description={t('feesGlobalShippingDesc')}
+                    classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }}
+                  />
+                </div>
+                <Select
+                  size="sm"
+                  selectedKeys={[currency]}
+                  onChange={(e) => setCurrency(e.target.value as 'usd' | 'brl')}
+                  className="w-24"
+                  aria-label="Currency"
+                  classNames={{ trigger: 'bg-white/[0.03] border-white/[0.07] h-[56px]' }}
+                >
+                  <SelectItem key="usd">USD</SelectItem>
+                  <SelectItem key="brl">BRL</SelectItem>
+                </Select>
+              </div>
             </>
           )}
         </ModalBody>
