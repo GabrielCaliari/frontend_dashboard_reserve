@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { statsService } from "@/src/common/services/stats-service";
+import { statsService } from "@/src/modules/stats/infrastructure/adapters";
 import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
 import type {
   StatsTimeseriesItem,

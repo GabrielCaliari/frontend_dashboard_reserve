@@ -13,7 +13,7 @@ import {
   useCreateStatsIntegration,
   useUpdateStatsIntegration,
   useDeleteStatsIntegration,
-} from "@/src/common/hooks/stats";
+} from "@/src/shared/hooks/stats";
 import {
   IntegrationListItem,
   AddIntegrationModal,

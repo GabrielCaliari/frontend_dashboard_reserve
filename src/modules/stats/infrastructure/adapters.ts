@@ -1,3 +1,43 @@
+/**
+ * Adapter para o domínio `stats` (antigo `common/services/stats-service.ts`).
+ *
+ * NOTA (Task 25): o codegen (`src/infraestructure/server/services/stats-dashboard`
+ * e `.../stats-integrations`) foi inspecionado antes de decidir esta implementação.
+ * Optou-se por manter a implementação `apiClient` verbatim em vez de delegar para
+ * os serviços gerados, pelas seguintes divergências estruturais e comportamentais
+ * encontradas:
+ *
+ * 1. `skipTenantHeader` (flag custom lida por `injectAuthHeaders` em
+ *    `infraestructure/axios/get-auth-headers.ts`) é usada aqui em
+ *    `getTenantDashboard`, `getGlobalDashboard` e `getProviders` para suprimir o
+ *    header `x-tenant-id` — necessário porque esses endpoints são cross-tenant ou
+ *    identificam o tenant via path param. As funções geradas
+ *    (`statsDashboardService.getDashboardByTenant/getGlobalDashboard`,
+ *    `statsIntegrationsService.listProviders`) não expõem nenhum parâmetro de
+ *    config do axios — apenas `params`/`body` — então não há como propagar essa
+ *    flag delegando. Delegar quebraria o escopo do tenant nessas chamadas.
+ * 2. `getProviders()` aqui bate deliberadamente em `/stats/available-integrations`
+ *    (mesmo endpoint de `getAvailableIntegrations`, só que sem o header de
+ *    tenant) — não em `/stats/integrations/providers`, que é o endpoint que
+ *    `statsIntegrationsService.listProviders()` gerado chama. São endpoints
+ *    diferentes; delegar mudaria o comportamento observável.
+ * 3. Nomes de método divergem em quase todos os pontos: `getTenantDashboard` vs
+ *    `getDashboardByTenant`, `getTimeseries` vs `getTimeSeries`, `getModuleStats`
+ *    vs `getModuleMetrics`, `listIntegrations`/`getIntegration` vs `list`/`getById`,
+ *    `createIntegration`/`updateIntegration`/`deleteIntegration` vs
+ *    `create`/`update`/`delete`. Preservar a shape atual (exigência da Task 25)
+ *    exigiria uma camada de renomeação de qualquer forma.
+ * 4. Tipos de domínio (`@/src/shared/domain/types/@stats`) não batem 1:1 com os
+ *    DTOs gerados: `MetricValueResponse.value` é `number | string` aqui contra
+ *    `Record<string, unknown>` no DTO gerado; `AvailableIntegration.configSchema`
+ *    é tipado como `Record<string, ConfigSchemaField>` aqui contra
+ *    `Record<string, unknown>` no gerado.
+ *
+ * Dado o volume de divergências (comportamento de header por tenant, endpoints
+ * diferentes para "providers", nomes de método e tipagem), a delegação para o
+ * código gerado foi descartada. Todos os paths e a lógica de normalização abaixo
+ * são idênticos ao `stats-service.ts` pré-migração.
+ */
 import api from "@/src/infraestructure/axios/api";
 import type {
   DashboardResponse,
