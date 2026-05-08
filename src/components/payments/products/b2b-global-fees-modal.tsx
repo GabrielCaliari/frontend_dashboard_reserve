@@ -28,7 +28,7 @@ export function B2BGlobalFeesModal({ isOpen, onClose }: B2BGlobalFeesModalProps)
   useEffect(() => {
     if (isOpen && config) {
       setChipCost(config.chipCostPercent > 0 ? String(config.chipCostPercent) : '');
-      setShipping(config.shippingFee > 0 ? String(config.shippingFee / 100) : '');
+      setShipping(config.shippingFee > 0 ? String(config.shippingFee) : '');
     } else if (isOpen && !config) {
       setChipCost('');
       setShipping('');

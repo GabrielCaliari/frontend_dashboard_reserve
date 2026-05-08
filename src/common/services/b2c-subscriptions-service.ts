@@ -1,36 +1,52 @@
-import axios from 'axios';
+import { cmsApiClient } from '@/src/common/config/api';
 import type { UserSubscription, SubscriptionMetrics } from '@/src/common/@types/@b2c-products';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.seudominio.com/api';
-
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 export const b2cSubscriptionsService = {
   /**
-   * Lista todas as assinaturas ativas
+   * Lista assinaturas B2C via GET /api/subscriptions/movements?source=b2c
    */
-  async listSubscriptions(): Promise<UserSubscription[]> {
-    const response = await apiClient.get<UserSubscription[]>('/subscriptions/b2c');
+  async listSubscriptions(params?: {
+    source?: 'b2c' | 'b2b' | 'all';
+    status?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<UserSubscription[]> {
+    const response = await cmsApiClient.get<UserSubscription[]>('/subscriptions/movements', {
+      params: {
+        source: params?.source ?? 'b2c',
+        status: params?.status ?? 'all',
+        limit: params?.limit ?? 50,
+        offset: params?.offset ?? 0,
+      },
+    });
     return response.data;
   },
 
   /**
-   * Obtém métricas de assinaturas
+   * Obtém métricas de assinaturas B2C
+   * Calculadas localmente a partir dos movimentos enquanto o endpoint dedicado não existe
    */
   async getMetrics(): Promise<SubscriptionMetrics> {
-    const response = await apiClient.get<SubscriptionMetrics>('/subscriptions/b2c/metrics');
-    return response.data;
+    const subscriptions = await b2cSubscriptionsService.listSubscriptions({ source: 'b2c', status: 'all', limit: 200 });
+
+    const active = subscriptions.filter((s) => s.status === 'active').length;
+    const canceled = subscriptions.filter((s) => s.status === 'canceled').length;
+    const mrr = subscriptions
+      .filter((s) => s.status === 'active')
+      .reduce((sum, s) => sum + (s.amount ?? 0), 0);
+
+    return {
+      totalActive: active,
+      totalCanceled: canceled,
+      mrr,
+      total: subscriptions.length,
+    } as SubscriptionMetrics;
   },
 
   /**
    * Cancela uma assinatura
    */
   async cancelSubscription(subscriptionId: string): Promise<void> {
-    await apiClient.post(`/subscriptions/b2c/${subscriptionId}/cancel`);
+    await cmsApiClient.post(`/subscriptions/b2c/${subscriptionId}/cancel`);
   },
 };

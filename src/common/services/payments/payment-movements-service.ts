@@ -4,139 +4,152 @@ import type {
   PaymentMovementsResponse,
   ListMovementsParams,
   MovementStatus,
+  MovementType,
 } from '@/src/common/@types/@payment-movements';
-import type { UserSubscription } from '@/src/common/@types/@b2c-products';
-import type { B2BProduct } from '@/src/common/@types/@b2b-payments';
+
+/**
+ * Shape retornada pelo backend em GET /subscriptions/movements
+ * (tanto source=all quanto source=b2c ou source=b2b)
+ */
+interface BackendMovement {
+  id: string;
+  source: 'b2c' | 'b2b';
+  type?: 'subscription' | 'one_time';
+  status: string;
+  amount: number;
+  currency: string;
+  customerEmail?: string;
+  customerName?: string;
+  customerPhone?: string;
+  productId?: string;
+  productName?: string;
+  products?: Array<{ id: string; name: string }>;
+  // cart_items (B2B multi-produto)
+  metadata?: { cart_items?: Array<{ productId: string; productName?: string }> };
+  // Subscription fields
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
+  cancelAtPeriodEnd?: boolean;
+  // One-time fields
+  stripeCheckoutId?: string;
+  stripePaymentIntent?: string;
+  stripePaymentIntentId?: string;
+  // Timestamps
+  checkoutStartedAt?: string;
+  checkoutCompletedAt?: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+interface BackendMovementsResponse {
+  data: BackendMovement[];
+  total: number;
+}
+
+function mapMovement(m: BackendMovement): PaymentMovement {
+  const type: MovementType = m.type === 'subscription' || m.source === 'b2c'
+    ? 'subscription'
+    : 'one_time';
+
+  // Detecta modo teste pelo prefixo do Stripe ID
+  const isTest =
+    m.stripeCheckoutId?.startsWith('cs_test_') ||
+    m.stripePaymentIntent?.startsWith('pi_test_') ||
+    String(m.stripePaymentIntent ?? '').includes('test');
+  const stripeBase = `https://dashboard.stripe.com${isTest ? '/test' : ''}`;
+
+  const stripeLink =
+    m.stripeSubscriptionId
+      ? `${stripeBase}/subscriptions/${m.stripeSubscriptionId}`
+      : m.stripePaymentIntent
+      ? `${stripeBase}/payments/${m.stripePaymentIntent}`
+      : m.stripeCheckoutId
+      ? `${stripeBase}/checkout/sessions/${m.stripeCheckoutId}`
+      : null;
+
+  // Monta lista de produtos (suporte a cart_items multi-produto)
+  const cartItems = Array.isArray(m.metadata?.cart_items) && m.metadata!.cart_items!.length > 0
+    ? m.metadata!.cart_items!
+    : [];
+
+  const products: Array<{ id: string; name: string }> =
+    m.products && m.products.length > 0
+      ? m.products
+      : cartItems.length > 0
+      ? cartItems.map((item) => ({ id: item.productId ?? '', name: item.productName ?? '—' }))
+      : m.productId
+      ? [{ id: m.productId, name: m.productName ?? '—' }]
+      : [];
+
+  const firstProduct = products[0];
+
+  return {
+    id: m.id,
+    type,
+    customerEmail: m.customerEmail ?? '',
+    customerName: m.customerName,
+    customerPhone: m.customerPhone,
+    productName: firstProduct?.name ?? m.productName ?? '—',
+    productId: firstProduct?.id ?? m.productId,
+    products: products.length > 0 ? products : undefined,
+    amount: m.amount ?? 0,
+    currency: m.currency ?? 'brl',
+    status: (m.status ?? 'pending') as MovementStatus,
+    stripeLink,
+    // Subscription
+    currentPeriodStart: m.currentPeriodStart,
+    currentPeriodEnd: m.currentPeriodEnd,
+    cancelAtPeriodEnd: m.cancelAtPeriodEnd,
+    stripeSubscriptionId: m.stripeSubscriptionId,
+    // One-time
+    stripeCheckoutId: m.stripeCheckoutId,
+    stripePaymentIntentId: m.stripePaymentIntent ?? m.stripePaymentIntentId,
+    completedAt: m.checkoutCompletedAt ?? m.completedAt,
+    createdAt: m.checkoutStartedAt ?? m.createdAt,
+    updatedAt: m.updatedAt ?? m.createdAt,
+  };
+}
 
 export const paymentMovementsService = {
   async listMovements(params?: ListMovementsParams): Promise<PaymentMovementsResponse> {
-    const results: PaymentMovement[] = [];
+    // Mapeia o filtro de tipo para o param source do backend
+    const source =
+      params?.type === 'subscription' ? 'b2c'
+      : params?.type === 'one_time'    ? 'b2b'
+      : 'all';
 
-    // ── B2B purchases (pagamento único) ──────────────────────────────────────
-    if (!params?.type || params.type === 'all' || params.type === 'one_time') {
-      try {
-        const [purchasesRes, productsRes] = await Promise.allSettled([
-          cmsApiClient.get('/b2b/payments/purchases', {
-            params: {
-              limit: 100,
-              offset: 0,
-              status: params?.status && params.status !== 'all' ? params.status : undefined,
-            },
-          }),
-          cmsApiClient.get<B2BProduct[]>('/b2b/payments/products'),
-        ]);
+    const queryParams = {
+      source,
+      status: params?.status && params.status !== 'all' ? params.status : 'all',
+      limit: params?.limit ?? 100,
+      offset: params?.offset ?? 0,
+    };
 
-        // Mapa productId → name para join
-        const productMap: Record<string, string> = {};
-        if (productsRes.status === 'fulfilled') {
-          const prods: B2BProduct[] = Array.isArray(productsRes.value.data)
-            ? productsRes.value.data
-            : [];
-          for (const prod of prods) {
-            productMap[prod.id] = prod.name;
-          }
-        }
+    console.log('[movements] request → GET /subscriptions/movements', queryParams);
 
-        if (purchasesRes.status === 'fulfilled') {
-          const raw = purchasesRes.value.data as any;
-          const purchases: any[] = Array.isArray(raw)
-            ? raw
-            : Array.isArray(raw?.data)
-            ? raw.data
-            : [];
+    const res = await cmsApiClient.get<BackendMovementsResponse>('/subscriptions/movements', {
+      params: queryParams,
+    });
 
-          for (const p of purchases) {
-            // Detecta modo teste pelo prefixo do checkout ID
-            const isTest = p.stripeCheckoutId?.startsWith('cs_test_') ||
-              p.stripePaymentIntent?.startsWith('pi_test_') ||
-              String(p.stripePaymentIntent ?? '').includes('test');
-            const stripeBase = `https://dashboard.stripe.com${isTest ? '/test' : ''}`;
+    console.log('[movements] response →', res.status, { total: res.data?.total });
 
-            const stripeLink = p.stripePaymentIntent
-              ? `${stripeBase}/payments/${p.stripePaymentIntent}`
-              : p.stripeCheckoutId
-              ? `${stripeBase}/checkout/sessions/${p.stripeCheckoutId}`
-              : null;
+    const raw: BackendMovement[] = Array.isArray(res.data)
+      ? res.data
+      : Array.isArray(res.data?.data)
+      ? res.data.data
+      : [];
 
-            // Produtos vêm em metadata.cart_items (multi-produto) ou legado productId/productName
-            const cartItems: any[] = Array.isArray(p.metadata?.cart_items) && p.metadata.cart_items.length > 0
-              ? p.metadata.cart_items
-              : [];
+    const data = raw.map(mapMovement);
 
-            const productsArray: Array<{ id: string; name: string }> = cartItems.length > 0
-              ? cartItems.map((item: any) => ({
-                  id: item.productId ?? '',
-                  name: item.productName ?? productMap[item.productId] ?? '—',
-                }))
-              : p.productId
-              ? [{ id: p.productId, name: p.productName ?? productMap[p.productId] ?? '—' }]
-              : [];
-
-            const firstProduct = productsArray[0];
-
-            results.push({
-              id: p.id,
-              type: 'one_time',
-              customerEmail: p.customerEmail ?? '',
-              customerName: p.customerName,
-              customerPhone: p.customerPhone,
-              productName: firstProduct?.name ?? p.productName ?? productMap[p.productId] ?? '—',
-              productId: firstProduct?.id ?? p.productId,
-              products: productsArray.length > 0 ? productsArray : undefined,
-              amount: p.amount ?? 0,
-              currency: p.currency ?? 'brl',
-              status: (p.status ?? 'pending') as MovementStatus,
-              stripeCheckoutId: p.stripeCheckoutId,
-              stripePaymentIntentId: p.stripePaymentIntent ?? p.stripePaymentIntentId,
-              stripeLink,
-              completedAt: p.checkoutCompletedAt ?? p.completedAt,
-              createdAt: p.checkoutStartedAt ?? p.createdAt,
-              updatedAt: p.updatedAt ?? p.createdAt,
-            });
-          }
-        }
-      } catch (err: any) {
-        console.error('[movements] b2b failed:', err?.response?.status, err?.message);
-      }
-    }
-
-    // ── B2C subscriptions (recorrente) ───────────────────────────────────────
-    if (!params?.type || params.type === 'all' || params.type === 'subscription') {
-      try {
-        const res = await cmsApiClient.get<UserSubscription[]>('/subscriptions/b2c');
-        const subscriptions: UserSubscription[] = Array.isArray(res.data) ? res.data : [];
-
-        for (const s of subscriptions) {
-          results.push({
-            id: s.id,
-            type: 'subscription',
-            customerEmail: s.studentEmail ?? '',
-            productName: s.productName ?? '—',
-            productId: s.productId,
-            amount: s.amount ?? 0,
-            currency: s.currency ?? 'brl',
-            status: s.status as MovementStatus,
-            currentPeriodStart: s.currentPeriodStart,
-            currentPeriodEnd: s.currentPeriodEnd,
-            cancelAtPeriodEnd: s.cancelAtPeriodEnd,
-            stripeSubscriptionId: s.stripeSubscriptionId,
-            createdAt: s.createdAt,
-            updatedAt: s.updatedAt,
-          });
-        }
-      } catch {
-        // B2C endpoint not available yet — skip silently
-      }
-    }
-
-    results.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return {
-      data: results,
-      total: results.length,
-      limit: params?.limit ?? results.length,
+      data,
+      total: res.data?.total ?? data.length,
+      limit: params?.limit ?? data.length,
       offset: params?.offset ?? 0,
     };
   },
