@@ -1,8 +1,8 @@
 // Coupon types — aligned with backend_api_zarp-admin branch 001-feat-coupons
 // All monetary values are in cents (integer)
 
-export type EDiscountType = 'PERCENTAGE' | 'FIXED_AMOUNT';
-export type ECouponScope = 'ORDER' | 'PRODUCT' | 'CATEGORY';
+export type EDiscountType = 'percentage' | 'fixed_amount';
+export type ECouponScope = 'order' | 'product' | 'category';
 export type ECouponAppliesTo = 'b2b' | 'b2c' | 'both';
 
 export interface DiscountCoupon {

@@ -43,18 +43,31 @@ const ERROR_MAP: Record<string, string> = {
  */
 export function mapErrorMessage(
   error: unknown,
-  fallback = 'An unexpected error occurred. Please try again.',
+  fallback = 'Ocorreu um erro inesperado. Tente novamente.',
 ): string {
   if (!error) return fallback;
 
   // Axios-style error
   const axiosError = error as {
-    response?: { data?: { code?: string; message?: string | string[] } };
+    response?: {
+      status?: number;
+      data?: unknown;
+      headers?: Record<string, string>;
+    };
     message?: string;
   };
 
-  const code    = axiosError?.response?.data?.code;
-  const message = axiosError?.response?.data?.message;
+  const status = axiosError?.response?.status;
+  const data   = axiosError?.response?.data;
+
+  // HTML error page (e.g. from proxy / missing x-tenant-id / 400 from express)
+  if (typeof data === 'string' && data.trim().startsWith('<')) {
+    return STATUS_MESSAGE[status ?? 0] ?? fallback;
+  }
+
+  const jsonData = data as { code?: string; message?: string | string[] } | undefined;
+  const code    = jsonData?.code;
+  const message = jsonData?.message;
 
   if (code && ERROR_MAP[code]) {
     return ERROR_MAP[code];
@@ -68,6 +81,10 @@ export function mapErrorMessage(
     return message;
   }
 
+  if (status && STATUS_MESSAGE[status]) {
+    return STATUS_MESSAGE[status];
+  }
+
   if (typeof axiosError?.message === 'string' && axiosError.message !== 'Network Error') {
     return axiosError.message;
   }
@@ -78,3 +95,17 @@ export function mapErrorMessage(
 
   return fallback;
 }
+
+/** HTTP status → friendly message fallback */
+const STATUS_MESSAGE: Record<number, string> = {
+  400: 'Requisição inválida. Verifique os dados enviados.',
+  401: 'Sessão expirada. Faça login novamente.',
+  403: 'Sem permissão para executar esta ação.',
+  404: 'Recurso não encontrado.',
+  409: 'Conflito: este registro já existe.',
+  422: 'Dados inválidos. Verifique os campos e tente novamente.',
+  429: 'Muitas tentativas. Aguarde um momento.',
+  500: 'Erro interno do servidor. Tente novamente em instantes.',
+  502: 'Serviço indisponível temporariamente.',
+  503: 'Serviço em manutenção. Tente novamente em breve.',
+};

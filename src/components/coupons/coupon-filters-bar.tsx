@@ -26,25 +26,28 @@ export function CouponFiltersBar({
   appliesToFilter,
   onAppliesToFilterChange,
 }: CouponFiltersBarProps) {
-  const triggerClass = "bg-[#0d0d20] border-gray-700 min-w-[140px]";
+  const selectClass = "bg-[#0d0d20] border-gray-700";
 
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-      {/* Left: search + filters */}
-      <div className="flex flex-wrap items-center gap-3 flex-1">
+    <div className="flex flex-wrap items-center gap-3">
+      {/* Search */}
+      <div className="flex-1 min-w-[180px]">
         <Input
           placeholder="Buscar por código ou nome…"
           value={search}
           onValueChange={onSearchChange}
-          startContent={<Search className="w-4 h-4 text-gray-500" />}
+          startContent={<Search className="w-4 h-4 text-gray-500 shrink-0" />}
           classNames={{
-            inputWrapper: "bg-[#0d0d20] border-gray-700 min-w-[200px]",
+            inputWrapper: "bg-[#0d0d20] border-gray-700",
             input: "text-gray-100",
           }}
           isClearable
           onClear={() => onSearchChange("")}
         />
+      </div>
 
+      {/* Status */}
+      <div className="w-[150px] shrink-0">
         <Select
           aria-label="Filtrar por status"
           selectedKeys={new Set([activeFilter])}
@@ -52,13 +55,16 @@ export function CouponFiltersBar({
             const val = Array.from(keys)[0] as "all" | "active" | "inactive";
             onActiveFilterChange(val);
           }}
-          classNames={{ trigger: triggerClass }}
+          classNames={{ trigger: selectClass }}
         >
-          <SelectItem key="all">Todos os status</SelectItem>
+          <SelectItem key="all">Todos status</SelectItem>
           <SelectItem key="active">Ativos</SelectItem>
           <SelectItem key="inactive">Inativos</SelectItem>
         </Select>
+      </div>
 
+      {/* Scope */}
+      <div className="w-[160px] shrink-0">
         <Select
           aria-label="Filtrar por escopo"
           selectedKeys={new Set([scopeFilter])}
@@ -66,14 +72,17 @@ export function CouponFiltersBar({
             const val = Array.from(keys)[0] as ECouponScope | "all";
             onScopeFilterChange(val);
           }}
-          classNames={{ trigger: triggerClass }}
+          classNames={{ trigger: selectClass }}
         >
-          <SelectItem key="all">Todos os escopos</SelectItem>
-          <SelectItem key="ORDER">Pedido</SelectItem>
-          <SelectItem key="PRODUCT">Produto</SelectItem>
-          <SelectItem key="CATEGORY">Categoria</SelectItem>
+          <SelectItem key="all">Todos escopos</SelectItem>
+          <SelectItem key="order">Pedido</SelectItem>
+          <SelectItem key="product">Produto</SelectItem>
+          <SelectItem key="category">Categoria</SelectItem>
         </Select>
+      </div>
 
+      {/* Applies to */}
+      <div className="w-[150px] shrink-0">
         <Select
           aria-label="Filtrar por aplicação"
           selectedKeys={new Set([appliesToFilter])}
@@ -81,7 +90,7 @@ export function CouponFiltersBar({
             const val = Array.from(keys)[0] as ECouponAppliesTo | "all";
             onAppliesToFilterChange(val);
           }}
-          classNames={{ trigger: triggerClass }}
+          classNames={{ trigger: selectClass }}
         >
           <SelectItem key="all">B2B + B2C</SelectItem>
           <SelectItem key="b2b">Apenas B2B</SelectItem>
@@ -90,13 +99,13 @@ export function CouponFiltersBar({
         </Select>
       </div>
 
-      {/* Right: CTA */}
+      {/* CTA */}
       <Button
         as={Link}
         href="/dashboard/coupons/new"
         color="primary"
         startContent={<Plus className="w-4 h-4" />}
-        className="shrink-0"
+        className="shrink-0 ml-auto"
       >
         Novo Cupom
       </Button>

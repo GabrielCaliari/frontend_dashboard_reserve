@@ -44,7 +44,7 @@ interface DiscountValueProps {
 }
 
 export function DiscountValueDisplay({ discountType, discountValue }: DiscountValueProps) {
-  if (discountType === "PERCENTAGE") return <>{discountValue}%</>;
+  if (discountType === "percentage") return <>{discountValue}%</>;
   return (
     <>
       {(discountValue / 100).toLocaleString("pt-BR", {
@@ -65,8 +65,8 @@ interface CouponScopeProps {
 }
 
 export function CouponScopeDisplay({ scope, productIds, categoryIds }: CouponScopeProps) {
-  if (scope === "ORDER") return <>Todo o pedido</>;
-  if (scope === "PRODUCT")
+  if (scope === "order") return <>Todo o pedido</>;
+  if (scope === "product")
     return <>{productIds.length} {productIds.length === 1 ? "produto" : "produtos"}</>;
   return <>{categoryIds.length} {categoryIds.length === 1 ? "categoria" : "categorias"}</>;
 }
@@ -124,9 +124,9 @@ export function AppliesToBadge({ appliesTo }: { appliesTo: DiscountCoupon["appli
 // ScopeBadge
 // ---------------------------------------------------------------------------
 const SCOPE_COLOR = {
-  ORDER: "default",
-  PRODUCT: "secondary",
-  CATEGORY: "warning",
+  order: "default",
+  product: "secondary",
+  category: "warning",
 } as const;
 
 export function ScopeBadge({ scope }: { scope: DiscountCoupon["scope"] }) {

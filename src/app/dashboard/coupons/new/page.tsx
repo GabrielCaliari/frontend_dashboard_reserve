@@ -7,8 +7,8 @@ import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { CouponForm } from "@/src/components/coupons/coupon-form";
 import { useCreateCoupon } from "@/src/common/hooks/useCoupons";
 import { toast } from "@/src/common/hooks/use-toast";
+import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
 import type { CreateCouponPayload } from "@/src/common/@types/@coupons";
-import { isAxiosError } from "axios";
 
 export default function CouponsNewPage() {
   const router = useRouter();
@@ -20,14 +20,7 @@ export default function CouponsNewPage() {
       toast({ title: "Cupom criado com sucesso!", variant: "default" });
       router.push(`/dashboard/coupons/${created.id}`);
     } catch (err) {
-      let message = "Erro ao criar cupom.";
-      if (isAxiosError(err)) {
-        if (err.response?.status === 409) {
-          message = "Já existe um cupom com este código.";
-        } else {
-          message = err.response?.data?.message ?? message;
-        }
-      }
+      const message = mapErrorMessage(err, "Erro ao criar cupom.");
       toast({ title: message, variant: "destructive" });
     }
   }

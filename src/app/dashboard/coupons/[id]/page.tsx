@@ -10,8 +10,8 @@ import { CouponSummaryCard } from "@/src/components/coupons/coupon-summary-card"
 import { CouponForm } from "@/src/components/coupons/coupon-form";
 import { CouponDeactivateModal } from "@/src/components/coupons/coupon-deactivate-modal";
 import { toast } from "@/src/common/hooks/use-toast";
+import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
 import type { UpdateCouponPayload } from "@/src/common/@types/@coupons";
-import { isAxiosError } from "axios";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 
@@ -28,9 +28,7 @@ export default function CouponDetailPage() {
       await updateCoupon(payload);
       toast({ title: "Cupom atualizado com sucesso!", variant: "default" });
     } catch (err) {
-      const message = isAxiosError(err)
-        ? err.response?.data?.message ?? "Erro ao atualizar cupom."
-        : "Erro ao atualizar cupom.";
+      const message = mapErrorMessage(err, "Erro ao atualizar cupom.");
       toast({ title: message, variant: "destructive" });
     }
   }

@@ -98,9 +98,9 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
       code: "",
       name: "",
       description: "",
-      discountType: "PERCENTAGE",
+      discountType: "percentage",
       discountValue: "",
-      scope: "ORDER",
+      scope: "order",
       productIds: new Set<string>(),
       categoryIds: new Set<string>(),
       appliesTo: "both",
@@ -242,8 +242,8 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
                   }}
                   classNames={{ trigger: inputClass }}
                 >
-                  <SelectItem key="PERCENTAGE">Percentual (%)</SelectItem>
-                  <SelectItem key="FIXED_AMOUNT">Valor fixo (R$)</SelectItem>
+                  <SelectItem key="percentage">Percentual (%)</SelectItem>
+                  <SelectItem key="fixed_amount">Valor fixo (R$)</SelectItem>
                 </Select>
               )}
             />
@@ -251,12 +251,12 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
         </Tooltip>
 
         <Input
-          label={discountType === "PERCENTAGE" ? "Valor (%)" : "Valor (R$)"}
-          placeholder={discountType === "PERCENTAGE" ? "10" : "50.00"}
+          label={discountType === "percentage" ? "Valor (%)" : "Valor (R$)"}
+          placeholder={discountType === "percentage" ? "10" : "50.00"}
           type="number"
-          step={discountType === "PERCENTAGE" ? "1" : "0.01"}
+          step={discountType === "percentage" ? "1" : "0.01"}
           min="0"
-          max={discountType === "PERCENTAGE" ? "100" : undefined}
+          max={discountType === "percentage" ? "100" : undefined}
           isInvalid={!!errors.discountValue}
           errorMessage={errors.discountValue?.message}
           classNames={{ inputWrapper: inputClass }}
@@ -265,7 +265,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
             validate: (v) => {
               const n = parseFloat(v);
               if (isNaN(n) || n < 0) return "Valor inválido";
-              if (discountType === "PERCENTAGE" && n > 100) return "Máximo 100%";
+              if (discountType === "percentage" && n > 100) return "Máximo 100%";
               return true;
             },
           })}
@@ -290,9 +290,9 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
                   }}
                   classNames={{ trigger: inputClass }}
                 >
-                  <SelectItem key="ORDER">Todo o pedido</SelectItem>
-                  <SelectItem key="PRODUCT">Produtos específicos</SelectItem>
-                  <SelectItem key="CATEGORY">Categorias específicas</SelectItem>
+                  <SelectItem key="order">Todo o pedido</SelectItem>
+                  <SelectItem key="product">Produtos específicos</SelectItem>
+                  <SelectItem key="category">Categorias específicas</SelectItem>
                 </Select>
               )}
             />
@@ -321,7 +321,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
       </div>
 
       {/* ── Product picker (scope === PRODUCT) ───────────────────────── */}
-      {scope === "PRODUCT" && (
+      {scope === "product" && (
         <div>
           {loadingB2B || loadingB2C ? (
             <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
@@ -366,7 +366,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
               )}
             />
           )}
-          {Array.from(watch("productIds")).length === 0 && scope === "PRODUCT" && (
+          {Array.from(watch("productIds")).length === 0 && scope === "product" && (
             <p className="mt-1 text-xs text-gray-500 flex items-center gap-1">
               <Info className="w-3 h-3" /> Selecione ao menos um produto para restringir o cupom.
             </p>
@@ -375,7 +375,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
       )}
 
       {/* ── Category picker (scope === CATEGORY) ─────────────────────── */}
-      {scope === "CATEGORY" && (
+      {scope === "category" && (
         <div>
           {loadingCats ? (
             <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
