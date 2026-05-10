@@ -242,6 +242,12 @@ export function Sidebar({
                 icon: Settings,
                 path: "/dashboard/payments/config",
               },
+              {
+                id: "coupons",
+                label: t("couponsList"),
+                icon: TicketIcon,
+                path: "/dashboard/coupons",
+              },
             ],
           },
           {
@@ -353,6 +359,12 @@ export function Sidebar({
               icon: Settings,
               path: "/dashboard/payments/config",
             },
+            {
+              id: "coupons",
+              label: t("couponsList"),
+              icon: TicketIcon,
+              path: "/dashboard/coupons",
+            },
           ],
         },
         {
@@ -456,7 +468,8 @@ export function Sidebar({
     if (
       activeTab === "payments-products" ||
       activeTab === "payments-subscriptions" ||
-      activeTab === "payments-config"
+      activeTab === "payments-config" ||
+      activeTab === "coupons"
     ) {
       setExpandedMenus((prev) =>
         prev.includes("payments-menu") ? prev : [...prev, "payments-menu"],

@@ -1,0 +1,61 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { couponsService } from '@/src/common/services/coupons-service';
+import { useHasSelectedTenant } from '@/src/common/stores/tenant-store';
+import type { CreateCouponPayload, UpdateCouponPayload } from '@/src/common/@types/@coupons';
+
+const QUERY_KEY = 'coupons';
+
+export function useListCoupons(params?: { page?: number; limit?: number }) {
+  const hasTenant = useHasSelectedTenant();
+
+  return useQuery({
+    queryKey: [QUERY_KEY, params],
+    queryFn: () => couponsService.list(params),
+    enabled: hasTenant,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+export function useGetCoupon(id: string) {
+  const hasTenant = useHasSelectedTenant();
+
+  return useQuery({
+    queryKey: [QUERY_KEY, id],
+    queryFn: () => couponsService.getById(id),
+    enabled: hasTenant && !!id,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+export function useCreateCoupon() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateCouponPayload) => couponsService.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+    },
+  });
+}
+
+export function useUpdateCoupon(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateCouponPayload) => couponsService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+    },
+  });
+}
+
+export function useDeactivateCoupon() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => couponsService.deactivate(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+    },
+  });
+}
