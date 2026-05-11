@@ -68,15 +68,15 @@ function CouponCard({
         </div>
         <div>
           <span className="text-gray-500 uppercase tracking-wider">Escopo</span>
-          <p className="mt-0.5">
+          <div className="mt-0.5">
             <ScopeBadge scope={coupon.scope} />
-          </p>
+          </div>
         </div>
         <div>
           <span className="text-gray-500 uppercase tracking-wider">Aplica a</span>
-          <p className="mt-0.5">
+          <div className="mt-0.5">
             <AppliesToBadge appliesTo={coupon.appliesTo} />
-          </p>
+          </div>
         </div>
         <div>
           <span className="text-gray-500 uppercase tracking-wider">Resgates</span>

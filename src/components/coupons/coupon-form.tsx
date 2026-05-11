@@ -315,6 +315,8 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
               <SelectItem key="both">Ambos (B2B + B2C)</SelectItem>
               <SelectItem key="b2b">Apenas B2B</SelectItem>
               <SelectItem key="b2c">Apenas B2C</SelectItem>
+              <SelectItem key="b2c_recurring">B2C (Apenas Assinaturas)</SelectItem>
+              <SelectItem key="b2c_one_time">B2C (Apenas Compra Única)</SelectItem>
             </Select>
           )}
         />

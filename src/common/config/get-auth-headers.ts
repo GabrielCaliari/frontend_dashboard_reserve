@@ -62,8 +62,8 @@ export async function injectAuthHeaders(
 
     if (!requestConfig.skipTenantHeader && tenantCookie) {
       const tenantId = extractTenantId(tenantCookie);
-      // Only send if it looks like a valid CUID (25 chars, starts with 'c')
-      if (tenantId && /^c[a-z0-9]{24}$/.test(tenantId)) {
+      // Only send if it looks like a valid alphanumeric ID (supports CUIDv1 and CUIDv2)
+      if (tenantId && /^[a-z0-9]{2,32}$/.test(tenantId)) {
         config.headers['x-tenant-id'] = tenantId;
       }
     }
@@ -82,8 +82,8 @@ export async function injectAuthHeaders(
 
       if (!requestConfig.skipTenantHeader && tenantCookie) {
         const tenantId = extractTenantId(tenantCookie);
-        // Only send if it looks like a valid CUID (25 chars, starts with 'c')
-        if (tenantId && /^c[a-z0-9]{24}$/.test(tenantId)) {
+        // Only send if it looks like a valid alphanumeric ID (supports CUIDv1 and CUIDv2)
+        if (tenantId && /^[a-z0-9]{2,32}$/.test(tenantId)) {
           config.headers['x-tenant-id'] = tenantId;
         }
       }

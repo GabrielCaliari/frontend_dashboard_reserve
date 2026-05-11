@@ -3,7 +3,7 @@
 
 export type EDiscountType = 'percentage' | 'fixed_amount';
 export type ECouponScope = 'order' | 'product' | 'category';
-export type ECouponAppliesTo = 'b2b' | 'b2c' | 'both';
+export type ECouponAppliesTo = 'b2b' | 'b2c' | 'b2c_recurring' | 'b2c_one_time' | 'both';
 
 export interface DiscountCoupon {
   id: string;
@@ -72,6 +72,7 @@ export interface ValidateCouponPayload {
     categoryId?: string;
     basePrice: number; // cents
     quantity: number;
+    isRecurring?: boolean;
   }[];
   context: 'b2b' | 'b2c';
 }

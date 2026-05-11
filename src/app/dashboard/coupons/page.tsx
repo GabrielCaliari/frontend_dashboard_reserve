@@ -100,7 +100,7 @@ export default function CouponsListPage() {
 
           <CouponPagination
             page={page}
-            total={data?.meta.total ?? 0}
+            total={data?.meta?.total ?? 0}
             limit={PAGE_SIZE}
             onPageChange={setPage}
           />

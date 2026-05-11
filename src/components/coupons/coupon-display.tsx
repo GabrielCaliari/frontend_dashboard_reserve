@@ -109,6 +109,8 @@ export function ExpiresAtDisplay({ expiresAt }: { expiresAt: string | null }) {
 const APPLIES_LABEL: Record<DiscountCoupon["appliesTo"], string> = {
   b2b: "B2B",
   b2c: "B2C",
+  b2c_recurring: "B2C (Assinatura)",
+  b2c_one_time: "B2C (Compra Única)",
   both: "Ambos",
 };
 

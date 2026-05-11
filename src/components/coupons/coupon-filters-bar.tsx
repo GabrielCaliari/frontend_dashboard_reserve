@@ -82,7 +82,7 @@ export function CouponFiltersBar({
       </div>
 
       {/* Applies to */}
-      <div className="w-[150px] shrink-0">
+      <div className="w-[200px] shrink-0">
         <Select
           aria-label="Filtrar por aplicação"
           selectedKeys={new Set([appliesToFilter])}
@@ -92,9 +92,11 @@ export function CouponFiltersBar({
           }}
           classNames={{ trigger: selectClass }}
         >
-          <SelectItem key="all">B2B + B2C</SelectItem>
+          <SelectItem key="all">Todas as Aplicações</SelectItem>
           <SelectItem key="b2b">Apenas B2B</SelectItem>
           <SelectItem key="b2c">Apenas B2C</SelectItem>
+          <SelectItem key="b2c_recurring">B2C (Assinaturas)</SelectItem>
+          <SelectItem key="b2c_one_time">B2C (Compra Única)</SelectItem>
           <SelectItem key="both">Ambos</SelectItem>
         </Select>
       </div>
