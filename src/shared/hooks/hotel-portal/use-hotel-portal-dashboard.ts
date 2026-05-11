@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { hotelPortalService } from "@/src/common/services/hotel-portal-service";
+import { hotelPortalService } from "@/src/modules/hotel-portal/infrastructure/adapters";
 
 export function useHotelPortalDashboard(
   clientId: string | null,
