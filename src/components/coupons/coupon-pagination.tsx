@@ -2,6 +2,7 @@
 
 import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface CouponPaginationProps {
   page: number;
@@ -10,12 +11,8 @@ interface CouponPaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export function CouponPagination({
-  page,
-  total,
-  limit,
-  onPageChange,
-}: CouponPaginationProps) {
+export function CouponPagination({ page, total, limit, onPageChange }: CouponPaginationProps) {
+  const t = useTranslations("coupons");
   const totalPages = Math.ceil(total / limit);
   const from = (page - 1) * limit + 1;
   const to = Math.min(page * limit, total);
@@ -24,31 +21,13 @@ export function CouponPagination({
 
   return (
     <div className="flex items-center justify-between px-1 pt-4">
-      <p className="text-sm text-gray-500">
-        {from}–{to} de {total} cupons
-      </p>
+      <p className="text-sm text-gray-500">{t("paginationOf", { from, to, total })}</p>
       <div className="flex items-center gap-2">
-        <Button
-          size="sm"
-          variant="flat"
-          isIconOnly
-          isDisabled={page <= 1}
-          onPress={() => onPageChange(page - 1)}
-          className="border-gray-700"
-        >
+        <Button size="sm" variant="flat" isIconOnly isDisabled={page <= 1} onPress={() => onPageChange(page - 1)} className="border-gray-700">
           <ChevronLeft className="w-4 h-4" />
         </Button>
-        <span className="text-sm text-gray-400">
-          {page} / {totalPages}
-        </span>
-        <Button
-          size="sm"
-          variant="flat"
-          isIconOnly
-          isDisabled={page >= totalPages}
-          onPress={() => onPageChange(page + 1)}
-          className="border-gray-700"
-        >
+        <span className="text-sm text-gray-400">{page} / {totalPages}</span>
+        <Button size="sm" variant="flat" isIconOnly isDisabled={page >= totalPages} onPress={() => onPageChange(page + 1)} className="border-gray-700">
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>

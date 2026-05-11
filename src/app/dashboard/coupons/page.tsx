@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { Tag } from "lucide-react";
 import { Card, CardBody } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useListCoupons } from "@/src/common/hooks/useCoupons";
 import { CouponTable } from "@/src/components/coupons/coupon-table";
@@ -10,12 +11,11 @@ import { CouponFiltersBar } from "@/src/components/coupons/coupon-filters-bar";
 import { CouponPagination } from "@/src/components/coupons/coupon-pagination";
 import type { ECouponScope, ECouponAppliesTo } from "@/src/common/@types/@coupons";
 
-// Fetch a larger page from the API so client-side filters (search, scope,
-// appliesTo, active) operate over the full set without N+1 requests.
-// When the total count grows beyond this, we can add server-side query params.
 const PAGE_SIZE = 50;
 
 export default function CouponsListPage() {
+  const t = useTranslations("coupons");
+
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<"all" | "active" | "inactive">("all");
@@ -46,38 +46,22 @@ export default function CouponsListPage() {
     });
   }, [data?.data, search, activeFilter, scopeFilter, appliesToFilter]);
 
-  /** Reset to page 1 whenever any filter changes */
-  function handleSearchChange(v: string) {
-    setSearch(v);
-    setPage(1);
-  }
-  function handleActiveFilterChange(v: "all" | "active" | "inactive") {
-    setActiveFilter(v);
-    setPage(1);
-  }
-  function handleScopeFilterChange(v: ECouponScope | "all") {
-    setScopeFilter(v);
-    setPage(1);
-  }
-  function handleAppliesToFilterChange(v: ECouponAppliesTo | "all") {
-    setAppliesToFilter(v);
-    setPage(1);
-  }
+  function handleSearchChange(v: string) { setSearch(v); setPage(1); }
+  function handleActiveFilterChange(v: "all" | "active" | "inactive") { setActiveFilter(v); setPage(1); }
+  function handleScopeFilterChange(v: ECouponScope | "all") { setScopeFilter(v); setPage(1); }
+  function handleAppliesToFilterChange(v: ECouponAppliesTo | "all") { setAppliesToFilter(v); setPage(1); }
 
   return (
     <LayoutScopeRoot>
       <div className="px-6 py-6 max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <Tag className="w-4 h-4 text-primary" />
             </div>
-            <h1 className="text-xl font-bold text-gray-100">Cupons de Desconto</h1>
+            <h1 className="text-xl font-bold text-gray-100">{t("pageTitle")}</h1>
           </div>
-          <p className="text-sm text-gray-400 ml-11">
-            Gerencie cupons promocionais para clientes B2B e B2C.
-          </p>
+          <p className="text-sm text-gray-400 ml-11">{t("pageSubtitle")}</p>
         </div>
 
         <div className="space-y-4">

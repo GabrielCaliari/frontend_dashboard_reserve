@@ -1,36 +1,37 @@
 "use client";
 
 import { Chip } from "@heroui/react";
+import { useTranslations, useLocale } from "next-intl";
 import type { DiscountCoupon } from "@/src/common/@types/@coupons";
 
 // ---------------------------------------------------------------------------
 // CouponBadgeStatus
 // ---------------------------------------------------------------------------
-type BadgeStatusProps = Pick<
-  DiscountCoupon,
-  "active" | "expiresAt" | "redeemedCount" | "maxRedemptions"
->;
+type BadgeStatusProps = Pick<DiscountCoupon, "active" | "expiresAt" | "redeemedCount" | "maxRedemptions">;
 
-function deriveStatus(props: BadgeStatusProps) {
+type StatusKey = "statusActive" | "statusInactive" | "statusExpired" | "statusExhausted";
+
+function deriveStatusKey(props: BadgeStatusProps): StatusKey {
   const { active, expiresAt, redeemedCount, maxRedemptions } = props;
-  if (!active) return "INATIVO" as const;
-  if (expiresAt && new Date(expiresAt) < new Date()) return "EXPIRADO" as const;
-  if (maxRedemptions !== null && redeemedCount >= maxRedemptions) return "ESGOTADO" as const;
-  return "ATIVO" as const;
+  if (!active) return "statusInactive";
+  if (expiresAt && new Date(expiresAt) < new Date()) return "statusExpired";
+  if (maxRedemptions !== null && redeemedCount >= maxRedemptions) return "statusExhausted";
+  return "statusActive";
 }
 
-const STATUS_COLOR = {
-  ATIVO: "success",
-  INATIVO: "default",
-  EXPIRADO: "warning",
-  ESGOTADO: "danger",
-} as const;
+const STATUS_COLOR: Record<StatusKey, "success" | "default" | "warning" | "danger"> = {
+  statusActive: "success",
+  statusInactive: "default",
+  statusExpired: "warning",
+  statusExhausted: "danger",
+};
 
 export function CouponBadgeStatus(props: BadgeStatusProps) {
-  const status = deriveStatus(props);
+  const t = useTranslations("coupons");
+  const key = deriveStatusKey(props);
   return (
-    <Chip size="sm" color={STATUS_COLOR[status]} variant="flat" className="capitalize">
-      {status}
+    <Chip size="sm" color={STATUS_COLOR[key]} variant="flat" className="capitalize">
+      {t(key)}
     </Chip>
   );
 }
@@ -44,13 +45,11 @@ interface DiscountValueProps {
 }
 
 export function DiscountValueDisplay({ discountType, discountValue }: DiscountValueProps) {
+  const locale = useLocale();
   if (discountType === "percentage") return <>{discountValue}%</>;
   return (
     <>
-      {(discountValue / 100).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      })}
+      {(discountValue / 100).toLocaleString(locale, { style: "currency", currency: "BRL" })}
     </>
   );
 }
@@ -65,10 +64,10 @@ interface CouponScopeProps {
 }
 
 export function CouponScopeDisplay({ scope, productIds, categoryIds }: CouponScopeProps) {
-  if (scope === "order") return <>Todo o pedido</>;
-  if (scope === "product")
-    return <>{productIds.length} {productIds.length === 1 ? "produto" : "produtos"}</>;
-  return <>{categoryIds.length} {categoryIds.length === 1 ? "categoria" : "categorias"}</>;
+  const t = useTranslations("coupons");
+  if (scope === "order") return <>{t("scopeOrder")}</>;
+  if (scope === "product") return <>{t("scopeProduct", { count: productIds.length })}</>;
+  return <>{t("scopeCategory", { count: categoryIds.length })}</>;
 }
 
 // ---------------------------------------------------------------------------
@@ -80,25 +79,19 @@ interface RedemptionsProps {
 }
 
 export function RedemptionsDisplay({ redeemedCount, maxRedemptions }: RedemptionsProps) {
-  return (
-    <>
-      {redeemedCount} / {maxRedemptions === null ? "∞" : maxRedemptions}
-    </>
-  );
+  return <>{redeemedCount} / {maxRedemptions === null ? "∞" : maxRedemptions}</>;
 }
 
 // ---------------------------------------------------------------------------
 // ExpiresAtDisplay
 // ---------------------------------------------------------------------------
 export function ExpiresAtDisplay({ expiresAt }: { expiresAt: string | null }) {
-  if (!expiresAt) return <>Sem expiração</>;
+  const t = useTranslations("coupons");
+  const locale = useLocale();
+  if (!expiresAt) return <>{t("noExpiration")}</>;
   return (
     <>
-      {new Date(expiresAt).toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })}
+      {new Date(expiresAt).toLocaleDateString(locale, { day: "2-digit", month: "2-digit", year: "numeric" })}
     </>
   );
 }
@@ -106,18 +99,21 @@ export function ExpiresAtDisplay({ expiresAt }: { expiresAt: string | null }) {
 // ---------------------------------------------------------------------------
 // AppliesToBadge
 // ---------------------------------------------------------------------------
-const APPLIES_LABEL: Record<DiscountCoupon["appliesTo"], string> = {
-  b2b: "B2B",
-  b2c: "B2C",
-  b2c_recurring: "B2C (Assinatura)",
-  b2c_one_time: "B2C (Compra Única)",
-  both: "Ambos",
+type AppliesToKey = "appliesToB2B" | "appliesToB2C" | "appliesToB2CRecurring" | "appliesToB2COneTime" | "appliesToBoth";
+
+const APPLIES_TO_KEY: Record<DiscountCoupon["appliesTo"], AppliesToKey> = {
+  b2b: "appliesToB2B",
+  b2c: "appliesToB2C",
+  b2c_recurring: "appliesToB2CRecurring",
+  b2c_one_time: "appliesToB2COneTime",
+  both: "appliesToBoth",
 };
 
 export function AppliesToBadge({ appliesTo }: { appliesTo: DiscountCoupon["appliesTo"] }) {
+  const t = useTranslations("coupons");
   return (
     <Chip size="sm" color="primary" variant="flat">
-      {APPLIES_LABEL[appliesTo]}
+      {t(APPLIES_TO_KEY[appliesTo])}
     </Chip>
   );
 }

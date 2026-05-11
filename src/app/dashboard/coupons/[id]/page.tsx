@@ -2,8 +2,9 @@
 
 import { useParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import { ArrowLeft, Tag } from "lucide-react";
+import { ArrowLeft, Tag, Trash2 } from "lucide-react";
 import { Button, Card, CardBody, Spinner } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { useGetCoupon, useUpdateCoupon } from "@/src/common/hooks/useCoupons";
 import { CouponSummaryCard } from "@/src/components/coupons/coupon-summary-card";
@@ -13,9 +14,9 @@ import { toast } from "@/src/common/hooks/use-toast";
 import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
 import type { UpdateCouponPayload } from "@/src/common/@types/@coupons";
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
 
 export default function CouponDetailPage() {
+  const t = useTranslations("coupons");
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [deactivateOpen, setDeactivateOpen] = useState(false);
@@ -26,9 +27,9 @@ export default function CouponDetailPage() {
   async function handleSubmit(payload: UpdateCouponPayload) {
     try {
       await updateCoupon(payload);
-      toast({ title: "Cupom atualizado com sucesso!", variant: "default" });
+      toast({ title: t("updateSuccess"), variant: "default" });
     } catch (err) {
-      const message = mapErrorMessage(err, "Erro ao atualizar cupom.");
+      const message = mapErrorMessage(err, t("updateError"));
       toast({ title: message, variant: "destructive" });
     }
   }
@@ -49,13 +50,13 @@ export default function CouponDetailPage() {
         <div className="px-6 py-6 max-w-3xl mx-auto">
           <Card className="border-red-500/20 bg-red-500/5">
             <CardBody className="p-8 text-center">
-              <p className="text-red-400">Cupom não encontrado.</p>
+              <p className="text-red-400">{t("notFound")}</p>
               <Button
                 variant="flat"
                 className="mt-4"
                 onPress={() => router.push("/dashboard/coupons")}
               >
-                Voltar para lista
+                {t("backToList")}
               </Button>
             </CardBody>
           </Card>
@@ -67,7 +68,6 @@ export default function CouponDetailPage() {
   return (
     <LayoutScopeRoot>
       <div className="px-6 py-6 max-w-3xl mx-auto space-y-6">
-        {/* Back + actions */}
         <div className="flex items-center justify-between">
           <Button
             variant="light"
@@ -75,7 +75,7 @@ export default function CouponDetailPage() {
             className="text-gray-400 -ml-2"
             onPress={() => router.push("/dashboard/coupons")}
           >
-            Voltar
+            {t("back")}
           </Button>
 
           {coupon.active && (
@@ -86,26 +86,23 @@ export default function CouponDetailPage() {
               startContent={<Trash2 className="w-4 h-4" />}
               onPress={() => setDeactivateOpen(true)}
             >
-              Desativar cupom
+              {t("deactivateCoupon")}
             </Button>
           )}
         </div>
 
-        {/* Page heading */}
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
             <Tag className="w-4 h-4 text-primary" />
           </div>
-          <h1 className="text-xl font-bold text-gray-100">Detalhes do Cupom</h1>
+          <h1 className="text-xl font-bold text-gray-100">{t("detailTitle")}</h1>
         </div>
 
-        {/* Summary */}
         <CouponSummaryCard coupon={coupon} />
 
-        {/* Edit form */}
         <div className="bg-[#111125] border border-gray-800 rounded-xl p-6">
           <h2 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">
-            Editar Cupom
+            {t("editSectionTitle")}
           </h2>
           <CouponForm
             initialData={coupon}
