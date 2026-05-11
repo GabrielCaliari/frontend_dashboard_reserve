@@ -6,8 +6,8 @@ import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layo
 import {
   useCollection,
   useDeleteCollection,
-} from "@/src/common/hooks/cms/use-collections";
-import { useCollectionAssets } from "@/src/common/hooks/cms/use-assets";
+} from "@/src/shared/hooks/cms/use-collections";
+import { useCollectionAssets } from "@/src/shared/hooks/cms/use-assets";
 import { AssetGrid } from "@/src/presentation/components/organisms/cms/asset-grid";
 import { AssetDrawer } from "@/src/presentation/components/organisms/cms/asset-drawer";
 import { CollectionModal } from "@/src/presentation/components/organisms/cms/collection-modal";

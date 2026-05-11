@@ -19,7 +19,7 @@ import {
   createBlogSchema,
   updateBlogSchema,
 } from "@/src/shared/schemas/cms-blog-schema";
-import { useCollections } from "@/src/common/hooks/cms/use-collections";
+import { useCollections } from "@/src/shared/hooks/cms/use-collections";
 
 interface BlogFormProps {
   blog?: Blog;

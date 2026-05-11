@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import { Loader2, Link2, Upload } from "lucide-react";
-import { useBlogs } from "@/src/common/hooks/cms/useBlogs";
-import { useCollection } from "@/src/common/hooks/cms/use-collections";
-import { useCollectionAssets } from "@/src/common/hooks/cms/use-assets";
+import { useBlogs } from "@/src/shared/hooks/cms/useBlogs";
+import { useCollection } from "@/src/shared/hooks/cms/use-collections";
+import { useCollectionAssets } from "@/src/shared/hooks/cms/use-assets";
 import { AssetGrid } from "@/src/presentation/components/organisms/cms/asset-grid";
 import { UploadModal } from "@/src/presentation/components/organisms/cms/upload-modal";
 import {

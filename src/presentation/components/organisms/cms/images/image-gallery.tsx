@@ -46,7 +46,7 @@ import {
   useUpdateImage,
   useDeleteImage,
   useReorderImages,
-} from "@/src/common/hooks/cms/useImageMutations";
+} from "@/src/shared/hooks/cms/useImageMutations";
 
 interface ImageGalleryProps {
   blogId: number;

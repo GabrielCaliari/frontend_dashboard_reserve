@@ -9,7 +9,7 @@
  * Task: 20.2
  */ "use client";
 
-import { usePublicArticleBySlug } from "@/src/common/hooks/cms/usePublicArticles";
+import { usePublicArticleBySlug } from "@/src/shared/hooks/cms/usePublicArticles";
 import PublicArticleContent from "@/src/presentation/components/organisms/cms/public/public-article-content";
 import { Button } from "@heroui/react";
 import Link from "next/link";

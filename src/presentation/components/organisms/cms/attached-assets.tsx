@@ -63,7 +63,7 @@ import {
   useAttachAsset,
   useDetachAsset,
   useReorderRelations,
-} from "@/src/common/hooks/cms/use-relations";
+} from "@/src/shared/hooks/cms/use-relations";
 import { formatFileSize } from "@/src/shared/utils/format-file-size";
 import type {
   CmsMediaId,

@@ -10,7 +10,7 @@ import { CollectionForm } from "./collection-form";
 import {
   useCreateCollection,
   useUpdateCollection,
-} from "@/src/common/hooks/cms/use-collections";
+} from "@/src/shared/hooks/cms/use-collections";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import type {

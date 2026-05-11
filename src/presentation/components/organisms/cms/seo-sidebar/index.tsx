@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import type { ContentStats } from "@/src/shared/domain/types/cms";
 import type { Author } from "@/src/shared/domain/types/@cms-author";
-import { useAsset } from "@/src/common/hooks/cms/use-assets";
+import { useAsset } from "@/src/shared/hooks/cms/use-assets";
 import { BlogImageInsertDialog } from "@/src/presentation/components/organisms/cms/editor/blog-image-insert-dialog";
 
 const POWER_WORDS = [

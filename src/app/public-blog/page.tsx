@@ -9,7 +9,7 @@
  */ "use client";
 
 import { useState } from "react";
-import { usePublicArticles } from "@/src/common/hooks/cms/usePublicArticles";
+import { usePublicArticles } from "@/src/shared/hooks/cms/usePublicArticles";
 import PublicArticleList from "@/src/presentation/components/organisms/cms/public/public-article-list";
 
 // Blog secret key from environment variable

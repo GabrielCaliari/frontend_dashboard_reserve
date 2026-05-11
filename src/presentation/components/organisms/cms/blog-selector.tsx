@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useListBlogs } from "@/src/common/hooks/cms/use-list-blogs";
+import { useListBlogs } from "@/src/shared/hooks/cms/use-list-blogs";
 import { Select, SelectItem, Spinner } from "@heroui/react";
 import { Globe } from "lucide-react";
 

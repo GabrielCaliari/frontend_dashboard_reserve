@@ -23,8 +23,8 @@ import {
 import { Search } from "lucide-react";
 import { AssetGrid } from "./asset-grid";
 import { AssetUpload } from "./asset-upload";
-import { useAssets } from "@/src/common/hooks/cms/use-assets";
-import { useCollections } from "@/src/common/hooks/cms/use-collections";
+import { useAssets } from "@/src/shared/hooks/cms/use-assets";
+import { useCollections } from "@/src/shared/hooks/cms/use-collections";
 import type {
   CmsMediaId,
   MediaAsset,

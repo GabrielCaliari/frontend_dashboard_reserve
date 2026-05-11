@@ -9,7 +9,7 @@ import {
   useCollection,
   useUpdateCollection,
   useDeleteCollection,
-} from "@/src/common/hooks/cms/use-collections";
+} from "@/src/shared/hooks/cms/use-collections";
 import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import { toast } from "sonner";
 

@@ -14,7 +14,7 @@ import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { Input } from "@/src/presentation/components/atoms/shadcn-ui/input";
 import { Textarea } from "@/src/presentation/components/atoms/shadcn-ui/textarea";
 import { Label } from "@/src/presentation/components/atoms/shadcn-ui/label";
-import { useCreateBlog } from "@/src/common/hooks/cms/use-create-blog";
+import { useCreateBlog } from "@/src/shared/hooks/cms/use-create-blog";
 import {
   blogCreateSchema,
   type BlogCreateFormData,

@@ -14,7 +14,7 @@ import {
   Clock,
 } from "lucide-react";
 import Image from "next/image";
-import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
+import { useGetArticle } from "@/src/shared/hooks/cms/use-get-article";
 import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 
 export default function ArticlePreviewPage() {
