@@ -1379,7 +1379,13 @@
     "formSubmitCreate": "Criar cupom",
     "formSubmitUpdate": "Salvar alterações",
     "formSectionB2B": "B2B",
-    "formSectionB2C": "B2C"
+    "formSectionB2C": "B2C",
+    "formOverridesTitle": "Descontos individuais por produto",
+    "formOverridesHint": "Sobrescreva o desconto padrão para produtos específicos. O valor global acima é usado como fallback.",
+    "formOverridesAdd": "Adicionar override",
+    "formOverridesEmpty": "Nenhum override configurado — todos os produtos selecionados usam o valor global.",
+    "formOverridesProduct": "Produto",
+    "formDiscountValueFallbackHint": "Usado como fallback para produtos sem override."
   },
 
   "reports": {

@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import {
   Input, Textarea, Select, SelectItem, SelectSection,
-  Switch, Button, Tooltip, Spinner,
+  Switch, Button, Tooltip, Spinner, Chip,
 } from "@heroui/react";
-import { Info } from "lucide-react";
+import { Info, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type {
   DiscountCoupon, CreateCouponPayload, UpdateCouponPayload,
-  EDiscountType, ECouponScope, ECouponAppliesTo,
+  EDiscountType, ECouponScope, ECouponAppliesTo, ProductOverride,
 } from "@/src/common/@types/@coupons";
 import { useListB2BProducts } from "@/src/common/hooks/useB2BPayments";
 import { useListB2CProducts, useListB2CCategories } from "@/src/common/hooks/useB2CProducts";
@@ -32,6 +32,12 @@ function inputStrToCents(value: string): number | undefined {
 // ---------------------------------------------------------------------------
 // Form values
 // ---------------------------------------------------------------------------
+interface OverrideFormRow {
+  productId: string;
+  discountType: EDiscountType;
+  discountValue: string;
+}
+
 interface CouponFormValues {
   code: string;
   name: string;
@@ -48,6 +54,7 @@ interface CouponFormValues {
   maxRedemptions: string;
   expiresAt: string;
   active: boolean;
+  productOverrides: OverrideFormRow[];
 }
 
 interface CouponFormProps {
@@ -68,6 +75,11 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
   const activeB2CProducts = b2cProducts.filter((p) => p.active);
   const activeCategories = categories.filter((c) => c.active);
 
+  const allProducts = [
+    ...activeB2BProducts.map((p) => ({ id: p.id, name: p.name, price: p.price })),
+    ...activeB2CProducts.map((p) => ({ id: p.id, name: p.name, price: undefined as number | undefined })),
+  ];
+
   const { register, control, handleSubmit, watch, reset, formState: { errors } } = useForm<CouponFormValues>({
     defaultValues: {
       code: "", name: "", description: "",
@@ -77,7 +89,13 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
       appliesTo: "both", cumulative: false,
       minOrderAmount: "", maxDiscountAmount: "", maxRedemptions: "",
       expiresAt: "", active: true,
+      productOverrides: [],
     },
+  });
+
+  const { fields: overrideFields, append: appendOverride, remove: removeOverride } = useFieldArray({
+    control,
+    name: "productOverrides",
   });
 
   useEffect(() => {
@@ -98,17 +116,39 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
         maxRedemptions: initialData.maxRedemptions !== null ? String(initialData.maxRedemptions) : "",
         expiresAt: initialData.expiresAt ? new Date(initialData.expiresAt).toISOString().slice(0, 16) : "",
         active: initialData.active,
+        productOverrides: (initialData.productOverrides ?? []).map((o) => ({
+          productId: o.productId,
+          discountType: o.discountType,
+          discountValue: o.discountType === "fixed_amount"
+            ? centsToInputStr(o.discountValue)
+            : String(o.discountValue),
+        })),
       });
     }
   }, [initialData, reset]);
 
   const discountType = watch("discountType");
   const scope = watch("scope");
+  const selectedProductIds = watch("productIds");
+
+  const selectedProducts = allProducts.filter((p) => selectedProductIds.has(p.id));
+  const overrideProductIds = new Set(overrideFields.map((f) => f.productId));
+  const availableForOverride = selectedProducts.filter((p) => !overrideProductIds.has(p.id));
 
   function buildPayload(values: CouponFormValues): CreateCouponPayload | UpdateCouponPayload {
     const discountValue = parseFloat(values.discountValue);
     const productIds = Array.from(values.productIds);
     const categoryIds = Array.from(values.categoryIds);
+
+    const productOverrides: ProductOverride[] = values.productOverrides
+      .filter((o) => o.productId && o.discountValue)
+      .map((o) => ({
+        productId: o.productId,
+        discountType: o.discountType,
+        discountValue: o.discountType === "fixed_amount"
+          ? (inputStrToCents(o.discountValue) ?? 0)
+          : parseFloat(o.discountValue) || 0,
+      }));
 
     if (isEditMode) {
       return {
@@ -124,6 +164,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
         maxRedemptions: values.maxRedemptions ? parseInt(values.maxRedemptions) : null,
         expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : null,
         active: values.active,
+        productOverrides: productOverrides.length > 0 ? productOverrides : null,
       } as UpdateCouponPayload;
     }
 
@@ -142,6 +183,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
       maxDiscountAmount: inputStrToCents(values.maxDiscountAmount),
       maxRedemptions: values.maxRedemptions ? parseInt(values.maxRedemptions) : undefined,
       expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : undefined,
+      productOverrides: productOverrides.length > 0 ? productOverrides : undefined,
     } as CreateCouponPayload;
   }
 
@@ -216,6 +258,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
           isInvalid={!!errors.discountValue}
           errorMessage={errors.discountValue?.message}
           classNames={{ inputWrapper: inputClass }}
+          description={scope === "product" && overrideFields.length > 0 ? t("formDiscountValueFallbackHint") : undefined}
           {...register("discountValue", {
             required: t("formDiscountValueRequired"),
             validate: (v) => {
@@ -274,7 +317,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
 
       {/* Product picker */}
       {scope === "product" && (
-        <div>
+        <div className="space-y-4">
           {loadingB2B || loadingB2C ? (
             <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
               <Spinner size="sm" /> {t("formLoadingProducts")}
@@ -318,10 +361,136 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
               )}
             />
           )}
-          {Array.from(watch("productIds")).length === 0 && scope === "product" && (
-            <p className="mt-1 text-xs text-gray-500 flex items-center gap-1">
+
+          {Array.from(selectedProductIds).length === 0 && (
+            <p className="text-xs text-gray-500 flex items-center gap-1">
               <Info className="w-3 h-3" /> {t("formProductsHint")}
             </p>
+          )}
+
+          {/* Per-product overrides */}
+          {selectedProducts.length > 0 && (
+            <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-200">{t("formOverridesTitle")}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{t("formOverridesHint")}</p>
+                </div>
+                {availableForOverride.length > 0 && (
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    startContent={<Plus className="w-3.5 h-3.5" />}
+                    onPress={() =>
+                      appendOverride({
+                        productId: availableForOverride[0].id,
+                        discountType: "fixed_amount",
+                        discountValue: "",
+                      })
+                    }
+                  >
+                    {t("formOverridesAdd")}
+                  </Button>
+                )}
+              </div>
+
+              {overrideFields.length === 0 ? (
+                <p className="text-xs text-gray-600 italic">{t("formOverridesEmpty")}</p>
+              ) : (
+                <div className="space-y-3">
+                  {overrideFields.map((field, index) => {
+                    const overrideDiscountType = watch(`productOverrides.${index}.discountType`);
+                    const otherOverrideIds = new Set(
+                      overrideFields.filter((_, i) => i !== index).map((f) => f.productId)
+                    );
+                    const availableForRow = selectedProducts.filter((p) => !otherOverrideIds.has(p.id));
+
+                    return (
+                      <div key={field.id} className="grid grid-cols-[1fr_140px_120px_36px] gap-2 items-end">
+                        <Controller
+                          name={`productOverrides.${index}.productId`}
+                          control={control}
+                          render={({ field: f }) => (
+                            <Select
+                              size="sm"
+                              label={t("formOverridesProduct")}
+                              selectedKeys={new Set([f.value])}
+                              onSelectionChange={(keys) => f.onChange(Array.from(keys)[0] as string)}
+                              classNames={{ trigger: inputClass }}
+                            >
+                              {availableForRow.map((p) => (
+                                <SelectItem key={p.id} textValue={p.name}>{p.name}</SelectItem>
+                              ))}
+                            </Select>
+                          )}
+                        />
+
+                        <Controller
+                          name={`productOverrides.${index}.discountType`}
+                          control={control}
+                          render={({ field: f }) => (
+                            <Select
+                              size="sm"
+                              label={t("formDiscountTypeLabel")}
+                              selectedKeys={new Set([f.value])}
+                              onSelectionChange={(keys) => f.onChange(Array.from(keys)[0] as EDiscountType)}
+                              classNames={{ trigger: inputClass }}
+                            >
+                              <SelectItem key="fixed_amount">{t("formDiscountTypeFixed")}</SelectItem>
+                              <SelectItem key="percentage">{t("formDiscountTypePercentage")}</SelectItem>
+                            </Select>
+                          )}
+                        />
+
+                        <Input
+                          size="sm"
+                          label={overrideDiscountType === "percentage" ? t("formDiscountValuePercent") : t("formDiscountValueFixed")}
+                          placeholder={overrideDiscountType === "percentage" ? "10" : "40.00"}
+                          type="number"
+                          step={overrideDiscountType === "percentage" ? "1" : "0.01"}
+                          min="0"
+                          max={overrideDiscountType === "percentage" ? "100" : undefined}
+                          classNames={{ inputWrapper: inputClass }}
+                          {...register(`productOverrides.${index}.discountValue`, {
+                            required: true,
+                            validate: (v) => !isNaN(parseFloat(v)) && parseFloat(v) > 0,
+                          })}
+                        />
+
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          variant="light"
+                          color="danger"
+                          onPress={() => removeOverride(index)}
+                          aria-label="Remove override"
+                          className="mb-0.5"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {overrideFields.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {overrideFields.map((field, index) => {
+                    const prod = allProducts.find((p) => p.id === field.productId);
+                    const val = watch(`productOverrides.${index}.discountValue`);
+                    const type = watch(`productOverrides.${index}.discountType`);
+                    if (!prod || !val) return null;
+                    const label = type === "fixed_amount" ? `$${val}` : `${val}%`;
+                    return (
+                      <Chip key={field.id} size="sm" variant="flat" color="secondary">
+                        {prod.name}: {label}
+                      </Chip>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}

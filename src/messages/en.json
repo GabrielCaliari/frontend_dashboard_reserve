@@ -1412,7 +1412,13 @@
     "formSubmitCreate": "Create coupon",
     "formSubmitUpdate": "Save changes",
     "formSectionB2B": "B2B",
-    "formSectionB2C": "B2C"
+    "formSectionB2C": "B2C",
+    "formOverridesTitle": "Per-product discount overrides",
+    "formOverridesHint": "Override the default discount for specific products. The global value above is used as fallback.",
+    "formOverridesAdd": "Add override",
+    "formOverridesEmpty": "No overrides configured — all selected products use the global discount value.",
+    "formOverridesProduct": "Product",
+    "formDiscountValueFallbackHint": "Used as fallback for products without an override."
   },
 
   "reports": {

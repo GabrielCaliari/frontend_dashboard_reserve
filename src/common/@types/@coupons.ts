@@ -5,6 +5,13 @@ export type EDiscountType = 'percentage' | 'fixed_amount';
 export type ECouponScope = 'order' | 'product' | 'category';
 export type ECouponAppliesTo = 'b2b' | 'b2c' | 'b2c_recurring' | 'b2c_one_time' | 'both';
 
+/** Per-product discount override — used when a single coupon needs different values per product */
+export interface ProductOverride {
+  productId: string;
+  discountType: EDiscountType;
+  discountValue: number; // cents if fixed_amount, 0-100 if percentage
+}
+
 export interface DiscountCoupon {
   id: string;
   tenantId: string;
@@ -24,6 +31,7 @@ export interface DiscountCoupon {
   redeemedCount: number;
   expiresAt: string | null; // ISO 8601
   active: boolean;
+  productOverrides?: ProductOverride[];
   createdAt: string;
   updatedAt: string;
 }
@@ -48,6 +56,7 @@ export interface CreateCouponPayload {
   maxDiscountAmount?: number;
   maxRedemptions?: number;
   expiresAt?: string;
+  productOverrides?: ProductOverride[];
 }
 
 export interface UpdateCouponPayload {
@@ -63,6 +72,7 @@ export interface UpdateCouponPayload {
   maxRedemptions?: number | null;
   expiresAt?: string | null;
   active?: boolean;
+  productOverrides?: ProductOverride[] | null;
 }
 
 export interface ValidateCouponPayload {
