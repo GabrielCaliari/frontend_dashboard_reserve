@@ -25,7 +25,7 @@ import {
 import {
   useCollections,
   useDeleteCollection,
-} from "@/src/common/hooks/cms/use-collections";
+} from "@/src/shared/hooks/cms/use-collections";
 import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import { formatFileSize } from "@/src/shared/utils/format-file-size";
 import type { CollectionType } from "@/src/shared/domain/types/@cms-media";

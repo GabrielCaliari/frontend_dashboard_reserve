@@ -23,7 +23,7 @@ import {
   useUpdateAsset,
   useDeleteAsset,
   useDeleteCollectionAsset,
-} from "@/src/common/hooks/cms/use-assets";
+} from "@/src/shared/hooks/cms/use-assets";
 import { formatFileSize } from "@/src/shared/utils/format-file-size";
 import { toast } from "sonner";
 import type { CmsMediaId, MediaAsset } from "@/src/shared/domain/types/@cms-media";

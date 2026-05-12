@@ -6,7 +6,7 @@ import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layo
 import {
   useCollections,
   useDeleteCollection,
-} from "@/src/common/hooks/cms/use-collections";
+} from "@/src/shared/hooks/cms/use-collections";
 import { CollectionCard } from "@/src/presentation/components/organisms/cms/collection-card";
 import { CollectionModal } from "@/src/presentation/components/organisms/cms/collection-modal";
 import { Button, Pagination, Spinner, useDisclosure } from "@heroui/react";

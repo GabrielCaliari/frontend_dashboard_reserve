@@ -12,7 +12,7 @@ import {
   RefreshCw,
   Image as ImageIcon,
 } from "lucide-react";
-import { useUploadAsset } from "@/src/common/hooks/cms/use-assets";
+import { useUploadAsset } from "@/src/shared/hooks/cms/use-assets";
 import type {
   MediaCollection,
   UploadQueueItem,

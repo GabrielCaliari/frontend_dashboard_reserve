@@ -26,8 +26,8 @@ import {
   useAssets,
   useAsset,
   useUploadAsset,
-} from "@/src/common/hooks/cms/use-assets";
-import { useCollections } from "@/src/common/hooks/cms/use-collections";
+} from "@/src/shared/hooks/cms/use-assets";
+import { useCollections } from "@/src/shared/hooks/cms/use-collections";
 import {
   createAuthorSchema,
   updateAuthorSchema,

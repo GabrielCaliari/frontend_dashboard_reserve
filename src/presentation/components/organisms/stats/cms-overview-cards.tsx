@@ -9,10 +9,10 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Card, CardContent } from "@/src/presentation/components/atoms/shadcn-ui/card";
-import { useListArticles } from "@/src/common/hooks/cms/use-list-articles";
-import { useListBlogs } from "@/src/common/hooks/cms/use-list-blogs";
-import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
-import { useCollections } from "@/src/common/hooks/cms/use-collections";
+import { useListArticles } from "@/src/shared/hooks/cms/use-list-articles";
+import { useListBlogs } from "@/src/shared/hooks/cms/use-list-blogs";
+import { useGetAuthors } from "@/src/shared/hooks/cms/use-get-authors";
+import { useCollections } from "@/src/shared/hooks/cms/use-collections";
 import type { Article } from "@/src/shared/domain/types/@cms-article";
 
 interface OverviewKpiProps {

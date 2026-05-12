@@ -8,15 +8,15 @@ import { Card, CardBody } from "@heroui/react";
 import { BlogSelector } from "@/src/presentation/components/organisms/cms/blog-selector";
 import { ArticleList } from "@/src/presentation/components/organisms/cms/articles";
 import { ArticleQuickEditDrawer } from "@/src/presentation/components/organisms/cms/articles/article-quick-edit-drawer";
-import { useListArticles } from "@/src/common/hooks/cms/use-list-articles";
-import { useDeleteArticle } from "@/src/common/hooks/cms/use-delete-article";
+import { useListArticles } from "@/src/shared/hooks/cms/use-list-articles";
+import { useDeleteArticle } from "@/src/shared/hooks/cms/use-delete-article";
 import {
   usePublishArticle,
   useArchiveArticle,
   useUnarchiveArticle,
   useUpdateArticle,
-} from "@/src/common/hooks/cms/useArticleMutations";
-import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
+} from "@/src/shared/hooks/cms/useArticleMutations";
+import { useGetAuthors } from "@/src/shared/hooks/cms/use-get-authors";
 import {
   useHasSelectedTenant,
   useTenantStore,

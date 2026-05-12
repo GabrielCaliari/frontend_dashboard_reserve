@@ -14,13 +14,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/src/presentation/components/atoms/shadcn-ui/sheet";
-import { useBlogs } from "@/src/common/hooks/cms/useBlogs";
+import { useBlogs } from "@/src/shared/hooks/cms/useBlogs";
 import {
   useCreateBlog,
   useUpdateBlog,
   useDeleteBlog,
   useRegenerateBlogKey,
-} from "@/src/common/hooks/cms/useBlogMutations";
+} from "@/src/shared/hooks/cms/useBlogMutations";
 import { useHasSelectedTenant } from "@/src/shared/stores/tenant-store";
 import type {
   Blog,
