@@ -445,3 +445,20 @@ export async function getAdminProfileService(): Promise<AdminProfile | string> {
     return errorTypes._500.admin_una;
   }
 }
+
+// ============================================================================
+// My Tenants (formerly common/services/tenant.ts — found missed during Task 26
+// import audit; same reserve-auth domain as the rest of this adapter)
+// ============================================================================
+
+export async function listMyTenantsService(): Promise<Tenant[] | string> {
+  try {
+    const response = await apiClient.get<Tenant[]>(`/auth/tenants/my-tenants`);
+    return response.data;
+  } catch (error: any) {
+    if (error?.response?.data?.code) {
+      return error.response.data.code;
+    }
+    return errorTypes._500.admin_una;
+  }
+}

@@ -80,7 +80,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3002/api/docs-json --max-time 3)",
       "Bash(curl *)",
       "Bash(git *)",
-      "Bash(echo \"BUILD EXIT: $?\")"
+      "Bash(echo \"BUILD EXIT: $?\")",
+      "Bash(echo \"exit: $?\")"
     ]
   },
   "enabledPlugins": {

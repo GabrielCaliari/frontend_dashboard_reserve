@@ -1,5 +1,1 @@
-import { redirect } from "next/navigation";
-
-export default function CMSPage() {
-  redirect("/dashboard/cms/blogs");
-}
+export { default } from "@/src/presentation/components/pages/dashboard/cms/page";

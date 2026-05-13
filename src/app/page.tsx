@@ -1,3 +1,1 @@
-export default function Root() {
-  return <></>;
-}
+export { default } from "@/src/presentation/components/pages/root/page";

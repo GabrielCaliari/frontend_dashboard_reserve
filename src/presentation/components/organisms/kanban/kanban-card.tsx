@@ -25,10 +25,10 @@ import {
 
 import { CardType } from "./kanban-board-with-autosave";
 import { formatDateTimeToBRL } from "@/src/shared/utils";
-import useCompleteScreening from "@/src/common/hooks/use-complete-screening";
+import useCompleteScreening from "@/src/shared/hooks/leads/use-complete-screening";
 import { useRouter } from "next/navigation";
 import { ETemperature } from "@/src/shared/interfaces/lead-qualification.interface";
-import useTemperatureAnalysisByMessageId from "@/src/common/hooks/use-temperature-analysis-by-message-id";
+import useTemperatureAnalysisByMessageId from "@/src/shared/hooks/leads/use-temperature-analysis-by-message-id";
 import { useTranslations } from "next-intl";
 
 interface KanbanCardProps {

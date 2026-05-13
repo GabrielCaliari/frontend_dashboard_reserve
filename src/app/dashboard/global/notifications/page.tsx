@@ -1,5 +1,1 @@
-import { NotificationList } from "@/src/presentation/components/organisms/notifications/notification-list";
-
-export default function NotificationsPage() {
-  return <NotificationList />;
-}
+export { default } from "@/src/presentation/components/pages/dashboard/global/notifications/page";

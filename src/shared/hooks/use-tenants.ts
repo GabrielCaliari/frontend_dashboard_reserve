@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { listMyTenantsService } from "@/src/common/services/tenant";
+import { listMyTenantsService } from "@/src/modules/access-management/infrastructure/adapters";
 import type { Tenant } from "@/src/shared/domain/types/@auth";
 
 export default function useTenants() {
