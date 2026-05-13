@@ -239,6 +239,7 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
                 <TableCell>
                   <div>
                     <p className="font-semibold text-gray-100">{product.name}</p>
+                    <code className="text-xs text-gray-600 font-mono">{product.slug}</code>
                     {product.description && (
                       <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
                         {product.description}
