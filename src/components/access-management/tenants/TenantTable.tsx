@@ -6,7 +6,7 @@ import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Chip, Button, Skeleton, Tooltip,
 } from "@heroui/react";
-import { Edit, Power, Trash2, Copy, Check } from "lucide-react";
+import { Edit, Power, Trash2, Copy, Check, RotateCcw } from "lucide-react";
 import { Tenant } from "@/src/common/@types/@access-management";
 import { formatDate } from "@/src/common/lib/utils";
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
@@ -17,10 +17,11 @@ interface TenantTableProps {
   onEdit: (tenant: Tenant) => void;
   onToggleActive: (tenantId: string, isActive: boolean) => void;
   onDelete: (tenantId: string) => void;
+  onRestore?: (tenantId: string) => void;
 }
 
 const TenantTable: React.FC<TenantTableProps> = ({
-  tenants, isLoading, onEdit, onToggleActive, onDelete,
+  tenants, isLoading, onEdit, onToggleActive, onDelete, onRestore
 }) => {
   const t = useTranslations("accessManagement");
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -79,6 +80,13 @@ const TenantTable: React.FC<TenantTableProps> = ({
       case "domain":
         return <span className="text-sm text-foreground-400">{tenant.domain}</span>;
       case "status":
+        if (tenant.scheduled_for_deletion) {
+          return (
+            <Chip color="warning" size="sm" variant="dot">
+              {t("table.status.scheduledForDeletion")}
+            </Chip>
+          );
+        }
         return (
           <Chip color={tenant.is_active ? "success" : "danger"} size="sm" variant="dot">
             {tenant.is_active ? t("table.status.active") : t("table.status.inactive")}
@@ -90,7 +98,7 @@ const TenantTable: React.FC<TenantTableProps> = ({
         return (
           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             <Tooltip content={t("table.tooltips.editTenant")}>
-              <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(tenant)} aria-label={t("table.ariaLabels.editTenant")}>
+              <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(tenant)} aria-label={t("table.ariaLabels.editTenant")} isDisabled={tenant.scheduled_for_deletion}>
                 <Edit className="w-4 h-4" />
               </Button>
             </Tooltip>
@@ -100,19 +108,32 @@ const TenantTable: React.FC<TenantTableProps> = ({
                 color={tenant.is_active ? "warning" : "success"}
                 onPress={() => onToggleActive(tenant.id, tenant.is_active)}
                 aria-label={tenant.is_active ? t("table.ariaLabels.deactivateTenant") : t("table.ariaLabels.activateTenant")}
+                isDisabled={tenant.scheduled_for_deletion}
               >
                 <Power className="w-4 h-4" />
               </Button>
             </Tooltip>
-            <Tooltip content={t("table.tooltips.deleteTenant")} color="danger">
-              <Button
-                isIconOnly size="sm" variant="light" color="danger"
-                onPress={() => onDelete(tenant.id)}
-                aria-label={t("table.ariaLabels.deleteTenant")}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </Tooltip>
+            {tenant.scheduled_for_deletion ? (
+              <Tooltip content={t("table.tooltips.restoreTenant")} color="primary">
+                <Button
+                  isIconOnly size="sm" variant="light" color="primary"
+                  onPress={() => onRestore ? onRestore(tenant.id) : onDelete(tenant.id)}
+                  aria-label={t("table.ariaLabels.restoreTenant")}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip content={t("table.tooltips.deleteTenant")} color="danger">
+                <Button
+                  isIconOnly size="sm" variant="light" color="danger"
+                  onPress={() => onDelete(tenant.id)}
+                  aria-label={t("table.ariaLabels.deleteTenant")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </Tooltip>
+            )}
           </div>
         );
       default:

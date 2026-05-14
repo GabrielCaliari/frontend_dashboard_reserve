@@ -161,6 +161,23 @@ export default function AdminListPage() {
     });
   };
 
+  const handleRestoreClick = (adminId: string) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: t("admins.management.restoreConfirmTitle"),
+      message: t("admins.management.restoreConfirmMessage"),
+      variant: "warning",
+      onConfirm: async () => {
+        try {
+          await restoreDeletionMutation.mutateAsync({ id: adminId });
+          setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+        } catch (error) {
+          // Error handled by mutation hook
+        }
+      },
+    });
+  };
+
   if (error) {
     return (
       <LayoutScopeRoot routeActive="admins">
@@ -204,6 +221,7 @@ export default function AdminListPage() {
             onRowClick={(id) => router.push(`/dashboard/access-management/admins/${id}`)}
             onToggleActive={handleToggleStatus}
             onDelete={handleDeleteClick}
+            onRestore={handleRestoreClick}
           />
 
           {!isLoading && filteredAdmins.length > 0 && (
@@ -238,7 +256,7 @@ export default function AdminListPage() {
         message={confirmDialog.message}
         variant={confirmDialog.variant}
         confirmText={confirmDialog.variant === "danger" ? t("admins.management.confirmDelete") : t("admins.management.confirmAction")}
-        isLoading={toggleStatusMutation.isPending || scheduleDeletionMutation.isPending || deleteAdminMutation.isPending}
+        isLoading={toggleStatusMutation.isPending || scheduleDeletionMutation.isPending || deleteAdminMutation.isPending || restoreDeletionMutation.isPending}
       />
     </>
   );

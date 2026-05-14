@@ -133,25 +133,24 @@ export default function TenantListPage() {
     });
   };
 
+  const handleRestoreClick = (tenantId: string) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: t("tenants.management.restoreConfirmTitle"),
+      message: t("tenants.management.restoreConfirmMessage"),
+      variant: "default",
+      onConfirm: async () => {
+        try {
+          await restoreDeletionMutation.mutateAsync(tenantId);
+          setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+        } catch (error) {
+          // Error handled by mutation hook
+        }
+      },
+    });
+  };
+
   const handleDeleteClick = (tenantId: string) => {
-    const tenant = data?.data?.find((t) => t.id === tenantId);
-    if (tenant?.scheduled_for_deletion) {
-      setConfirmDialog({
-        isOpen: true,
-        title: t("tenants.management.restoreConfirmTitle"),
-        message: t("tenants.management.restoreConfirmMessage"),
-        variant: "default",
-        onConfirm: async () => {
-          try {
-            await restoreDeletionMutation.mutateAsync(tenantId);
-            setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-          } catch (error) {
-            // Error handled by mutation hook
-          }
-        },
-      });
-      return;
-    }
     setConfirmDialog({
       isOpen: true,
       title: t("tenants.management.scheduleDeletionConfirmTitle"),
@@ -236,6 +235,7 @@ export default function TenantListPage() {
             onEdit={handleEditClick}
             onToggleActive={handleToggleStatus}
             onDelete={handleDeleteClick}
+            onRestore={handleRestoreClick}
           />
 
           {!isLoading && data?.data && data.data.length > 0 && (
@@ -276,7 +276,7 @@ export default function TenantListPage() {
         variant={confirmDialog.variant}
         confirmText={confirmDialog.variant === "danger" ? t("tenants.management.confirmDelete") : t("tenants.management.confirmAction")}
         isLoading={
-          toggleStatusMutation.isPending || deleteTenantMutation.isPending
+          toggleStatusMutation.isPending || scheduleDeletionMutation.isPending || deleteTenantMutation.isPending
         }
       />
     </>

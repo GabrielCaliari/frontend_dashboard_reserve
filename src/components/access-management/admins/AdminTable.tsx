@@ -6,7 +6,7 @@ import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Chip, Button, Skeleton, Tooltip,
 } from "@heroui/react";
-import { Edit, Power, Trash2, ExternalLink } from "lucide-react";
+import { Edit, Power, Trash2, ExternalLink, RotateCcw } from "lucide-react";
 import { Admin, AdminRole } from "@/src/common/@types/@access-management";
 import { formatDate } from "@/src/common/lib/utils";
 import { RoleBadge } from "@/src/components/access-management/shared/role-badge";
@@ -21,10 +21,11 @@ interface AdminTableProps {
   onRowClick: (adminId: string) => void;
   onToggleActive: (adminId: string, isActive: boolean) => void;
   onDelete: (adminId: string) => void;
+  onRestore?: (adminId: string) => void;
 }
 
 const AdminTable: React.FC<AdminTableProps> = ({
-  admins, isLoading, currentAdminId, onEdit, onRowClick, onToggleActive, onDelete,
+  admins, isLoading, currentAdminId, onEdit, onRowClick, onToggleActive, onDelete, onRestore
 }) => {
   const t = useTranslations("accessManagement");
   const { isSuperAdmin } = usePermissions();
@@ -56,6 +57,13 @@ const AdminTable: React.FC<AdminTableProps> = ({
       case "role":
         return <RoleBadge role={admin.role} showTooltip />;
       case "status":
+        if (admin.scheduled_for_deletion) {
+          return (
+            <Chip color="warning" size="sm" variant="dot">
+              {t("table.status.scheduledForDeletion")}
+            </Chip>
+          );
+        }
         return (
           <Chip color={admin.is_active ? "success" : "danger"} size="sm" variant="dot">
             {admin.is_active ? t("table.status.active") : t("table.status.inactive")}
@@ -74,7 +82,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
               </Button>
             </Tooltip>
             <Tooltip content={!canAct ? t("table.tooltips.insufficientPermissions") || "Insufficient permissions" : t("table.tooltips.editAdmin")}>
-              <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(admin)} isDisabled={!canAct} aria-label={t("table.ariaLabels.editAdmin")}>
+              <Button isIconOnly size="sm" variant="light" onPress={() => onEdit(admin)} isDisabled={!canAct || admin.scheduled_for_deletion} aria-label={t("table.ariaLabels.editAdmin")}>
                 <Edit className="w-4 h-4" />
               </Button>
             </Tooltip>
@@ -83,22 +91,35 @@ const AdminTable: React.FC<AdminTableProps> = ({
                 isIconOnly size="sm" variant="light"
                 color={admin.is_active ? "warning" : "success"}
                 onPress={() => onToggleActive(admin.id, admin.is_active)}
-                isDisabled={(isSelf && admin.is_active) || !canAct}
+                isDisabled={(isSelf && admin.is_active) || !canAct || admin.scheduled_for_deletion}
                 aria-label={admin.is_active ? t("table.ariaLabels.deactivateAdmin") : t("table.ariaLabels.activateAdmin")}
               >
                 <Power className="w-4 h-4" />
               </Button>
             </Tooltip>
-            <Tooltip content={isSelf ? t("table.tooltips.cannotDeleteSelf") : !canAct ? t("table.tooltips.insufficientPermissions") || "Insufficient permissions" : t("table.tooltips.deleteAdmin")} color="danger">
-              <Button
-                isIconOnly size="sm" variant="light" color="danger"
-                onPress={() => onDelete(admin.id)}
-                isDisabled={isSelf || !canAct}
-                aria-label={t("table.ariaLabels.deleteAdmin")}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </Tooltip>
+            {admin.scheduled_for_deletion ? (
+              <Tooltip content={t("table.tooltips.restoreAdmin")} color="primary">
+                <Button
+                  isIconOnly size="sm" variant="light" color="primary"
+                  onPress={() => onRestore ? onRestore(admin.id) : onDelete(admin.id)}
+                  isDisabled={isSelf || !canAct}
+                  aria-label={t("table.ariaLabels.restoreAdmin")}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip content={isSelf ? t("table.tooltips.cannotDeleteSelf") : !canAct ? t("table.tooltips.insufficientPermissions") || "Insufficient permissions" : t("table.tooltips.deleteAdmin")} color="danger">
+                <Button
+                  isIconOnly size="sm" variant="light" color="danger"
+                  onPress={() => onDelete(admin.id)}
+                  isDisabled={isSelf || !canAct}
+                  aria-label={t("table.ariaLabels.deleteAdmin")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </Tooltip>
+            )}
           </div>
         );
       default:

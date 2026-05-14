@@ -1006,6 +1006,10 @@
         "activateConfirmMessage": "Tem certeza que deseja ativar este admin?",
         "deleteConfirmTitle": "Excluir Admin",
         "deleteConfirmMessage": "Tem certeza? Esta ação não pode ser desfeita.",
+        "scheduleDeletionConfirmTitle": "Agendar Exclusão do Admin",
+        "scheduleDeletionConfirmMessage": "Este admin será desativado imediatamente e excluído permanentemente após 7 dias. Você poderá restaurar a conta durante este período.",
+        "restoreConfirmTitle": "Restaurar Admin",
+        "restoreConfirmMessage": "Tem certeza que deseja restaurar este admin? A exclusão agendada será cancelada e a conta será reativada.",
         "cannotDeactivateSelf": "Você não pode desativar sua própria conta",
         "cannotDeleteSelf": "Você não pode excluir sua própria conta",
         "confirmDelete": "Excluir",
@@ -1050,6 +1054,10 @@
         "activateConfirmMessage": "Tem certeza que deseja ativar este tenant? Todos os usuários associados terão acesso ao sistema novamente.",
         "deleteConfirmTitle": "Excluir Tenant",
         "deleteConfirmMessage": "Tem certeza que deseja excluir este tenant? Esta ação não pode ser desfeita e removerá permanentemente o tenant e todos os dados associados.",
+        "scheduleDeletionConfirmTitle": "Agendar Exclusão do Tenant",
+        "scheduleDeletionConfirmMessage": "Este tenant será desativado imediatamente e excluído permanentemente após 7 dias. Você poderá restaurar a conta durante este período.",
+        "restoreConfirmTitle": "Restaurar Tenant",
+        "restoreConfirmMessage": "Tem certeza que deseja restaurar este tenant? A exclusão agendada será cancelada e o tenant será reativado.",
         "confirmDelete": "Excluir",
         "confirmAction": "Confirmar"
       },
@@ -1083,7 +1091,8 @@
       },
       "status": {
         "active": "Ativo",
-        "inactive": "Inativo"
+        "inactive": "Inativo",
+        "scheduledForDeletion": "Agendado para Exclusão"
       },
       "tooltips": {
         "viewDetails": "Ver detalhes",
@@ -1097,7 +1106,9 @@
         "cannotDeactivateSelf": "Não é possível desativar sua própria conta",
         "cannotDeleteSelf": "Não é possível excluir sua própria conta",
         "editTenant": "Editar tenant",
-        "deleteTenant": "Excluir tenant"
+        "deleteTenant": "Excluir tenant",
+        "restoreTenant": "Restaurar tenant",
+        "restoreAdmin": "Restaurar admin"
       },
       "ariaLabels": {
         "viewUser": "Ver usuário",
@@ -1113,6 +1124,8 @@
         "deactivateTenant": "Desativar tenant",
         "activateTenant": "Ativar tenant",
         "deleteTenant": "Excluir tenant",
+        "restoreTenant": "Restaurar tenant",
+        "restoreAdmin": "Restaurar admin",
         "userTable": "Tabela de gestão de usuários",
         "adminTable": "Tabela de gestão de admins",
         "tenantTable": "Tabela de gestão de tenants"
