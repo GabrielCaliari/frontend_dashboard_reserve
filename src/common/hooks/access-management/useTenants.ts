@@ -3,24 +3,33 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  fetchTenants, 
-  fetchTenantById, 
-  createTenant, 
-  updateTenant, 
-  activateTenant, 
-  deactivateTenant, 
-  deleteTenant 
+import {
+  fetchTenants,
+  fetchTenantById,
+  createTenant,
+  updateTenant,
+  activateTenant,
+  deactivateTenant,
+  deleteTenant,
+  assignAdminToTenant,
+  unassignAdminFromTenant,
+  updateAdminTenantRole,
+  scheduleTenantDeletion,
+  restoreTenantDeletion,
+  getTenantDeletionStatus,
 } from '@/src/common/services/access-management/tenant-service';
 import type { 
   PaginatedResponse, 
   Tenant, 
   CreateTenantDto, 
   UpdateTenantDto, 
-  ApiErrorResponse 
+  ApiErrorResponse,
+  AssignAdminDto,
+  UpdateAdminRoleDto,
 } from '@/src/common/@types/@access-management';
 import type { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
+import { adminKeys } from '@/src/common/hooks/access-management/useAdmins';
 
 // ============================================================================
 // Query Key Factory
@@ -269,7 +278,7 @@ export function useDeleteTenant() {
 
   return useMutation<void, AxiosError<ApiErrorResponse>, string>({
     mutationFn: deleteTenant,
-    
+
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: tenantKeys.lists() });
       await queryClient.cancelQueries({ queryKey: tenantKeys.detail(id) });
@@ -305,6 +314,107 @@ export function useDeleteTenant() {
       if (context?.previousLists) { context.previousLists.forEach(([k, d]: any) => queryClient.setQueryData(k, d)); }
       if (context?.previousDetail && context?.id) { queryClient.setQueryData(tenantKeys.detail(context.id), context.previousDetail); }
       const errorMessage = error.response?.data?.message || 'Failed to delete tenant';
+      toast.error(errorMessage);
+    },
+  });
+}
+
+export interface ScheduleTenantDeletionParams {
+  id: string;
+  reason?: string;
+}
+
+export function useScheduleTenantDeletion() {
+  const queryClient = useQueryClient();
+
+  return useMutation<any, AxiosError<ApiErrorResponse>, ScheduleTenantDeletionParams>({
+    mutationFn: ({ id, reason }) => scheduleTenantDeletion(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: tenantKeys.all });
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      toast.success('Tenant deletion scheduled successfully');
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || 'Failed to schedule tenant deletion';
+      toast.error(errorMessage);
+    },
+  });
+}
+
+export function useRestoreTenantDeletion() {
+  const queryClient = useQueryClient();
+
+  return useMutation<Tenant, AxiosError<ApiErrorResponse>, string>({
+    mutationFn: restoreTenantDeletion,
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: tenantKeys.all });
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      toast.success('Tenant restored successfully');
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || 'Failed to restore tenant';
+      toast.error(errorMessage);
+    },
+  });
+}
+
+export function useAssignAdminToTenant() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, AxiosError<ApiErrorResponse>, AssignAdminDto>({
+    mutationFn: assignAdminToTenant,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      queryClient.invalidateQueries({ queryKey: tenantKeys.all });
+      toast.success('Admin assigned to tenant successfully');
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || 'Failed to assign admin to tenant';
+      toast.error(errorMessage);
+    },
+  });
+}
+
+export interface UnassignAdminFromTenantParams {
+  tenantId: string;
+  adminId: string;
+}
+
+export function useUnassignAdminFromTenant() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, AxiosError<ApiErrorResponse>, UnassignAdminFromTenantParams>({
+    mutationFn: ({ tenantId, adminId }) => unassignAdminFromTenant(tenantId, adminId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      queryClient.invalidateQueries({ queryKey: tenantKeys.all });
+      toast.success('Admin removed from tenant successfully');
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || 'Failed to remove admin from tenant';
+      toast.error(errorMessage);
+    },
+  });
+}
+
+export interface UpdateAdminTenantRoleParams {
+  tenantId: string;
+  adminId: string;
+  data: UpdateAdminRoleDto;
+}
+
+export function useUpdateAdminTenantRole() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, AxiosError<ApiErrorResponse>, UpdateAdminTenantRoleParams>({
+    mutationFn: ({ tenantId, adminId, data }) => updateAdminTenantRole(tenantId, adminId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      queryClient.invalidateQueries({ queryKey: tenantKeys.all });
+      toast.success('Admin role updated successfully');
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || 'Failed to update admin role';
       toast.error(errorMessage);
     },
   });

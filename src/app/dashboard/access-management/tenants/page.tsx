@@ -16,6 +16,8 @@ import {
   useUpdateTenant,
   useToggleTenantStatus,
   useDeleteTenant,
+  useScheduleTenantDeletion,
+  useRestoreTenantDeletion,
 } from "@/src/common/hooks/access-management/useTenants";
 import type {
   Tenant,
@@ -61,6 +63,8 @@ export default function TenantListPage() {
   const updateTenantMutation = useUpdateTenant();
   const toggleStatusMutation = useToggleTenantStatus();
   const deleteTenantMutation = useDeleteTenant();
+  const scheduleDeletionMutation = useScheduleTenantDeletion();
+  const restoreDeletionMutation = useRestoreTenantDeletion();
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -130,17 +134,35 @@ export default function TenantListPage() {
   };
 
   const handleDeleteClick = (tenantId: string) => {
+    const tenant = data?.data?.find((t) => t.id === tenantId);
+    if (tenant?.scheduled_for_deletion) {
+      setConfirmDialog({
+        isOpen: true,
+        title: t("tenants.management.restoreConfirmTitle"),
+        message: t("tenants.management.restoreConfirmMessage"),
+        variant: "default",
+        onConfirm: async () => {
+          try {
+            await restoreDeletionMutation.mutateAsync(tenantId);
+            setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+          } catch (error) {
+            // Error handled by mutation hook
+          }
+        },
+      });
+      return;
+    }
     setConfirmDialog({
       isOpen: true,
-      title: t("tenants.management.deleteConfirmTitle"),
-      message: t("tenants.management.deleteConfirmMessage"),
+      title: t("tenants.management.scheduleDeletionConfirmTitle"),
+      message: t("tenants.management.scheduleDeletionConfirmMessage"),
       variant: "danger",
       onConfirm: async () => {
         try {
-          await deleteTenantMutation.mutateAsync(tenantId);
+          await scheduleDeletionMutation.mutateAsync({ id: tenantId });
           setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
         } catch (error) {
-          // Error is already handled by the mutation hook
+          // Error handled by mutation hook
         }
       },
     });

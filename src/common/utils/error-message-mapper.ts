@@ -30,6 +30,7 @@ const ERROR_MAP: Record<string, string> = {
   'VALIDATION_ERROR':             'Please check the form fields and try again.',
   'INVALID_EMAIL':                'Please enter a valid email address.',
   'WEAK_PASSWORD':                'Password must be at least 8 characters with one uppercase letter and one digit.',
+  'INSUFFICIENT_PERMISSIONS_TO_UPDATE_PASSWORD': 'Only super admins can update admin passwords.',
 
   // Network / Server
   'NETWORK_ERROR':                'Network error. Please check your connection and try again.',

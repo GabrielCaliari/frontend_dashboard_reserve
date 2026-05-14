@@ -6,7 +6,7 @@ import {
   Button, Card, CardBody, CardHeader, Chip, Skeleton,
 } from "@heroui/react";
 import {
-  ArrowLeft, Edit, Power, Trash2, Calendar, Mail, User, Shield, CheckCircle, XCircle,
+  ArrowLeft, Edit, Power, Trash2, Calendar, Mail, User, Shield, CheckCircle, XCircle, AlertTriangle,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
 import { AdminFormModal } from "@/src/components/access-management/admins/AdminFormModal";
@@ -16,9 +16,14 @@ import { RoleBadge } from "@/src/components/access-management/shared/role-badge"
 import { EntityAvatar } from "@/src/components/access-management/shared/entity-avatar";
 import {
   useAdminById, useUpdateAdmin, useUpdateAdminRole, useToggleAdminStatus, useDeleteAdmin,
+  useScheduleAdminDeletion, useRestoreAdminDeletion,
 } from "@/src/common/hooks/access-management/useAdmins";
+import {
+  useAssignAdminToTenant, useUnassignAdminFromTenant, useUpdateAdminTenantRole,
+} from "@/src/common/hooks/access-management/useTenants";
 import { useCurrentAdmin } from "@/src/common/hooks/use-current-admin";
-import type { UpdateAdminDto, AdminRole } from "@/src/common/@types/@access-management";
+import type { UpdateAdminDto, TenantAssignmentChange } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/common/@types/@access-management";
 import type { UpdateAdminFormData } from "@/src/common/schemas/access-management/admin-schema";
 import { formatDate } from "@/src/common/lib/utils";
 import { toast } from "react-hot-toast";
@@ -40,19 +45,51 @@ export default function AdminDetailPage() {
   const updateRoleMutation   = useUpdateAdminRole();
   const toggleStatusMutation = useToggleAdminStatus();
   const deleteAdminMutation  = useDeleteAdmin();
+  const scheduleDeletionMutation = useScheduleAdminDeletion();
+  const restoreDeletionMutation = useRestoreAdminDeletion();
+  const assignTenantMutation    = useAssignAdminToTenant();
+  const unassignTenantMutation  = useUnassignAdminFromTenant();
+  const updateTenantRoleMutation = useUpdateAdminTenantRole();
 
   const handleBack = () => router.push("/dashboard/access-management/admins");
 
-  const handleEditSubmit = async (formData: UpdateAdminFormData) => {
+  const handleEditSubmit = async (formData: UpdateAdminFormData, tenantChanges?: TenantAssignmentChange) => {
     if (!admin) return;
     try {
       const { role, ...rest } = formData;
-      if (Object.values(rest).some(Boolean)) {
-        await updateAdminMutation.mutateAsync({ id: admin.id, data: rest });
+      const cleanRest = Object.fromEntries(
+        Object.entries(rest).filter(([, v]) => v !== undefined && v !== ''),
+      );
+      if (Object.keys(cleanRest).length > 0) {
+        await updateAdminMutation.mutateAsync({ id: admin.id, data: cleanRest as Omit<UpdateAdminDto, 'role'> });
       }
       if (role && role !== admin.role) {
         await updateRoleMutation.mutateAsync({ id: admin.id, role: role as AdminRole });
       }
+
+      if (tenantChanges) {
+        for (const add of tenantChanges.add) {
+          await assignTenantMutation.mutateAsync({ admin_id: admin.id, tenant_id: add.tenant_id });
+          if (add.role !== AdminRole.viewer) {
+            await updateTenantRoleMutation.mutateAsync({
+              tenantId: add.tenant_id,
+              adminId: admin.id,
+              data: { role: add.role },
+            });
+          }
+        }
+        for (const removeId of tenantChanges.remove) {
+          await unassignTenantMutation.mutateAsync({ tenantId: removeId, adminId: admin.id });
+        }
+        for (const upd of tenantChanges.updateRole) {
+          await updateTenantRoleMutation.mutateAsync({
+            tenantId: upd.tenant_id,
+            adminId: admin.id,
+            data: { role: upd.role },
+          });
+        }
+      }
+
       setIsEditModalOpen(false);
     } catch {}
   };
@@ -85,15 +122,29 @@ export default function AdminDetailPage() {
       toast.error("You cannot delete your own account");
       return;
     }
+    if (admin.scheduled_for_deletion) {
+      setConfirmDialog({
+        isOpen: true,
+        title: "Cancel Deletion & Restore Admin",
+        message: `This admin is scheduled for permanent deletion. Restoring will reactivate the account and cancel the scheduled deletion.`,
+        variant: "default",
+        onConfirm: async () => {
+          try {
+            await restoreDeletionMutation.mutateAsync(admin.id);
+            setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+          } catch {}
+        },
+      });
+      return;
+    }
     setConfirmDialog({
-      isOpen: true, title: "Delete Admin",
-      message: "This action cannot be undone.",
+      isOpen: true, title: "Schedule Admin Deletion",
+      message: "This admin will be deactivated immediately and permanently deleted after 7 days. You can restore the account during this period.",
       variant: "danger",
       onConfirm: async () => {
         try {
-          await deleteAdminMutation.mutateAsync(admin.id);
+          await scheduleDeletionMutation.mutateAsync({ id: admin.id });
           setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-          router.push("/dashboard/access-management/admins");
         } catch {}
       },
     });
@@ -161,9 +212,28 @@ export default function AdminDetailPage() {
               >
                 {admin.is_active ? "Deactivate" : "Activate"}
               </Button>
-              <Button color="danger" variant="flat" startContent={<Trash2 className="w-4 h-4" />} onPress={handleDeleteClick} isDisabled={isSelf}>Delete</Button>
+              <Button
+                color={admin.scheduled_for_deletion ? "success" : "danger"} variant="flat"
+                startContent={admin.scheduled_for_deletion ? <CheckCircle className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
+                onPress={handleDeleteClick} isDisabled={isSelf}
+              >
+                {admin.scheduled_for_deletion ? "Restore" : "Delete"}
+              </Button>
             </div>
           </div>
+
+          {admin.scheduled_for_deletion && admin.deletion_scheduled_for_at && (
+            <div className="mb-6 p-4 bg-warning/10 border border-warning/20 rounded-lg flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-warning">Scheduled for permanent deletion</p>
+                <p className="text-xs text-foreground-500 mt-1">
+                  This admin will be permanently deleted on {new Date(admin.deletion_scheduled_for_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}.
+                  Click the Restore button above to cancel the deletion.
+                </p>
+              </div>
+            </div>
+          )}
 
           <Card className="mb-6">
             <CardHeader><h2 className="text-lg font-semibold">Admin Information</h2></CardHeader>

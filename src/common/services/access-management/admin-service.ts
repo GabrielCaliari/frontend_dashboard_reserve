@@ -76,7 +76,13 @@ export const fetchAdminById = async (id: string): Promise<Admin> => {
       }))
     : [];
 
-  return { ...raw, is_active: raw.is_active ?? raw.active ?? false, tenants };
+  return {
+    ...raw,
+    is_active: raw.is_active ?? raw.active ?? false,
+    scheduled_for_deletion: raw.scheduled_for_deletion ?? false,
+    deletion_scheduled_for_at: raw.deletion_scheduled_for_at ?? null,
+    tenants,
+  };
 };
 
 /** Create a new admin account. */
@@ -115,6 +121,29 @@ export const activateAdmin = async (id: string): Promise<Admin> => {
 /** Deactivate an admin account. Self-deactivation prevention must be handled at the UI layer. */
 export const deactivateAdmin = async (id: string): Promise<Admin> => {
   const response = await apiClient.patch<Admin>(`/admin/${id}/deactivate`);
+  return response.data;
+};
+
+/** Schedule admin deletion (7-day retention window). */
+export const scheduleAdminDeletion = async (
+  id: string,
+  reason?: string,
+): Promise<any> => {
+  const response = await apiClient.delete(`/admin/${id}`, {
+    data: reason ? { reason } : undefined,
+  });
+  return response.data;
+};
+
+/** Restore an admin that was scheduled for deletion. */
+export const restoreAdminDeletion = async (id: string): Promise<Admin> => {
+  const response = await apiClient.post<Admin>(`/admin/${id}/restore-deletion`);
+  return response.data;
+};
+
+/** Get admin deletion status. */
+export const getAdminDeletionStatus = async (id: string): Promise<any> => {
+  const response = await apiClient.get(`/admin/${id}/deletion-status`);
   return response.data;
 };
 

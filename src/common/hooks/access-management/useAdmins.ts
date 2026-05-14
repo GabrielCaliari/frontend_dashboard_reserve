@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchAdmins, fetchAdminById, createAdmin, updateAdmin,
   updateAdminRole, activateAdmin, deactivateAdmin, deleteAdmin,
+  scheduleAdminDeletion, restoreAdminDeletion, getAdminDeletionStatus,
 } from '@/src/common/services/access-management/admin-service';
 import type {
   PaginatedResponse, Admin, CreateAdminDto, UpdateAdminDto,
@@ -203,6 +204,39 @@ export function useDeleteAdmin() {
       if (context?.previousLists) { context.previousLists.forEach(([k, d]: any) => queryClient.setQueryData(k, d)); }
       if (context?.previousDetail && context?.id) { queryClient.setQueryData(adminKeys.detail(context.id), context.previousDetail); }
       toast.error(mapErrorMessage(error, 'Failed to delete admin'));
+    },
+  });
+}
+
+export interface ScheduleAdminDeletionParams {
+  id: string;
+  reason?: string;
+}
+
+export function useScheduleAdminDeletion() {
+  const queryClient = useQueryClient();
+  return useMutation<any, AxiosError<ApiErrorResponse>, ScheduleAdminDeletionParams>({
+    mutationFn: ({ id, reason }) => scheduleAdminDeletion(id, reason),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      toast.success('Admin deletion scheduled successfully');
+    },
+    onError: (error) => {
+      toast.error(mapErrorMessage(error, 'Failed to schedule admin deletion'));
+    },
+  });
+}
+
+export function useRestoreAdminDeletion() {
+  const queryClient = useQueryClient();
+  return useMutation<Admin, AxiosError<ApiErrorResponse>, string>({
+    mutationFn: restoreAdminDeletion,
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      toast.success('Admin restored successfully');
+    },
+    onError: (error) => {
+      toast.error(mapErrorMessage(error, 'Failed to restore admin'));
     },
   });
 }

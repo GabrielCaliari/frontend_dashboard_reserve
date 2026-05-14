@@ -56,7 +56,7 @@ export const createAdminSchema = z.object({
 export const updateAdminSchema = z.object({
   name: nameSchema.optional(),
   email: emailSchema.optional(),
-  password: passwordSchema.optional(),
+  password: passwordSchema.optional().or(z.literal('')).transform(v => v || undefined),
   role: AdminRole.optional()
 });
 

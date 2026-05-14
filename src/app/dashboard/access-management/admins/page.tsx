@@ -15,10 +15,14 @@ import { StatusFilterControl, type StatusFilter } from "@/src/components/access-
 import { Breadcrumbs } from "@/src/components/access-management/shared/breadcrumbs";
 import {
   useAdmins, useCreateAdmin, useUpdateAdmin, useUpdateAdminRole,
-  useToggleAdminStatus, useDeleteAdmin,
+  useToggleAdminStatus, useDeleteAdmin, useScheduleAdminDeletion, useRestoreAdminDeletion,
 } from "@/src/common/hooks/access-management/useAdmins";
+import {
+  useAssignAdminToTenant, useUnassignAdminFromTenant, useUpdateAdminTenantRole,
+} from "@/src/common/hooks/access-management/useTenants";
 import { useCurrentAdmin } from "@/src/common/hooks/use-current-admin";
-import type { Admin, CreateAdminDto, UpdateAdminDto, AdminRole } from "@/src/common/@types/@access-management";
+import type { Admin, CreateAdminDto, UpdateAdminDto, TenantAssignmentChange } from "@/src/common/@types/@access-management";
+import { AdminRole } from "@/src/common/@types/@access-management";
 import type { CreateAdminFormData, UpdateAdminFormData } from "@/src/common/schemas/access-management/admin-schema";
 import { toast } from "react-hot-toast";
 
@@ -44,7 +48,12 @@ export default function AdminListPage() {
   const updateAdminMutation     = useUpdateAdmin();
   const updateRoleMutation      = useUpdateAdminRole();
   const toggleStatusMutation    = useToggleAdminStatus();
-  const deleteAdminMutation     = useDeleteAdmin();
+  const deleteAdminMutation      = useDeleteAdmin();
+  const scheduleDeletionMutation = useScheduleAdminDeletion();
+  const restoreDeletionMutation = useRestoreAdminDeletion();
+  const assignTenantMutation    = useAssignAdminToTenant();
+  const unassignTenantMutation  = useUnassignAdminFromTenant();
+  const updateTenantRoleMutation = useUpdateAdminTenantRole();
 
   const filteredAdmins = (data?.data || []).filter((a) => {
     if (statusFilter === "active")   return a.is_active;
@@ -55,19 +64,50 @@ export default function AdminListPage() {
   const handlePageChange   = (page: number) => setCurrentPage(page);
   const handleSearchChange = (value: string) => { setSearchTerm(value); setCurrentPage(1); };
 
-  const handleFormSubmit = async (formData: CreateAdminFormData | UpdateAdminFormData) => {
+  const handleFormSubmit = async (formData: CreateAdminFormData | UpdateAdminFormData, tenantChanges?: TenantAssignmentChange) => {
     try {
+      let adminId: string | undefined;
+
       if (selectedAdmin) {
         const { role, ...rest } = formData as UpdateAdminFormData;
-        if (Object.keys(rest).some((k) => rest[k as keyof typeof rest])) {
-          await updateAdminMutation.mutateAsync({ id: selectedAdmin.id, data: rest });
+        const cleanRest = Object.fromEntries(
+          Object.entries(rest).filter(([, v]) => v !== undefined && v !== ''),
+        );
+        if (Object.keys(cleanRest).length > 0) {
+          await updateAdminMutation.mutateAsync({ id: selectedAdmin.id, data: cleanRest as Omit<UpdateAdminDto, 'role'> });
         }
         if (role && role !== selectedAdmin.role) {
           await updateRoleMutation.mutateAsync({ id: selectedAdmin.id, role: role as AdminRole });
         }
+        adminId = selectedAdmin.id;
       } else {
-        await createAdminMutation.mutateAsync(formData as CreateAdminDto);
+        const created = await createAdminMutation.mutateAsync(formData as CreateAdminDto);
+        adminId = created.id;
       }
+
+      if (adminId && tenantChanges) {
+        for (const add of tenantChanges.add) {
+          await assignTenantMutation.mutateAsync({ admin_id: adminId, tenant_id: add.tenant_id });
+          if (add.role !== AdminRole.viewer) {
+            await updateTenantRoleMutation.mutateAsync({
+              tenantId: add.tenant_id,
+              adminId,
+              data: { role: add.role },
+            });
+          }
+        }
+        for (const removeId of tenantChanges.remove) {
+          await unassignTenantMutation.mutateAsync({ tenantId: removeId, adminId });
+        }
+        for (const upd of tenantChanges.updateRole) {
+          await updateTenantRoleMutation.mutateAsync({
+            tenantId: upd.tenant_id,
+            adminId,
+            data: { role: upd.role },
+          });
+        }
+      }
+
       setIsFormModalOpen(false);
       setSelectedAdmin(undefined);
     } catch (err: any) {
@@ -107,16 +147,15 @@ export default function AdminListPage() {
     }
     setConfirmDialog({
       isOpen: true,
-      title: t("admins.management.deleteConfirmTitle"),
-      message: t("admins.management.deleteConfirmMessage"),
+      title: t("admins.management.scheduleDeletionConfirmTitle"),
+      message: t("admins.management.scheduleDeletionConfirmMessage"),
       variant: "danger",
       onConfirm: async () => {
         try {
-          await deleteAdminMutation.mutateAsync(adminId);
+          await scheduleDeletionMutation.mutateAsync({ id: adminId });
           setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-        } catch (err: any) {
-          const msg = err?.response?.data?.message || err?.message;
-          toast.error(Array.isArray(msg) ? msg.join(", ") : (msg || t("admins.management.errorMessage")));
+        } catch (error) {
+          // Error handled by mutation hook
         }
       },
     });
@@ -199,7 +238,7 @@ export default function AdminListPage() {
         message={confirmDialog.message}
         variant={confirmDialog.variant}
         confirmText={confirmDialog.variant === "danger" ? t("admins.management.confirmDelete") : t("admins.management.confirmAction")}
-        isLoading={toggleStatusMutation.isPending || deleteAdminMutation.isPending}
+        isLoading={toggleStatusMutation.isPending || scheduleDeletionMutation.isPending || deleteAdminMutation.isPending}
       />
     </>
   );

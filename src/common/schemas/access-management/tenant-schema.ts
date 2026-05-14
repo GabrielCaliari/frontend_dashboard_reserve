@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+import { AdminRole } from '@/src/common/@types/@access-management';
+
+const TENANT_SCOPED_ROLES = [AdminRole.owner, AdminRole.manager, AdminRole.editor, AdminRole.viewer] as const;
+
+export const TenantScopedRole = z.enum(TENANT_SCOPED_ROLES);
+
+export type TenantScopedRoleType = z.infer<typeof TenantScopedRole>;
+
 /**
  * Name validation schema
  */
@@ -63,3 +71,16 @@ export type CreateTenantFormData = z.infer<typeof createTenantSchema>;
  * Type inference for update tenant form data
  */
 export type UpdateTenantFormData = z.infer<typeof updateTenantSchema>;
+
+export const assignAdminSchema = z.object({
+  admin_id: z.string().min(1, 'Admin ID is required'),
+  tenant_id: z.string().min(1, 'Tenant ID is required'),
+});
+
+export type AssignAdminFormData = z.infer<typeof assignAdminSchema>;
+
+export const updateAdminTenantRoleSchema = z.object({
+  role: TenantScopedRole,
+});
+
+export type UpdateAdminTenantRoleFormData = z.infer<typeof updateAdminTenantRoleSchema>;

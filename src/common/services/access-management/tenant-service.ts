@@ -15,6 +15,9 @@ import {
   CreateTenantDto,
   UpdateTenantDto,
   PaginationParams,
+  AssignAdminDto,
+  UpdateAdminRoleDto,
+  AdminRole,
 } from '@/src/common/@types/@access-management';
 
 /**
@@ -32,10 +35,11 @@ export const fetchTenants = async (
   const raw = response.data;
   const rawTenants: any[] = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
 
-  // Normalize: backend returns `active`, frontend expects `is_active`
   const allTenants: Tenant[] = rawTenants.map((t) => ({
     ...t,
     is_active: t.is_active ?? t.active ?? false,
+    scheduled_for_deletion: t.scheduled_for_deletion ?? t.deletion_scheduled_for_at != null ?? false,
+    deletion_scheduled_for_at: t.deletion_scheduled_for_at ?? null,
   }));
   const filteredTenants = search 
     ? allTenants.filter(tenant => 
@@ -109,4 +113,40 @@ export const deactivateTenant = async (id: string): Promise<Tenant> => {
  */
 export const deleteTenant = async (id: string): Promise<void> => {
   await apiClient.delete(`/tenants/${id}`);
+};
+
+export const scheduleTenantDeletion = async (
+  id: string,
+  reason?: string,
+): Promise<any> => {
+  const response = await apiClient.delete(`/tenants/${id}`, {
+    data: reason ? { reason } : undefined,
+  });
+  return response.data;
+};
+
+export const restoreTenantDeletion = async (id: string): Promise<Tenant> => {
+  const response = await apiClient.post<Tenant>(`/tenants/${id}/restore`);
+  return response.data;
+};
+
+export const getTenantDeletionStatus = async (id: string): Promise<any> => {
+  const response = await apiClient.get(`/tenants/${id}/deletion-status`);
+  return response.data;
+};
+
+export const assignAdminToTenant = async (data: AssignAdminDto): Promise<void> => {
+  await apiClient.post('/tenants/assign', data);
+};
+
+export const unassignAdminFromTenant = async (tenantId: string, adminId: string): Promise<void> => {
+  await apiClient.delete(`/tenants/${tenantId}/admins/${adminId}`);
+};
+
+export const updateAdminTenantRole = async (
+  tenantId: string,
+  adminId: string,
+  data: UpdateAdminRoleDto,
+): Promise<void> => {
+  await apiClient.patch(`/tenants/${tenantId}/admins/${adminId}/role`, data);
 };
