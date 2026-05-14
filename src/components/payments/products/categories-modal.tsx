@@ -123,7 +123,9 @@ export function CategoriesModal({ isOpen, onClose }: CategoriesModalProps) {
             <Tags className="w-3.5 h-3.5 text-primary" />
           </div>
           <span className="text-sm font-semibold text-gray-100">{t('feesCategoriesModalTitle')}</span>
-          <Chip size="sm" variant="flat" className="ml-auto">{categories.length}</Chip>
+          {categories.length > 0 && (
+            <Chip size="sm" variant="flat" className="ml-2">{categories.length}</Chip>
+          )}
         </ModalHeader>
 
         <ModalBody className="py-4 space-y-3">

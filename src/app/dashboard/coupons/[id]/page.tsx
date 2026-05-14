@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import { ArrowLeft, Tag, Trash2 } from "lucide-react";
+import { ArrowLeft, Tag, Trash2, Link2 } from "lucide-react";
 import { Button, Card, CardBody, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { LayoutScopeRoot } from "@/src/layout/root-layout";
@@ -10,6 +10,7 @@ import { useGetCoupon, useUpdateCoupon } from "@/src/common/hooks/useCoupons";
 import { CouponSummaryCard } from "@/src/components/coupons/coupon-summary-card";
 import { CouponForm } from "@/src/components/coupons/coupon-form";
 import { CouponDeactivateModal } from "@/src/components/coupons/coupon-deactivate-modal";
+import { CouponLinkModal } from "@/src/components/coupons/coupon-link-modal";
 import { toast } from "@/src/common/hooks/use-toast";
 import { mapErrorMessage } from "@/src/common/utils/error-message-mapper";
 import type { UpdateCouponPayload } from "@/src/common/@types/@coupons";
@@ -20,6 +21,7 @@ export default function CouponDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [deactivateOpen, setDeactivateOpen] = useState(false);
+  const [linkOpen, setLinkOpen] = useState(false);
 
   const { data: coupon, isLoading, isError } = useGetCoupon(id);
   const { mutateAsync: updateCoupon, isPending } = useUpdateCoupon(id);
@@ -78,17 +80,29 @@ export default function CouponDetailPage() {
             {t("back")}
           </Button>
 
-          {coupon.active && (
+          <div className="flex items-center gap-2">
             <Button
-              color="danger"
+              color="primary"
               variant="flat"
               size="sm"
-              startContent={<Trash2 className="w-4 h-4" />}
-              onPress={() => setDeactivateOpen(true)}
+              startContent={<Link2 className="w-4 h-4" />}
+              onPress={() => setLinkOpen(true)}
             >
-              {t("deactivateCoupon")}
+              {t("copyLink")}
             </Button>
-          )}
+
+            {coupon.active && (
+              <Button
+                color="danger"
+                variant="flat"
+                size="sm"
+                startContent={<Trash2 className="w-4 h-4" />}
+                onPress={() => setDeactivateOpen(true)}
+              >
+                {t("deactivateCoupon")}
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -117,6 +131,14 @@ export default function CouponDetailPage() {
           coupon={coupon}
           isOpen={deactivateOpen}
           onClose={() => setDeactivateOpen(false)}
+        />
+      )}
+
+      {linkOpen && (
+        <CouponLinkModal
+          coupon={coupon}
+          isOpen={linkOpen}
+          onClose={() => setLinkOpen(false)}
         />
       )}
     </LayoutScopeRoot>

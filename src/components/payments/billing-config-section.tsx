@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { Button, Chip, Skeleton } from "@heroui/react";
 import { toast } from "react-hot-toast";
-import { CheckCircle, XCircle, Pencil, Trash2, RefreshCw, Package } from "lucide-react";
+import { CheckCircle, XCircle, Pencil, Trash2, RefreshCw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useBillingConfig } from "@/src/common/hooks/payments/use-billing-config";
 import { useDeleteBillingConfig } from "@/src/common/hooks/payments/use-delete-billing-config";
-import { usePlans } from "@/src/common/hooks/payments/use-plans";
 import { BillingConfigForm } from "./billing-config-form";
 
 interface StatusBadgeProps {
@@ -44,10 +43,7 @@ export function BillingConfigSection() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const { data: config, isLoading, refetch } = useBillingConfig();
-  const { data: plans = [] } = usePlans();
   const deleteConfig = useDeleteBillingConfig();
-
-  const activePlans = plans.filter((p) => p.active);
 
   const handleDelete = async () => {
     try {
@@ -159,32 +155,6 @@ export function BillingConfigSection() {
           </div>
         )}
       </div>
-
-      {/* Products created */}
-      {activePlans.length > 0 && (
-        <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e]">
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-            {t("productsLabel")}
-          </h3>
-          <div className="space-y-2">
-            {activePlans.map((plan) => (
-              <div
-                key={plan.id}
-                className="flex items-center gap-3 p-2 rounded-lg bg-[#0f0f1a] border border-[#2a2a3e]"
-              >
-                <Package className="w-4 h-4 text-primary flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-200 truncate">{plan.plan_name}</p>
-                  <p className="text-xs text-gray-500 font-mono truncate">{plan.stripe_product_id}</p>
-                </div>
-                <Chip size="sm" color="success" variant="flat">
-                  {plan.currency.toUpperCase()}
-                </Chip>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Metadata features */}
       {config.metadata?.features && Array.isArray(config.metadata.features) && (

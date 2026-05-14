@@ -88,7 +88,7 @@ export function GlobalFeesModal({ isOpen, onClose }: GlobalFeesModalProps) {
                   size="sm"
                   selectedKeys={[currency]}
                   onChange={(e) => setCurrency(e.target.value as 'usd' | 'brl')}
-                  className="w-24"
+                  className="w-24 pb-10"
                   aria-label="Currency"
                   classNames={{ trigger: 'bg-white/[0.03] border-white/[0.07] h-[56px]' }}
                 >

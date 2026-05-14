@@ -6,6 +6,7 @@ import type {
   UpdateCouponPayload,
   ValidateCouponPayload,
   CouponValidationResult,
+  CouponLinkResponse,
 } from '@/src/common/@types/@coupons';
 
 export const couponsService = {
@@ -59,6 +60,18 @@ export const couponsService = {
     const response = await cmsApiClient.post<CouponValidationResult>(
       '/public/coupons/validate',
       data
+    );
+    return response.data;
+  },
+
+  /**
+   * Gera o link de compartilhamento do cupom.
+   * Se baseUrl não for passado, o backend usa o FRONTEND_URL do .env.
+   */
+  async getLink(id: string, baseUrl?: string): Promise<CouponLinkResponse> {
+    const response = await cmsApiClient.get<CouponLinkResponse>(
+      `/admin/coupons/${id}/link`,
+      { params: baseUrl ? { baseUrl } : undefined }
     );
     return response.data;
   },

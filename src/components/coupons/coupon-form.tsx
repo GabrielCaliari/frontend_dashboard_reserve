@@ -562,12 +562,14 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
             },
           })}
         />
-        <Input
-          label={t("formExpiresAtLabel")}
-          type="datetime-local"
-          classNames={{ inputWrapper: inputClass }}
-          {...register("expiresAt")}
-        />
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm text-gray-400 px-1">{t("formExpiresAtLabel")}</label>
+          <input
+            type="datetime-local"
+            className="w-full rounded-xl px-3 py-3 text-sm text-gray-100 bg-[#0d0d20] border border-gray-700 focus:outline-none focus:border-primary transition-colors [color-scheme:dark]"
+            {...register("expiresAt")}
+          />
+        </div>
       </div>
 
       {/* Switches */}

@@ -242,22 +242,22 @@ export function CreateProductModal({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      size="3xl"
+      size="2xl"
       scrollBehavior="inside"
       classNames={{
-        base: 'bg-[#0f0f1a] border border-[#1f1f2e] max-h-[90vh]',
+        base: 'bg-[#0f0f1a] border border-[#1f1f2e]',
         header: 'border-b border-[#1f1f2e]',
-        body: 'overflow-y-auto',
+        body: 'py-4',
         footer: 'border-t border-[#1f1f2e]',
       }}
     >
       <ModalContent>
-        <form onSubmit={handleSubmit}>
-          <ModalHeader>
-            <h3 className="text-base font-semibold text-gray-100">{modalTitle}</h3>
-          </ModalHeader>
+        <ModalHeader>
+          <h3 className="text-base font-semibold text-gray-100">{modalTitle}</h3>
+        </ModalHeader>
 
-          <ModalBody className="gap-4">
+        <ModalBody className="gap-4">
+          <form id="create-product-form" onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                 {error}
@@ -435,17 +435,17 @@ export function CreateProductModal({
                 </div>
               </div>
             )}
-          </ModalBody>
+          </form>
+        </ModalBody>
 
-          <ModalFooter>
-            <Button variant="flat" onPress={handleClose} isDisabled={isLoading}>
-              {tCommon('cancel')}
-            </Button>
-            <Button color="primary" type="submit" isLoading={isLoading}>
-              {isLoading ? t('creating') : t('create')}
-            </Button>
-          </ModalFooter>
-        </form>
+        <ModalFooter>
+          <Button variant="flat" onPress={handleClose} isDisabled={isLoading}>
+            {tCommon('cancel')}
+          </Button>
+          <Button color="primary" type="submit" form="create-product-form" isLoading={isLoading}>
+            {isLoading ? t('creating') : t('create')}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
