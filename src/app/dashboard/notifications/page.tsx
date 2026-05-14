@@ -1,5 +1,1 @@
-import { NotificationInbox } from '@/src/components/notifications/notification-inbox';
-
-export default function NotificationsInboxPage() {
-  return <NotificationInbox />;
-}
+export { default } from "@/src/presentation/components/pages/dashboard/notifications/page";

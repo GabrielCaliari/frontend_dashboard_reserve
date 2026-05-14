@@ -1,0 +1,21 @@
+"use server";
+
+import { getSubscriptionByTenantService } from "@/src/modules/payments/infrastructure/adapters";
+import type { GetSubscriptionResponse } from "@/src/shared/domain/types/@payments";
+
+export async function getSubscriptionAction(
+  tenantId: string,
+): Promise<GetSubscriptionResponse> {
+  try {
+    const result = await getSubscriptionByTenantService(tenantId);
+    return result;
+  } catch (error: any) {
+    if (error?.response?.status === 404) {
+      return { subscription: null };
+    }
+    console.error("Error fetching subscription:", error);
+    throw new Error(
+      error?.response?.data?.message || "Failed to fetch subscription",
+    );
+  }
+}

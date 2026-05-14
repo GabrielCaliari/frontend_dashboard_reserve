@@ -9,7 +9,9 @@
     "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "codegen": "nextjs-codegen generate",
+    "codegen:diff": "nextjs-codegen diff"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -135,6 +137,7 @@
     "eslint-plugin-unused-imports": "4.1.4",
     "fast-check": "^4.5.3",
     "jsdom": "^28.1.0",
+    "nextjs-openapi-codegen": "^1.0.2",
     "postcss": "8.4.49",
     "prettier": "3.3.3",
     "tailwind-variants": "0.1.20",

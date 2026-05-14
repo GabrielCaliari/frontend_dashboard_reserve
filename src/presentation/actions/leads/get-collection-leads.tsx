@@ -1,0 +1,22 @@
+"use server";
+
+import { getCollectionLeadsService } from "@/src/modules/leads/infrastructure/adapters";
+import type { LeadListResponse } from "@/src/shared/domain/types/@lead";
+
+interface GetCollectionLeadsParams {
+  page?: number;
+  limit?: number;
+}
+
+export async function getCollectionLeadsAction(
+  collectionId: string,
+  params: GetCollectionLeadsParams = {},
+): Promise<LeadListResponse> {
+  try {
+    return await getCollectionLeadsService(collectionId, params);
+  } catch (error: any) {
+    throw new Error(
+      error?.response?.data?.message || "Failed to get collection leads",
+    );
+  }
+}

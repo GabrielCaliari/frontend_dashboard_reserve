@@ -1,0 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
+import { blogService } from "@/src/modules/cms/infrastructure/adapters";
+import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
+
+export function useListBlogs(page = 1, limit = 10) {
+  const tenantId = useSelectedTenantId();
+
+  return useQuery({
+    queryKey: ["blogs", tenantId, page, limit],
+    queryFn: () => blogService.listBlogs(page, limit),
+    enabled: !!tenantId,
+    staleTime: 5 * 60 * 1000, // 5 min - blogs change rarely
+  });
+}

@@ -1,5 +1,1 @@
-import { NotificationForm } from '@/src/components/notifications/notification-form';
-
-export default function NewNotificationPage() {
-  return <NotificationForm />;
-}
+export { default } from "@/src/presentation/components/pages/dashboard/global/notifications/new/page";

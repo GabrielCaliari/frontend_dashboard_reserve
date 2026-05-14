@@ -1,0 +1,24 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { listMyTenantsService } from "@/src/modules/access-management/infrastructure/adapters";
+import type { Tenant } from "@/src/shared/domain/types/@auth";
+
+export default function useTenants() {
+  const { data, isLoading, error, refetch } = useQuery<Tenant[] | string>({
+    queryKey: ["my-tenants"],
+    queryFn: listMyTenantsService,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const tenants = Array.isArray(data) ? data : [];
+  const queryError =
+    typeof data === "string" ? data : error ? String(error) : null;
+
+  return {
+    tenants,
+    loading: isLoading,
+    error: queryError,
+    refetch,
+  };
+}
