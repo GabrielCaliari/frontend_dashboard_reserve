@@ -59,3 +59,10 @@ export function useDeactivateCoupon() {
     },
   });
 }
+
+export function useGetCouponLink() {
+  return useMutation({
+    mutationFn: ({ id, baseUrl }: { id: string; baseUrl?: string }) =>
+      couponsService.getLink(id, baseUrl),
+  });
+}

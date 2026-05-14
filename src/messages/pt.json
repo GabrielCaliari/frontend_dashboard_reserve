@@ -1385,7 +1385,21 @@
     "formOverridesAdd": "Adicionar override",
     "formOverridesEmpty": "Nenhum override configurado — todos os produtos selecionados usam o valor global.",
     "formOverridesProduct": "Produto",
-    "formDiscountValueFallbackHint": "Usado como fallback para produtos sem override."
+    "formDiscountValueFallbackHint": "Usado como fallback para produtos sem override.",
+    "copyLink": "Copiar link",
+    "linkModalTitle": "Gerar link do cupom",
+    "linkModalDescription": "Gere um link de compartilhamento para o cupom {code}. O código será adicionado automaticamente como query param.",
+    "linkModalBaseUrlLabel": "URL base (opcional)",
+    "linkModalBaseUrlPlaceholder": "https://meusite.com/checkout",
+    "linkModalBaseUrlHint": "Informe a URL da página de carrinho/checkout do site do cliente.",
+    "linkModalBaseUrlRequired": "Informe a URL base do site.",
+    "linkModalBaseUrlInvalid": "URL inválida. Use o formato https://seusite.com/cart",
+    "linkModalResult": "Link gerado",
+    "linkGenerateBtn": "Gerar link",
+    "linkCopyBtn": "Copiar link",
+    "linkCopied": "Link copiado para a área de transferência!",
+    "linkCopyError": "Erro ao copiar o link.",
+    "linkGenerateError": "Erro ao gerar o link do cupom."
   },
 
   "reports": {

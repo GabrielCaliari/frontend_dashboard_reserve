@@ -100,3 +100,8 @@ export interface CouponValidationResult {
   orderTotal: number;   // cents
   finalTotal: number;   // cents
 }
+
+export interface CouponLinkResponse {
+  link: string;
+  code: string;
+}

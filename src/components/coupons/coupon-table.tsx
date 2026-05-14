@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Spinner, Button, Tooltip, Chip } from "@heroui/react";
-import { Pencil, Trash2, Eye } from "lucide-react";
+import { Pencil, Trash2, Eye, Link2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { DiscountCoupon } from "@/src/common/@types/@coupons";
@@ -15,6 +15,7 @@ import {
   ScopeBadge,
 } from "./coupon-display";
 import { CouponDeactivateModal } from "./coupon-deactivate-modal";
+import { CouponLinkModal } from "./coupon-link-modal";
 
 interface CouponTableProps {
   coupons: DiscountCoupon[];
@@ -24,9 +25,11 @@ interface CouponTableProps {
 function CouponCard({
   coupon,
   onDeactivate,
+  onCopyLink,
 }: {
   coupon: DiscountCoupon;
   onDeactivate: (c: DiscountCoupon) => void;
+  onCopyLink: (c: DiscountCoupon) => void;
 }) {
   const t = useTranslations("coupons");
 
@@ -86,6 +89,14 @@ function CouponCard({
         </Button>
         <Button
           isIconOnly size="sm" variant="light"
+          className="text-gray-400 hover:text-primary"
+          onPress={() => onCopyLink(coupon)}
+          aria-label={t("copyLink")}
+        >
+          <Link2 className="w-4 h-4" />
+        </Button>
+        <Button
+          isIconOnly size="sm" variant="light"
           className="text-gray-400 hover:text-red-400"
           isDisabled={!coupon.active}
           onPress={() => onDeactivate(coupon)}
@@ -100,7 +111,9 @@ function CouponCard({
 export function CouponTable({ coupons, isLoading }: CouponTableProps) {
   const t = useTranslations("coupons");
   const [deactivating, setDeactivating] = useState<DiscountCoupon | null>(null);
+  const [linkCoupon, setLinkCoupon] = useState<DiscountCoupon | null>(null);
   const handleDeactivateClose = useCallback(() => setDeactivating(null), []);
+  const handleLinkClose = useCallback(() => setLinkCoupon(null), []);
 
   if (isLoading) {
     return <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
@@ -125,7 +138,7 @@ export function CouponTable({ coupons, isLoading }: CouponTableProps) {
       {/* Mobile */}
       <div className="flex flex-col gap-3 lg:hidden">
         {coupons.map((coupon) => (
-          <CouponCard key={coupon.id} coupon={coupon} onDeactivate={setDeactivating} />
+          <CouponCard key={coupon.id} coupon={coupon} onDeactivate={setDeactivating} onCopyLink={setLinkCoupon} />
         ))}
       </div>
 
@@ -181,6 +194,11 @@ export function CouponTable({ coupons, isLoading }: CouponTableProps) {
                         <Pencil className="w-4 h-4" />
                       </Button>
                     </Tooltip>
+                    <Tooltip content={t("copyLink")}>
+                      <Button isIconOnly size="sm" variant="light" className="text-gray-400 hover:text-primary" onPress={() => setLinkCoupon(coupon)}>
+                        <Link2 className="w-4 h-4" />
+                      </Button>
+                    </Tooltip>
                     <Tooltip content={t("deactivate")} color="danger">
                       <Button isIconOnly size="sm" variant="light" className="text-gray-400 hover:text-red-400" isDisabled={!coupon.active} onPress={() => setDeactivating(coupon)}>
                         <Trash2 className="w-4 h-4" />
@@ -196,6 +214,10 @@ export function CouponTable({ coupons, isLoading }: CouponTableProps) {
 
       {deactivating && (
         <CouponDeactivateModal coupon={deactivating} isOpen={!!deactivating} onClose={handleDeactivateClose} />
+      )}
+
+      {linkCoupon && (
+        <CouponLinkModal coupon={linkCoupon} isOpen={!!linkCoupon} onClose={handleLinkClose} />
       )}
     </>
   );

@@ -1418,7 +1418,21 @@
     "formOverridesAdd": "Add override",
     "formOverridesEmpty": "No overrides configured — all selected products use the global discount value.",
     "formOverridesProduct": "Product",
-    "formDiscountValueFallbackHint": "Used as fallback for products without an override."
+    "formDiscountValueFallbackHint": "Used as fallback for products without an override.",
+    "copyLink": "Copy link",
+    "linkModalTitle": "Generate coupon link",
+    "linkModalDescription": "Generate a shareable link for coupon {code}. The code will be automatically added as a query param.",
+    "linkModalBaseUrlLabel": "Base URL (optional)",
+    "linkModalBaseUrlPlaceholder": "https://mysite.com/checkout",
+    "linkModalBaseUrlHint": "Enter the cart/checkout page URL of the client's site.",
+    "linkModalBaseUrlRequired": "Please enter the site base URL.",
+    "linkModalBaseUrlInvalid": "Invalid URL. Use the format https://yoursite.com/cart",
+    "linkModalResult": "Generated link",
+    "linkGenerateBtn": "Generate link",
+    "linkCopyBtn": "Copy link",
+    "linkCopied": "Link copied to clipboard!",
+    "linkCopyError": "Failed to copy the link.",
+    "linkGenerateError": "Failed to generate the coupon link."
   },
 
   "reports": {
