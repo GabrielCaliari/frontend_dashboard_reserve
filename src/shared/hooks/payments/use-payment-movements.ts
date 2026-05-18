@@ -3,20 +3,17 @@ import { paymentMovementsService } from "@/src/modules/payments/infrastructure/a
 import type { ListMovementsParams } from "@/src/shared/domain/types/@payment-movements";
 import {
   useHasSelectedTenant,
-  useTenantStore,
+  useSelectedTenantId,
 } from "@/src/shared/stores/tenant-store";
 
 export function usePaymentMovements(params?: ListMovementsParams) {
   const hasTenant = useHasSelectedTenant();
-  const dashboardScope = useTenantStore((state) => state.dashboardScope);
-
-  // Permite rodar tanto com tenant selecionado quanto no escopo global
-  const isEnabled = hasTenant || dashboardScope === "global";
+  const tenantId = useSelectedTenantId();
 
   return useQuery({
-    queryKey: ["payment-movements", params],
+    queryKey: ["payment-movements", tenantId, params],
     queryFn: () => paymentMovementsService.listMovements(params),
-    enabled: isEnabled,
+    enabled: hasTenant,
     staleTime: 2 * 60 * 1000,
   });
 }

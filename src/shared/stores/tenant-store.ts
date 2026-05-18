@@ -2,13 +2,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Tenant } from "@/src/shared/domain/types/@auth";
 
-export type DashboardScope = "tenant" | "global";
-
 interface TenantState {
   selectedTenant: Tenant | null;
-  dashboardScope: DashboardScope;
   setSelectedTenant: (tenant: Tenant | null) => void;
-  setDashboardScope: (scope: DashboardScope) => void;
   clearSelectedTenant: () => void;
 }
 
@@ -43,42 +39,50 @@ const cookieStorage: Pick<Storage, "getItem" | "setItem" | "removeItem"> = {
   },
 };
 
+/**
+ * v1/v2 persistiam `dashboardScope` ('tenant' | 'global'). O conceito nao existe
+ * mais: o acesso de super admin vem das capabilities do tenant, nao de um escopo
+ * guardado no cookie. Descartamos o campo para que sessoes abertas nao carreguem
+ * um campo morto -- e, principalmente, para que `useSelectedTenantId` pare de
+ * devolver null (o que suprimia o header `x-tenant-id`).
+ */
+export function migrateTenantStore(persistedState: unknown): TenantState {
+  const isRecord =
+    typeof persistedState === "object" &&
+    persistedState !== null &&
+    !Array.isArray(persistedState);
+  const state = (isRecord ? persistedState : {}) as Partial<TenantState> & {
+    dashboardScope?: string;
+  };
+  const { dashboardScope: _dashboardScope, ...rest } = state;
+
+  return { selectedTenant: null, ...rest } as TenantState;
+}
+
 export const useTenantStore = create<TenantState>()(
   persist(
     (set) => ({
       selectedTenant: null,
-      dashboardScope: "tenant",
       setSelectedTenant: (tenant) => set({ selectedTenant: tenant }),
-      setDashboardScope: (dashboardScope) => set({ dashboardScope }),
-      clearSelectedTenant: () =>
-        set({ selectedTenant: null, dashboardScope: "tenant" }),
+      clearSelectedTenant: () => set({ selectedTenant: null }),
     }),
     {
       name: "tenant-storage",
       storage: createJSONStorage(() => cookieStorage),
+      version: 3,
+      migrate: (persistedState) => migrateTenantStore(persistedState),
     },
   ),
 );
 
-// Hook para obter o tenant ID selecionado (útil para APIs)
+// Hook para obter o tenant ID selecionado (util para APIs)
 export const useSelectedTenantId = () => {
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
-  const dashboardScope = useTenantStore((state) => state.dashboardScope);
-  if (dashboardScope === "global") return null;
-  return selectedTenant?.id || null;
+  return selectedTenant?.id ?? null;
 };
 
-// Hook para verificar se um tenant está selecionado
+// Hook para verificar se um tenant esta selecionado
 export const useHasSelectedTenant = () => {
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
-  const dashboardScope = useTenantStore((state) => state.dashboardScope);
-  return dashboardScope === "tenant" && selectedTenant !== null;
-};
-
-export const useDashboardScope = () => {
-  return useTenantStore((state) => state.dashboardScope);
-};
-
-export const useIsGlobalDashboardScope = () => {
-  return useTenantStore((state) => state.dashboardScope === "global");
+  return selectedTenant !== null;
 };

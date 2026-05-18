@@ -42,10 +42,7 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "nextjs-toploader/app";
 import { useTranslations } from "next-intl";
 import { useMobileDrawerStore } from "@/src/shared/stores/mobile-drawer.store";
-import {
-  useDashboardScope,
-  useTenantStore,
-} from "@/src/shared/stores/tenant-store";
+import { useTenantStore } from "@/src/shared/stores/tenant-store";
 import usePermissions from "@/src/shared/hooks/use-permissions";
 import { NotificationBadge } from "@/src/presentation/components/organisms/notifications/notification-badge";
 
@@ -71,7 +68,6 @@ export function Sidebar({
 }: SidebarProps) {
   const { push } = useRouter();
   const { isSuperAdmin } = usePermissions();
-  const dashboardScope = useDashboardScope();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const [userName, setUserName] = useState<string>("");
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
@@ -94,7 +90,7 @@ export function Sidebar({
   };
 
   const navItems: NavItem[] = useMemo(() => {
-    if (dashboardScope === "global" && isSuperAdmin) {
+    if (isSuperAdmin) {
       return [
         {
           id: "dashboard-global",
@@ -442,7 +438,7 @@ export function Sidebar({
         ],
       },
     ];
-  }, [dashboardScope, isSuperAdmin, t]);
+  }, [isSuperAdmin, t]);
 
   // Filter items recursively based on disabledTabs
   const filterDisabled = (items: NavItem[]): NavItem[] => {
@@ -611,11 +607,7 @@ export function Sidebar({
         <div className="w-full flex-1 flex flex-col min-h-0">
           <div className="flex flex-col w-full shrink-0">
             <Link
-              href={
-                dashboardScope === "global" && isSuperAdmin
-                  ? "/dashboard/global"
-                  : "/dashboard"
-              }
+              href={isSuperAdmin ? "/dashboard/global" : "/dashboard"}
               className="flex items-center justify-between hover:bg-white/5 p-3 hover:cursor-pointer rounded-xl w-full transition-colors group"
             >
               <div className="flex items-center gap-3 rounded-lg w-full">
@@ -628,7 +620,7 @@ export function Sidebar({
                     {userName || t("userLabel")}
                   </h1>
                   <p className="text-xs text-muted-foreground truncate">
-                    {dashboardScope === "global" && isSuperAdmin
+                    {isSuperAdmin
                       ? t("globalWorkspace")
                       : selectedTenant?.name || t("defaultWorkspace")}
                   </p>
@@ -677,7 +669,7 @@ export function Sidebar({
                     {userName || t("userLabel")}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {dashboardScope === "global" && isSuperAdmin
+                    {isSuperAdmin
                       ? t("globalWorkspace")
                       : selectedTenant?.name || t("defaultWorkspace")}
                   </span>

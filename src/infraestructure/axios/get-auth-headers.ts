@@ -5,7 +5,6 @@ type TenantStorageSnapshot = {
     selectedTenant?: {
       id?: string | number;
     } | null;
-    dashboardScope?: "tenant" | "global";
   };
 };
 
@@ -23,9 +22,7 @@ function parseTenantCookie(cookieValue: string): TenantStorageSnapshot | null {
 
 function extractTenantId(cookieValue: string): string | null {
   const parsed = parseTenantCookie(cookieValue);
-  if (!parsed || parsed.state?.dashboardScope === "global") {
-    return null;
-  }
+  if (!parsed) return null;
 
   return parsed.state?.selectedTenant?.id?.toString() ?? null;
 }

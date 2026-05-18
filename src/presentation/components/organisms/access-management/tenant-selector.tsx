@@ -3,104 +3,67 @@
 import { useEffect, useState, useCallback } from "react";
 import { Select, SelectItem } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import useAdminDetails from "@/src/shared/hooks/useUserDatails";
-import usePermissions from "@/src/shared/hooks/use-permissions";
 import { useRouter } from "nextjs-toploader/app";
-import {
-  useDashboardScope,
-  useTenantStore,
-} from "@/src/shared/stores/tenant-store";
 
-const GLOBAL_VIEW_KEY = "__global_view__";
+import useAdminDetails from "@/src/shared/hooks/useUserDatails";
+import { useTenantStore } from "@/src/shared/stores/tenant-store";
 
 export default function TenantSelector() {
   const { push } = useRouter();
   const t = useTranslations("sidebar");
   const [isMounted, setIsMounted] = useState(false);
   const { data: adminData, isLoading } = useAdminDetails();
-  const { isSuperAdmin } = usePermissions();
-  const dashboardScope = useDashboardScope();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const setSelectedTenant = useTenantStore((state) => state.setSelectedTenant);
-  const setDashboardScope = useTenantStore((state) => state.setDashboardScope);
 
-  const tenants = adminData?.tenants || [];
+  const tenants = adminData?.tenants ?? [];
 
-  // Prevent hydration mismatch
+  // Evita divergencia de hidratacao: o cookie so e lido depois da montagem.
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Auto-select first tenant if none selected and tenants are loaded
+  // Auto-seleciona o primeiro tenant do admin quando nenhum esta selecionado ou
+  // quando o tenant do cookie nao pertence mais a este admin.
   useEffect(() => {
-    if (!isLoading && isMounted && tenants.length > 0) {
-      // Check if current selectedTenant belongs to this admin's tenants
-      const tenantBelongsToAdmin = selectedTenant
-        ? tenants.some((t) => t.id.toString() === selectedTenant.id.toString())
-        : false;
+    if (isLoading || !isMounted || tenants.length === 0) return;
 
-      if (isSuperAdmin) {
-        if (dashboardScope !== "global" && !tenantBelongsToAdmin) {
-          setDashboardScope("global");
-          push("/dashboard/global");
-        }
-      } else {
-        // For non-super-admins: auto-select first tenant if none selected or current doesn't belong
-        if (!selectedTenant || !tenantBelongsToAdmin) {
-          setSelectedTenant(tenants[0]);
-          setDashboardScope("tenant");
-        }
-      }
-    } else if (
-      !isLoading &&
-      isMounted &&
-      !isSuperAdmin &&
-      tenants.length === 0 &&
-      !selectedTenant
-    ) {
-      // No tenants available for non-super-admin
+    const tenantBelongsToAdmin = selectedTenant
+      ? tenants.some(
+          (tenant: { id: string | number }) =>
+            tenant.id.toString() === selectedTenant.id.toString(),
+        )
+      : false;
+
+    if (!selectedTenant || !tenantBelongsToAdmin) {
+      setSelectedTenant(tenants[0]);
     }
-  }, [
-    tenants,
-    selectedTenant,
-    setSelectedTenant,
-    isSuperAdmin,
-    dashboardScope,
-    setDashboardScope,
-    push,
-    isLoading,
-    isMounted,
-  ]);
+  }, [tenants, selectedTenant, setSelectedTenant, isLoading, isMounted]);
 
   const handleSelectionChange = useCallback(
     (keys: Iterable<React.Key>) => {
       const selectedKey = Array.from(keys)[0] as string | undefined;
       if (!selectedKey) return;
 
-      if (selectedKey === GLOBAL_VIEW_KEY && isSuperAdmin) {
-        setDashboardScope("global");
-        push("/dashboard/global");
-        return;
-      }
-
-      const tenant = tenants.find((t) => t.id.toString() === selectedKey);
+      const tenant = tenants.find(
+        (candidate: { id: string | number }) =>
+          candidate.id.toString() === selectedKey,
+      );
       if (tenant) {
         setSelectedTenant(tenant);
-        setDashboardScope("tenant");
         push("/dashboard");
       }
     },
-    [isSuperAdmin, tenants, setDashboardScope, setSelectedTenant, push],
+    [tenants, setSelectedTenant, push],
   );
 
-  // Prevent hydration mismatch - render placeholder on server
   if (!isMounted || isLoading) {
     return (
       <Select
         label={t("tenantLabel")}
         placeholder={t("tenantLoading")}
-        isLoading={true}
-        isDisabled={true}
+        isLoading
+        isDisabled
         className="max-w-xs"
         classNames={{
           trigger: "bg-white/5 border-border",
@@ -112,12 +75,12 @@ export default function TenantSelector() {
     );
   }
 
-  if (tenants.length === 0 && !isSuperAdmin) {
+  if (tenants.length === 0) {
     return (
       <Select
         label={t("tenantLabel")}
         placeholder={t("noTenantsAvailable")}
-        isDisabled={true}
+        isDisabled
         className="max-w-xs"
         classNames={{
           trigger: "bg-white/5 border-border",
@@ -134,11 +97,7 @@ export default function TenantSelector() {
       label={t("tenantLabel")}
       placeholder={t("selectTenantPlaceholder")}
       selectedKeys={
-        dashboardScope === "global"
-          ? new Set([GLOBAL_VIEW_KEY])
-          : selectedTenant
-            ? new Set([selectedTenant.id.toString()])
-            : new Set()
+        selectedTenant ? new Set([selectedTenant.id.toString()]) : new Set()
       }
       onSelectionChange={handleSelectionChange}
       className="max-w-xs"
@@ -159,21 +118,8 @@ export default function TenantSelector() {
         },
       }}
     >
-      {isSuperAdmin && (
-        <SelectItem
-          key={GLOBAL_VIEW_KEY}
-          value={GLOBAL_VIEW_KEY}
-          textValue={t("globalViewOption")}
-        >
-          {t("globalViewOption")}
-        </SelectItem>
-      )}
-      {tenants.map((tenant) => (
-        <SelectItem
-          key={tenant.id.toString()}
-          value={tenant.id.toString()}
-          textValue={tenant.name}
-        >
+      {tenants.map((tenant: { id: string | number; name: string }) => (
+        <SelectItem key={tenant.id.toString()} textValue={tenant.name}>
           {tenant.name}
         </SelectItem>
       ))}

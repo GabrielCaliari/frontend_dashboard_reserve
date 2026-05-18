@@ -5,13 +5,12 @@ type TenantStorageSnapshot = {
     selectedTenant?: {
       id?: string | number;
     } | null;
-    dashboardScope?: "tenant" | "global";
   };
 };
 
 /**
  * Extrai o tenant ID do cookie "tenant-storage" no servidor (Server Actions / Route Handlers).
- * Retorna null se não houver tenant selecionado ou se estiver em modo global.
+ * Retorna null se não houver tenant selecionado.
  */
 export async function getTenantIdFromCookie(): Promise<string | null> {
   try {
@@ -23,9 +22,7 @@ export async function getTenantIdFromCookie(): Promise<string | null> {
     const decoded = decodeURIComponent(tenantCookie);
     const parsed: TenantStorageSnapshot = JSON.parse(decoded);
 
-    if (!parsed || parsed.state?.dashboardScope === "global") {
-      return null;
-    }
+    if (!parsed) return null;
 
     const tenantId = parsed.state?.selectedTenant?.id?.toString() ?? null;
 
