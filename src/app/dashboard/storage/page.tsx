@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { redirect } from"next/navigation";
 
 export default function StoragePage() {
-  redirect("/dashboard/cms/media");
+ redirect("/dashboard/cms/media");
 }

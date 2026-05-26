@@ -64,6 +64,15 @@ module.exports = {
           to: { opacity: "1", transform: "translateY(0)" },
         },
       },
+      boxShadow: {
+        sm: "none",
+        DEFAULT: "none",
+        md: "none",
+        lg: "none",
+        xl: "none",
+        "2xl": "none",
+        inner: "none",
+      },
       animation: {
         "fade-in": "fade-in 200ms ease-out",
         "fade-out": "fade-out 150ms ease-in",
@@ -74,17 +83,41 @@ module.exports = {
   darkMode: "class",
   plugins: [
     heroui({
+      layout: {
+        boxShadow: {
+          small: "none",
+          medium: "none",
+          large: "none",
+        },
+      },
       themes: {
         light: {
           colors: {
             background: "#F8FAF4",
             foreground: "#0E1009",
+            content1: "#FFFFFF",
+            content2: "#F2F5F1",
+            content3: "#E5E9E4",
+            content4: "#D8DFD7",
             primary: {
               DEFAULT: "#9FE870",
               foreground: "#163300",
             },
             secondary: {
               DEFAULT: "#E2F6D5",
+              foreground: "#0E1009",
+            },
+            default: {
+              50: "#F2F5F1",
+              100: "#E5E9E4",
+              200: "#D8DFD7",
+              300: "#CCD5CA",
+              400: "#BFCCBD",
+              500: "#B3C2B0",
+              600: "#A6B8A3",
+              700: "#99AF96",
+              800: "#8CA589",
+              900: "#809C7D",
               foreground: "#0E1009",
             },
             focus: "#9FE870",
@@ -94,12 +127,29 @@ module.exports = {
           colors: {
             background: "#0F1423",
             foreground: "#ECEEF5",
+            content1: "#141A2B",
+            content2: "#1C243B",
+            content3: "#293355",
+            content4: "#36436F",
             primary: {
               DEFAULT: "#9FE870",
               foreground: "#163300",
             },
             secondary: {
               DEFAULT: "#1A2236",
+              foreground: "#ECEEF5",
+            },
+            default: {
+              50: "#141A2B",
+              100: "#1C243B",
+              200: "#293355",
+              300: "#36436F",
+              400: "#43528A",
+              500: "#5062A5",
+              600: "#6A7AB3",
+              700: "#8391C1",
+              800: "#9DA9CF",
+              900: "#B6C0DD",
               foreground: "#ECEEF5",
             },
             focus: "#9FE870",

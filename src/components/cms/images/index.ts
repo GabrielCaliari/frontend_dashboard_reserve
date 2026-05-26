@@ -9,6 +9,6 @@
  * - ImageCard: Individual image card with editing capabilities
  */
 
-export { default as ImageUpload } from './image-upload';
-export { default as ImageGallery } from './image-gallery';
-export { default as ImageCard } from './image-card';
+export { default as ImageUpload } from'./image-upload';
+export { default as ImageGallery } from'./image-gallery';
+export { default as ImageCard } from'./image-card';

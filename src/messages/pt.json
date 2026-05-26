@@ -51,16 +51,16 @@
     "userLabel": "Usuário",
     "leads": "Leads",
     "allLeads": "Todos os leads",
-    "leadCollections": "Coleções",
+    "leadCollections": "Coleções de Leads",
     "appointments": "Agendamentos",
     "abandonedCarts": "Carrinhos abandonados",
     "emailCampaigns": "Campanhas de Email",
     "profile": "Meu Perfil",
     "cms": "CMS",
-    "blogs": "Blogs",
-    "articles": "Artigos",
-    "authors": "Autores",
-    "cmsCollections": "Coleções",
+    "blogs": "Coleções de Blog",
+    "articles": "Artigos de Blog",
+    "authors": "Autores de Blog",
+    "cmsCollections": "Coleções de Leads",
     "media": "Mídia",
     "stats": "Stats",
     "statsOverview": "Visão Geral",
@@ -152,7 +152,6 @@
     "tabCollections": "Coleções",
     "tabAppointments": "Agendamentos"
   },
-
   "appointments": {
     "title": "Agendamentos",
     "subtitle": "{count} agendamentos no total",
@@ -802,7 +801,7 @@
     "placeholder": "Digite aqui sua dúvida...",
     "greeting": "Olá, estou online para te ajudar!",
     "welcomeMessage": "É um prazer ter você aqui",
-    "introMessage": "Me chamo Roberto e irei guiar você nesse primeiro momento. \ud83d\ude0a",
+    "introMessage": "Me chamo Roberto e irei guiar você nesse primeiro momento. 😊",
     "questionPrompt": "Poderia me dizer qual sua dúvida?"
   },
   "cms": {
@@ -1289,7 +1288,6 @@
   "accessManagementTenantDetail": {
     "openStatsDrilldown": "Abrir drill-down de stats"
   },
-
   "coupons": {
     "pageTitle": "Cupons de Desconto",
     "pageSubtitle": "Gerencie cupons promocionais para clientes B2B e B2C.",
@@ -1437,7 +1435,6 @@
     "linkCopyError": "Erro ao copiar o link.",
     "linkGenerateError": "Erro ao gerar o link do cupom."
   },
-
   "reports": {
     "title": "Relatórios",
     "subtitle": "Gerencie os relatórios de analytics",
@@ -1477,7 +1474,6 @@
     "rowsPerPage": "Linhas por página",
     "accessDenied": "Você não tem permissão para acessar esta página."
   },
-
   "payments": {
     "title": "Payments",
     "subtitle": "Gerencie a configuração de pagamento e assinaturas.",

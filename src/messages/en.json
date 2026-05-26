@@ -32,7 +32,6 @@
     "preview": "Preview",
     "refresh": "Refresh"
   },
-
   "sidebar": {
     "workspace": "Admin workspace",
     "defaultWorkspace": "Admin workspace",
@@ -52,16 +51,16 @@
     "userLabel": "User",
     "leads": "Leads",
     "allLeads": "All leads",
-    "leadCollections": "Collections",
+    "leadCollections": "Lead Collections",
     "appointments": "Appointments",
     "abandonedCarts": "Abandoned carts",
     "emailCampaigns": "Email Campaigns",
     "profile": "My Profile",
     "cms": "CMS",
-    "blogs": "Blogs",
-    "articles": "Articles",
-    "authors": "Authors",
-    "cmsCollections": "Collections",
+    "blogs": "Blog Collections",
+    "articles": "Blog Articles",
+    "authors": "Blog Authors",
+    "cmsCollections": "Lead Collections",
     "media": "Media",
     "stats": "Stats",
     "statsOverview": "Overview",
@@ -75,20 +74,17 @@
     "paymentsConfig": "Configuration",
     "couponsList": "Coupons"
   },
-
   "header": {
     "menuOptions": "Menu options",
     "profile": "My Profile",
     "disconnect": "Disconnect"
   },
-
   "menu": {
     "navigationMenu": "Navigation menu",
     "leadsAllLeads": "Leads - All leads",
     "emailCampaigns": "Email - Campaigns",
     "emailAbandonedCarts": "Email - Abandoned carts"
   },
-
   "auth": {
     "adminAuth": "Administrative authentication",
     "fillCredentials": "Fill in your credentials below to continue",
@@ -99,7 +95,6 @@
     "emailLabel": "Email",
     "emailPlaceholder": "email@provider.com"
   },
-
   "dashboard": {
     "title": "Dashboard",
     "leadsTitle": "Leads",
@@ -107,7 +102,6 @@
     "abandonedCartsTitle": "Abandoned Carts",
     "emailCampaignTitle": "Email Marketing Campaigns"
   },
-
   "leads": {
     "title": "Leads",
     "subtitle": "{count} total leads",
@@ -158,7 +152,6 @@
     "tabCollections": "Collections",
     "tabAppointments": "Appointments"
   },
-
   "appointments": {
     "title": "Appointments",
     "subtitle": "{count} total appointments",
@@ -273,7 +266,6 @@
     "leadInfo": "Lead Information",
     "leadDataUnavailable": "Lead data unavailable"
   },
-
   "campaign": {
     "pendingConfig": "Pending configuration",
     "createdAt": "Created at",
@@ -310,7 +302,6 @@
     "statusSent": "Sent",
     "statusActive": "Active"
   },
-
   "createCampaign": {
     "title": "New Campaign",
     "nameLabel": "Campaign Name",
@@ -321,7 +312,6 @@
     "createError": "Could not create the campaign.",
     "createErrorLog": "Error creating campaign:"
   },
-
   "leadUpload": {
     "title": "Lead Upload",
     "csvFormatError": "The file must be in CSV format",
@@ -337,7 +327,6 @@
     "processing": "Processing...",
     "upload": "Upload"
   },
-
   "emailTemplate": {
     "subjectRequired": "Subject is required",
     "preHeaderRequired": "Pre-header is required",
@@ -368,7 +357,6 @@
     "htmlPlaceholder": "Enter the email HTML here...",
     "saveAndSchedule": "Save and Schedule"
   },
-
   "emailEditor": {
     "editMainCopy": "Edit Main Copy",
     "createMainCopy": "Create Main Copy",
@@ -393,7 +381,6 @@
     "batchUpdateSuccess": "Batch email updated successfully!",
     "loadError": "Error loading email data"
   },
-
   "batchTable": {
     "noBatches": "No batches sent for this campaign.",
     "number": "#",
@@ -405,7 +392,6 @@
     "viewLeadList": "View Lead List",
     "viewEmail": "View Email"
   },
-
   "leadList": {
     "title": "Lead List - Batch #",
     "metrics": "Metrics",
@@ -417,18 +403,15 @@
     "statusSent": "Sent",
     "statusFailed": "Failed"
   },
-
   "emailPreview": {
     "title": "Email Preview - Batch #",
     "subject": "Subject:"
   },
-
   "logout": {
     "title": "End session",
     "confirm": "Do you really want to do this?",
     "end": "End"
   },
-
   "funnel": {
     "title": "Email Funnel Builder",
     "description": "Create a custom email flow based on conditions like opens and clicks",
@@ -461,7 +444,6 @@
     "tip3": "Add delays...",
     "tip4": "Click Edit..."
   },
-
   "funnelConfig": {
     "title": "Funnel Configuration",
     "description": "Choose how you want to configure your campaign sends:",
@@ -473,7 +455,6 @@
     "singleBatchSaved": "The campaign will be sent as a single batch.",
     "funnelSaved": "The funnel was configured successfully."
   },
-
   "batchSize": {
     "title": "Batch Size Configuration",
     "description": "Define how many leads will receive the email in each batch...",
@@ -489,7 +470,6 @@
     "savedMessage": "Emails will be sent in batches of {count} leads.",
     "saveConfig": "Save configuration"
   },
-
   "setupStatus": {
     "uploadLeads": "Lead Upload (CSV)",
     "uploadLeadsDesc": "Upload the lead list for the campaign",
@@ -511,13 +491,11 @@
     "finishConfig": "Finish configuration",
     "configFinished": "Configuration completed successfully."
   },
-
   "campaignSetup": {
     "finishSetup": "Finish Setup",
     "finishSetupDesc": "You can finish the campaign setup now or continue with the setup.",
     "finish": "Finish"
   },
-
   "variation": {
     "title": "Variation Configuration",
     "description": "Choose how you want to create variations for your email content:",
@@ -530,7 +508,6 @@
     "manualSaved": "You can create variations manually.",
     "saveConfig": "Save configuration"
   },
-
   "abandonedCart": {
     "leadInfo": "Lead Information",
     "emails": "Emails",
@@ -601,23 +578,19 @@
     "oneAbandoned": "1 abandoned cart",
     "countAbandoned": "{count} abandoned carts"
   },
-
   "leadsTable": {
     "view": "View",
     "edit": "Edit",
     "delete": "Delete"
   },
-
   "campaignDropdown": {
     "view": "View"
   },
-
   "pagination": {
     "showing": "Showing {start} to {end} of {total} results",
     "previous": "Previous",
     "next": "Next"
   },
-
   "kanban": {
     "addColumn": "Add Column",
     "addNewColumn": "Add New Column",
@@ -648,7 +621,6 @@
     "boardSaveError": "Could not save your Kanban board.",
     "deleteColumn": "Delete Column"
   },
-
   "emailBuilder": {
     "components": "Components",
     "buildArea": "Build Area",
@@ -777,7 +749,6 @@
     "presetDashed": "Dashed",
     "presetGradient": "Gradient"
   },
-
   "toolbar": {
     "normal": "Normal",
     "large": "Large",
@@ -791,7 +762,6 @@
     "green": "Green",
     "typeEmail": "Type your email here..."
   },
-
   "validation": {
     "required": "This field is required",
     "invalidEmail": "Invalid email",
@@ -825,18 +795,15 @@
     "timezoneRequired": "Timezone is required",
     "timeRequired": "Time is required"
   },
-
   "piBot": {
     "name": "Roberto | Brand Specialist",
     "onlineNow": "Online now",
     "placeholder": "Type your question here...",
     "greeting": "Hello, I'm online to help you!",
     "welcomeMessage": "It's a pleasure to have you here",
-    "introMessage": "My name is Roberto and I will guide you in this first moment. \ud83d\ude0a",
+    "introMessage": "My name is Roberto and I will guide you in this first moment. 😊",
     "questionPrompt": "Could you tell me your question?"
-  }
-,
-
+  },
   "cms": {
     "collections": {
       "title": "Media Collections",
@@ -1016,7 +983,6 @@
       "reorderError": "Failed to reorder assets. Please try again."
     }
   },
-
   "accessManagement": {
     "title": "Access Management",
     "description": "Control who has access to the dashboard and the platform.",
@@ -1322,7 +1288,6 @@
   "accessManagementTenantDetail": {
     "openStatsDrilldown": "Open stats drill-down"
   },
-
   "coupons": {
     "pageTitle": "Discount Coupons",
     "pageSubtitle": "Manage promotional coupons for B2B and B2C customers.",
@@ -1470,7 +1435,6 @@
     "linkCopyError": "Failed to copy the link.",
     "linkGenerateError": "Failed to generate the coupon link."
   },
-
   "reports": {
     "title": "Reports",
     "subtitle": "Manage analytics reports",
@@ -1510,7 +1474,6 @@
     "rowsPerPage": "Rows per page",
     "accessDenied": "You do not have permission to access this page."
   },
-
   "payments": {
     "title": "Payments",
     "subtitle": "Manage payment configuration and subscriptions.",
