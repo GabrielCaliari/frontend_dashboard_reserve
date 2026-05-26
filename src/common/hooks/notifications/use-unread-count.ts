@@ -9,7 +9,7 @@ export function useUnreadCount(tenantId: string | null) {
     if (!tenantId) return;
     const load = async () => {
       try {
-        const res = await apiClient.get('/api/notifications/tenant/me/unread-count', {
+        const res = await apiClient.get('/notifications/tenant/me/unread-count', {
           headers: { 'x-tenant-id': tenantId },
         });
         setCount(res.data?.count ?? 0);

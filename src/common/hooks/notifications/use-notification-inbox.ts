@@ -11,7 +11,7 @@ export function useNotificationInbox(tenantId: string | null, page = 1, limit = 
     if (!tenantId) return;
     setLoading(true);
     try {
-      const res = await apiClient.get(`/api/notifications/tenant`, {
+      const res = await apiClient.get(`/notifications/tenant`, {
         params: { page, limit },
         headers: { 'x-tenant-id': tenantId },
       });
@@ -30,7 +30,7 @@ export function useNotificationInbox(tenantId: string | null, page = 1, limit = 
   }, [load]);
 
   const markAsViewed = async (notificationId: string) => {
-    await apiClient.post(`/api/notifications/tenant/${notificationId}/view`, null, {
+    await apiClient.post(`/notifications/tenant/${notificationId}/view`, null, {
       headers: { 'x-tenant-id': tenantId! },
     });
     load();

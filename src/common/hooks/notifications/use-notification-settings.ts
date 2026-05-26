@@ -11,8 +11,8 @@ export function useNotificationSettings(tenantId: string | null, isSuperAdmin = 
     setLoading(true);
     try {
       const url = isSuperAdmin
-        ? `/api/notifications/settings/${tenantId}`
-        : `/api/notifications/settings`;
+        ? `/notifications/settings/${tenantId}`
+        : `/notifications/settings`;
       const headers: Record<string, string> = {};
       if (!isSuperAdmin) headers['x-tenant-id'] = tenantId;
       const res = await apiClient.get(url, { headers });
@@ -26,8 +26,8 @@ export function useNotificationSettings(tenantId: string | null, isSuperAdmin = 
 
   const updateSettings = async (data: any) => {
     const url = isSuperAdmin
-      ? `/api/notifications/settings/${tenantId}`
-      : `/api/notifications/settings`;
+      ? `/notifications/settings/${tenantId}`
+      : `/notifications/settings`;
     const headers: Record<string, string> = {};
     if (!isSuperAdmin) headers['x-tenant-id'] = tenantId!;
     await apiClient.patch(url, data, { headers });

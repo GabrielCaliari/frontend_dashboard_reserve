@@ -18,7 +18,7 @@ export function useNotifications(filters: NotificationsFilter = {}) {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await apiClient.get('/api/notifications', { params: filters });
+      const res = await apiClient.get('/notifications', { params: filters });
       setData(res.data?.data ?? []);
       setTotal(res.data?.total ?? 0);
     } finally {
