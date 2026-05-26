@@ -1,17 +1,17 @@
-# Requirements Document
+﻿# Requirements Document
 
 ## Introduction
 
-The Access Management feature provides a comprehensive dashboard for managing admins, tenants, and users within the ZARP Admin platform. This system enables super administrators to control access, assign roles, manage tenant relationships, and maintain user accounts through an intuitive interface built with NextUI components and following Nielsen's UX heuristics.
+The Access Management feature provides a comprehensive dashboard for managing admins, tenants, and users within the RESERVE Admin platform. This system enables super administrators to control access, assign roles, manage tenant relationships, and maintain user accounts through an intuitive interface built with NextUI components and following Nielsen's UX heuristics.
 
 ## Glossary
 
-- **Admin**: A privileged user with access to the ZARP Admin Dashboard, having one of five roles: super_admin, owner, manager, editor, or viewer
+- **Admin**: A privileged user with access to the RESERVE Admin Dashboard, having one of five roles: super_admin, owner, manager, editor, or viewer
 - **Tenant**: An organizational entity representing a client or business unit, identified by name, slug, and domain
 - **User**: An end-user of the platform with basic access rights
 - **Role**: A permission level assigned to an admin, determining their capabilities within the system
 - **Admin_Tenant_Relationship**: The association between an admin and a tenant, including the admin's role within that tenant context
-- **System**: The Access Management module within the ZARP Admin Dashboard
+- **System**: The Access Management module within the RESERVE Admin Dashboard
 - **API**: The backend REST API at http://localhost:3000/api requiring Bearer token authentication
 - **Super_Admin**: An admin with the highest privilege level, capable of managing all aspects of the system
 

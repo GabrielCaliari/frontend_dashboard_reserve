@@ -1,7 +1,7 @@
-# Cupons — Guia de Integração Frontend (Admin Panel)
+﻿# Cupons — Guia de Integração Frontend (Admin Panel)
 
 > Documento gerado em: 2026-05-10
-> Backend: `backend_api_zarp-admin` branch `001-feat-coupons`
+> Backend: `backend_api_RESERVE-admin` branch `001-feat-coupons`
 > Todos os valores monetários estão **em centavos** (integer).
 
 ---

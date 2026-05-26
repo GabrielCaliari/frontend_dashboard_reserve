@@ -20,4 +20,4 @@ function walk(dir) {
         }
     });
 }
-walk('c:/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src');
+walk('./src');

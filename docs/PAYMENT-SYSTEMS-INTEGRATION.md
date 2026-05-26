@@ -1,4 +1,4 @@
-# Guia de Integração: Sistemas de Pagamento
+﻿# Guia de Integração: Sistemas de Pagamento
 
 ## 📋 Visão Geral dos Sistemas
 
@@ -6,16 +6,16 @@ Este projeto possui **3 sistemas de pagamento independentes**:
 
 | Sistema | Tipo | Cliente | Uso | Status |
 |---------|------|---------|-----|--------|
-| **Sistema Interno** | Assinatura recorrente | Tenants (empresas) | Uso da plataforma ZARP | ✅ Implementado |
+| **Sistema Interno** | Assinatura recorrente | Tenants (empresas) | Uso da plataforma RESERVE | ✅ Implementado |
 | **B2B Payments** | Pagamento único | Empresas/Pessoas | Produtos/serviços pontuais | ✅ Implementado |
 | **B2C Subscriptions** | Assinatura recorrente | Estudantes | Cursos online | ✅ Implementado |
 
 ---
 
-## 🏢 Sistema 1: Plataforma ZARP (Interno)
+## 🏢 Sistema 1: Plataforma RESERVE (Interno)
 
 ### O que é
-Sistema de assinaturas para empresas que usam a plataforma ZARP (CNPJ lookup, brand monitoring, etc).
+Sistema de assinaturas para empresas que usam a plataforma RESERVE (CNPJ lookup, brand monitoring, etc).
 
 ### Características
 - **Modelo**: Assinatura recorrente (mensal/anual)
@@ -515,7 +515,7 @@ ORDER BY us.created_at DESC;
 ## 🚀 Próximos Passos
 
 1. ✅ Migração do banco de dados aplicada
-2. ⏳ Implementar módulo `zarp-b2b-payments`
+2. ⏳ Implementar módulo `RESERVE-b2b-payments`
 3. ⏳ Criar componentes do painel para B2B
 4. ⏳ Configurar webhook B2B no Stripe
 5. ⏳ Testar fluxo completo de pagamento

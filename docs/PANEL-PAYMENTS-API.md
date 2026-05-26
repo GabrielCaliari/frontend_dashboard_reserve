@@ -1,4 +1,4 @@
-# Payments — API Reference para o Painel
+﻿# Payments — API Reference para o Painel
 
 > Documento de referência para o painel administrativo implementar a seção de **Payments**.
 > Todos os endpoints exigem autenticação via `Authorization: Bearer <token>` + `session-id` + `x-tenant-id`.
@@ -245,8 +245,8 @@ POST /api/subscriptions/checkout
 {
   "tenantId": "cma1tenant...",
   "priceId": "price_1ABC...",
-  "successUrl": "https://painel.zarp.com/payments/success",
-  "cancelUrl": "https://painel.zarp.com/payments/cancel",
+  "successUrl": "https://painel.RESERVE.com/payments/success",
+  "cancelUrl": "https://painel.RESERVE.com/payments/cancel",
   "trialPeriodDays": 7
 }
 ```

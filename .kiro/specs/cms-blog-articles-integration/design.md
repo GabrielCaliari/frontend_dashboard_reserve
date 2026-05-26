@@ -1,13 +1,13 @@
-# Design Document: CMS Blog and Articles Integration
+﻿# Design Document: CMS Blog and Articles Integration
 
 ## Overview
 
-This design specifies the implementation of a Content Management System (CMS) for blogs and articles within the ZARP Admin Dashboard. The system provides a dual-layer architecture:
+This design specifies the implementation of a Content Management System (CMS) for blogs and articles within the RESERVE Admin Dashboard. The system provides a dual-layer architecture:
 
 1. **Public API Layer**: Lightweight endpoints for frontend consumption, authenticated via blog-specific secret keys
 2. **Administrative Layer**: Full-featured CMS management with JWT authentication and role-based access control
 
-The implementation follows the existing ZARP architecture patterns, utilizing Next.js 16 App Router, React 19, TypeScript, TanStack Query for state management, and NextUI for UI components. The design emphasizes separation of concerns through distinct layers: API clients, query functions, React Query hooks, and presentational components.
+The implementation follows the existing RESERVE architecture patterns, utilizing Next.js 16 App Router, React 19, TypeScript, TanStack Query for state management, and NextUI for UI components. The design emphasizes separation of concerns through distinct layers: API clients, query functions, React Query hooks, and presentational components.
 
 ### Key Design Principles
 

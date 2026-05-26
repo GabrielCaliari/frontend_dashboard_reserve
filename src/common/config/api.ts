@@ -7,10 +7,10 @@ import { injectAuthHeaders } from "./get-auth-headers";
 const API_URL = typeof window !== 'undefined'
   ? (process.env.NODE_ENV === 'development' 
     ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? 'http://localhost:3002')
-    : (process.env.NEXT_PUBLIC_ZARP_API_URL ?? process.env.NEXT_PUBLIC_API_URL))
+    : (process.env.NEXT_PUBLIC_RESERVE_API_URL ?? process.env.NEXT_PUBLIC_API_URL))
   : (process.env.NODE_ENV === 'development'
     ? (process.env.NEXT_PUBLIC_LOCAL_API_URL ?? process.env.NEXT_LOCAL_API_URL)
-    : (process.env.NEXT_PUBLIC_ZARP_API_URL ?? process.env.NEXT_PUBLIC_API_URL));
+    : (process.env.NEXT_PUBLIC_RESERVE_API_URL ?? process.env.NEXT_PUBLIC_API_URL));
 
 const api = axios.create({
   baseURL: buildApiBaseUrl(API_URL),

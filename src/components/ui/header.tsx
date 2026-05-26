@@ -58,13 +58,13 @@ export function Header() {
  href="/"
  >
  <img
- src="/zarp-logomark-h-light.svg"
- alt="ZARP Logo"
+ src="/reserve-logomark-h-light.svg"
+ alt="Reserve Logo"
  className="max-h-[36px] dark:hidden block"
  />
  <img
- src="/zarp-logomark-h-dark.svg"
- alt="ZARP Logo"
+ src="/reserve-logomark-h-dark.svg"
+ alt="Reserve Logo"
  className="max-h-[36px] hidden dark:block"
  />
  </Link>

@@ -16,12 +16,12 @@ export default async function Page() {
  <header className="shrink-0 px-4 py-4 sm:px-8 sm:py-6 lg:px-12 lg:py-10">
  <div className="flex items-center justify-between w-full max-w-screen-xl mx-auto">
  <img
- src="/zarp-logomark-h-light.svg"
+ src="/reserve-logomark-h-light.svg"
  alt="logo"
  className="h-7 sm:h-8 lg:h-9 dark:hidden block"
  />
  <img
- src="/zarp-logomark-h-dark.svg"
+ src="/reserve-logomark-h-dark.svg"
  alt="logo"
  className="h-7 sm:h-8 lg:h-9 hidden dark:block"
  />

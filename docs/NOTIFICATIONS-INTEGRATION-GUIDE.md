@@ -1,8 +1,8 @@
-# Módulo de Notificações — Guia de Integração Frontend
+﻿# Módulo de Notificações — Guia de Integração Frontend
 
 ## Visão Geral
 
-O módulo `zarp-notifications` é a camada de comunicação entre a plataforma Zarp e os tenants. Ele suporta:
+O módulo `RESERVE-notifications` é a camada de comunicação entre a plataforma RESERVE e os tenants. Ele suporta:
 
 - **Dois perfis de uso**: super_admin (CRUD completo) e tenant admin (inbox de leitura)
 - **Duas origens**: manual (criado pelo super_admin) e automática (eventos do sistema + cron jobs)
@@ -14,7 +14,7 @@ O módulo `zarp-notifications` é a camada de comunicação entre a plataforma Z
 
 ## Endpoints da API
 
-Base URL: `https://api.zarpstudio.com/api`
+Base URL: `https://api.RESERVEstudio.com/api`
 
 Todos os endpoints autenticados exigem o header `Authorization: Bearer <token>`.  
 Endpoints de tenant exigem também `x-tenant-id: <tenantId>`.
@@ -550,7 +550,7 @@ Para adicionar um novo evento automático ao sistema:
 
 ### 1. Backend — Registrar a chave
 
-Em `src/modules/zarp-notifications/domain/constants/notification-events.ts`:
+Em `src/modules/RESERVE-notifications/domain/constants/notification-events.ts`:
 
 ```typescript
 export const NOTIFICATION_EVENTS = {
@@ -579,7 +579,7 @@ case 'payment.failed': {
 ### 2. Backend — Disparar no serviço correto
 
 ```typescript
-// Em qualquer serviço que importe ZarpNotificationsModule:
+// Em qualquer serviço que importe RESERVENotificationsModule:
 this.notificationEventService
   .dispatch(NOTIFICATION_EVENTS.PAYMENT_FAILED, tenantId, { invoice_id })
   .catch(() => {}); // fire-and-forget
@@ -648,14 +648,14 @@ const CRON_KEYS_LIST = [
 
 Para usar `NotificationEventService` em um novo módulo:
 
-### 1. Importar `ZarpNotificationsModule`
+### 1. Importar `RESERVENotificationsModule`
 
 ```typescript
 // src/modules/meu-modulo/meu-modulo.module.ts
-import { ZarpNotificationsModule } from '../zarp-notifications/zarp-notifications.module';
+import { RESERVENotificationsModule } from '../RESERVE-notifications/RESERVE-notifications.module';
 
 @Module({
-  imports: [ZarpNotificationsModule],
+  imports: [RESERVENotificationsModule],
   // ...
 })
 export class MeuModulo {}
@@ -664,8 +664,8 @@ export class MeuModulo {}
 ### 2. Injetar o serviço
 
 ```typescript
-import { NotificationEventService } from '../zarp-notifications/application/services/notification-event.service';
-import { NOTIFICATION_EVENTS } from '../zarp-notifications/domain/constants/notification-events';
+import { NotificationEventService } from '../RESERVE-notifications/application/services/notification-event.service';
+import { NOTIFICATION_EVENTS } from '../RESERVE-notifications/domain/constants/notification-events';
 
 @Injectable()
 export class MeuServico {

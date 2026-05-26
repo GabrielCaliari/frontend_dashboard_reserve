@@ -1,4 +1,4 @@
-// Coupon types — aligned with backend_api_zarp-admin branch 001-feat-coupons
+// Coupon types — aligned with backend_api_reserve branch 001-feat-coupons
 // All monetary values are in cents (integer)
 
 export type EDiscountType = 'percentage' | 'fixed_amount';

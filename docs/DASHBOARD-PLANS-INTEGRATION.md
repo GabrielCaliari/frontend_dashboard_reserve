@@ -1,4 +1,4 @@
-# Integração do Dashboard — Gerenciamento de Planos
+﻿# Integração do Dashboard — Gerenciamento de Planos
 
 > Guia completo para o dashboard consumir a API de planos e repassar os dados para o frontend.
 > Todos os endpoints exigem autenticação via `AdminJwtGuard` (exceto `GET /api/plans/list`, que usa `UserJwtGuard`).
@@ -507,4 +507,4 @@ Verifique se está configurado antes de habilitar a aba de planos no dashboard.
 
 ---
 
-*Gerado em 27/04/2026 — baseado na implementação do módulo `zarp-subscriptions` (StripePlansController, CreateStripePlanUseCase, ArchiveStripePlanUseCase, ListStripePlansUseCase, UpdateStripePlanUseCase).*
+*Gerado em 27/04/2026 — baseado na implementação do módulo `RESERVE-subscriptions` (StripePlansController, CreateStripePlanUseCase, ArchiveStripePlanUseCase, ListStripePlansUseCase, UpdateStripePlanUseCase).*

@@ -1,8 +1,8 @@
-# Design Document: Complete API Migration
+﻿# Design Document: Complete API Migration
 
 ## Overview
 
-This design addresses the completion of the ZARP Admin Dashboard API migration by fixing the authentication redirect loop and removing redundant authentication parameter passing from server actions. The root cause of the redirect loop is a timing issue between client-side cookie setting and server-side cookie availability in the Next.js 16 proxy pattern. The solution involves ensuring proper cookie propagation and simplifying the authentication flow by leveraging the existing API client interceptor.
+This design addresses the completion of the RESERVE Admin Dashboard API migration by fixing the authentication redirect loop and removing redundant authentication parameter passing from server actions. The root cause of the redirect loop is a timing issue between client-side cookie setting and server-side cookie availability in the Next.js 16 proxy pattern. The solution involves ensuring proper cookie propagation and simplifying the authentication flow by leveraging the existing API client interceptor.
 
 ## Architecture
 

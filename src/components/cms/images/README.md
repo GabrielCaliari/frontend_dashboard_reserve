@@ -248,4 +248,4 @@ These components validate the following requirements:
 - Images are optimized using Next.js Image component
 - Preview URLs are properly cleaned up to prevent memory leaks
 - All mutations include proper error handling
-- Components follow ZARP project conventions
+- Components follow Reserve project conventions

@@ -1,8 +1,8 @@
-# Requirements Document
+﻿# Requirements Document
 
 ## Introduction
 
-This specification addresses the completion of the ZARP Admin Dashboard API migration from a monolithic architecture to a Domain-Driven Design (DDD) architecture. While 25 services have been successfully migrated to use the new API client with automatic header injection, several critical issues remain: the authentication flow redirects users back to the login page after successful login, and server actions continue to unnecessarily retrieve and pass authentication credentials to services that no longer require them.
+This specification addresses the completion of the RESERVE Admin Dashboard API migration from a monolithic architecture to a Domain-Driven Design (DDD) architecture. While 25 services have been successfully migrated to use the new API client with automatic header injection, several critical issues remain: the authentication flow redirects users back to the login page after successful login, and server actions continue to unnecessarily retrieve and pass authentication credentials to services that no longer require them.
 
 ## Glossary
 

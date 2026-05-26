@@ -1,4 +1,4 @@
-# Implementation Plan: CMS Blog and Articles Integration
+﻿# Implementation Plan: CMS Blog and Articles Integration
 
 ## Overview
 
@@ -467,7 +467,7 @@ Each layer builds upon the previous, ensuring incremental progress with testable
 - Checkpoints ensure incremental validation at key milestones
 - Property tests validate universal correctness properties across all inputs
 - Unit tests validate specific examples, edge cases, and error conditions
-- The implementation follows the existing ZARP architecture patterns
+- The implementation follows the existing RESERVE architecture patterns
 - All components use NextUI for consistent styling
 - TanStack Query is configured with appropriate staleTime values for different content types
 - Image uploads should be handled with proper validation and S3 integration

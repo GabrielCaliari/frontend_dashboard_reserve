@@ -26,8 +26,8 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
- title:"ZARP | Admin Dashboard",
- description:"Painel administrativo do ecossistema ZARP",
+ title:"Reserve | Admin Dashboard",
+ description:"Painel administrativo do ecossistema Reserve",
 };
 
 export default async function RootLayout({

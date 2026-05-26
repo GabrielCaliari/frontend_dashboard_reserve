@@ -1,6 +1,6 @@
-# Product Overview
+﻿# Product Overview
 
-ZARP Admin Dashboard is an email campaign management platform that enables users to create, manage, and track email marketing campaigns with AI-powered copy variations.
+RESERVE Admin Dashboard is an email campaign management platform that enables users to create, manage, and track email marketing campaigns with AI-powered copy variations.
 
 ## Core Features
 

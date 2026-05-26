@@ -1,8 +1,8 @@
-# Design Document: Access Management
+﻿# Design Document: Access Management
 
 ## Overview
 
-The Access Management feature provides a comprehensive dashboard for managing admins, tenants, and users within the ZARP Admin platform. Built with NextUI components and React Query for data management, this system follows Nielsen's UX heuristics to deliver an intuitive, responsive interface for super administrators.
+The Access Management feature provides a comprehensive dashboard for managing admins, tenants, and users within the RESERVE Admin platform. Built with NextUI components and React Query for data management, this system follows Nielsen's UX heuristics to deliver an intuitive, responsive interface for super administrators.
 
 The feature is organized into three primary modules:
 1. **Admin Management** - Create, view, edit, and manage admin accounts with role-based permissions

@@ -1,4 +1,4 @@
-# Arquitetura Multi-Tenant: Sistemas de Pagamento
+﻿# Arquitetura Multi-Tenant: Sistemas de Pagamento
 
 ## 🏗️ Visão Geral
 
@@ -14,7 +14,7 @@ Todos os 3 sistemas de pagamento são **multi-tenant**. Cada tenant (empresa/ins
 Tenant A (Instituição de Ensino A)
   ├── Stripe Account A
   ├── Sistema Interno
-  │   └── Assinatura do plano ZARP (Pro)
+  │   └── Assinatura do plano RESERVE (Pro)
   ├── B2B Payments
   │   ├── Produto: "Consultoria Premium" (R$ 5.000)
   │   └── Purchases: [compra1, compra2, ...]
@@ -26,7 +26,7 @@ Tenant A (Instituição de Ensino A)
 Tenant B (Instituição de Ensino B)
   ├── Stripe Account B
   ├── Sistema Interno
-  │   └── Assinatura do plano ZARP (Enterprise)
+  │   └── Assinatura do plano RESERVE (Enterprise)
   ├── B2B Payments
   │   ├── Produto: "Produto Físico X" (R$ 1.500)
   │   └── Purchases: [compra1, compra2, ...]
@@ -74,10 +74,10 @@ const products = await prisma.b2BProduct.findMany({
 
 ---
 
-## 🎯 Sistema 1: Plataforma ZARP (Interno)
+## 🎯 Sistema 1: Plataforma RESERVE (Interno)
 
 ### O que é
-Assinatura da própria plataforma ZARP (CNPJ lookup, brand monitoring, etc).
+Assinatura da própria plataforma RESERVE (CNPJ lookup, brand monitoring, etc).
 
 ### Multi-Tenancy
 - Cada tenant assina um plano (Free, Basic, Pro, Enterprise)

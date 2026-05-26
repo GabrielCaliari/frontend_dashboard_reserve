@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Zarp Studio Light Theme */
+    /* Reserve Light Theme */
     --background: 80 27% 97%;
     --foreground: 86 28% 5%;
     --card: 0 0% 100%;
@@ -25,7 +25,7 @@
     --input: 108 11% 91%;
     --ring: 96 73% 67%;
     
-    /* Zarp specific tokens */
+    /* Reserve specific tokens */
     --brand-ink: 86 28% 5%;
     --brand-green: 96 73% 67%;
     --brand-green-deep: 94 100% 10%;
@@ -33,7 +33,7 @@
   }
 
   .dark {
-    /* Zarp Dark Mode (Full Dark) */
+    /* Reserve Dark Mode (Full Dark) */
     --background: 225 40% 10%;
     --foreground: 226 26% 94%;
     --card: 223 35% 16%;
@@ -427,7 +427,7 @@ select {
   border-color: hsl(var(--border)) !important;
 }
 
-/* Zarp Component Utilities */
+/* Reserve Component Utilities */
 .btn-pill { border-radius: 9999px; font-weight: 600; transition: transform 0.18s ease, background-color 0.2s ease; }
 .btn-pill:hover { transform: scale(1.05); }
 .btn-pill:active { transform: scale(0.95); }
@@ -436,5 +436,5 @@ select {
 .btn-ghost { background-color: color-mix(in oklch, hsl(var(--brand-green)) 8%, transparent); color: hsl(var(--foreground)); }
 .btn-ghost:hover { background-color: color-mix(in oklch, hsl(var(--brand-green)) 14%, transparent); }
 .btn-dark { background-color: hsl(var(--brand-ink)); color: hsl(var(--background)); }
-.card-zarp, .card-flat { border-radius: 30px; background-color: hsl(var(--card)); border: 1px solid color-mix(in oklch, hsl(var(--brand-ink)) 12%, transparent); box-shadow: 0 1px 0 color-mix(in oklch, #000 6%, transparent), 0 0 0 1px color-mix(in oklch, #000 8%, transparent); padding: clamp(1.2rem, 2.3vw, 2rem); }
+.card-reserve, .card-flat { border-radius: 30px; background-color: hsl(var(--card)); border: 1px solid color-mix(in oklch, hsl(var(--brand-ink)) 12%, transparent); box-shadow: 0 1px 0 color-mix(in oklch, #000 6%, transparent), 0 0 0 1px color-mix(in oklch, #000 8%, transparent); padding: clamp(1.2rem, 2.3vw, 2rem); }
 .pill-tag { border-radius: 9999px; background-color: hsl(var(--brand-mint)); color: hsl(var(--brand-green-deep)); font-size: 0.78rem; font-weight: 600; padding: 0.25rem 0.75rem; display: inline-flex; align-items: center; }

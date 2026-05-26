@@ -1,8 +1,8 @@
-# Requirements Document: CMS Blog and Articles Integration
+﻿# Requirements Document: CMS Blog and Articles Integration
 
 ## Introduction
 
-This document specifies the requirements for implementing a comprehensive Content Management System (CMS) for blogs and articles within the ZARP Admin Dashboard. The system provides two distinct access layers: a public API for frontend consumption using blog secret keys, and an administrative layer for full CMS management using JWT authentication with role-based access control.
+This document specifies the requirements for implementing a comprehensive Content Management System (CMS) for blogs and articles within the RESERVE Admin Dashboard. The system provides two distinct access layers: a public API for frontend consumption using blog secret keys, and an administrative layer for full CMS management using JWT authentication with role-based access control.
 
 The CMS enables administrators to create and manage multiple blogs, each containing articles with rich content and images. The system supports complete content lifecycle management including drafting, publishing, archiving, and reordering of articles.
 

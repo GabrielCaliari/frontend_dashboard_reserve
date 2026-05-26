@@ -1,6 +1,6 @@
-# Design System: Zarp Studio — Frontend Pages
+﻿# Design System: RESERVE Studio — Frontend Pages
 
-**Project:** `frontend_pages_zarpstudio-br`
+**Project:** `frontend_pages_RESERVEstudio-br`
 **Stack:** React 19 · TanStack Router · Tailwind CSS v4 · Radix UI · Framer Motion
 **Design reference:** Wise-inspired SaaS landing page — clean, confident, conversion-focused
 
@@ -114,7 +114,7 @@ All buttons use the `.btn-pill` base class — **fully pill-shaped** (`border-ra
 
 ### Cards & Containers
 
-Two interchangeable card utilities (`.card-zarp` and `.card-flat`) sharing the same visual recipe:
+Two interchangeable card utilities (`.card-RESERVE` and `.card-flat`) sharing the same visual recipe:
 - **Shape**: Generously rounded at `border-radius: 30px` — notably rounder than the `--radius` base of 10px, creating a "pillow" silhouette.
 - **Background**: Pure white (`--card`), occasionally overridden to brand colors contextually.
 - **Border**: 1px solid `oklch(0.18 0.01 130 / 0.12)` — an ink-tinted near-invisible hairline.

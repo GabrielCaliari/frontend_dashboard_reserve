@@ -1,4 +1,4 @@
-# Integração Stripe — Guia para o Frontend do Cliente
+﻿# Integração Stripe — Guia para o Frontend do Cliente
 
 > Este documento descreve como o frontend do cliente deve se integrar com o sistema de pagamentos via Stripe.
 
@@ -9,7 +9,7 @@
 O frontend **não se comunica diretamente com o Stripe** para processar pagamentos. O fluxo é:
 
 ```
-Frontend → Backend (ZARP API) → Stripe
+Frontend → Backend (RESERVE API) → Stripe
 ```
 
 O backend é quem tem a Secret Key e cria a sessão de checkout. O frontend só:

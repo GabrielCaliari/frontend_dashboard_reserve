@@ -3,11 +3,7 @@
     "allow": [
       "Bash(npx tsc --noEmit --skipLibCheck)",
       "Bash(npx tsc --noEmit --project tsconfig.json)",
-      "Bash(find /c/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src -name *profile* -o -name *email-campaign*page*)",
       "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
-      "Bash(grep -r getCookie.*ass*string c:/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src --include=*.ts --include=*.tsx)",
-      "Bash(grep -n \"AbortController\\\\|signal\" c:/Users/guilh/Documents/working_repos/frontend_dashboard_zarp-admin/src -r --include=*.ts --include=*.tsx)",
-      "Bash(grep -n \"{ children, element, \\\\.\\\\.\\\\.props }\" \"c:\\\\Users\\\\guilh\\\\Documents\\\\working_repos\\\\frontend_dashboard_zarp-admin\\\\src\\\\components\\\\cms\\\\editor\\\\editor-elements.tsx\")",
       "Bash(git add *)",
       "Bash(git rm *)",
       "Bash(git commit -m ' *)",
