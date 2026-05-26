@@ -73,7 +73,8 @@
     "paymentsMovements": "Movements",
     "paymentsConfig": "Configuration",
     "couponsList": "Coupons",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "settings": "Settings"
   },
   "header": {
     "menuOptions": "Menu options",

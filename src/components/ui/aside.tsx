@@ -24,6 +24,7 @@ import {
  UserCog,
  Building2,
  UserCircle,
+ UserCircle2,
  FolderOpen,
  Image,
  Settings,
@@ -141,8 +142,14 @@ export function Sidebar({
  {
  id:"profile",
  label: t("profile"),
- icon: Settings,
+ icon: UserCircle2,
  path:"/dashboard/profile",
+ },
+ {
+ id:"settings",
+ label: t("settings"),
+ icon: Settings,
+ path:"/dashboard/settings",
  },
  ];
  }
@@ -270,8 +277,14 @@ export function Sidebar({
  {
  id:"profile",
  label: t("profile"),
- icon: Settings,
+ icon: UserCircle2,
  path:"/dashboard/profile",
+ },
+ {
+ id:"settings",
+ label: t("settings"),
+ icon: Settings,
+ path:"/dashboard/settings",
  },
  {
  id:"access-management",
@@ -394,8 +407,14 @@ export function Sidebar({
  {
  id:"profile",
  label: t("profile"),
- icon: Settings,
+ icon: UserCircle2,
  path:"/dashboard/profile",
+ },
+ {
+ id:"settings",
+ label: t("settings"),
+ icon: Settings,
+ path:"/dashboard/settings",
  },
  {
  id:"access-management",
