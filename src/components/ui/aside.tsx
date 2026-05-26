@@ -1,5 +1,6 @@
 "use client";
 
+import React from"react";
 import { Button } from"@heroui/react";
 import Link from"next/link";
 import { useState, useEffect, useMemo } from"react";
@@ -32,6 +33,7 @@ import {
  CreditCard,
  Package,
  Briefcase,
+ Bell,
 } from"lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from"react-icons/hi";
@@ -44,6 +46,7 @@ import {
  useTenantStore,
 } from"@/src/common/stores/tenant-store";
 import usePermissions from"@/src/common/hooks/use-permissions";
+import { NotificationBadge } from"../notifications/notification-badge";
 
 export interface SidebarProps {
  activeTab?: string; // opcional — derivado de usePathname() quando omitido
@@ -57,6 +60,7 @@ interface NavItem {
  icon: any;
  path?: string;
  subItems?: NavItem[];
+ badge?: React.ReactNode;
 }
 
 export function Sidebar({
@@ -127,6 +131,12 @@ export function Sidebar({
  path:"/dashboard/access-management/users",
  },
  ],
+ },
+ {
+ id:"notifications-global",
+ label: t("notifications"),
+ icon: Bell,
+ path:"/dashboard/global/notifications",
  },
  {
  id:"profile",
@@ -251,6 +261,13 @@ export function Sidebar({
  ],
  },
  {
+ id:"notifications",
+ label: t("notifications"),
+ icon: Bell,
+ path:"/dashboard/notifications",
+ badge: <NotificationBadge />,
+ },
+ {
  id:"profile",
  label: t("profile"),
  icon: Settings,
@@ -366,6 +383,13 @@ export function Sidebar({
  path:"/dashboard/coupons",
  },
  ],
+ },
+ {
+ id:"notifications",
+ label: t("notifications"),
+ icon: Bell,
+ path:"/dashboard/notifications",
+ badge: <NotificationBadge />,
  },
  {
  id:"profile",
@@ -529,6 +553,7 @@ export function Sidebar({
  <span className="flex-1 text-left truncate text-sm">
  {item.label}
  </span>
+ {item.badge}
  {hasSubItems &&
  (isExpanded ? (
  <ChevronDown className="text-sm flex-shrink-0" />

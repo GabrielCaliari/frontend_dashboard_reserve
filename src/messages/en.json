@@ -72,7 +72,8 @@
     "paymentsProducts": "Products",
     "paymentsMovements": "Movements",
     "paymentsConfig": "Configuration",
-    "couponsList": "Coupons"
+    "couponsList": "Coupons",
+    "notifications": "Notifications"
   },
   "header": {
     "menuOptions": "Menu options",
