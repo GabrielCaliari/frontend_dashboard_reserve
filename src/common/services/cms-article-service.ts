@@ -31,6 +31,7 @@ interface ArticleApiResponse {
   language?: string | null;
   status: ArticleStatus;
   published_at: string | null;
+  scheduled_at?: string | null;
   created_at: string;
   updated_at: string;
   images?: Article['images'];
@@ -83,6 +84,7 @@ const normalizeArticle = (article: ArticleApiResponse): Article => ({
   language: normalizeLanguage(article.language),
   status: article.status,
   published_at: article.published_at,
+  scheduled_at: article.scheduled_at ?? null,
   created_at: article.created_at,
   updated_at: article.updated_at,
   images: article.images ?? [],
@@ -265,6 +267,42 @@ export const unarchiveArticle = async (
 ): Promise<Article> => {
   try {
     const response = await cmsApiClient.post(`cms/articles/${articleId}/unarchive`);
+    return normalizeArticle(response.data as ArticleApiResponse);
+  } catch (error) {
+    throw transformCMSError(error);
+  }
+};
+
+/**
+ * Schedule an article for future publication (AUTHENTICATED)
+ * @param articleId - The article ID
+ * @param scheduledAt - ISO 8601 future datetime string
+ * @returns Promise<Article>
+ */
+export const scheduleArticle = async (
+  articleId: string,
+  scheduledAt: string,
+): Promise<Article> => {
+  try {
+    const response = await cmsApiClient.post(`cms/articles/${articleId}/publish`, { scheduledAt });
+    return normalizeArticle(response.data as ArticleApiResponse);
+  } catch (error) {
+    throw transformCMSError(error);
+  }
+};
+
+/**
+ * Update the published_at date of a published or scheduled article (AUTHENTICATED)
+ * @param articleId - The article ID
+ * @param publishedAt - ISO 8601 datetime string (past = correct date; future = reschedule)
+ * @returns Promise<Article>
+ */
+export const updatePublishedAt = async (
+  articleId: string,
+  publishedAt: string,
+): Promise<Article> => {
+  try {
+    const response = await cmsApiClient.patch(`cms/articles/${articleId}/published-at`, { publishedAt });
     return normalizeArticle(response.data as ArticleApiResponse);
   } catch (error) {
     throw transformCMSError(error);

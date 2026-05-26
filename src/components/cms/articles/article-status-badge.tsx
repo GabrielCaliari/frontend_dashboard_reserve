@@ -28,6 +28,10 @@ export default function ArticleStatusBadge({ status }: ArticleStatusBadgeProps) 
       color: 'default' as const,
       label: 'Draft',
     },
+    scheduled: {
+      color: 'primary' as const,
+      label: 'Scheduled',
+    },
     published: {
       color: 'success' as const,
       label: 'Published',

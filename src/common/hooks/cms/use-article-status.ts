@@ -3,6 +3,8 @@ import {
   publishArticle,
   archiveArticle,
   updateArticle,
+  scheduleArticle,
+  updatePublishedAt,
 } from '@/src/common/services/cms-article-service';
 
 /**
@@ -25,21 +27,32 @@ export function useArticleStatus(articleId: string) {
     onSuccess: invalidate,
   });
 
+  const schedule = useMutation({
+    mutationFn: (scheduledAt: string) => scheduleArticle(articleId, scheduledAt),
+    onSuccess: invalidate,
+  });
+
   const archive = useMutation({
     mutationFn: () => archiveArticle(articleId),
     onSuccess: invalidate,
   });
 
-  // Revert to draft by sending { status: 'draft' } through the general update endpoint.
-  // The backend must support this field; if it does not expose it yet, this call
-  // will still succeed since extra unknown fields are typically ignored.
   const draft = useMutation({
     mutationFn: () => updateArticle(articleId, { status: 'draft' }),
     onSuccess: invalidate,
   });
 
+  const editPublishedAt = useMutation({
+    mutationFn: (publishedAt: string) => updatePublishedAt(articleId, publishedAt),
+    onSuccess: invalidate,
+  });
 
-  const isPending = publish.isPending || archive.isPending || draft.isPending;
+  const isPending =
+    publish.isPending ||
+    schedule.isPending ||
+    archive.isPending ||
+    draft.isPending ||
+    editPublishedAt.isPending;
 
-  return { publish, archive, draft, isPending };
+  return { publish, schedule, archive, draft, editPublishedAt, isPending };
 }

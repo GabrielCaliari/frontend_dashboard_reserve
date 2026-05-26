@@ -1,6 +1,6 @@
 import { ArticleImage } from './@cms-image';
 
-export type ArticleStatus = 'draft' | 'published' | 'archived';
+export type ArticleStatus = 'draft' | 'scheduled' | 'published' | 'archived';
 
 export type ArticleLanguage = string;
 
@@ -26,6 +26,7 @@ export interface Article {
   language?: ArticleLanguage;
   status: ArticleStatus;
   published_at: string | null;
+  scheduled_at: string | null;
   created_at: string;
   updated_at: string;
   images: ArticleImage[];

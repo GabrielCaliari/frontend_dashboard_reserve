@@ -11,8 +11,14 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
 } from "@heroui/react";
-import { Save, AlertCircle, FileText, ChevronDown, Globe, Archive, FileEdit } from "lucide-react";
+import { Save, AlertCircle, FileText, ChevronDown, Globe, Archive, FileEdit, Clock, Calendar } from "lucide-react";
 import { useGetArticle } from "@/src/common/hooks/cms/use-get-article";
 import { useUpdateArticle } from "@/src/common/hooks/cms/use-update-article";
 import { useGetAuthors } from "@/src/common/hooks/cms/use-get-authors";
@@ -34,6 +40,10 @@ export default function ArticleEditorPage() {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [scheduledAtInput, setScheduledAtInput] = useState("");
+  const [editPublishedAtModalOpen, setEditPublishedAtModalOpen] = useState(false);
+  const [publishedAtInput, setPublishedAtInput] = useState("");
 
   const { data: article, isLoading } = useGetArticle(articleId, routeBlogId ?? undefined);
   const { data: authors, isLoading: isLoadingAuthors } = useGetAuthors();
@@ -235,6 +245,39 @@ export default function ArticleEditorPage() {
     </>
   );
 
+  const handleScheduleConfirm = () => {
+    if (!scheduledAtInput) return;
+    articleStatus.schedule.mutate(new Date(scheduledAtInput).toISOString(), {
+      onSuccess: () => {
+        toast.success("Article scheduled", {
+          description: `Will publish on ${new Date(scheduledAtInput).toLocaleString()}`,
+        });
+        setScheduleModalOpen(false);
+        setScheduledAtInput("");
+      },
+      onError: (err: any) =>
+        toast.error("Failed to schedule", {
+          description: err?.response?.data?.message || err.message,
+        }),
+    });
+  };
+
+  const handleEditPublishedAtConfirm = () => {
+    if (!publishedAtInput) return;
+    articleStatus.editPublishedAt.mutate(new Date(publishedAtInput).toISOString(), {
+      onSuccess: (updated) => {
+        const isRescheduled = updated.status === "scheduled";
+        toast.success(isRescheduled ? "Article rescheduled" : "Publication date updated");
+        setEditPublishedAtModalOpen(false);
+        setPublishedAtInput("");
+      },
+      onError: (err: any) =>
+        toast.error("Failed to update publication date", {
+          description: err?.response?.data?.message || err.message,
+        }),
+    });
+  };
+
   const statusActions = (
     <Dropdown>
       <DropdownTrigger>
@@ -250,7 +293,7 @@ export default function ArticleEditorPage() {
       <DropdownMenu aria-label="Article status actions">
         <DropdownItem
           key="publish"
-          description="Make article publicly visible"
+          description="Make article publicly visible immediately"
           startContent={<Globe className="h-4 w-4 text-success" />}
           isDisabled={article.status === "published" || articleStatus.isPending}
           onPress={() =>
@@ -263,7 +306,38 @@ export default function ArticleEditorPage() {
             })
           }
         >
-          Publish
+          Publish now
+        </DropdownItem>
+        <DropdownItem
+          key="schedule"
+          description="Set a future date and time for automatic publication"
+          startContent={<Clock className="h-4 w-4 text-primary" />}
+          isDisabled={article.status === "published" || articleStatus.isPending}
+          onPress={() => {
+            setScheduledAtInput("");
+            setScheduleModalOpen(true);
+          }}
+        >
+          Schedule
+        </DropdownItem>
+        <DropdownItem
+          key="edit-published-at"
+          description="Correct publication date or reschedule to a new time"
+          startContent={<Calendar className="h-4 w-4 text-secondary" />}
+          isDisabled={
+            (article.status !== "published" && article.status !== "scheduled") ||
+            articleStatus.isPending
+          }
+          onPress={() => {
+            const current =
+              article.scheduled_at ?? article.published_at ?? "";
+            setPublishedAtInput(
+              current ? new Date(current).toISOString().slice(0, 16) : "",
+            );
+            setEditPublishedAtModalOpen(true);
+          }}
+        >
+          Edit publication date
         </DropdownItem>
         <DropdownItem
           key="draft"
@@ -280,7 +354,7 @@ export default function ArticleEditorPage() {
             })
           }
         >
-          Draft
+          Revert to draft
         </DropdownItem>
         <DropdownItem
           key="archive"
@@ -364,6 +438,78 @@ export default function ArticleEditorPage() {
         isLoadingAuthors={isLoadingAuthors}
         isDisabled={isPending}
       />
+
+      {/* Schedule modal */}
+      <Modal isOpen={scheduleModalOpen} onOpenChange={setScheduleModalOpen}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Schedule publication</ModalHeader>
+              <ModalBody>
+                <p className="text-sm text-default-500">
+                  Choose a future date and time. The article will be published automatically.
+                </p>
+                <Input
+                  type="datetime-local"
+                  label="Publish at"
+                  value={scheduledAtInput}
+                  onChange={(e) => setScheduledAtInput(e.target.value)}
+                  min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  isDisabled={!scheduledAtInput || articleStatus.schedule.isPending}
+                  isLoading={articleStatus.schedule.isPending}
+                  onPress={handleScheduleConfirm}
+                >
+                  Schedule
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Edit publication date modal */}
+      <Modal isOpen={editPublishedAtModalOpen} onOpenChange={setEditPublishedAtModalOpen}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Edit publication date</ModalHeader>
+              <ModalBody>
+                <p className="text-sm text-default-500">
+                  Set a past date to correct the publication date, or a future date to reschedule
+                  (the article will go offline until then).
+                </p>
+                <Input
+                  type="datetime-local"
+                  label="Publication date"
+                  value={publishedAtInput}
+                  onChange={(e) => setPublishedAtInput(e.target.value)}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  isDisabled={!publishedAtInput || articleStatus.editPublishedAt.isPending}
+                  isLoading={articleStatus.editPublishedAt.isPending}
+                  onPress={handleEditPublishedAtConfirm}
+                >
+                  Save
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </LayoutScopeEditor>
   );
 }
