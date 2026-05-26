@@ -15,7 +15,13 @@
       "Bash(node -e \"const {ImagePlugin} = require\\('./node_modules/@platejs/media/dist/react/index.js'\\); console.log\\('key:', ImagePlugin?.key, 'node:', JSON.stringify\\(ImagePlugin?.node\\)\\)\")",
       "Bash(node -e \"const m = require\\('./node_modules/@platejs/markdown/dist/index.js'\\); console.log\\(Object.keys\\(m\\).join\\('\\\\n'\\)\\)\")",
       "Bash(node -e \"const {defaultRules,mediaRules} = require\\('./node_modules/@platejs/markdown/dist/index.js'\\); console.log\\('defaultRules keys:', Object.keys\\(defaultRules\\).join\\(','\\)\\); console.log\\('mediaRules keys:', Object.keys\\(mediaRules\\).join\\(','\\)\\)\")",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\gabri\\\\OneDrive\\\\Documents\\\\GitHub\\\\frontend_dashboard_reserve\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(npm i *)"
     ]
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
   }
 }
