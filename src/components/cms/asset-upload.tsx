@@ -200,19 +200,19 @@ export function AssetUpload({ collection, onUploadComplete }: AssetUploadProps) 
           transition-all duration-200
           ${isDragActive 
             ? "border-blue-500 bg-blue-500/10" 
-            : "border-gray-700 hover:border-gray-600 bg-[#1a1a2e]"
+            : "border-border hover:border-gray-600 bg-muted"
           }
         `}
       >
         <input {...getInputProps()} />
-        <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-        <p className="text-lg text-gray-300 mb-2">
+        <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+        <p className="text-lg text-foreground mb-2">
           {isDragActive ? t("dropFilesHere") : t("dragDropFiles")}
         </p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           {t("orClickToSelect")}
         </p>
-        <div className="mt-4 text-xs text-gray-500 space-y-1">
+        <div className="mt-4 text-xs text-muted-foreground space-y-1">
           <p>{t("allowedTypes")}: {collection.allowed_mime_types.join(", ")}</p>
           <p>{t("maxFileSize")}: {formatFileSize(collection.max_file_size)}</p>
         </div>
@@ -231,7 +231,7 @@ export function AssetUpload({ collection, onUploadComplete }: AssetUploadProps) 
       {uploadQueue.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-200">
+            <h3 className="text-lg font-semibold text-foreground">
               {t("uploadQueue")} ({uploadQueue.length})
             </h3>
             {pendingCount > 0 && (
@@ -250,7 +250,7 @@ export function AssetUpload({ collection, onUploadComplete }: AssetUploadProps) 
             {uploadQueue.map(item => (
               <div
                 key={item.id}
-                className="bg-[#1a1a2e] border border-gray-700 rounded-lg p-4"
+                className="bg-muted border border-border rounded-lg p-4"
               >
                 <div className="flex items-start gap-4">
                   {/* Preview thumbnail for images */}
@@ -273,10 +273,10 @@ export function AssetUpload({ collection, onUploadComplete }: AssetUploadProps) 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-200 truncate">
+                        <p className="text-sm font-medium text-foreground truncate">
                           {item.file.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           {formatFileSize(item.file.size)} • {item.file.type}
                         </p>
                       </div>
@@ -338,8 +338,8 @@ export function AssetUpload({ collection, onUploadComplete }: AssetUploadProps) 
                           setAltTexts(prev => ({ ...prev, [item.id]: e.target.value }))
                         }
                         classNames={{
-                          input: "bg-[#12121f] text-gray-200",
-                          inputWrapper: "bg-[#12121f] border border-gray-700",
+                          input: "bg-card text-foreground",
+                          inputWrapper: "bg-card border border-border",
                         }}
                         className="mb-2"
                       />

@@ -40,7 +40,7 @@ export function B2BProductsTable({ products, isLoading }: B2BProductsTableProps)
 
   if (!products || products.length === 0) {
     return (
-      <div className="text-center py-10 text-gray-500">
+      <div className="text-center py-10 text-muted-foreground">
         {t('noProducts')}
       </div>
     );
@@ -61,7 +61,7 @@ export function B2BProductsTable({ products, isLoading }: B2BProductsTableProps)
             <TableCell>
               <div>
                 <div className="font-semibold">{product.name}</div>
-                <div className="text-sm text-gray-500 line-clamp-1">
+                <div className="text-sm text-muted-foreground line-clamp-1">
                   {product.description}
                 </div>
               </div>
@@ -86,7 +86,7 @@ export function B2BProductsTable({ products, isLoading }: B2BProductsTableProps)
                 <span className="font-medium">
                   {formatPrice(product.price, product.currency)}
                 </span>
-                <span className="text-xs text-gray-500">{t('oneTime')}</span>
+                <span className="text-xs text-muted-foreground">{t('oneTime')}</span>
               </div>
             </TableCell>
             <TableCell>

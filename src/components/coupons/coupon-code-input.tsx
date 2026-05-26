@@ -102,10 +102,10 @@ export function CouponCodeInput({
             if (result) setResult(null);
           }}
           isDisabled={isLocked}
-          startContent={<Tag className="w-4 h-4 text-gray-500" />}
+          startContent={<Tag className="w-4 h-4 text-muted-foreground" />}
           classNames={{
-            inputWrapper: "bg-[#0d0d20] border-gray-700",
-            input: "uppercase text-gray-100",
+            inputWrapper: "bg-[#0d0d20] border-border",
+            input: "uppercase text-foreground",
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleApply();
@@ -132,10 +132,10 @@ export function CouponCodeInput({
             <Check className="w-4 h-4 text-success" />
             <div>
               <Chip size="sm" variant="flat" className="font-mono mr-2">{c.code}</Chip>
-              <span className="text-sm text-gray-300">{c.description}</span>
+              <span className="text-sm text-foreground">{c.description}</span>
             </div>
           </div>
-          <button onClick={handleClear} className="text-gray-500 hover:text-gray-300 ml-2">
+          <button onClick={handleClear} className="text-muted-foreground hover:text-foreground ml-2">
             <X className="w-4 h-4" />
           </button>
         </div>

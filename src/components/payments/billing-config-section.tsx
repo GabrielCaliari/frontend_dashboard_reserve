@@ -24,7 +24,7 @@ function StatusBadge({ label, configured, configuredLabel, notConfiguredLabel }:
       ) : (
         <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
       )}
-      <span className="text-sm text-gray-300">{label}</span>
+      <span className="text-sm text-foreground">{label}</span>
       <Chip
         size="sm"
         color={configured ? "success" : "danger"}
@@ -69,7 +69,7 @@ export function BillingConfigSection() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-100">
+          <h2 className="text-lg font-semibold text-foreground">
             {config ? t("editTitle") : t("createTitle")}
           </h2>
           {config && (
@@ -92,11 +92,11 @@ export function BillingConfigSection() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-gray-100">
+          <h2 className="text-lg font-semibold text-foreground">
             {config.planName || t("title")}
           </h2>
           {config.planDescription && (
-            <p className="text-sm text-gray-400 mt-1">{config.planDescription}</p>
+            <p className="text-sm text-muted-foreground mt-1">{config.planDescription}</p>
           )}
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -130,8 +130,8 @@ export function BillingConfigSection() {
       </div>
 
       {/* Stripe Status */}
-      <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-3">
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+      <div className="p-4 rounded-xl bg-muted border border-[#2a2a3e] space-y-3">
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           {t("statusStripe")}
         </h3>
         <StatusBadge
@@ -148,8 +148,8 @@ export function BillingConfigSection() {
         />
         {config.stripePublishableKey && (
           <div className="pt-1">
-            <p className="text-xs text-gray-500">Publishable Key</p>
-            <p className="text-xs text-gray-300 font-mono truncate">
+            <p className="text-xs text-muted-foreground">Publishable Key</p>
+            <p className="text-xs text-foreground font-mono truncate">
               {config.stripePublishableKey}
             </p>
           </div>
@@ -158,13 +158,13 @@ export function BillingConfigSection() {
 
       {/* Metadata features */}
       {config.metadata?.features && Array.isArray(config.metadata.features) && (
-        <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e]">
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+        <div className="p-4 rounded-xl bg-muted border border-[#2a2a3e]">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             {t("planFeaturesLabel")}
           </h3>
           <ul className="space-y-1.5">
             {(config.metadata.features as string[]).map((feature, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
+              <li key={i} className="flex items-center gap-2 text-sm text-foreground">
                 <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
                 {feature}
               </li>

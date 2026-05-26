@@ -18,11 +18,11 @@ export default function B2CSubscriptionsPage() {
             <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
               <Users className="w-4 h-4 text-purple-500" />
             </div>
-            <h1 className="text-xl font-bold text-gray-100">
+            <h1 className="text-xl font-bold text-foreground">
               {t("subscriptionsTitle")}
             </h1>
           </div>
-          <p className="text-sm text-gray-400 ml-11">
+          <p className="text-sm text-muted-foreground ml-11">
             {t("subscriptionsSubtitle")}
           </p>
         </div>

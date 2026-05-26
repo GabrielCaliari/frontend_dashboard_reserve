@@ -50,7 +50,7 @@ export function B2CMetricsCards() {
           <CardBody className="p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{card.title}</p>
+                <p className="text-sm text-muted-foreground mb-1">{card.title}</p>
                 {isLoading ? (
                   <Skeleton className="h-8 w-24 rounded" />
                 ) : (

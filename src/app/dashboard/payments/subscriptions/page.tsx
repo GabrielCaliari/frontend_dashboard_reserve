@@ -85,7 +85,7 @@ function ProductCell({
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-200 truncate max-w-[160px]">
+      <span className="text-sm text-foreground truncate max-w-[160px]">
         {movement.productName || "—"}
       </span>
       {extra > 0 && (
@@ -108,8 +108,8 @@ function ProductCell({
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4 py-2 border-b border-white/5 last:border-0">
-      <span className="text-xs text-gray-500 shrink-0">{label}</span>
-      <span className="text-sm text-gray-100 text-right">{children}</span>
+      <span className="text-xs text-muted-foreground shrink-0">{label}</span>
+      <span className="text-sm text-foreground text-right">{children}</span>
     </div>
   );
 }
@@ -178,7 +178,7 @@ function MovementDetailModal({
       onClose={onClose}
       size="2xl"
       classNames={{
-        base: "bg-[#0e0e1a] border border-white/10",
+        base: "bg-background border border-white/10",
         header: "border-b border-white/[0.07] py-4",
         footer: "border-t border-white/[0.07] py-3",
         body: "py-5",
@@ -189,7 +189,7 @@ function MovementDetailModal({
           <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
             <ShoppingCart className="w-3.5 h-3.5 text-primary" />
           </div>
-          <span className="text-base font-semibold text-gray-100">{t("detailTitle")}</span>
+          <span className="text-base font-semibold text-foreground">{t("detailTitle")}</span>
           <div className="ml-auto flex items-center gap-2">
             <Chip color={STATUS_COLORS[movement.status]} variant="flat" size="sm">
               {statusLabels[movement.status] ?? movement.status}
@@ -204,24 +204,24 @@ function MovementDetailModal({
           {/* Amount hero */}
           <div className="rounded-xl bg-primary/5 border border-primary/10 px-5 py-4 flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
                 {t("detailLabelTotal")}
               </p>
-              <p className="text-2xl font-bold text-gray-100">
+              <p className="text-2xl font-bold text-foreground">
                 {formatPrice(movement.amount, movement.currency)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
                 {t("detailLabelCreatedAt")}
               </p>
-              <p className="text-sm text-gray-300">{fmt(movement.createdAt)}</p>
+              <p className="text-sm text-foreground">{fmt(movement.createdAt)}</p>
               {movement.completedAt && (
                 <>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mt-2 mb-0.5">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-0.5">
                     {t("detailLabelCompletedAt")}
                   </p>
-                  <p className="text-sm text-gray-300">{fmt(movement.completedAt)}</p>
+                  <p className="text-sm text-foreground">{fmt(movement.completedAt)}</p>
                 </>
               )}
             </div>
@@ -247,7 +247,7 @@ function MovementDetailModal({
                     key={prod.id || i}
                     className="flex items-center justify-between gap-3 py-2 border-b border-white/5 last:border-0"
                   >
-                    <span className="text-sm text-gray-100 truncate">{prod.name}</span>
+                    <span className="text-sm text-foreground truncate">{prod.name}</span>
                     {prod.id && (
                       <code className="text-[11px] text-gray-600 font-mono shrink-0">
                         {prod.id.slice(0, 8)}…
@@ -287,21 +287,21 @@ function MovementDetailModal({
                 <Section title={t("detailSectionStripe")}>
                   {movement.stripeCheckoutId && (
                     <Row label={t("detailLabelCheckoutId")}>
-                      <code className="text-[11px] font-mono text-gray-400 truncate max-w-[150px] block">
+                      <code className="text-[11px] font-mono text-muted-foreground truncate max-w-[150px] block">
                         {movement.stripeCheckoutId}
                       </code>
                     </Row>
                   )}
                   {movement.stripePaymentIntentId && (
                     <Row label={t("detailLabelPaymentIntent")}>
-                      <code className="text-[11px] font-mono text-gray-400 truncate max-w-[150px] block">
+                      <code className="text-[11px] font-mono text-muted-foreground truncate max-w-[150px] block">
                         {movement.stripePaymentIntentId}
                       </code>
                     </Row>
                   )}
                   {movement.stripeSubscriptionId && (
                     <Row label={t("detailLabelSubscriptionId")}>
-                      <code className="text-[11px] font-mono text-gray-400 truncate max-w-[150px] block">
+                      <code className="text-[11px] font-mono text-muted-foreground truncate max-w-[150px] block">
                         {movement.stripeSubscriptionId}
                       </code>
                     </Row>
@@ -454,11 +454,11 @@ export default function PaymentsSubscriptionsPage() {
       case "customer":
         return (
           <div>
-            <p className="font-medium text-gray-100">
+            <p className="font-medium text-foreground">
               {movement.customerName || movement.customerEmail}
             </p>
             {movement.customerName && (
-              <p className="text-xs text-gray-500">{movement.customerEmail}</p>
+              <p className="text-xs text-muted-foreground">{movement.customerEmail}</p>
             )}
           </div>
         );
@@ -483,7 +483,7 @@ export default function PaymentsSubscriptionsPage() {
 
       case "amount":
         return (
-          <span className="font-semibold text-gray-100">
+          <span className="font-semibold text-foreground">
             {formatPrice(movement.amount, movement.currency)}
           </span>
         );
@@ -504,7 +504,7 @@ export default function PaymentsSubscriptionsPage() {
 
       case "date":
         return (
-          <span className="text-sm text-gray-400">{formatDate(movement.createdAt)}</span>
+          <span className="text-sm text-muted-foreground">{formatDate(movement.createdAt)}</span>
         );
 
       case "actions": {
@@ -555,11 +555,11 @@ export default function PaymentsSubscriptionsPage() {
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-gray-100 flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <CreditCard className="w-6 h-6" />
               {t("title")}
             </h1>
-            <p className="text-sm text-gray-400 mt-1">{subtitle}</p>
+            <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
           </div>
           <Button
             variant="flat"
@@ -581,7 +581,7 @@ export default function PaymentsSubscriptionsPage() {
             onChange={(e) => updateParam("type", e.target.value)}
             aria-label={t("allTypes")}
             className="w-44"
-            classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+            classNames={{ trigger: "border-border bg-muted/50" }}
           >
             <SelectItem key="all"          value="all">{t("allTypes")}</SelectItem>
             <SelectItem key="subscription" value="subscription">{t("typeSubscription")}</SelectItem>
@@ -595,7 +595,7 @@ export default function PaymentsSubscriptionsPage() {
             onChange={(e) => updateParam("status", e.target.value)}
             aria-label={t("allStatuses")}
             className="w-48"
-            classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+            classNames={{ trigger: "border-border bg-muted/50" }}
           >
             <SelectItem key="all"       value="all">{t("allStatuses")}</SelectItem>
             <SelectItem key="active"    value="active">{t("statusActive")}</SelectItem>
@@ -626,9 +626,9 @@ export default function PaymentsSubscriptionsPage() {
           <Table
             aria-label={t("title")}
             classNames={{
-              wrapper: "rounded-xl border border-[#1f1f2e]",
-              th: "bg-[#1a1a2e] text-xs font-semibold uppercase tracking-wider text-gray-400",
-              tr: "hover:bg-[#1a1a2e]/50 transition-colors",
+              wrapper: "rounded-xl border border-border",
+              th: "bg-muted text-xs font-semibold uppercase tracking-wider text-muted-foreground",
+              tr: "hover:bg-muted/50 transition-colors",
             }}
           >
             <TableHeader columns={COLUMNS}>
@@ -647,7 +647,7 @@ export default function PaymentsSubscriptionsPage() {
                 </div>
               }
               emptyContent={
-                <div className="py-16 flex flex-col items-center gap-3 text-gray-500">
+                <div className="py-16 flex flex-col items-center gap-3 text-muted-foreground">
                   <FileX className="w-10 h-10 opacity-40" />
                   <p className="text-sm font-medium">
                     {hasAnyFilter ? t("noMovementsFiltered") : t("noMovements")}
@@ -679,7 +679,7 @@ export default function PaymentsSubscriptionsPage() {
         {/* Pagination */}
         {!isLoading && totalCount > 0 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               {t("showing", { first: firstItem, last: lastItem, total: totalCount })}
             </p>
 
@@ -696,7 +696,7 @@ export default function PaymentsSubscriptionsPage() {
 
                 {pageNumbers.map((p, i) =>
                   p === "..." ? (
-                    <span key={`ellipsis-${i}`} className="px-2 text-sm text-gray-500 select-none">…</span>
+                    <span key={`ellipsis-${i}`} className="px-2 text-sm text-muted-foreground select-none">…</span>
                   ) : (
                     <Button
                       key={p}

@@ -67,8 +67,8 @@ function PlanCard({ plan, onEdit, onArchive, onDelete }: PlanCardProps) {
     <div
       className={`p-5 rounded-xl border transition-colors ${
         plan.active
-          ? "bg-[#1a1a2e] border-[#2a2a3e] hover:border-[#3a3a4e]"
-          : "bg-[#111118] border-[#1f1f2e] opacity-60"
+          ? "bg-muted border-[#2a2a3e] hover:border-[#3a3a4e]"
+          : "bg-[#111118] border-border opacity-60"
       }`}
     >
       {/* Header */}
@@ -79,23 +79,23 @@ function PlanCard({ plan, onEdit, onArchive, onDelete }: PlanCardProps) {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-gray-100">{plan.plan_name}</h3>
+              <h3 className="text-sm font-semibold text-foreground">{plan.plan_name}</h3>
               {!plan.active && (
                 <Chip size="sm" color="default" variant="flat">
                   Arquivado
                 </Chip>
               )}
             </div>
-            <p className="text-xs text-gray-500 font-mono mt-0.5">{plan.slug}</p>
+            <p className="text-xs text-muted-foreground font-mono mt-0.5">{plan.slug}</p>
           </div>
         </div>
 
         {/* Price badge */}
         <div className="text-right flex-shrink-0">
-          <p className="text-base font-bold text-gray-100">
+          <p className="text-base font-bold text-foreground">
             {formatPrice(plan.unit_amount, plan.currency)}
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             / {BILLING_INTERVAL_LABELS[plan.billing_interval]}
           </p>
         </div>
@@ -103,14 +103,14 @@ function PlanCard({ plan, onEdit, onArchive, onDelete }: PlanCardProps) {
 
       {/* Description */}
       {plan.description && (
-        <p className="text-xs text-gray-400 mb-4">{plan.description}</p>
+        <p className="text-xs text-muted-foreground mb-4">{plan.description}</p>
       )}
 
       {/* Trial badge */}
       {hasTrial(plan) && (
         <div className="flex items-center gap-1.5 mb-4">
           <Clock className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
-          <span className="text-xs text-gray-300">
+          <span className="text-xs text-foreground">
             {t("trialDays", { days: plan.trial_days })}
           </span>
         </div>
@@ -119,21 +119,21 @@ function PlanCard({ plan, onEdit, onArchive, onDelete }: PlanCardProps) {
       {/* Stripe IDs */}
       <div className="space-y-1 mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 w-16 flex-shrink-0">{t("productId")}</span>
-          <span className="text-xs text-gray-400 font-mono truncate">
+          <span className="text-xs text-muted-foreground w-16 flex-shrink-0">{t("productId")}</span>
+          <span className="text-xs text-muted-foreground font-mono truncate">
             {plan.stripe_product_id}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 w-16 flex-shrink-0">{t("priceId")}</span>
-          <span className="text-xs text-gray-400 font-mono truncate">
+          <span className="text-xs text-muted-foreground w-16 flex-shrink-0">{t("priceId")}</span>
+          <span className="text-xs text-muted-foreground font-mono truncate">
             {plan.stripe_price_id}
           </span>
         </div>
         {plan.stripe_trial_price_id && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500 w-16 flex-shrink-0">{t("trialId")}</span>
-            <span className="text-xs text-gray-400 font-mono truncate">
+            <span className="text-xs text-muted-foreground w-16 flex-shrink-0">{t("trialId")}</span>
+            <span className="text-xs text-muted-foreground font-mono truncate">
               {plan.stripe_trial_price_id}
             </span>
           </div>
@@ -238,7 +238,7 @@ export function PlansSection() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-100">
+          <h2 className="text-lg font-semibold text-foreground">
             {editingPlan ? t("editPlan", { name: editingPlan.plan_name }) : t("newPlanTitle")}
           </h2>
           <Button
@@ -282,8 +282,8 @@ export function PlansSection() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-100">{t("title")}</h2>
-          <p className="text-xs text-gray-400 mt-0.5">{t("subtitle")}</p>
+          <h2 className="text-lg font-semibold text-foreground">{t("title")}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("subtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -308,13 +308,13 @@ export function PlansSection() {
 
       {/* Active plans */}
       {activePlans.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-14 gap-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e]">
+        <div className="flex flex-col items-center justify-center py-14 gap-4 rounded-xl bg-muted border border-[#2a2a3e]">
           <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
             <Package className="w-7 h-7 text-primary" />
           </div>
           <div className="text-center">
-            <p className="text-base font-semibold text-gray-200">{t("noPlans")}</p>
-            <p className="text-sm text-gray-400 mt-1">{t("noPlansDesc")}</p>
+            <p className="text-base font-semibold text-foreground">{t("noPlans")}</p>
+            <p className="text-sm text-muted-foreground mt-1">{t("noPlansDesc")}</p>
           </div>
           <Button
             color="primary"
@@ -344,7 +344,7 @@ export function PlansSection() {
           <button
             type="button"
             onClick={() => setShowArchived((v) => !v)}
-            className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             {showArchived ? (
               <ChevronUp className="w-4 h-4" />
@@ -375,31 +375,31 @@ export function PlansSection() {
         isOpen={!!archivingPlan}
         onClose={() => setArchivingPlan(null)}
         classNames={{
-          base: "bg-[#0f0f1a] border border-[#1f1f2e]",
-          header: "border-b border-[#1f1f2e]",
-          footer: "border-t border-[#1f1f2e]",
+          base: "bg-background border border-border",
+          header: "border-b border-border",
+          footer: "border-t border-border",
         }}
       >
         <ModalContent>
           <ModalHeader>
-            <h3 className="text-base font-semibold text-gray-100">{t("archiveTitle")}</h3>
+            <h3 className="text-base font-semibold text-foreground">{t("archiveTitle")}</h3>
           </ModalHeader>
           <ModalBody>
-            <p className="text-sm text-gray-300">
+            <p className="text-sm text-foreground">
               {t("archiveConfirm", { name: archivingPlan?.plan_name ?? "" })}
             </p>
-            <div className="mt-3 p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e] space-y-1.5">
+            <div className="mt-3 p-3 rounded-lg bg-muted border border-[#2a2a3e] space-y-1.5">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                <span className="text-xs text-gray-300">{t("archiveNote1")}</span>
+                <span className="text-xs text-foreground">{t("archiveNote1")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                <span className="text-xs text-gray-300">{t("archiveNote2")}</span>
+                <span className="text-xs text-foreground">{t("archiveNote2")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                <span className="text-xs text-gray-300">{t("archiveNote3")}</span>
+                <span className="text-xs text-foreground">{t("archiveNote3")}</span>
               </div>
             </div>
           </ModalBody>
@@ -428,17 +428,17 @@ export function PlansSection() {
         isOpen={!!deletingPlan}
         onClose={() => setDeletingPlan(null)}
         classNames={{
-          base: "bg-[#0f0f1a] border border-[#1f1f2e]",
-          header: "border-b border-[#1f1f2e]",
-          footer: "border-t border-[#1f1f2e]",
+          base: "bg-background border border-border",
+          header: "border-b border-border",
+          footer: "border-t border-border",
         }}
       >
         <ModalContent>
           <ModalHeader>
-            <h3 className="text-base font-semibold text-gray-100">{t("deleteTitle")}</h3>
+            <h3 className="text-base font-semibold text-foreground">{t("deleteTitle")}</h3>
           </ModalHeader>
           <ModalBody>
-            <p className="text-sm text-gray-300">
+            <p className="text-sm text-foreground">
               {t("deleteConfirm", { name: deletingPlan?.plan_name ?? "" })}
             </p>
             <div className="mt-3 p-3 rounded-lg bg-red-950/30 border border-red-800/50">

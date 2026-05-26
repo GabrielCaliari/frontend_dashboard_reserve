@@ -1,5 +1,5 @@
-import { heroui } from "@heroui/theme";
-import tailwindAnimate from "tailwindcss-animate";
+const { heroui } = require("@heroui/theme");
+const tailwindAnimate = require("tailwindcss-animate");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -72,5 +72,41 @@ module.exports = {
     },
   },
   darkMode: "class",
-  plugins: [heroui(), tailwindAnimate],
+  plugins: [
+    heroui({
+      themes: {
+        light: {
+          colors: {
+            background: "#F8FAF4",
+            foreground: "#0E1009",
+            primary: {
+              DEFAULT: "#9FE870",
+              foreground: "#163300",
+            },
+            secondary: {
+              DEFAULT: "#E2F6D5",
+              foreground: "#0E1009",
+            },
+            focus: "#9FE870",
+          },
+        },
+        dark: {
+          colors: {
+            background: "#0F1423",
+            foreground: "#ECEEF5",
+            primary: {
+              DEFAULT: "#9FE870",
+              foreground: "#163300",
+            },
+            secondary: {
+              DEFAULT: "#1A2236",
+              foreground: "#ECEEF5",
+            },
+            focus: "#9FE870",
+          },
+        },
+      },
+    }),
+    tailwindAnimate
+  ],
 };

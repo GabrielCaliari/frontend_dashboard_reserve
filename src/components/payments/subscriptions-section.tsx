@@ -156,7 +156,7 @@ export function SubscriptionsSection() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-100">{t("title")}</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("title")}</h2>
         <Button
           size="sm"
           variant="flat"
@@ -197,8 +197,8 @@ export function SubscriptionsSection() {
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <CreditCard className="w-7 h-7 text-primary" />
             </div>
-            <p className="text-base font-semibold text-gray-200">{t("noSubscription")}</p>
-            <p className="text-sm text-gray-400 mt-1">Escolha um plano para começar</p>
+            <p className="text-base font-semibold text-foreground">{t("noSubscription")}</p>
+            <p className="text-sm text-muted-foreground mt-1">Escolha um plano para começar</p>
           </div>
 
           {/* Available Plans */}
@@ -206,24 +206,24 @@ export function SubscriptionsSection() {
             {plans.filter(p => p.active).map((plan) => (
               <div
                 key={plan.id}
-                className="p-5 rounded-xl border bg-[#1a1a2e] border-[#2a2a3e] hover:border-primary/50 transition-colors"
+                className="p-5 rounded-xl border bg-muted border-[#2a2a3e] hover:border-primary/50 transition-colors"
               >
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-100">{plan.plan_name}</h3>
+                  <h3 className="text-lg font-semibold text-foreground">{plan.plan_name}</h3>
                   {plan.description && (
-                    <p className="text-xs text-gray-400 mt-1">{plan.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{plan.description}</p>
                   )}
                 </div>
 
                 <div className="mb-4">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-gray-100">
+                    <span className="text-2xl font-bold text-foreground">
                       {new Intl.NumberFormat('pt-BR', {
                         style: 'currency',
                         currency: plan.currency.toUpperCase(),
                       }).format(plan.unit_amount / 100)}
                     </span>
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-muted-foreground">
                       /{plan.billing_interval === 1 ? 'semana' : plan.billing_interval === 2 ? 'mês' : plan.billing_interval === 3 ? 'trimestre' : 'ano'}
                     </span>
                   </div>
@@ -235,11 +235,11 @@ export function SubscriptionsSection() {
                 </div>
 
                 <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-xs text-gray-300">
+                  <div className="flex items-center gap-2 text-xs text-foreground">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                     {plan.released_credits} créditos por ciclo
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-300">
+                  <div className="flex items-center gap-2 text-xs text-foreground">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                     Até {plan.guest_limit} convidados
                   </div>
@@ -262,13 +262,13 @@ export function SubscriptionsSection() {
 
       {/* No subscription and no plans */}
       {!subscription && plans.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 gap-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e]">
+        <div className="flex flex-col items-center justify-center py-12 gap-4 rounded-xl bg-muted border border-[#2a2a3e]">
           <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
             <CreditCard className="w-7 h-7 text-primary" />
           </div>
           <div className="text-center">
-            <p className="text-base font-semibold text-gray-200">Nenhum plano disponível</p>
-            <p className="text-sm text-gray-400 mt-1">Crie planos em Products para começar</p>
+            <p className="text-base font-semibold text-foreground">Nenhum plano disponível</p>
+            <p className="text-sm text-muted-foreground mt-1">Crie planos em Products para começar</p>
           </div>
         </div>
       )}
@@ -297,17 +297,17 @@ export function SubscriptionsSection() {
         isOpen={showCancelModal}
         onClose={() => setShowCancelModal(false)}
         classNames={{
-          base: "bg-[#0f0f1a] border border-[#1f1f2e]",
-          header: "border-b border-[#1f1f2e]",
-          footer: "border-t border-[#1f1f2e]",
+          base: "bg-background border border-border",
+          header: "border-b border-border",
+          footer: "border-t border-border",
         }}
       >
         <ModalContent>
           <ModalHeader>
-            <h3 className="text-base font-semibold text-gray-100">{t("cancelTitle")}</h3>
+            <h3 className="text-base font-semibold text-foreground">{t("cancelTitle")}</h3>
           </ModalHeader>
           <ModalBody>
-            <p className="text-sm text-gray-300 mb-4">{t("cancelDesc")}</p>
+            <p className="text-sm text-foreground mb-4">{t("cancelDesc")}</p>
             <div className="space-y-3">
               <button
                 type="button"
@@ -315,11 +315,11 @@ export function SubscriptionsSection() {
                 className={`w-full p-4 rounded-xl border text-left transition-colors ${
                   !cancelImmediately
                     ? "border-primary bg-primary/10"
-                    : "border-[#2a2a3e] bg-[#1a1a2e] hover:border-[#3a3a4e]"
+                    : "border-[#2a2a3e] bg-muted hover:border-[#3a3a4e]"
                 }`}
               >
-                <p className="text-sm font-medium text-gray-200">{t("cancelAtPeriodEnd")}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{t("cancelAtPeriodEndDesc")}</p>
+                <p className="text-sm font-medium text-foreground">{t("cancelAtPeriodEnd")}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("cancelAtPeriodEndDesc")}</p>
               </button>
               <button
                 type="button"
@@ -327,10 +327,10 @@ export function SubscriptionsSection() {
                 className={`w-full p-4 rounded-xl border text-left transition-colors ${
                   cancelImmediately
                     ? "border-danger bg-danger/10"
-                    : "border-[#2a2a3e] bg-[#1a1a2e] hover:border-[#3a3a4e]"
+                    : "border-[#2a2a3e] bg-muted hover:border-[#3a3a4e]"
                 }`}
               >
-                <p className="text-sm font-medium text-gray-200">{t("cancelImmediately")}</p>
+                <p className="text-sm font-medium text-foreground">{t("cancelImmediately")}</p>
                 <p className="text-xs text-red-400 mt-0.5">{t("cancelImmediatelyDesc")}</p>
               </button>
             </div>

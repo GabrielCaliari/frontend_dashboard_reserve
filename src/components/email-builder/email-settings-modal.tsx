@@ -203,7 +203,7 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
                       )}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-muted-foreground mt-2">
                     {t("emailBuilder.editHeaderInfo")}
                   </p>
                 </div>
@@ -300,7 +300,7 @@ export default function EmailSettingsModal({ isOpen, onClose, settings, onSaveSe
                         )}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-muted-foreground mt-2">
                     {t("emailBuilder.editFooterInfo")}
                   </p>
                 </div>

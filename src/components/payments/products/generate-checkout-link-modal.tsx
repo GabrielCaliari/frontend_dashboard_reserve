@@ -111,9 +111,9 @@ export function GenerateCheckoutLinkModal({
       onClose={handleClose}
       size="lg"
       classNames={{
-        base: 'bg-[#0f0f1a] border border-[#1f1f2e]',
-        header: 'border-b border-[#1f1f2e]',
-        footer: 'border-t border-[#1f1f2e]',
+        base: 'bg-background border border-border',
+        header: 'border-b border-border',
+        footer: 'border-t border-border',
       }}
     >
       <ModalContent>
@@ -122,9 +122,9 @@ export function GenerateCheckoutLinkModal({
             <div className="flex items-center gap-2">
               <Link className="w-4 h-4 text-primary" />
               <div>
-                <h3 className="text-base font-semibold text-gray-100">{t('title')}</h3>
+                <h3 className="text-base font-semibold text-foreground">{t('title')}</h3>
                 {product && (
-                  <p className="text-xs text-gray-500 font-normal mt-0.5">{product.name}</p>
+                  <p className="text-xs text-muted-foreground font-normal mt-0.5">{product.name}</p>
                 )}
               </div>
             </div>
@@ -144,9 +144,9 @@ export function GenerateCheckoutLinkModal({
                   {t('successMessage')}
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-2">
-                  <p className="text-xs text-gray-500">Checkout URL</p>
-                  <p className="text-xs font-mono text-gray-300 break-all">{checkoutUrl}</p>
+                <div className="p-3 rounded-xl bg-muted border border-[#2a2a3e] space-y-2">
+                  <p className="text-xs text-muted-foreground">Checkout URL</p>
+                  <p className="text-xs font-mono text-foreground break-all">{checkoutUrl}</p>
                 </div>
 
                 <div className="flex gap-2">
@@ -176,7 +176,7 @@ export function GenerateCheckoutLinkModal({
             ) : (
               /* Form state */
               <>
-                <p className="text-sm text-gray-400">{t('subtitle')}</p>
+                <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
 
                 <Input
                   type="email"
@@ -186,7 +186,7 @@ export function GenerateCheckoutLinkModal({
                   onValueChange={(v) => set('customerEmail', v)}
                   isRequired
                   isDisabled={isLoading}
-                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                 />
 
                 <Input
@@ -195,7 +195,7 @@ export function GenerateCheckoutLinkModal({
                   value={form.customerName}
                   onValueChange={(v) => set('customerName', v)}
                   isDisabled={isLoading}
-                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                 />
 
                 <Input
@@ -204,7 +204,7 @@ export function GenerateCheckoutLinkModal({
                   value={form.customerPhone}
                   onValueChange={(v) => set('customerPhone', v)}
                   isDisabled={isLoading}
-                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                 />
               </>
             )}

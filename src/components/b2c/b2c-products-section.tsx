@@ -18,7 +18,7 @@ export function B2CProductsSection() {
         </div>
         <div className="flex flex-col">
           <p className="text-lg font-semibold">{t('productsTitle')}</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {t('productsSubtitle')}
           </p>
         </div>

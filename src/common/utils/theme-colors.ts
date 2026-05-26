@@ -66,6 +66,6 @@ export const themeClasses = {
   // Status badges
   statusActive: 'bg-green-900/40 text-green-300 border-green-700/50',
   statusPending: 'bg-yellow-900/40 text-yellow-300 border-yellow-700/50',
-  statusInactive: 'bg-gray-900/40 text-gray-300 border-gray-700/50',
+  statusInactive: 'bg-muted/40 text-foreground border-border/50',
   statusError: 'bg-red-900/40 text-red-300 border-red-700/50',
 } as const;

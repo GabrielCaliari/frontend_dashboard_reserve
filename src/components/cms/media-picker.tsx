@@ -219,8 +219,8 @@ export function MediaPicker({
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          <h2 className="text-xl font-semibold text-gray-200">Select Media</h2>
-          <p className="text-sm text-gray-400">
+          <h2 className="text-xl font-semibold text-foreground">Select Media</h2>
+          <p className="text-sm text-muted-foreground">
             {selectionMode === "single"
               ? "Select one asset from the library"
               : "Select one or more assets from the library"}
@@ -232,9 +232,9 @@ export function MediaPicker({
             selectedKey={activeTab}
             onSelectionChange={(key) => setActiveTab(key as string)}
             classNames={{
-              tabList: "bg-[#12121f] border border-gray-700",
+              tabList: "bg-card border border-border",
               cursor: "bg-blue-600",
-              tab: "text-gray-400 data-[selected=true]:text-white",
+              tab: "text-muted-foreground data-[selected=true]:text-white",
             }}
           >
             <Tab key="browse" title="Browse Library">
@@ -251,9 +251,9 @@ export function MediaPicker({
                     }
                     onChange={(e) => handleCollectionChange(e.target.value)}
                     classNames={{
-                      trigger: "bg-[#12121f] border border-gray-700",
-                      value: "text-gray-200",
-                      label: "text-gray-400",
+                      trigger: "bg-card border border-border",
+                      value: "text-foreground",
+                      label: "text-muted-foreground",
                     }}
                     className="sm:w-64"
                   >
@@ -274,10 +274,10 @@ export function MediaPicker({
                     placeholder="Search by filename..."
                     value={searchQuery}
                     onValueChange={handleSearchChange}
-                    startContent={<Search className="h-4 w-4 text-gray-400" />}
+                    startContent={<Search className="h-4 w-4 text-muted-foreground" />}
                     classNames={{
-                      input: "bg-[#12121f] text-gray-200",
-                      inputWrapper: "bg-[#12121f] border border-gray-700",
+                      input: "bg-card text-foreground",
+                      inputWrapper: "bg-card border border-border",
                     }}
                     className="flex-1"
                   />
@@ -307,7 +307,7 @@ export function MediaPicker({
                       showControls
                       classNames={{
                         cursor: "bg-blue-600 text-white",
-                        item: "bg-[#12121f] text-gray-400 border border-gray-700",
+                        item: "bg-card text-muted-foreground border border-border",
                       }}
                     />
                   </div>
@@ -332,9 +332,9 @@ export function MediaPicker({
                           }
                         }}
                         classNames={{
-                          trigger: "bg-[#12121f] border border-gray-700",
-                          value: "text-gray-200",
-                          label: "text-gray-400",
+                          trigger: "bg-card border border-border",
+                          value: "text-foreground",
+                          label: "text-muted-foreground",
                         }}
                       >
                         {collections.map((collection) => (
@@ -355,7 +355,7 @@ export function MediaPicker({
                   </>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-gray-400">
+                    <p className="text-muted-foreground">
                       No collections available. Create a collection first to
                       upload assets.
                     </p>

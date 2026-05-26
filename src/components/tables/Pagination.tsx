@@ -43,7 +43,7 @@ export function Pagination({
   return (
     <div className="flex justify-between items-center mt-4">
       <div>
-        <span className="text-sm text-gray-400">
+        <span className="text-sm text-muted-foreground">
           {t("showing", {
             start: showing.start,
             end: showing.end,
@@ -54,7 +54,7 @@ export function Pagination({
 
       <div className="flex space-x-2">
         <button
-          className="px-3 py-1 border border-gray-700 rounded text-sm text-gray-300 hover:bg-[#1a1a2e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-1 border border-border rounded text-sm text-foreground hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
@@ -76,7 +76,7 @@ export function Pagination({
         ))}
 
         <button
-          className="px-3 py-1 border border-gray-700 rounded text-sm text-gray-300 hover:bg-[#1a1a2e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-1 border border-border rounded text-sm text-foreground hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >

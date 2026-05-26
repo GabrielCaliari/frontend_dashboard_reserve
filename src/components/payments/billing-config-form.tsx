@@ -83,7 +83,7 @@ export function BillingConfigForm({ existing, onSuccess, onCancel }: BillingConf
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-6">
       {/* Plan Info */}
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
+        <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
           {t("sectionPlanInfo")}
         </h3>
         <Input
@@ -92,13 +92,13 @@ export function BillingConfigForm({ existing, onSuccess, onCancel }: BillingConf
           {...register("planName")}
           isInvalid={!!errors.planName}
           errorMessage={errors.planName?.message}
-          classNames={{ input: "bg-transparent", inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+          classNames={{ input: "bg-transparent", inputWrapper: "bg-muted border-[#2a2a3e]" }}
         />
         <Textarea
           label={t("planDescription")}
           placeholder={t("planDescriptionPlaceholder")}
           {...register("planDescription")}
-          classNames={{ input: "bg-transparent", inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+          classNames={{ input: "bg-transparent", inputWrapper: "bg-muted border-[#2a2a3e]" }}
         />
       </div>
 
@@ -106,18 +106,18 @@ export function BillingConfigForm({ existing, onSuccess, onCancel }: BillingConf
 
       {/* Stripe Keys */}
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
+        <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
           {t("sectionStripeKeys")}
         </h3>
         {isEditing && (
-          <p className="text-xs text-gray-500">{t("secretKeyHint")}</p>
+          <p className="text-xs text-muted-foreground">{t("secretKeyHint")}</p>
         )}
         <Input
           label={t("stripePublishableKey")}
           placeholder="pk_test_51... / pk_live_51..."
           autoComplete="off"
           {...register("stripePublishableKey")}
-          classNames={{ input: "bg-transparent", inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+          classNames={{ input: "bg-transparent", inputWrapper: "bg-muted border-[#2a2a3e]" }}
         />
         <Input
           label={t("stripeSecretKey")}
@@ -126,7 +126,7 @@ export function BillingConfigForm({ existing, onSuccess, onCancel }: BillingConf
           autoComplete="new-password"
           {...register("stripeSecretKey")}
           description={isEditing && existing?.hasStripeSecretKey ? t("secretKeyConfigured") : undefined}
-          classNames={{ input: "bg-transparent", inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+          classNames={{ input: "bg-transparent", inputWrapper: "bg-muted border-[#2a2a3e]" }}
         />
         <Input
           label={t("stripeWebhookSecret")}
@@ -135,7 +135,7 @@ export function BillingConfigForm({ existing, onSuccess, onCancel }: BillingConf
           autoComplete="new-password"
           {...register("stripeWebhookSecret")}
           description={isEditing && existing?.hasStripeWebhookSecret ? t("webhookConfigured") : undefined}
-          classNames={{ input: "bg-transparent", inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+          classNames={{ input: "bg-transparent", inputWrapper: "bg-muted border-[#2a2a3e]" }}
         />
       </div>
 

@@ -67,27 +67,27 @@ export function LeadAttachments({ leadId }: LeadAttachmentsProps) {
   return (
     <div className="space-y-4">
       {attachments.length === 0 ? (
-        <p className="text-sm text-gray-500 py-4 text-center">No attachments yet</p>
+        <p className="text-sm text-muted-foreground py-4 text-center">No attachments yet</p>
       ) : (
         <ul className="space-y-2">
           {attachments.map((att) => (
             <li
               key={att.id}
-              className="flex items-center justify-between rounded-lg border border-gray-800 px-3 py-2 bg-gray-900/40"
+              className="flex items-center justify-between rounded-lg border border-border px-3 py-2 bg-muted/40"
             >
               <div className="flex items-center gap-2 min-w-0">
-                <Paperclip className="w-4 h-4 text-gray-400 shrink-0" />
-                <span className="text-sm text-gray-200 truncate">
+                <Paperclip className="w-4 h-4 text-muted-foreground shrink-0" />
+                <span className="text-sm text-foreground truncate">
                   {att.label || `Asset #${att.asset_id}`}
                 </span>
-                <span className="text-xs text-gray-500">#{att.asset_id}</span>
+                <span className="text-xs text-muted-foreground">#{att.asset_id}</span>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <Button
                   isIconOnly
                   size="sm"
                   variant="light"
-                  className="text-gray-400 hover:text-red-400"
+                  className="text-muted-foreground hover:text-red-400"
                   onPress={() => setDeleteTargetId(att.id)}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -99,7 +99,7 @@ export function LeadAttachments({ leadId }: LeadAttachmentsProps) {
       )}
 
       {showAddForm ? (
-        <div className="space-y-2 rounded-lg border border-gray-800 p-3 bg-gray-900/30">
+        <div className="space-y-2 rounded-lg border border-border p-3 bg-muted/30">
           <Input
             label="Asset ID"
             type="number"
@@ -107,7 +107,7 @@ export function LeadAttachments({ leadId }: LeadAttachmentsProps) {
             value={assetId}
             onValueChange={setAssetId}
             variant="bordered"
-            classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+            classNames={{ inputWrapper: "border-border bg-muted" }}
           />
           <Input
             label="Label (optional)"
@@ -115,7 +115,7 @@ export function LeadAttachments({ leadId }: LeadAttachmentsProps) {
             value={label}
             onValueChange={setLabel}
             variant="bordered"
-            classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+            classNames={{ inputWrapper: "border-border bg-muted" }}
           />
           <div className="flex gap-2 justify-end">
             <Button

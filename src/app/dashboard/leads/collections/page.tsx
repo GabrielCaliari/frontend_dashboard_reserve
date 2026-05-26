@@ -72,7 +72,7 @@ function CollectionFormDialog({
             isRequired
             isInvalid={!!errors.name}
             errorMessage={errors.name?.message}
-            classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+            classNames={{ inputWrapper: "border-border bg-muted" }}
             {...register("name", { required: "Name is required" })}
           />
           <Input
@@ -81,7 +81,7 @@ function CollectionFormDialog({
             isRequired
             isInvalid={!!errors.source}
             errorMessage={errors.source?.message}
-            classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+            classNames={{ inputWrapper: "border-border bg-muted" }}
             {...register("source", { required: "Source is required" })}
           />
           <DialogFooter className="gap-2 pt-2">
@@ -188,13 +188,13 @@ export default function CollectionsPage() {
             {collections.map((col) => (
               <div
                 key={col.id}
-                className="rounded-xl border border-gray-800 bg-gray-900/40 p-4 space-y-3 hover:border-gray-700 transition-colors"
+                className="rounded-xl border border-border bg-muted/40 p-4 space-y-3 hover:border-border transition-colors"
               >
                 {/* Title row */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="font-semibold text-gray-100 truncate">{col.name}</p>
-                    <p className="text-xs text-gray-500 truncate">{col.slug}</p>
+                    <p className="font-semibold text-foreground truncate">{col.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{col.slug}</p>
                   </div>
                   <Chip
                     size="sm"
@@ -206,8 +206,8 @@ export default function CollectionsPage() {
                 </div>
 
                 {/* Source */}
-                <p className="text-sm text-gray-400">
-                  Source: <span className="text-gray-200">{col.source}</span>
+                <p className="text-sm text-muted-foreground">
+                  Source: <span className="text-foreground">{col.source}</span>
                 </p>
 
                 <p className="text-xs text-gray-600">
@@ -222,13 +222,13 @@ export default function CollectionsPage() {
                     onValueChange={() => handleToggleActive(col)}
                     isDisabled={updateCollection.isPending}
                   />
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-muted-foreground">
                     {col.active ? "Active" : "Inactive"}
                   </span>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-1 pt-1 border-t border-gray-800">
+                <div className="flex items-center gap-1 pt-1 border-t border-border">
                   <Button
                     size="sm"
                     variant="flat"
@@ -243,7 +243,7 @@ export default function CollectionsPage() {
                     isIconOnly
                     size="sm"
                     variant="light"
-                    className="text-gray-400 hover:text-gray-100"
+                    className="text-muted-foreground hover:text-foreground"
                     onPress={() => setEditTarget(col)}
                   >
                     <Pencil className="w-4 h-4" />
@@ -252,7 +252,7 @@ export default function CollectionsPage() {
                     isIconOnly
                     size="sm"
                     variant="light"
-                    className="text-gray-400 hover:text-yellow-400"
+                    className="text-muted-foreground hover:text-yellow-400"
                     onPress={() => setRegenTarget(col)}
                   >
                     <Key className="w-4 h-4" />
@@ -261,7 +261,7 @@ export default function CollectionsPage() {
                     isIconOnly
                     size="sm"
                     variant="light"
-                    className="text-gray-400 hover:text-red-400"
+                    className="text-muted-foreground hover:text-red-400"
                     onPress={() => setDeleteTarget(col)}
                   >
                     <Trash2 className="w-4 h-4" />

@@ -29,7 +29,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
 
   if (!batches || batches.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">{t("noBatches")}</div>
+      <div className="text-center py-8 text-muted-foreground">{t("noBatches")}</div>
     );
   }
 
@@ -45,57 +45,57 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
 
   return (
     <>
-      <div className="rounded-lg border border-gray-800 overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-800 bg-[#1a1a2e]">
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <tr className="border-b border-border bg-muted">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {t("number")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 ID
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Leads
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {t("success")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {t("error")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {t("opening")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {t("click")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {t("sendDate")}
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Ações
               </th>
             </tr>
           </thead>
-          <tbody className="bg-[#12121f] divide-y divide-gray-800">
+          <tbody className="bg-card divide-y divide-gray-800">
             {batches.map((batch, index) => (
               <tr
                 key={batch.id}
-                className="hover:bg-[#1e1e3a] transition-colors"
+                className="hover:bg-muted transition-colors"
               >
-                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
+                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                   {index + 1}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {batch.id}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {batch.total_leads}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.un_success_rate ?? "-"}
                     </span>
                     <span className="ml-2 text-xs text-green-400">
@@ -112,7 +112,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.un_failed_rate ?? "-"}
                     </span>
                     <span className="ml-2 text-xs text-red-400">
@@ -129,7 +129,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.un_open_rate ?? "-"}
                     </span>
                     <span className="ml-2 text-xs text-emerald-400">
@@ -146,7 +146,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.un_click_rate ?? "-"}
                     </span>
                     <span className="ml-2 text-xs text-blue-400">
@@ -161,30 +161,30 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {batch.started_at ? formatDate(batch.started_at) : "-"}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="p-2 rounded-full hover:bg-[#1a1a2e] transition-colors">
-                        <MoreHorizontalIcon className="h-5 w-5 text-gray-400" />
+                      <button className="p-2 rounded-full hover:bg-muted transition-colors">
+                        <MoreHorizontalIcon className="h-5 w-5 text-muted-foreground" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      className="bg-[#1a1a2e] border-gray-700"
+                      className="bg-muted border-border"
                     >
                       <DropdownMenuItem
                         onClick={() => handleViewLeads(batch)}
-                        className="cursor-pointer text-gray-200 hover:bg-[#1e1e3a]"
+                        className="cursor-pointer text-foreground hover:bg-muted"
                       >
                         <UsersIcon className="h-4 w-4 mr-2" />
                         {t("viewLeadList")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => handleViewEmail(batch)}
-                        className="cursor-pointer text-gray-200 hover:bg-[#1e1e3a]"
+                        className="cursor-pointer text-foreground hover:bg-muted"
                       >
                         <MailIcon className="h-4 w-4 mr-2" />
                         {t("viewEmail")}

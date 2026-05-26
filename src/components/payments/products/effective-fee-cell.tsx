@@ -8,7 +8,7 @@ import { useB2BProductCost, useB2CProductCost, type CalculatedCost } from '@/src
 type FeeSource = 'product' | 'category' | 'global' | 'none';
 
 function sourceColor(s: FeeSource) {
-  return s === 'product' ? 'text-primary' : s === 'category' ? 'text-secondary' : s === 'global' ? 'text-gray-400' : 'text-gray-600';
+  return s === 'product' ? 'text-primary' : s === 'category' ? 'text-secondary' : s === 'global' ? 'text-muted-foreground' : 'text-gray-600';
 }
 
 // ─── Effective fee display (chip cost + shipping source) ──────────────────────
@@ -71,7 +71,7 @@ function FinalPriceDisplay({ cost, isLoading }: { cost: CalculatedCost | undefin
   const hasAnyFee = cost.chipCostAmount > 0 || cost.shippingFee > 0;
 
   return (
-    <span className="text-sm font-medium text-gray-100">
+    <span className="text-sm font-medium text-foreground">
       {fmtCents(hasAnyFee ? cost.total : cost.basePrice, cost.currency)}
     </span>
   );

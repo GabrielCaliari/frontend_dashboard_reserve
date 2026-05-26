@@ -27,7 +27,7 @@ export function CampaignSetupStatusDialog({
           <h1 className="text-2xl font-bold">
             {t("campaignSetup.finishSetup")}
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {t("campaignSetup.finishSetupDesc")}
           </p>
         </div>

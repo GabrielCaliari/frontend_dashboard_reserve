@@ -140,7 +140,7 @@ export default function CollectionLeadsPage({
               size="sm"
               variant="flat"
               onPress={() => router.push("/dashboard/leads/collections")}
-              className="text-gray-400 hover:text-gray-100 shrink-0"
+              className="text-muted-foreground hover:text-foreground shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
@@ -164,8 +164,8 @@ export default function CollectionLeadsPage({
                 onChange={(e) => handleSwitchCollection(e.target.value)}
                 aria-label="Switch collection"
                 className="w-52"
-                classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
-                startContent={<ChevronDown className="w-3 h-3 text-gray-400 shrink-0" />}
+                classNames={{ trigger: "border-border bg-muted/50" }}
+                startContent={<ChevronDown className="w-3 h-3 text-muted-foreground shrink-0" />}
               >
                 {collections.map((c) => (
                   <SelectItem key={String(c.id)} value={String(c.id)}>
@@ -204,7 +204,7 @@ export default function CollectionLeadsPage({
             onChange={(e) => handleLimitChange(e.target.value)}
             aria-label="Rows per page"
             className="w-36"
-            classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+            classNames={{ trigger: "border-border bg-muted/50" }}
           >
             {LIMIT_OPTIONS.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>

@@ -94,7 +94,7 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
               <Label htmlFor="preheader" className="text-right">
                 {t("emailBuilder.preHeader")}
               </Label>
-              <span className={`text-xs ${preheader.length > MAX_PREHEADER_LENGTH ? "text-red-500" : "text-gray-500"}`}>
+              <span className={`text-xs ${preheader.length > MAX_PREHEADER_LENGTH ? "text-red-500" : "text-muted-foreground"}`}>
                 {preheader.length}/{MAX_PREHEADER_LENGTH}
               </span>
             </div>
@@ -111,7 +111,7 @@ export default function EmailSaveModal({ primaryCopy, isOpen, onClose, onSave, e
                 <span>{errors.preheader.message}</span>
               </p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               {t("emailBuilder.preHeaderHelp")}
             </p>
           </div>

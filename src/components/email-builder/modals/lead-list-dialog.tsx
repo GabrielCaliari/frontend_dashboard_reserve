@@ -77,7 +77,7 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-4 text-gray-500">
+                  <TableCell colSpan={3} className="text-center py-4 text-muted-foreground">
                     {t("common.loading")}...
                   </TableCell>
                 </TableRow>
@@ -101,7 +101,7 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
                           </div>
                         )}
                         {!lead.opened && !lead.clicked && (
-                          <span className="text-gray-400">{t("leadList.notOpened")}</span>
+                          <span className="text-muted-foreground">{t("leadList.notOpened")}</span>
                         )}
                       </div>
                     </TableCell>
@@ -109,7 +109,7 @@ export function LeadListDialog({ isOpen, onClose, batchId }: LeadListDialogProps
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-4 text-gray-500">
+                  <TableCell colSpan={3} className="text-center py-4 text-muted-foreground">
                     {t("leadList.noLeadsFound")}
                   </TableCell>
                 </TableRow>

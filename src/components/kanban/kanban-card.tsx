@@ -268,10 +268,10 @@ export default function KanbanCard({ card, onRemove }: KanbanCardProps) {
                 </p>
                 <p className="text-[16px]">{detail.json.conteudo}</p>
                 <div className="flex justify-between">
-                  <p className="text-[14px] text-gray-500">
+                  <p className="text-[14px] text-muted-foreground">
                     {formatDateTimeToBRL(new Date(detail.message_date))}
                   </p>
-                  <p className="text-[14px] font-semibold text-gray-500">
+                  <p className="text-[14px] font-semibold text-muted-foreground">
                     {detail.json.slug}
                   </p>
                 </div>

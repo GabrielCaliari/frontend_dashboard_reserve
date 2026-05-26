@@ -169,9 +169,9 @@ export function GenerateB2CCheckoutLinkModal({
       onClose={handleClose}
       size="lg"
       classNames={{
-        base: 'bg-[#0f0f1a] border border-[#1f1f2e]',
-        header: 'border-b border-[#1f1f2e]',
-        footer: 'border-t border-[#1f1f2e]',
+        base: 'bg-background border border-border',
+        header: 'border-b border-border',
+        footer: 'border-t border-border',
       }}
     >
       <ModalContent>
@@ -180,10 +180,10 @@ export function GenerateB2CCheckoutLinkModal({
             <div className="flex items-center gap-2">
               <Link className="w-4 h-4 text-primary" />
               <div>
-                <h3 className="text-base font-semibold text-gray-100">
+                <h3 className="text-base font-semibold text-foreground">
                   Gerar Link de Checkout
                 </h3>
-                <p className="text-xs text-gray-500 font-normal mt-0.5">
+                <p className="text-xs text-muted-foreground font-normal mt-0.5">
                   {product.name}
                 </p>
               </div>
@@ -204,9 +204,9 @@ export function GenerateB2CCheckoutLinkModal({
                   ✅ Link gerado com sucesso!
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-2">
-                  <p className="text-xs text-gray-500">Checkout URL</p>
-                  <p className="text-xs font-mono text-gray-300 break-all">{checkoutUrl}</p>
+                <div className="p-3 rounded-xl bg-muted border border-[#2a2a3e] space-y-2">
+                  <p className="text-xs text-muted-foreground">Checkout URL</p>
+                  <p className="text-xs font-mono text-foreground break-all">{checkoutUrl}</p>
                 </div>
 
                 <div className="flex gap-2">
@@ -236,13 +236,13 @@ export function GenerateB2CCheckoutLinkModal({
             ) : (
               /* Form state */
               <>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Preencha os dados abaixo para gerar um link de checkout
                 </p>
 
                 {/* Seleção de plano */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Selecione o plano *
                   </label>
                   {activePrices.length === 0 ? (
@@ -261,8 +261,8 @@ export function GenerateB2CCheckoutLinkModal({
                       }}
                       isDisabled={isGenerating}
                       classNames={{
-                        trigger: 'bg-[#1a1a2e] border-[#2a2a3e]',
-                        value: 'text-gray-100',
+                        trigger: 'bg-muted border-[#2a2a3e]',
+                        value: 'text-foreground',
                       }}
                     >
                       {activePrices.map((price) => (
@@ -272,11 +272,11 @@ export function GenerateB2CCheckoutLinkModal({
                           textValue={`${formatPrice(price.unitAmount, price.currency)} / ${formatInterval(price.interval, price.intervalCount)}`}
                         >
                           <div className="flex items-center gap-2">
-                            <DollarSign className="w-4 h-4 text-gray-400" />
+                            <DollarSign className="w-4 h-4 text-muted-foreground" />
                             <span className="font-medium">
                               {formatPrice(price.unitAmount, price.currency)}
                             </span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-muted-foreground">
                               / {formatInterval(price.interval, price.intervalCount)}
                             </span>
                           </div>
@@ -294,7 +294,7 @@ export function GenerateB2CCheckoutLinkModal({
                   onValueChange={setCustomerEmail}
                   isRequired
                   isDisabled={isGenerating}
-                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                 />
 
                 <Input
@@ -303,7 +303,7 @@ export function GenerateB2CCheckoutLinkModal({
                   value={customerName}
                   onValueChange={setCustomerName}
                   isDisabled={isGenerating}
-                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                 />
               </>
             )}

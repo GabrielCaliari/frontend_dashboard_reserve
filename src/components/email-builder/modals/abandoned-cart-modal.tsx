@@ -125,33 +125,33 @@ export function AbandonedCartModal({
     <div className="space-y-6">
       {/* Informações Pessoais */}
       <div>
-        <h4 className="font-semibold text-gray-100 mb-3">
+        <h4 className="font-semibold text-foreground mb-3">
           {t("abandonedCart.personalInfo")}
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("common.name")}
             </label>
-            <p className="text-gray-200">{cart.name}</p>
+            <p className="text-foreground">{cart.name}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("common.email")}
             </label>
-            <p className="text-gray-200">{cart.email}</p>
+            <p className="text-foreground">{cart.email}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("common.phone")}
             </label>
-            <p className="text-gray-200">{cart.phone || "—"}</p>
+            <p className="text-foreground">{cart.phone || "—"}</p>
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("abandonedCart.address")}
             </label>
-            <p className="text-gray-200">{cart.address || "—"}</p>
+            <p className="text-foreground">{cart.address || "—"}</p>
           </div>
         </div>
       </div>
@@ -159,7 +159,7 @@ export function AbandonedCartModal({
       {/* Produtos */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-semibold text-gray-100">
+          <h4 className="font-semibold text-foreground">
             {t("abandonedCart.products")}
           </h4>
           <button
@@ -174,7 +174,7 @@ export function AbandonedCartModal({
         </div>
 
         {showProductsJson ? (
-          <div className="bg-[#0a0a0f] text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-gray-800">
+          <div className="bg-background text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-border">
             <pre>{JSON.stringify(cart.products, null, 2)}</pre>
           </div>
         ) : (
@@ -182,22 +182,22 @@ export function AbandonedCartModal({
             {cart.products.map((product) => (
               <div
                 key={product.id}
-                className="flex items-center justify-between p-3 bg-[#1a1a2e] rounded-lg border border-gray-800"
+                className="flex items-center justify-between p-3 bg-muted rounded-lg border border-border"
               >
                 <div>
-                  <p className="font-medium text-gray-200">{product.name}</p>
-                  <p className="text-sm text-gray-500">ID: {product.id}</p>
+                  <p className="font-medium text-foreground">{product.name}</p>
+                  <p className="text-sm text-muted-foreground">ID: {product.id}</p>
                 </div>
-                <p className="font-semibold text-gray-200">
+                <p className="font-semibold text-foreground">
                   R$ {(product.price / 100).toFixed(2).replace(".", ",")}
                 </p>
               </div>
             ))}
-            <div className="flex justify-between items-center pt-3 border-t border-gray-700">
-              <span className="font-semibold text-gray-200">
+            <div className="flex justify-between items-center pt-3 border-t border-border">
+              <span className="font-semibold text-foreground">
                 {t("abandonedCart.total")}
               </span>
-              <span className="font-bold text-lg text-gray-100">
+              <span className="font-bold text-lg text-foreground">
                 R$ {(totalPrice / 100).toFixed(2).replace(".", ",")}
               </span>
             </div>
@@ -209,7 +209,7 @@ export function AbandonedCartModal({
       {cart.accessOrigin && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-100">
+            <h4 className="font-semibold text-foreground">
               {t("abandonedCart.accessOrigin")}
             </h4>
             <button
@@ -224,7 +224,7 @@ export function AbandonedCartModal({
           </div>
 
           {showOriginJson ? (
-            <div className="bg-[#0a0a0f] text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-gray-800">
+            <div className="bg-background text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-border">
               <pre>
                 {JSON.stringify(cart.accessOrigin, null, 2)}
               </pre>
@@ -233,20 +233,20 @@ export function AbandonedCartModal({
             <div className="space-y-2">
               {cart.accessOrigin.ip && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     IP
                   </label>
-                  <p className="text-gray-200 font-mono text-sm">
+                  <p className="text-foreground font-mono text-sm">
                     {cart.accessOrigin.ip}
                   </p>
                 </div>
               )}
               {cart.accessOrigin.agent && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     User Agent
                   </label>
-                  <p className="text-gray-200 font-mono text-sm break-all">
+                  <p className="text-foreground font-mono text-sm break-all">
                     {cart.accessOrigin.agent}
                   </p>
                 </div>
@@ -408,10 +408,10 @@ export function AbandonedCartModal({
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-gray-100">
+          <h4 className="font-semibold text-foreground">
             {t("abandonedCart.emailSequence")}
           </h4>
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-muted-foreground">
             {t("abandonedCart.totalEmails")} {emailSequences.length}
           </div>
         </div>
@@ -419,14 +419,14 @@ export function AbandonedCartModal({
         {emailSequences.map((email) => (
           <div
             key={email.id}
-            className="border border-gray-700 rounded-lg p-6 bg-[#1a1a2e]"
+            className="border border-border rounded-lg p-6 bg-muted"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 {getStatusIcon(email.status)}
                 <div>
-                  <h5 className="font-medium text-gray-100">{email.title}</h5>
-                  <p className="text-sm text-gray-400">{email.subject}</p>
+                  <h5 className="font-medium text-foreground">{email.title}</h5>
+                  <p className="text-sm text-muted-foreground">{email.subject}</p>
                 </div>
               </div>
               <span
@@ -438,57 +438,57 @@ export function AbandonedCartModal({
 
             {email.status === "sent" && (
               <div className="space-y-4 mb-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-[#12121f] rounded-lg border border-gray-800">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-card rounded-lg border border-border">
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">
                       {t("abandonedCart.sentAt")}
                     </label>
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-200">
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground">
                         {email.sentAt}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">
                       {t("abandonedCart.openStatus")}
                     </label>
                     <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-gray-500" />
+                      <Mail className="w-4 h-4 text-muted-foreground" />
                       {email.opened ? (
                         <div>
                           <span className="text-sm font-semibold text-green-400">
                             {t("abandonedCart.opened")}
                           </span>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {email.openedAt}
                           </p>
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-muted-foreground">
                           {t("abandonedCart.notOpened")}
                         </span>
                       )}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">
                       {t("abandonedCart.clickStatus")}
                     </label>
                     <div className="flex items-center gap-2">
-                      <MousePointer className="w-4 h-4 text-gray-500" />
+                      <MousePointer className="w-4 h-4 text-muted-foreground" />
                       {email.clicked ? (
                         <div>
                           <span className="text-sm font-semibold text-blue-400">
                             {t("abandonedCart.clicked")}
                           </span>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {email.clickedAt}
                           </p>
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-muted-foreground">
                           {t("abandonedCart.notClicked")}
                         </span>
                       )}
@@ -522,20 +522,20 @@ export function AbandonedCartModal({
                         {email.clickedLinks.map((link, index) => (
                           <div
                             key={index}
-                            className="flex items-center justify-between p-3 bg-[#12121f] rounded border border-gray-700"
+                            className="flex items-center justify-between p-3 bg-card rounded border border-border"
                           >
                             <div className="flex items-center gap-2">
                               <ExternalLink className="w-4 h-4 text-blue-400" />
                               <div>
-                                <p className="text-sm font-medium text-gray-200">
+                                <p className="text-sm font-medium text-foreground">
                                   {link.text}
                                 </p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-muted-foreground">
                                   {link.url}
                                 </p>
                               </div>
                             </div>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-muted-foreground">
                               {link.clickedAt}
                             </span>
                           </div>
@@ -560,10 +560,10 @@ export function AbandonedCartModal({
             {/* JSON do Provedor */}
             {showEmailJson === email.id && (
               <div className="mb-4">
-                <h6 className="font-medium text-gray-200 mb-2">
+                <h6 className="font-medium text-foreground mb-2">
                   {t("abandonedCart.providerResponse")}
                 </h6>
-                <div className="bg-[#0a0a0f] text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-gray-800">
+                <div className="bg-background text-green-400 p-4 rounded-lg text-sm font-mono overflow-x-auto border border-border">
                   <pre>{JSON.stringify(email.providerResponse, null, 2)}</pre>
                 </div>
               </div>
@@ -619,7 +619,7 @@ export function AbandonedCartModal({
                 onClick={() =>
                   setShowEmailJson(showEmailJson === email.id ? null : email.id)
                 }
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-gray-300 hover:bg-[#12121f] rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-card rounded-lg transition-colors"
               >
                 <Code className="w-4 h-4" />
                 {showEmailJson === email.id
@@ -647,51 +647,51 @@ export function AbandonedCartModal({
   const renderSmsTab = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h4 className="font-semibold text-gray-100">
+        <h4 className="font-semibold text-foreground">
           {t("abandonedCart.smsSequence")}
         </h4>
-        <div className="text-sm text-gray-400">
+        <div className="text-sm text-muted-foreground">
           {t("abandonedCart.totalSms")}{" "}
           {cart.smsStatus === "sent" ? 1 : 0}
         </div>
       </div>
 
-      <div className="border border-gray-700 rounded-lg p-6 bg-[#1a1a2e]">
-        <div className="rounded-lg border border-gray-800 overflow-hidden">
+      <div className="border border-border rounded-lg p-6 bg-muted">
+        <div className="rounded-lg border border-border overflow-hidden">
           <table className="min-w-full divide-y divide-gray-800">
-            <thead className="bg-[#12121f]">
+            <thead className="bg-card">
               <tr>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   Status
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   {t("abandonedCart.message")}
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   {t("abandonedCart.sentAt")}
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-[#16162a] divide-y divide-gray-800">
+            <tbody className="bg-card divide-y divide-gray-800">
               <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   {cart.smsStatus === "sent"
                     ? t("abandonedCart.sent")
                     : t("abandonedCart.pending")}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   {t("abandonedCart.cartReminder")}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {cart.smsStatus === "sent"
                     ? "2024-01-15 14:30"
                     : "---"}
@@ -714,14 +714,14 @@ export function AbandonedCartModal({
 
       {isSmsModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[#16162a] rounded-lg shadow-xl w-full max-w-md border border-gray-800">
-            <div className="flex items-center justify-between p-4 border-b border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-100">
+          <div className="bg-card rounded-lg shadow-xl w-full max-w-md border border-border">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="text-lg font-semibold text-foreground">
                 {t("abandonedCart.sendSingleSms")}
               </h3>
               <button
                 onClick={() => setIsSmsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-200 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -731,7 +731,7 @@ export function AbandonedCartModal({
                 value={smsMessage}
                 onChange={(e) => setSmsMessage(e.target.value)}
                 placeholder={t("abandonedCart.typeMessagePlaceholder")}
-                className="w-full h-32 px-3 py-2 bg-[#12121f] border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-200 placeholder-gray-500"
+                className="w-full h-32 px-3 py-2 bg-card border border-border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-foreground placeholder-gray-500"
               />
               <button
                 onClick={handleSendSms}
@@ -756,13 +756,13 @@ export function AbandonedCartModal({
         return renderSmsTab();
       case "actions":
         return (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-8 text-center text-muted-foreground">
             {t("abandonedCart.actionsInDev")}
           </div>
         );
       case "history":
         return (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-8 text-center text-muted-foreground">
             {t("abandonedCart.historyInDev")}
           </div>
         );
@@ -774,22 +774,22 @@ export function AbandonedCartModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-[#16162a] rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-gray-800">
+        <div className="bg-card rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-border">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-100">
+          <div className="flex items-center justify-between p-6 border-b border-border">
+            <h3 className="text-lg font-semibold text-foreground">
               Carrinho #{cart.id} - {cart.name}
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-200 transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
           {/* Tabs */}
-          <div className="border-b border-gray-700">
+          <div className="border-b border-border">
             <nav className="flex space-x-8 px-6">
               {tabs.map((tab) => (
                 <button
@@ -798,7 +798,7 @@ export function AbandonedCartModal({
                   className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.id
                       ? "border-blue-500 text-blue-400"
-                      : "border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-600"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-gray-600"
                   }`}
                 >
                   {tab.label}
@@ -813,10 +813,10 @@ export function AbandonedCartModal({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 p-6 border-t border-gray-700 bg-[#12121f]">
+          <div className="flex justify-end gap-3 p-6 border-t border-border bg-card">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-gray-400 hover:text-gray-200 transition-colors"
+              className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("common.close")}
             </button>

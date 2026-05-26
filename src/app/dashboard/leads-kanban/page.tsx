@@ -9,7 +9,7 @@ export default function Page() {
 
     return (
         <LayoutScopeRoot routeActive="lead-qualification">
-            <h1 className="text-2xl font-bold text-gray-100">{t("leadsScreeningTitle")}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t("leadsScreeningTitle")}</h1>
             <KanbanBoardWithAutosave />
         </LayoutScopeRoot>
     )

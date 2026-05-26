@@ -16,9 +16,9 @@ export default function PaymentsProductsPage() {
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <Package className="w-4 h-4 text-primary" />
             </div>
-            <h1 className="text-xl font-bold text-gray-100">{t("title")}</h1>
+            <h1 className="text-xl font-bold text-foreground">{t("title")}</h1>
           </div>
-          <p className="text-sm text-gray-400 ml-11">{t("subtitle")}</p>
+          <p className="text-sm text-muted-foreground ml-11">{t("subtitle")}</p>
         </div>
 
         <ProductsTabs />

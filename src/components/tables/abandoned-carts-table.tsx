@@ -45,18 +45,18 @@ const EmailSequenceStatus = ({
   return (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-1">
-        <Send className="w-3 h-3 text-gray-500" />
-        <span className="text-xs text-gray-500">1</span>
+        <Send className="w-3 h-3 text-muted-foreground" />
+        <span className="text-xs text-muted-foreground">1</span>
         <StatusIcon status={sequence.step1} />
       </div>
       <div className="flex items-center gap-1">
-        <Send className="w-3 h-3 text-gray-500" />
-        <span className="text-xs text-gray-500">2</span>
+        <Send className="w-3 h-3 text-muted-foreground" />
+        <span className="text-xs text-muted-foreground">2</span>
         <StatusIcon status={sequence.step2} />
       </div>
       <div className="flex items-center gap-1">
-        <Send className="w-3 h-3 text-gray-500" />
-        <span className="text-xs text-gray-500">3</span>
+        <Send className="w-3 h-3 text-muted-foreground" />
+        <span className="text-xs text-muted-foreground">3</span>
         <StatusIcon status={sequence.step3} />
       </div>
     </div>
@@ -67,7 +67,7 @@ const EmailSequenceStatus = ({
 const SmsStatus = ({ status }: { status: "sent" | "pending" | "failed" }) => {
   return (
     <div className="flex items-center gap-2">
-      <MessageSquare className="w-4 h-4 text-gray-500" />
+      <MessageSquare className="w-4 h-4 text-muted-foreground" />
       <StatusIcon status={status} />
     </div>
   );
@@ -130,7 +130,7 @@ export function AbandonedCartsTable() {
         {/* Header com botão de refresh */}
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               {carts.length === 0 
                 ? t("abandonedCart.noAbandoned") 
                 : carts.length === 1
@@ -149,44 +149,44 @@ export function AbandonedCartsTable() {
         </div>
 
         {/* Tabela */}
-        <div className="overflow-x-auto rounded-lg border border-gray-800">
+        <div className="overflow-x-auto rounded-lg border border-border">
           <table className="min-w-full divide-y divide-gray-800">
-            <thead className="bg-[#1a1a2e]">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.customer")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.product")}
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.type")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.amount")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.status")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.date")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.emailStatus")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.smsStatus")}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t("abandonedCart.actions")}
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-[#12121f] divide-y divide-gray-800">
+            <tbody className="bg-card divide-y divide-gray-800">
               {carts.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center gap-3 text-gray-500">
+                    <div className="flex flex-col items-center gap-3 text-muted-foreground">
                       <ShoppingCart className="w-12 h-12 opacity-40" />
                       <p className="text-sm font-medium">
                         {t("abandonedCart.noAbandoned")}
@@ -198,17 +198,17 @@ export function AbandonedCartsTable() {
                 carts.map((cart) => (
                   <tr
                     key={cart.id}
-                    className="hover:bg-[#1e1e3a] transition-colors"
+                    className="hover:bg-muted transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <p className="text-sm font-medium text-gray-200">
+                        <p className="text-sm font-medium text-foreground">
                           {cart.name}
                         </p>
-                        <p className="text-xs text-gray-500">{cart.email}</p>
+                        <p className="text-xs text-muted-foreground">{cart.email}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {cart.products[0]?.name || "—"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -220,7 +220,7 @@ export function AbandonedCartsTable() {
                         {getTypeLabel(cart.type)}
                       </Chip>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-100">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-foreground">
                       {formatPrice(cart.amount, cart.currency)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -232,18 +232,18 @@ export function AbandonedCartsTable() {
                         {t(`payments.movementsPage.status${cart.status.charAt(0).toUpperCase() + cart.status.slice(1)}`)}
                       </Chip>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {formatDate(cart.createdAt)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {cart.emailSequence && (
                         <EmailSequenceStatus sequence={cart.emailSequence} />
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {cart.smsStatus && <SmsStatus status={cart.smsStatus} />}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       <div className="flex items-center gap-2">
                         {cart.stripeLink && (
                           <Button
@@ -258,9 +258,9 @@ export function AbandonedCartsTable() {
                         )}
                         <button
                           onClick={() => handleOptionsClick(cart)}
-                          className="p-2 rounded-full hover:bg-[#1a1a2e] transition-colors"
+                          className="p-2 rounded-full hover:bg-muted transition-colors"
                         >
-                          <MoreHorizontal className="w-5 h-5 text-gray-400" />
+                          <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
                         </button>
                       </div>
                     </td>

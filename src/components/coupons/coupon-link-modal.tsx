@@ -110,7 +110,7 @@ export function CouponLinkModal({ coupon, isOpen, onClose }: CouponLinkModalProp
         </ModalHeader>
 
         <ModalBody className="space-y-4">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-muted-foreground">
             {t("linkModalDescription", { code: coupon.code })}
           </p>
 
@@ -124,22 +124,22 @@ export function CouponLinkModal({ coupon, isOpen, onClose }: CouponLinkModalProp
             errorMessage={baseUrlError}
             isRequired
             classNames={{
-              inputWrapper: "bg-[#0d0d20] border-gray-700",
-              input: "text-gray-100",
+              inputWrapper: "bg-[#0d0d20] border-border",
+              input: "text-foreground",
             }}
-            startContent={<ExternalLink className="w-4 h-4 text-gray-500 shrink-0" />}
+            startContent={<ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />}
           />
 
           {generatedLink && (
             <div className="space-y-2">
-              <p className="text-xs text-gray-500 uppercase tracking-wider">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">
                 {t("linkModalResult")}
               </p>
               <Snippet
                 symbol=""
                 variant="flat"
                 classNames={{
-                  base: "bg-[#0d0d20] border border-gray-700 w-full",
+                  base: "bg-[#0d0d20] border border-border w-full",
                   pre: "text-xs text-primary break-all whitespace-pre-wrap",
                 }}
                 onCopy={handleCopy}

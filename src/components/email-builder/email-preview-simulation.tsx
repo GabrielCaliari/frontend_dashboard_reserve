@@ -220,7 +220,7 @@ export default function EmailPreviewSimulation({
                 </div>
                 <div className="flex-1">
                   <div className="font-medium">{subject}</div>
-                  <div className="text-sm text-gray-500 truncate">{preheader}</div>
+                  <div className="text-sm text-muted-foreground truncate">{preheader}</div>
                 </div>
               </div>
             </div>

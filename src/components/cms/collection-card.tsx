@@ -17,7 +17,7 @@ const TYPE_CONFIG: Record<CollectionType, { icon: React.ElementType; color: stri
   document: { icon: FileText, color: "text-blue-400",    bg: "bg-blue-500/10",     badge: "primary"   },
   video:    { icon: Video,    color: "text-violet-400",  bg: "bg-violet-500/10",   badge: "secondary" },
   audio:    { icon: Music,    color: "text-amber-400",   bg: "bg-amber-500/10",    badge: "warning"   },
-  mixed:    { icon: Layers,   color: "text-gray-400",    bg: "bg-gray-500/10",     badge: "default"   },
+  mixed:    { icon: Layers,   color: "text-muted-foreground",    bg: "bg-gray-500/10",     badge: "default"   },
 };
 
 function formatFileSize(bytes: number): string {
@@ -39,7 +39,7 @@ export function CollectionCard({ collection, onClick, onEdit, onDelete }: Collec
 
   return (
     <Card
-      className="bg-[#12121f] border border-gray-800/60 hover:border-gray-700 transition-all duration-200 group cursor-pointer"
+      className="bg-card border border-border/60 hover:border-border transition-all duration-200 group cursor-pointer"
     >
       <CardBody className="p-5 relative">
         <div className="absolute top-5 right-5 z-10 flex items-center gap-1">
@@ -57,7 +57,7 @@ export function CollectionCard({ collection, onClick, onEdit, onDelete }: Collec
                 isIconOnly
                 size="sm"
                 variant="light"
-                className="text-gray-500 hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
                 aria-label="Collection options"
               >
                 <MoreVertical className="w-4 h-4" />
@@ -100,35 +100,35 @@ export function CollectionCard({ collection, onClick, onEdit, onDelete }: Collec
 
           {/* Collection name + description */}
           <div className="mb-3">
-            <h3 className="text-sm font-semibold text-gray-100 truncate" title={collection.name}>
+            <h3 className="text-sm font-semibold text-foreground truncate" title={collection.name}>
               {collection.name}
             </h3>
             {collection.description && (
-              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{collection.description}</p>
+              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{collection.description}</p>
             )}
           </div>
 
           {/* Meta info */}
           <div className="space-y-1.5 mb-4">
-            <div className="flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>Max file size</span>
-              <span className="text-gray-400">{formatFileSize(collection.max_file_size)}</span>
+              <span className="text-muted-foreground">{formatFileSize(collection.max_file_size)}</span>
             </div>
             {collection.max_items && (
-              <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span>Max items</span>
-                <span className="text-gray-400">{collection.max_items}</span>
+                <span className="text-muted-foreground">{collection.max_items}</span>
               </div>
             )}
           </div>
 
           {/* Footer CTA */}
-          <div className="flex items-center justify-between pt-3 border-t border-gray-800/60">
+          <div className="flex items-center justify-between pt-3 border-t border-border/60">
             <div className="flex items-center gap-1 text-gray-600">
               <FolderOpen className="w-3.5 h-3.5" />
               <span className="text-xs">Browse assets</span>
             </div>
-            <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-gray-400 group-hover:translate-x-0.5 transition-all duration-150" />
+            <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all duration-150" />
           </div>
         </div>
       </CardBody>

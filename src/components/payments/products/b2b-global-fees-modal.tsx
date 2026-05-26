@@ -46,13 +46,13 @@ export function B2BGlobalFeesModal({ isOpen, onClose }: B2BGlobalFeesModalProps)
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="sm"
-      classNames={{ base: 'bg-[#0e0e1a] border border-white/10', header: 'border-b border-white/[0.07]', footer: 'border-t border-white/[0.07]' }}>
+      classNames={{ base: 'bg-background border border-white/10', header: 'border-b border-white/[0.07]', footer: 'border-t border-white/[0.07]' }}>
       <ModalContent>
         <ModalHeader className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
             <Settings className="w-3.5 h-3.5 text-primary" />
           </div>
-          <span className="text-sm font-semibold text-gray-100">{t('feesGlobalModalTitle')} — One-time</span>
+          <span className="text-sm font-semibold text-foreground">{t('feesGlobalModalTitle')} — One-time</span>
         </ModalHeader>
 
         <ModalBody className="py-5 space-y-4">
@@ -60,14 +60,14 @@ export function B2BGlobalFeesModal({ isOpen, onClose }: B2BGlobalFeesModalProps)
             <div className="flex justify-center py-4"><Spinner size="sm" /></div>
           ) : (
             <>
-              <p className="text-xs text-gray-500 leading-relaxed">{t('feesGlobalModalDesc')}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{t('feesGlobalModalDesc')}</p>
 
               <Input
                 label={t('feesGlobalChipCostLabel')}
                 placeholder="2.5"
                 value={chipCost}
                 onValueChange={(v) => setChipCost(v.replace(/[^0-9.]/g, ''))}
-                startContent={<Percent className="w-3.5 h-3.5 text-gray-500" />}
+                startContent={<Percent className="w-3.5 h-3.5 text-muted-foreground" />}
                 description={t('feesGlobalChipCostDesc')}
                 classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }}
               />

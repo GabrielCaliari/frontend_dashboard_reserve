@@ -14,7 +14,7 @@ export function MetadataTable({ metadata, metricKey }: MetadataTableProps) {
         if (Array.isArray(value)) {
           return (
             <div key={key} className="mb-2 min-w-0">
-              <p className="text-xs font-medium text-gray-400 mb-1 capitalize">
+              <p className="text-xs font-medium text-muted-foreground mb-1 capitalize">
                 {key.replaceAll("_", " ")}
               </p>
               <div className="overflow-x-auto">
@@ -24,10 +24,10 @@ export function MetadataTable({ metadata, metricKey }: MetadataTableProps) {
                       (item, idx) => (
                         <tr
                           key={idx}
-                          className="border-b border-gray-800 last:border-0"
+                          className="border-b border-border last:border-0"
                         >
                           {Object.entries(item).map(([col, val]) => (
-                            <td key={col} className="py-1 pr-3 text-gray-300 whitespace-nowrap">
+                            <td key={col} className="py-1 pr-3 text-foreground whitespace-nowrap">
                               {String(val)}
                             </td>
                           ))}
@@ -41,9 +41,9 @@ export function MetadataTable({ metadata, metricKey }: MetadataTableProps) {
           );
         }
         return (
-          <p key={key} className="break-words text-xs text-gray-400">
+          <p key={key} className="break-words text-xs text-muted-foreground">
             <span className="capitalize">{key.replaceAll("_", " ")}:</span>{" "}
-            <span className="break-all text-gray-300">{String(value)}</span>
+            <span className="break-all text-foreground">{String(value)}</span>
           </p>
         );
       })}

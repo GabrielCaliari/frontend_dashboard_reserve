@@ -37,76 +37,76 @@ export function LeadDetailModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto p-4">
-      <div className="bg-[#16162a] border border-gray-800 p-6 rounded-lg w-full max-w-4xl mx-auto shadow-2xl">
+      <div className="bg-card border border-border p-6 rounded-lg w-full max-w-4xl mx-auto shadow-2xl">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-gray-100">
+          <h3 className="text-xl font-bold text-foreground">
             {t("leads.details")}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-200 transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="h-6 w-6" />
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-500">ID</p>
-            <p className="font-medium text-gray-200">{lead.id}</p>
+            <p className="text-sm text-muted-foreground">ID</p>
+            <p className="font-medium text-foreground">{lead.id}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("common.name")}</p>
-            <p className="font-medium text-gray-200">{lead.name}</p>
+            <p className="text-sm text-muted-foreground">{t("common.name")}</p>
+            <p className="font-medium text-foreground">{lead.name}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("common.email")}</p>
-            <p className="font-medium text-gray-200">{lead.email || "-"}</p>
+            <p className="text-sm text-muted-foreground">{t("common.email")}</p>
+            <p className="font-medium text-foreground">{lead.email || "-"}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("common.phone")}</p>
-            <p className="font-medium text-gray-200">{lead.phone_number}</p>
+            <p className="text-sm text-muted-foreground">{t("common.phone")}</p>
+            <p className="font-medium text-foreground">{lead.phone_number}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("leads.originId")}</p>
-            <p className="font-medium text-gray-200">
+            <p className="text-sm text-muted-foreground">{t("leads.originId")}</p>
+            <p className="font-medium text-foreground">
               {lead.origin !== undefined ? lead.origin : "-"}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("leads.originSource")}</p>
-            <p className="font-medium text-gray-200">
+            <p className="text-sm text-muted-foreground">{t("leads.originSource")}</p>
+            <p className="font-medium text-foreground">
               {lead.origin_font || "-"}
             </p>
           </div>
           <div className="col-span-2">
-            <p className="text-sm text-gray-500">{t("leads.description")}</p>
-            <p className="font-medium text-gray-200">{lead.description}</p>
+            <p className="text-sm text-muted-foreground">{t("leads.description")}</p>
+            <p className="font-medium text-foreground">{lead.description}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("leads.brand")}</p>
-            <p className="font-medium text-gray-200">{lead.brand || "-"}</p>
+            <p className="text-sm text-muted-foreground">{t("leads.brand")}</p>
+            <p className="font-medium text-foreground">{lead.brand || "-"}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("leads.companySize")}</p>
-            <p className="font-medium text-gray-200">
+            <p className="text-sm text-muted-foreground">{t("leads.companySize")}</p>
+            <p className="font-medium text-foreground">
               {lead.ad_company_size !== undefined ? lead.ad_company_size : "-"}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("leads.companySegment")}</p>
-            <p className="font-medium text-gray-200">
+            <p className="text-sm text-muted-foreground">{t("leads.companySegment")}</p>
+            <p className="font-medium text-foreground">
               {lead.ad_company_segment || "-"}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("leads.marketTime")}</p>
-            <p className="font-medium text-gray-200">
+            <p className="text-sm text-muted-foreground">{t("leads.marketTime")}</p>
+            <p className="font-medium text-foreground">
               {lead.ad_company_on_market || "-"}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("leads.website")}</p>
-            <p className="font-medium text-gray-200">
+            <p className="text-sm text-muted-foreground">{t("leads.website")}</p>
+            <p className="font-medium text-foreground">
               {lead.ad_website ? (
                 <a
                   href={lead.ad_website}
@@ -122,14 +122,14 @@ export function LeadDetailModal({
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t("common.createdAt")}</p>
-            <p className="font-medium text-gray-200">{lead.created_at}</p>
+            <p className="text-sm text-muted-foreground">{t("common.createdAt")}</p>
+            <p className="font-medium text-foreground">{lead.created_at}</p>
           </div>
         </div>
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-700 text-gray-200 rounded-md hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 bg-gray-700 text-foreground rounded-md hover:bg-gray-600 transition-colors"
           >
             {t("common.close")}
           </button>

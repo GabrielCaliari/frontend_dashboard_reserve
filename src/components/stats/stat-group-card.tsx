@@ -35,15 +35,15 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
   );
 
   return (
-    <Card className="bg-[#111125] border-gray-800">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <CardTitle className="text-lg text-gray-100">
+            <CardTitle className="text-lg text-foreground">
               {group.label}
             </CardTitle>
             {group.description && (
-              <CardDescription className="text-gray-400 text-sm mt-0.5">
+              <CardDescription className="text-muted-foreground text-sm mt-0.5">
                 {group.description}
               </CardDescription>
             )}
@@ -70,24 +70,24 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
         {(topBlogsMetrics.length > 0 || topCollectionsMetrics.length > 0) && (
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             {topBlogsMetrics.length > 0 && (
-              <Card className="bg-[#16162a] border-gray-800">
+              <Card className="bg-card border-border">
                 <CardContent className="p-4">
-                  <p className="mb-3 text-sm font-medium text-gray-200">{t("topBlogs")}</p>
+                  <p className="mb-3 text-sm font-medium text-foreground">{t("topBlogs")}</p>
                   <div className="space-y-2">
                     {topBlogsMetrics.map((metric) => (
                       <div
                         key={metric.key}
-                        className="flex flex-col gap-2 rounded-md border border-gray-800 px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
+                        className="flex flex-col gap-2 rounded-md border border-border px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div className="min-w-0">
-                          <p className="truncate text-sm text-gray-100 sm:whitespace-normal">
+                          <p className="truncate text-sm text-foreground sm:whitespace-normal">
                             {String(metric.metadata?.blog_name ?? metric.label)}
                           </p>
-                          <p className="truncate text-xs text-gray-500 sm:whitespace-normal sm:break-all">
+                          <p className="truncate text-xs text-muted-foreground sm:whitespace-normal sm:break-all">
                             {String(metric.metadata?.blog_id ?? metric.key)}
                           </p>
                         </div>
-                        <span className="text-sm font-semibold text-gray-100 sm:text-right">
+                        <span className="text-sm font-semibold text-foreground sm:text-right">
                           {formatStatValue(metric.value, metric.unit)}
                         </span>
                       </div>
@@ -98,24 +98,24 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
             )}
 
             {topCollectionsMetrics.length > 0 && (
-              <Card className="bg-[#16162a] border-gray-800">
+              <Card className="bg-card border-border">
                 <CardContent className="p-4">
-                  <p className="mb-3 text-sm font-medium text-gray-200">{t("topLeadCollections")}</p>
+                  <p className="mb-3 text-sm font-medium text-foreground">{t("topLeadCollections")}</p>
                   <div className="space-y-2">
                     {topCollectionsMetrics.map((metric) => (
                       <div
                         key={metric.key}
-                        className="flex flex-col gap-2 rounded-md border border-gray-800 px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
+                        className="flex flex-col gap-2 rounded-md border border-border px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div className="min-w-0">
-                          <p className="truncate text-sm text-gray-100 sm:whitespace-normal">
+                          <p className="truncate text-sm text-foreground sm:whitespace-normal">
                             {String(metric.metadata?.collection_name ?? metric.label)}
                           </p>
-                          <p className="truncate text-xs text-gray-500 sm:whitespace-normal sm:break-all">
+                          <p className="truncate text-xs text-muted-foreground sm:whitespace-normal sm:break-all">
                             {String(metric.metadata?.collection_id ?? metric.key)}
                           </p>
                         </div>
-                        <span className="text-sm font-semibold text-gray-100 sm:text-right">
+                        <span className="text-sm font-semibold text-foreground sm:text-right">
                           {formatStatValue(metric.value, metric.unit)}
                         </span>
                       </div>
@@ -132,14 +132,14 @@ export function StatGroupCard({ group }: StatGroupCardProps) {
             {metadataMetrics.map((metric) => (
               <Card
                 key={metric.key}
-                className="bg-[#16162a] border-gray-800"
+                className="bg-card border-border"
               >
                 <CardContent className="p-4">
                   <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm font-medium text-gray-200 break-words">
+                    <p className="text-sm font-medium text-foreground break-words">
                       {metric.label}
                     </p>
-                    <span className="text-lg font-bold text-gray-100 break-words sm:text-right">
+                    <span className="text-lg font-bold text-foreground break-words sm:text-right">
                       {formatStatValue(metric.value, metric.unit)}
                     </span>
                   </div>

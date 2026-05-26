@@ -87,7 +87,7 @@ export function CurrencyInput({
       value={displayValue}
       onValueChange={handleChange}
       startContent={
-        <span className="text-gray-400 text-sm font-medium">
+        <span className="text-muted-foreground text-sm font-medium">
           {currencySymbol}
         </span>
       }

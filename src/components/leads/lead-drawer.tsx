@@ -104,7 +104,7 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
                     size="sm"
                     variant="flat"
                     onPress={() => { setEditing(!editing); setTab("data"); }}
-                    className="text-gray-400 hover:text-gray-100"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     <Pencil className="w-4 h-4" />
                   </Button>
@@ -112,7 +112,7 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
                     isIconOnly
                     size="sm"
                     variant="flat"
-                    className="text-gray-400 hover:text-red-400"
+                    className="text-muted-foreground hover:text-red-400"
                     onPress={() => setShowDeleteConfirm(true)}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -131,7 +131,7 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
                     className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                       tab === t
                         ? "bg-primary/20 text-primary font-medium"
-                        : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                        : "text-muted-foreground hover:text-foreground hover:bg-gray-800"
                     }`}
                   >
                     {t === "data" ? "Data" : "Attachments"}
@@ -153,14 +153,14 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
               <div className="space-y-5">
                 {/* Status selector */}
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Status</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Status</p>
                   <Select
                     size="sm"
                     variant="bordered"
                     selectedKeys={[String(lead.status)]}
                     onChange={(e) => handleStatusChange(e.target.value)}
                     isDisabled={updateStatus.isPending}
-                    classNames={{ trigger: "border-gray-700 bg-gray-900" }}
+                    classNames={{ trigger: "border-border bg-muted" }}
                     aria-label="Lead status"
                   >
                     {Object.entries(STATUS_LABELS).map(([value, label]) => (
@@ -183,35 +183,35 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
                   <div className="space-y-4">
                     {/* Contact info */}
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Contact</p>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Contact</p>
                       <div className="space-y-2">
                         {lead.email && (
                           <div className="flex items-center gap-2 text-sm">
-                            <Mail className="w-4 h-4 text-gray-500 shrink-0" />
-                            <span className="text-gray-200">{lead.email}</span>
+                            <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <span className="text-foreground">{lead.email}</span>
                           </div>
                         )}
                         {lead.phone_number && (
                           <div className="flex items-center gap-2 text-sm">
-                            <Phone className="w-4 h-4 text-gray-500 shrink-0" />
-                            <span className="text-gray-200">{lead.phone_number}</span>
+                            <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <span className="text-foreground">{lead.phone_number}</span>
                           </div>
                         )}
                         {!lead.email && !lead.phone_number && (
-                          <p className="text-sm text-gray-500 italic">No contact info</p>
+                          <p className="text-sm text-muted-foreground italic">No contact info</p>
                         )}
                       </div>
                     </div>
 
                     {/* Origin */}
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Origin</p>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Origin</p>
                       <div className="flex items-center gap-2 flex-wrap">
                         <Chip size="sm" variant="flat">
                           {ORIGIN_LABELS[lead.origin] || String(lead.origin)}
                         </Chip>
                         {lead.origin_font && (
-                          <span className="text-sm text-gray-400">{lead.origin_font}</span>
+                          <span className="text-sm text-muted-foreground">{lead.origin_font}</span>
                         )}
                       </div>
                     </div>
@@ -219,17 +219,17 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
                     {/* Description */}
                     {lead.description && (
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Description</p>
-                        <p className="text-sm text-gray-300 leading-relaxed">{lead.description}</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Description</p>
+                        <p className="text-sm text-foreground leading-relaxed">{lead.description}</p>
                       </div>
                     )}
 
                     {/* Location */}
                     {(lead.city || lead.country) && (
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Location</p>
-                        <div className="flex items-center gap-2 text-sm text-gray-300">
-                          <MapPin className="w-4 h-4 text-gray-500 shrink-0" />
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Location</p>
+                        <div className="flex items-center gap-2 text-sm text-foreground">
+                          <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
                           <span>
                             {[lead.city, lead.region, lead.country].filter(Boolean).join(", ")}
                           </span>
@@ -240,9 +240,9 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
                     {/* Extra data */}
                     {lead.data && Object.keys(lead.data).length > 0 && (
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Additional Data</p>
-                        <div className="rounded-lg bg-gray-900 border border-gray-800 p-3">
-                          <pre className="text-xs text-gray-300 overflow-auto max-h-40">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Additional Data</p>
+                        <div className="rounded-lg bg-muted border border-border p-3">
+                          <pre className="text-xs text-foreground overflow-auto max-h-40">
                             {JSON.stringify(lead.data, null, 2)}
                           </pre>
                         </div>
@@ -251,7 +251,7 @@ export function LeadDrawer({ leadId, onClose, onDeleted }: LeadDrawerProps) {
 
                     {/* Timestamps */}
                     <Divider className="bg-gray-800" />
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-500">
+                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         <span>Created {format(new Date(lead.created_at), "dd MMM yyyy, HH:mm")}</span>

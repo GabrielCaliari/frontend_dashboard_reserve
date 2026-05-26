@@ -8,8 +8,8 @@ export default async function AbandonedCartsPage() {
     return (
         <LayoutScopeRoot routeActive="abandoned-carts">
             <div className="p-4">
-                <h1 className="text-2xl font-bold mb-6 text-gray-100">{t("abandonedCartsTitle")}</h1>
-                <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
+                <h1 className="text-2xl font-bold mb-6 text-foreground">{t("abandonedCartsTitle")}</h1>
+                <div className="bg-card rounded-lg shadow-lg border border-border p-6">
                     <AbandonedCartsTable />
                 </div>
             </div>

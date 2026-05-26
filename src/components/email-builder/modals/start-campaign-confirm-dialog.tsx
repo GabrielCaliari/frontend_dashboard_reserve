@@ -45,7 +45,7 @@ export function StartCampaignConfirmDialog({ isOpen, onClose, campaignId }: Prop
 
         <div className="py-4">
           <p>{t("campaign.confirmStartCampaign")}</p>
-          <p className="text-sm text-gray-500 mt-2">{t("campaign.campaignId")} <span className="font-medium">{campaignId}</span></p>
+          <p className="text-sm text-muted-foreground mt-2">{t("campaign.campaignId")} <span className="font-medium">{campaignId}</span></p>
         </div>
 
         <DialogFooter>

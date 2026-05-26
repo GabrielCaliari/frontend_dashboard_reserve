@@ -46,7 +46,7 @@ export function ProductsTable({ products, isLoading }: ProductsTableProps) {
 
   if (!products || products.length === 0) {
     return (
-      <div className="text-center py-10 text-gray-500">
+      <div className="text-center py-10 text-muted-foreground">
         {t('noProducts')}
       </div>
     );
@@ -67,7 +67,7 @@ export function ProductsTable({ products, isLoading }: ProductsTableProps) {
             <TableCell>
               <div>
                 <div className="font-semibold">{product.name}</div>
-                <div className="text-sm text-gray-500 line-clamp-1">
+                <div className="text-sm text-muted-foreground line-clamp-1">
                   {product.description}
                 </div>
               </div>
@@ -97,7 +97,7 @@ export function ProductsTable({ products, isLoading }: ProductsTableProps) {
                     <span className="font-medium">
                       {formatPrice(price.unitAmount, price.currency)}
                     </span>
-                    <span className="text-gray-500">
+                    <span className="text-muted-foreground">
                       / {formatInterval(price.interval, price.intervalCount)}
                     </span>
                     {!price.active && (

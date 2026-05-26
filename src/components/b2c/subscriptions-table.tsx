@@ -85,7 +85,7 @@ export function B2CSubscriptionsTable() {
 
   if (!subscriptions || subscriptions.length === 0) {
     return (
-      <div className="text-center py-10 text-gray-500">
+      <div className="text-center py-10 text-muted-foreground">
         {t('noSubscriptions')}
       </div>
     );
@@ -137,7 +137,7 @@ export function B2CSubscriptionsTable() {
                 </span>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-1 text-sm text-gray-500">
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Calendar className="w-3 h-3" />
                   <span>
                     {formatDate(subscription.currentPeriodStart)} -{' '}

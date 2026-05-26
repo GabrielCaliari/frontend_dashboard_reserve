@@ -9,10 +9,10 @@ export default async function EmailCampaignPage() {
   return (
     <LayoutScopeRoot routeActive="email-campaign">
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-6 text-gray-100">
+        <h1 className="text-2xl font-bold mb-6 text-foreground">
           {t("emailCampaignTitle")}
         </h1>
-        <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
+        <div className="bg-card rounded-lg shadow-lg border border-border p-6">
           <div className="flex justify-end mb-4">
             <CreateEmailCampaignButton />
           </div>

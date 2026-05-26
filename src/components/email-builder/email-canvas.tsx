@@ -57,7 +57,7 @@ export default function EmailCanvas({
       }`}
     >
       {components.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-[400px] text-gray-400">
+        <div className="flex flex-col items-center justify-center h-[400px] text-muted-foreground">
           <p>{t("dragAndDrop")}</p>
           <p className="text-sm mt-2">{t("orClickComponent")}</p>
         </div>

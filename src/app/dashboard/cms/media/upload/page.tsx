@@ -102,21 +102,21 @@ export default function MediaUploadPage() {
               onClick={handleViewLibrary}
               variant="light"
               startContent={<ArrowLeft className="h-4 w-4" />}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-muted-foreground hover:text-foreground"
             >
               {t("backToLibrary")}
             </Button>
           </div>
 
-          <h1 className="text-2xl font-bold mb-6 text-gray-100">
+          <h1 className="text-2xl font-bold mb-6 text-foreground">
             {t("uploadAssets")}
           </h1>
 
-          <Card className="bg-[#12121f] border border-gray-800">
+          <Card className="bg-card border border-border">
             <CardBody className="text-center py-12">
               <FolderOpen className="h-16 w-16 mx-auto mb-4 text-gray-600" />
-              <p className="text-gray-400 text-lg mb-2">{t("noCollectionsFound")}</p>
-              <p className="text-gray-500 text-sm mb-6">
+              <p className="text-muted-foreground text-lg mb-2">{t("noCollectionsFound")}</p>
+              <p className="text-muted-foreground text-sm mb-6">
                 {t("createCollectionFirst")}
               </p>
               <Button
@@ -142,11 +142,11 @@ export default function MediaUploadPage() {
               onClick={handleViewLibrary}
               variant="light"
               startContent={<ArrowLeft className="h-4 w-4" />}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-muted-foreground hover:text-foreground"
             >
               {t("backToLibrary")}
             </Button>
-            <h1 className="text-2xl font-bold text-gray-100">
+            <h1 className="text-2xl font-bold text-foreground">
               {t("uploadAssets")}
             </h1>
           </div>
@@ -154,13 +154,13 @@ export default function MediaUploadPage() {
           <Button
             onClick={handleViewLibrary}
             variant="flat"
-            className="text-gray-300"
+            className="text-foreground"
           >
             {t("viewLibrary")}
           </Button>
         </div>
 
-        <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
+        <div className="bg-card rounded-lg shadow-lg border border-border p-6">
           {/* Collection selector */}
           <div className="mb-8">
             <Select
@@ -170,9 +170,9 @@ export default function MediaUploadPage() {
               onChange={(e) => setSelectedCollectionId(e.target.value)}
               classNames={{
                 base: "max-w-md",
-                trigger: "bg-[#1a1a2e] border border-gray-700 hover:border-gray-600",
-                value: "text-gray-200",
-                label: "text-gray-400",
+                trigger: "bg-muted border border-border hover:border-gray-600",
+                value: "text-foreground",
+                label: "text-muted-foreground",
               }}
               isRequired
             >
@@ -183,9 +183,9 @@ export default function MediaUploadPage() {
                   textValue={collection.name}
                 >
                   <div className="flex flex-col">
-                    <span className="text-gray-200">{collection.name}</span>
+                    <span className="text-foreground">{collection.name}</span>
                     {collection.description && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {collection.description}
                       </span>
                     )}
@@ -195,15 +195,15 @@ export default function MediaUploadPage() {
             </Select>
 
             {selectedCollection && (
-              <div className="mt-3 text-sm text-gray-500 space-y-1">
+              <div className="mt-3 text-sm text-muted-foreground space-y-1">
                 <p>
-                  {t("collectionType")}: <span className="text-gray-400">{selectedCollection.type}</span>
+                  {t("collectionType")}: <span className="text-muted-foreground">{selectedCollection.type}</span>
                 </p>
                 <p>
-                  {t("allowedTypes")}: <span className="text-gray-400">{selectedCollection.allowed_mime_types.join(", ")}</span>
+                  {t("allowedTypes")}: <span className="text-muted-foreground">{selectedCollection.allowed_mime_types.join(", ")}</span>
                 </p>
                 <p>
-                  {t("maxFileSize")}: <span className="text-gray-400">
+                  {t("maxFileSize")}: <span className="text-muted-foreground">
                     {(selectedCollection.max_file_size / (1024 * 1024)).toFixed(2)} MB
                   </span>
                 </p>
@@ -213,13 +213,13 @@ export default function MediaUploadPage() {
 
           {/* Upload component */}
           {!selectedCollection && (
-            <Card className="bg-[#1a1a2e] border border-gray-700">
+            <Card className="bg-muted border border-border">
               <CardBody className="text-center py-12">
                 <Upload className="h-12 w-12 mx-auto mb-4 text-gray-600" />
-                <p className="text-gray-400 text-lg mb-2">
+                <p className="text-muted-foreground text-lg mb-2">
                   {t("selectCollectionToUpload")}
                 </p>
-                <p className="text-gray-500 text-sm">
+                <p className="text-muted-foreground text-sm">
                   {t("chooseCollectionAbove")}
                 </p>
               </CardBody>
@@ -234,11 +234,11 @@ export default function MediaUploadPage() {
               />
 
               {/* Action buttons */}
-              <div className="mt-8 flex items-center justify-between gap-4 pt-6 border-t border-gray-800">
+              <div className="mt-8 flex items-center justify-between gap-4 pt-6 border-t border-border">
                 <Button
                   onClick={handleUploadMore}
                   variant="flat"
-                  className="text-gray-300"
+                  className="text-foreground"
                   startContent={<Upload className="h-4 w-4" />}
                 >
                   {t("uploadMoreFiles")}

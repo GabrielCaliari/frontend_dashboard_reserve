@@ -187,7 +187,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
     } as CreateCouponPayload;
   }
 
-  const inputClass = "bg-[#0d0d20] border-gray-700 text-gray-100";
+  const inputClass = "bg-[#0d0d20] border-border text-foreground";
 
   return (
     <form onSubmit={handleSubmit((v) => onSubmit(buildPayload(v)))} className="space-y-6">
@@ -319,7 +319,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
       {scope === "product" && (
         <div className="space-y-4">
           {loadingB2B || loadingB2C ? (
-            <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
               <Spinner size="sm" /> {t("formLoadingProducts")}
             </div>
           ) : (
@@ -341,7 +341,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
                       {activeB2BProducts.map((p) => (
                         <SelectItem key={p.id} textValue={p.name}>
                           <span className="text-sm">{p.name}</span>
-                          <span className="ml-2 text-xs text-gray-500">
+                          <span className="ml-2 text-xs text-muted-foreground">
                             {(p.price / 100).toFixed(2)}
                           </span>
                         </SelectItem>
@@ -363,7 +363,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
           )}
 
           {Array.from(selectedProductIds).length === 0 && (
-            <p className="text-xs text-gray-500 flex items-center gap-1">
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
               <Info className="w-3 h-3" /> {t("formProductsHint")}
             </p>
           )}
@@ -373,8 +373,8 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
             <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-200">{t("formOverridesTitle")}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{t("formOverridesHint")}</p>
+                  <p className="text-sm font-medium text-foreground">{t("formOverridesTitle")}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t("formOverridesHint")}</p>
                 </div>
                 {availableForOverride.length > 0 && (
                   <Button
@@ -499,11 +499,11 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
       {scope === "category" && (
         <div>
           {loadingCats ? (
-            <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
               <Spinner size="sm" /> {t("formLoadingCategories")}
             </div>
           ) : activeCategories.length === 0 ? (
-            <p className="text-sm text-gray-500 py-2">{t("formNoCategoriesFound")}</p>
+            <p className="text-sm text-muted-foreground py-2">{t("formNoCategoriesFound")}</p>
           ) : (
             <Controller
               name="categoryIds"
@@ -534,7 +534,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
           placeholder={t("formMinOrderPlaceholder")}
           type="number" step="0.01" min="0"
           classNames={{ inputWrapper: inputClass }}
-          startContent={<span className="text-gray-500 text-sm">$</span>}
+          startContent={<span className="text-muted-foreground text-sm">$</span>}
           {...register("minOrderAmount")}
         />
         <Input
@@ -542,7 +542,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
           placeholder={t("formMaxDiscountPlaceholder")}
           type="number" step="0.01" min="0"
           classNames={{ inputWrapper: inputClass }}
-          startContent={<span className="text-gray-500 text-sm">$</span>}
+          startContent={<span className="text-muted-foreground text-sm">$</span>}
           {...register("maxDiscountAmount")}
         />
       </div>
@@ -563,10 +563,10 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
           })}
         />
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm text-gray-400 px-1">{t("formExpiresAtLabel")}</label>
+          <label className="text-sm text-muted-foreground px-1">{t("formExpiresAtLabel")}</label>
           <input
             type="datetime-local"
-            className="w-full rounded-xl px-3 py-3 text-sm text-gray-100 bg-[#0d0d20] border border-gray-700 focus:outline-none focus:border-primary transition-colors [color-scheme:dark]"
+            className="w-full rounded-xl px-3 py-3 text-sm text-foreground bg-[#0d0d20] border border-border focus:outline-none focus:border-primary transition-colors [color-scheme:dark]"
             {...register("expiresAt")}
           />
         </div>
@@ -578,7 +578,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
           name="cumulative"
           control={control}
           render={({ field }) => (
-            <Switch isSelected={field.value} onValueChange={field.onChange} size="sm" classNames={{ label: "text-gray-300 text-sm" }}>
+            <Switch isSelected={field.value} onValueChange={field.onChange} size="sm" classNames={{ label: "text-foreground text-sm" }}>
               {t("formCumulativeLabel")}
             </Switch>
           )}
@@ -588,7 +588,7 @@ export function CouponForm({ initialData, isSubmitting, onSubmit }: CouponFormPr
             name="active"
             control={control}
             render={({ field }) => (
-              <Switch isSelected={field.value} onValueChange={field.onChange} size="sm" color="success" classNames={{ label: "text-gray-300 text-sm" }}>
+              <Switch isSelected={field.value} onValueChange={field.onChange} size="sm" color="success" classNames={{ label: "text-foreground text-sm" }}>
                 {t("formActiveLabel")}
               </Switch>
             )}

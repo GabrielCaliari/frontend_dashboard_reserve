@@ -46,8 +46,8 @@ export default function GlobalDashboardPage() {
           <Card className="border-red-500/20 bg-red-500/5">
             <CardBody className="p-8 text-center">
               <ShieldAlert className="mx-auto mb-4 h-10 w-10 text-red-300" />
-              <h1 className="text-xl font-semibold text-gray-100">{t("globalForbiddenTitle")}</h1>
-              <p className="mt-2 text-sm text-gray-300">{t("globalForbiddenDescription")}</p>
+              <h1 className="text-xl font-semibold text-foreground">{t("globalForbiddenTitle")}</h1>
+              <p className="mt-2 text-sm text-foreground">{t("globalForbiddenDescription")}</p>
             </CardBody>
           </Card>
         </div>
@@ -60,10 +60,10 @@ export default function GlobalDashboardPage() {
       <div className="mx-auto space-y-6 px-6 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-100">{t("globalTitle")}</h1>
-            <p className="mt-1 text-sm text-gray-400">{t("globalDescription")}</p>
+            <h1 className="text-2xl font-bold text-foreground">{t("globalTitle")}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{t("globalDescription")}</p>
             {data?.generatedAt ? (
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-muted-foreground">
                 {t("updatedAt", { date: formatDate(data.generatedAt) })}
               </p>
             ) : null}
@@ -95,8 +95,8 @@ export default function GlobalDashboardPage() {
         ) : null}
 
         {!isLoading && data?.groups.length === 0 ? (
-          <Card className="border-gray-800 bg-[#111125]">
-            <CardBody className="p-8 text-center text-sm text-gray-400">
+          <Card className="border-border bg-card">
+            <CardBody className="p-8 text-center text-sm text-muted-foreground">
               {t("globalEmptyState")}
             </CardBody>
           </Card>

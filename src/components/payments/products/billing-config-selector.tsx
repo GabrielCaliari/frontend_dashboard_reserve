@@ -136,7 +136,7 @@ export function BillingConfigSelector({
     <div className="space-y-3">
       {/* ── Mode selector ── */}
       <div>
-        <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">
+        <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
           {t('modeLabel')}
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -151,13 +151,13 @@ export function BillingConfigSelector({
                 className={`p-2.5 rounded-lg border text-left transition-all flex flex-col items-center gap-1.5 ${
                   isActive
                     ? `${mode.activeBg} ${mode.activeBorder}`
-                    : 'border-[#2a2a3e] bg-[#1a1a2e] hover:border-[#3a3a4e]'
+                    : 'border-[#2a2a3e] bg-muted hover:border-[#3a3a4e]'
                 } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
               >
-                <span className={isActive ? mode.color : 'text-gray-500'}>
+                <span className={isActive ? mode.color : 'text-muted-foreground'}>
                   {mode.icon}
                 </span>
-                <span className={`text-xs font-medium text-center leading-tight ${isActive ? 'text-gray-100' : 'text-gray-400'}`}>
+                <span className={`text-xs font-medium text-center leading-tight ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
                   {mode.label}
                 </span>
               </button>
@@ -174,7 +174,7 @@ export function BillingConfigSelector({
       {/* ── Interval presets (recorrentes only) ── */}
       {isRecurring && (
         <div>
-          <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">
+          <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
             {t('presetLabel')}
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -189,7 +189,7 @@ export function BillingConfigSelector({
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                     isActive
                       ? 'bg-primary/20 border-primary/50 text-primary'
-                      : 'bg-[#1a1a2e] border-[#2a2a3e] text-gray-400 hover:border-[#3a3a4e] hover:text-gray-300'
+                      : 'bg-muted border-[#2a2a3e] text-muted-foreground hover:border-[#3a3a4e] hover:text-foreground'
                   } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${
                     p.value === 'custom' ? 'flex items-center gap-1' : ''
                   }`}
@@ -210,7 +210,7 @@ export function BillingConfigSelector({
                 onChange={(e) => onChange({ ...value, interval: e.target.value as BillingInterval })}
                 isDisabled={isDisabled}
                 size="sm"
-                classNames={{ trigger: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                classNames={{ trigger: 'bg-muted border-[#2a2a3e]' }}
               >
                 {intervals.map((interval) => (
                   <SelectItem key={interval.value} value={interval.value}>
@@ -228,7 +228,7 @@ export function BillingConfigSelector({
                 onValueChange={(v) => onChange({ ...value, intervalCount: parseInt(v) || 1 })}
                 isDisabled={isDisabled}
                 size="sm"
-                classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
               />
             </div>
           )}
@@ -260,8 +260,8 @@ export function BillingConfigSelector({
             onValueChange={(v) => onChange({ ...value, maxCharges: parseInt(v) || 1 })}
             isDisabled={isDisabled}
             size="sm"
-            classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
-            startContent={<Calendar className="w-3.5 h-3.5 text-gray-400" />}
+            classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
+            startContent={<Calendar className="w-3.5 h-3.5 text-muted-foreground" />}
           />
           <Card className="bg-amber-500/10 border border-amber-500/20">
             <CardBody className="p-2.5">
@@ -292,8 +292,8 @@ export function BillingConfigSelector({
               onValueChange={(v) => onChange({ ...value, accessDuration: parseInt(v) || 1 })}
               isDisabled={isDisabled}
               size="sm"
-              classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
-              startContent={<Clock className="w-3.5 h-3.5 text-gray-400" />}
+              classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
+              startContent={<Clock className="w-3.5 h-3.5 text-muted-foreground" />}
             />
             <Select
               label={t('durationUnitLabel')}
@@ -303,7 +303,7 @@ export function BillingConfigSelector({
               }
               isDisabled={isDisabled}
               size="sm"
-              classNames={{ trigger: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+              classNames={{ trigger: 'bg-muted border-[#2a2a3e]' }}
             >
               <SelectItem key="day"   value="day">{t('intervalDay')}</SelectItem>
               <SelectItem key="month" value="month">{t('intervalMonth')}</SelectItem>

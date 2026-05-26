@@ -92,9 +92,9 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <h1 className="text-2xl font-bold text-gray-100">{t("title")}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
             {data?.generatedAt && (
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {t("updatedAt", {
                   date: new Date(data.generatedAt).toLocaleString(),
                 })}
@@ -113,7 +113,7 @@ export default function DashboardPage() {
               variant="bordered"
               size="sm"
               startContent={<Plug className="h-4 w-4" />}
-              className="border-gray-700 text-gray-300 whitespace-nowrap"
+              className="border-border text-foreground whitespace-nowrap"
             >
               {t("integrationsLabel")}
             </Button>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
 
         {/* CMS Overview — always visible */}
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             CMS Overview
           </h2>
           <CmsOverviewCards />
@@ -130,7 +130,7 @@ export default function DashboardPage() {
 
         {/* Stats Integrations */}
         <section className="space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Analytics
           </h2>
 
@@ -150,10 +150,10 @@ export default function DashboardPage() {
           )}
 
           {!isLoading && !isError && data && data.groups.length === 0 && (
-            <Card className="border-gray-800 bg-[#111125]">
+            <Card className="border-border bg-card">
               <CardBody className="flex flex-col items-center justify-center py-12 text-center">
                 <BarChart3 className="h-10 w-10 text-gray-600 mb-3" />
-                <p className="text-gray-400 mb-1">{t("emptyState")}</p>
+                <p className="text-muted-foreground mb-1">{t("emptyState")}</p>
                 <p className="text-sm text-gray-600 mb-4">
                   Connect an analytics provider to see metrics here.
                 </p>

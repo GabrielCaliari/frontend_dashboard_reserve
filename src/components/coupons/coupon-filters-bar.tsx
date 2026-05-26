@@ -28,7 +28,7 @@ export function CouponFiltersBar({
   onAppliesToFilterChange,
 }: CouponFiltersBarProps) {
   const t = useTranslations("coupons");
-  const selectClass = "bg-[#0d0d20] border-gray-700";
+  const selectClass = "bg-[#0d0d20] border-border";
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -37,8 +37,8 @@ export function CouponFiltersBar({
           placeholder={t("searchPlaceholder")}
           value={search}
           onValueChange={onSearchChange}
-          startContent={<Search className="w-4 h-4 text-gray-500 shrink-0" />}
-          classNames={{ inputWrapper: "bg-[#0d0d20] border-gray-700", input: "text-gray-100" }}
+          startContent={<Search className="w-4 h-4 text-muted-foreground shrink-0" />}
+          classNames={{ inputWrapper: "bg-[#0d0d20] border-border", input: "text-foreground" }}
           isClearable
           onClear={() => onSearchChange("")}
         />

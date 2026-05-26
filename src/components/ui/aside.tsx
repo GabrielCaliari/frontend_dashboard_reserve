@@ -553,7 +553,7 @@ export function Sidebar({
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="bg-[#0f0f1a] w-[310px] border-r border-[#1f1f2e] p-4 flex-col hidden lg:flex overflow-hidden relative z-10 transition-all h-[calc(100svh-60px)]">
+      <aside className="bg-background w-[310px] border-r border-border p-4 flex-col hidden lg:flex overflow-hidden relative z-10 transition-all h-[calc(100svh-60px)]">
         <div className="w-full flex-1 flex flex-col min-h-0">
           <div className="flex flex-col w-full shrink-0">
             <Link
@@ -566,10 +566,10 @@ export function Sidebar({
                   <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0f0f1a] rounded-full"></div>
                 </div>
                 <div className="flex flex-col w-full min-w-0">
-                  <h1 className="flex items-center font-bold text-sm text-gray-100 capitalize tracking-wide truncate">
+                  <h1 className="flex items-center font-bold text-sm text-foreground capitalize tracking-wide truncate">
                     {userName || t("userLabel")}
                   </h1>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-xs text-muted-foreground truncate">
                     {dashboardScope === "global" && isSuperAdmin
                       ? t("globalWorkspace")
                       : selectedTenant?.name || t("defaultWorkspace")}
@@ -579,7 +579,7 @@ export function Sidebar({
             </Link>
           </div>
 
-          <div className="my-4 shrink-0 px-1 border-b border-[#1f1f2e]/60 pb-4">
+          <div className="my-4 shrink-0 px-1 border-b border-border/60 pb-4">
             <TenantSelector />
           </div>
 
@@ -602,23 +602,23 @@ export function Sidebar({
 
           {/* Slide-up drawer */}
           <div
-            className={`lg:hidden fixed bottom-0 left-0 right-0 z-[60] bg-[#0f0f1a] border-t border-[#1f1f2e] rounded-t-2xl transition-transform duration-300 ease-in-out ${
+            className={`lg:hidden fixed bottom-0 left-0 right-0 z-[60] bg-background border-t border-border rounded-t-2xl transition-transform duration-300 ease-in-out ${
               mobileDrawerOpen ? "translate-y-0" : "translate-y-full"
             }`}
             style={{ maxHeight: "85dvh" }}
           >
             {/* Header with user info + close */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f2e]/60">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border/60">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="relative flex items-center justify-center rounded-full w-[36px] h-[36px] bg-primary/10 flex-shrink-0">
                   <User className="text-primary w-4 h-4" />
                   <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-[#0f0f1a] rounded-full" />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-sm font-bold text-gray-100 capitalize truncate">
+                  <span className="text-sm font-bold text-foreground capitalize truncate">
                     {userName || t("userLabel")}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {dashboardScope === "global" && isSuperAdmin
                       ? t("globalWorkspace")
                       : selectedTenant?.name || t("defaultWorkspace")}
@@ -632,12 +632,12 @@ export function Sidebar({
                 onPress={closeMobileDrawer}
                 aria-label={t("closeMenu")}
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-muted-foreground" />
               </Button>
             </div>
 
             {/* Tenant selector */}
-            <div className="px-4 py-3 border-b border-[#1f1f2e]/60">
+            <div className="px-4 py-3 border-b border-border/60">
               <TenantSelector />
             </div>
 

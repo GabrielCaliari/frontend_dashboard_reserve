@@ -140,11 +140,11 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
           >
             {!file && !success && (
               <>
-                <FileText className="h-10 w-10 mx-auto text-gray-400" />
+                <FileText className="h-10 w-10 mx-auto text-muted-foreground" />
                 <p className="mt-2 text-sm font-medium text-gray-600">
                   {t("clickToSelect")}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">{t("emailColumnOnly")}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t("emailColumnOnly")}</p>
               </>
             )}
 
@@ -152,7 +152,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
               <div className="text-sm">
                 <FileText className="h-8 w-8 mx-auto text-emerald-500 mb-2" />
                 <p className="font-medium text-gray-700">{file.name}</p>
-                <p className="text-gray-500 text-xs mt-1">{(file.size / 1024).toFixed(2)} KB</p>
+                <p className="text-muted-foreground text-xs mt-1">{(file.size / 1024).toFixed(2)} KB</p>
               </div>
             )}
 
@@ -181,7 +181,7 @@ export function LeadUploadDialog({ isOpen, onClose, campaignId }: LeadUploadDial
           )}
 
           {file && !error && !success && (
-            <p className="text-xs text-gray-500 mt-2">{t("clickUpload")}</p>
+            <p className="text-xs text-muted-foreground mt-2">{t("clickUpload")}</p>
           )}
         </div>
 

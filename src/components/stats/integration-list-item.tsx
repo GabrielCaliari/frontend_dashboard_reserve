@@ -24,16 +24,16 @@ export function IntegrationListItem({
   const t = useTranslations("stats.integrations");
 
   return (
-    <div className="flex items-center justify-between gap-4 rounded-lg border border-gray-800 bg-[#16162a] p-4">
+    <div className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card p-4">
       <div className="flex items-center gap-3 min-w-0">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
           <Plug className="h-5 w-5 text-primary" />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-gray-100 truncate">
+          <p className="text-sm font-medium text-foreground truncate">
             {integration.label}
           </p>
-          <p className="text-xs text-gray-400">{integration.key}</p>
+          <p className="text-xs text-muted-foreground">{integration.key}</p>
         </div>
       </div>
 
@@ -46,7 +46,7 @@ export function IntegrationListItem({
         />
         <span
           className={`text-xs font-medium ${
-            integration.active ? "text-emerald-400" : "text-gray-500"
+            integration.active ? "text-emerald-400" : "text-muted-foreground"
           }`}
         >
           {integration.active ? t("active") : t("inactive")}
@@ -61,7 +61,7 @@ export function IntegrationListItem({
               onPress={() => onEdit(integration)}
               aria-label={t("edit")}
             >
-              <Pencil className="h-4 w-4 text-gray-400" />
+              <Pencil className="h-4 w-4 text-muted-foreground" />
             </Button>
             <Button
               isIconOnly

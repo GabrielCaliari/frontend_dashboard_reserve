@@ -59,10 +59,10 @@ export function EditIntegrationModal({
   return (
     <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()} size="2xl">
       <ModalContent>
-        <ModalHeader className="text-gray-100">{t("editTitle")}</ModalHeader>
+        <ModalHeader className="text-foreground">{t("editTitle")}</ModalHeader>
         <ModalBody className="pb-2 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-200 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               {t("labelField")}
             </label>
             <Input
@@ -71,8 +71,8 @@ export function EditIntegrationModal({
               placeholder={t("labelPlaceholder")}
               variant="bordered"
               classNames={{
-                input: "text-gray-200",
-                inputWrapper: "border-gray-700 bg-[#0a0a1a]",
+                input: "text-foreground",
+                inputWrapper: "border-border bg-card",
               }}
             />
           </div>

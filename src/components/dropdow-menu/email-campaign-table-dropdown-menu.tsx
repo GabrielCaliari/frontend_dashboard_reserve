@@ -17,7 +17,7 @@ export default function EmailCampaignTableDropdownMenu({ id }: { id: string }) {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button className="p-2 rounded-full hover:bg-gray-100">
-                    <MoreHorizontalIcon className="h-5 w-5 text-gray-500" />
+                    <MoreHorizontalIcon className="h-5 w-5 text-muted-foreground" />
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white">

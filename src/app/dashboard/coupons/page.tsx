@@ -59,9 +59,9 @@ export default function CouponsListPage() {
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <Tag className="w-4 h-4 text-primary" />
             </div>
-            <h1 className="text-xl font-bold text-gray-100">{t("pageTitle")}</h1>
+            <h1 className="text-xl font-bold text-foreground">{t("pageTitle")}</h1>
           </div>
-          <p className="text-sm text-gray-400 ml-11">{t("pageSubtitle")}</p>
+          <p className="text-sm text-muted-foreground ml-11">{t("pageSubtitle")}</p>
         </div>
 
         <div className="space-y-4">

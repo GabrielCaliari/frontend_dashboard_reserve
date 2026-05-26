@@ -55,14 +55,14 @@ export default function TenantDashboardDrilldownPage() {
               href="/dashboard/global"
               variant="light"
               startContent={<ArrowLeft className="h-4 w-4" />}
-              className="mb-3 px-0 text-gray-400"
+              className="mb-3 px-0 text-muted-foreground"
             >
               {t("backToGlobal")}
             </Button>
-            <h1 className="text-2xl font-bold text-gray-100">{tenant?.name ?? tenantId}</h1>
-            <p className="mt-1 text-sm text-gray-400">{t("tenantDrilldownDescription")}</p>
+            <h1 className="text-2xl font-bold text-foreground">{tenant?.name ?? tenantId}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{t("tenantDrilldownDescription")}</p>
             {data?.generatedAt ? (
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-muted-foreground">
                 {t("updatedAt", { date: new Date(data.generatedAt).toLocaleString() })}
               </p>
             ) : null}

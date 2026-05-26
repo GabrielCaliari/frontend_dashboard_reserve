@@ -212,9 +212,9 @@ export function AuthorDrawer({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full max-w-full border-l border-border bg-[#16162a] p-0 sm:max-w-[92vw] xl:max-w-[900px]"
+        className="w-full max-w-full border-l border-border bg-card p-0 sm:max-w-[92vw] xl:max-w-[900px]"
       >
-        <SheetHeader className="shrink-0 border-b border-border bg-[#16162a] pr-14 px-6 py-4">
+        <SheetHeader className="shrink-0 border-b border-border bg-card pr-14 px-6 py-4">
           <SheetTitle>
             {isEditMode
               ? `Edit Author${displayName ? ` — ${displayName}` : ""}`
@@ -522,7 +522,7 @@ export function AuthorDrawer({
           </div>
 
           {/* Footer */}
-          <div className="shrink-0 border-t border-border bg-[#16162a] px-4 py-4 sm:px-6">
+          <div className="shrink-0 border-t border-border bg-card px-4 py-4 sm:px-6">
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
               <Button
                 type="button"

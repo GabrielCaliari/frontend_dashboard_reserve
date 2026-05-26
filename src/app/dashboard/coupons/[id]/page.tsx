@@ -74,7 +74,7 @@ export default function CouponDetailPage() {
           <Button
             variant="light"
             startContent={<ArrowLeft className="w-4 h-4" />}
-            className="text-gray-400 -ml-2"
+            className="text-muted-foreground -ml-2"
             onPress={() => router.push("/dashboard/coupons")}
           >
             {t("back")}
@@ -109,13 +109,13 @@ export default function CouponDetailPage() {
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
             <Tag className="w-4 h-4 text-primary" />
           </div>
-          <h1 className="text-xl font-bold text-gray-100">{t("detailTitle")}</h1>
+          <h1 className="text-xl font-bold text-foreground">{t("detailTitle")}</h1>
         </div>
 
         <CouponSummaryCard coupon={coupon} />
 
-        <div className="bg-[#111125] border border-gray-800 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">
+        <div className="bg-card border border-border rounded-xl p-6">
+          <h2 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
             {t("editSectionTitle")}
           </h2>
           <CouponForm

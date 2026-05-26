@@ -94,8 +94,8 @@ export default function IntegrationsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-100">{t("title")}</h1>
-            <p className="text-sm text-gray-400 mt-1">{t("subtitle")}</p>
+            <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+            <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
           </div>
           {canManage && (
             <Button
@@ -119,7 +119,7 @@ export default function IntegrationsPage() {
         {!isLoading && (!integrations || integrations.length === 0) && (
           <div className="flex flex-col items-center justify-center py-16">
             <Plug className="h-12 w-12 text-gray-600 mb-3" />
-            <p className="text-gray-400 mb-4">{t("emptyState")}</p>
+            <p className="text-muted-foreground mb-4">{t("emptyState")}</p>
             {canManage && (
               <Button
                 color="primary"

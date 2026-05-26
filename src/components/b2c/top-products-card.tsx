@@ -17,7 +17,7 @@ export function TopProductsCard() {
         </div>
         <div className="flex flex-col">
           <p className="text-lg font-semibold">{t('topProductsTitle')}</p>
-          <p className="text-sm text-gray-500">{t('topProductsSubtitle')}</p>
+          <p className="text-sm text-muted-foreground">{t('topProductsSubtitle')}</p>
         </div>
       </CardHeader>
       <Divider />
@@ -45,7 +45,7 @@ export function TopProductsCard() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Package className="w-4 h-4 text-gray-500" />
+                    <Package className="w-4 h-4 text-muted-foreground" />
                     <span className="font-medium">{product.productName}</span>
                   </div>
                 </div>
@@ -53,13 +53,13 @@ export function TopProductsCard() {
                   <span className="text-2xl font-bold text-primary">
                     {product.count}
                   </span>
-                  <span className="text-sm text-gray-500">{t('subscriptionsCount')}</span>
+                  <span className="text-sm text-muted-foreground">{t('subscriptionsCount')}</span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-muted-foreground">
             {t('noTopProducts')}
           </div>
         )}

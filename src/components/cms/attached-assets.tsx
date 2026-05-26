@@ -107,14 +107,14 @@ function SortableAssetItem({ relation, readonly, onRemove }: SortableAssetItemPr
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-3 p-3 bg-[#12121f] border border-gray-700 rounded-lg hover:border-gray-600 transition-colors"
+      className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:border-gray-600 transition-colors"
     >
       {/* Drag Handle */}
       {!readonly && (
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-300"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
           aria-label={t("dragHandle")}
         >
           <GripVertical size={20} />
@@ -122,7 +122,7 @@ function SortableAssetItem({ relation, readonly, onRemove }: SortableAssetItemPr
       )}
 
       {/* Thumbnail */}
-      <div className="flex-shrink-0 w-16 h-16 bg-[#1a1a2e] rounded-md overflow-hidden flex items-center justify-center border border-gray-700">
+      <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-md overflow-hidden flex items-center justify-center border border-border">
         {isImage ? (
           <img
             src={asset.url}
@@ -130,17 +130,17 @@ function SortableAssetItem({ relation, readonly, onRemove }: SortableAssetItemPr
             className="w-full h-full object-cover"
           />
         ) : (
-          <ImageIcon size={24} className="text-gray-500" />
+          <ImageIcon size={24} className="text-muted-foreground" />
         )}
       </div>
 
       {/* Asset Info */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-200 truncate">
+        <p className="text-sm font-medium text-foreground truncate">
           {asset.filename}
         </p>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-muted-foreground">
             {formatFileSize(asset.file_size)}
           </span>
           <Chip size="sm" variant="flat" className="text-xs">
@@ -298,7 +298,7 @@ export function AttachedAssets({
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Paperclip size={20} className="text-gray-400" />
+              <Paperclip size={20} className="text-muted-foreground" />
               <h3 className="text-lg font-semibold text-foreground">
                 {t("title")}
               </h3>

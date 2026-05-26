@@ -66,12 +66,12 @@ function CopyButton({ value, label }: { value: string; label: string }) {
 
   return (
     <div className="flex items-center gap-1.5 group">
-      <code className="text-xs font-mono text-gray-300 truncate max-w-[160px]">{value}</code>
+      <code className="text-xs font-mono text-foreground truncate max-w-[160px]">{value}</code>
       <button type="button" onClick={handleCopy} aria-label={label} className="flex-shrink-0">
         {copied ? (
           <Check className="w-3 h-3 text-green-400" />
         ) : (
-          <Copy className="w-3 h-3 text-gray-500 hover:text-gray-200 transition-colors" />
+          <Copy className="w-3 h-3 text-muted-foreground hover:text-foreground transition-colors" />
         )}
       </button>
     </div>
@@ -165,7 +165,7 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
 
   if (!products || products.length === 0) {
     return (
-      <div className="py-16 flex flex-col items-center gap-3 text-gray-500">
+      <div className="py-16 flex flex-col items-center gap-3 text-muted-foreground">
         <FileX className="w-10 h-10 opacity-40" />
         <p className="text-sm font-medium">{t('noB2CProducts')}</p>
         <p className="text-xs text-gray-600">{t('noB2CProductsDesc')}</p>
@@ -194,7 +194,7 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
             onChange={(e) => setCategoryFilter(e.target.value)}
             aria-label={t('filterByCategory')}
             className="w-48"
-            classNames={{ trigger: 'border-gray-700 bg-gray-900/50 h-8 min-h-8' }}
+            classNames={{ trigger: 'border-border bg-muted/50 h-8 min-h-8' }}
           >
             <SelectItem key="all">{t('filterAllCategories')}</SelectItem>
             <SelectItem key="none">{t('filterNoCategory')}</SelectItem>
@@ -208,9 +208,9 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
       <Table
         aria-label={t('tabRecurring')}
         classNames={{
-          wrapper: 'rounded-xl border border-[#1f1f2e]',
-          th: 'bg-[#1a1a2e] text-xs font-semibold uppercase tracking-wider text-gray-400',
-          tr: 'hover:bg-[#1a1a2e]/50 transition-colors',
+          wrapper: 'rounded-xl border border-border',
+          th: 'bg-muted text-xs font-semibold uppercase tracking-wider text-muted-foreground',
+          tr: 'hover:bg-muted/50 transition-colors',
         }}
       >
         <TableHeader>
@@ -238,10 +238,10 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
                 {/* Nome */}
                 <TableCell>
                   <div>
-                    <p className="font-semibold text-gray-100">{product.name}</p>
+                    <p className="font-semibold text-foreground">{product.name}</p>
                     <code className="text-xs text-gray-600 font-mono">{product.slug}</code>
                     {product.description && (
-                      <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                      <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
                         {product.description}
                       </p>
                     )}
@@ -275,15 +275,15 @@ export function B2CProductsTab({ refreshKey: _refreshKey }: B2CProductsTabProps)
                 <TableCell>
                   <div className="flex flex-col gap-1">
                     {product.prices.length === 0 && (
-                      <span className="text-xs text-gray-500">{t('noPrices')}</span>
+                      <span className="text-xs text-muted-foreground">{t('noPrices')}</span>
                     )}
                     {product.prices.map((price) => (
                       <div key={price.id} className="flex items-center gap-1.5 text-sm">
-                        <DollarSign className="w-3 h-3 text-gray-400" />
-                        <span className="font-medium text-gray-100">
+                        <DollarSign className="w-3 h-3 text-muted-foreground" />
+                        <span className="font-medium text-foreground">
                           {formatPrice(price.unitAmount, price.currency)}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           / {formatInterval(price.interval, price.intervalCount)}
                         </span>
                         {!price.active && (

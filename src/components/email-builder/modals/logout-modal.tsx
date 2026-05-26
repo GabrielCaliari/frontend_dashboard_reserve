@@ -42,10 +42,10 @@ export function LogoutModal({
             <>
               <ModalBody>
                 <div className="p-3 py-6">
-                  <h1 className="text-2xl font-bold mb-1 text-gray-100">
+                  <h1 className="text-2xl font-bold mb-1 text-foreground">
                     {t("title")}
                   </h1>
-                  <span className="text-base text-gray-400 mt-12">
+                  <span className="text-base text-muted-foreground mt-12">
                     {t("confirm")}
                   </span>
                 </div>

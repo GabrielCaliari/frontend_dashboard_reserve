@@ -189,7 +189,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
           placeholder={t("planNamePlaceholder")}
           isInvalid={!!errors.plan_name}
           errorMessage={errors.plan_name?.message}
-          classNames={{ inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+          classNames={{ inputWrapper: "bg-muted border-[#2a2a3e]" }}
           {...register("plan_name")}
         />
         <Input
@@ -199,7 +199,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
           isInvalid={!!errors.slug}
           errorMessage={errors.slug?.message}
           isDisabled={isEditing}
-          classNames={{ inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+          classNames={{ inputWrapper: "bg-muted border-[#2a2a3e]" }}
           {...register("slug")}
         />
       </div>
@@ -209,7 +209,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
         label={t("description")}
         placeholder={t("descriptionPlaceholder")}
         minRows={2}
-        classNames={{ inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+        classNames={{ inputWrapper: "bg-muted border-[#2a2a3e]" }}
         {...register("description")}
       />
 
@@ -230,7 +230,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
                 }}
                 isInvalid={!!errors.price_display}
                 errorMessage={errors.price_display?.message}
-                classNames={{ inputWrapper: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+                classNames={{ inputWrapper: "bg-muted border-[#2a2a3e]" }}
               />
             )}
           />
@@ -242,7 +242,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
                 label={t("currency")}
                 selectedKeys={[field.value]}
                 onSelectionChange={(keys) => field.onChange(Array.from(keys)[0])}
-                classNames={{ trigger: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+                classNames={{ trigger: "bg-muted border-[#2a2a3e]" }}
               >
                 {CURRENCY_OPTIONS.map((opt) => (
                   <SelectItem key={opt.value}>{opt.label}</SelectItem>
@@ -258,7 +258,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
                 label={t("billingInterval")}
                 selectedKeys={[String(field.value)]}
                 onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
-                classNames={{ trigger: "bg-[#1a1a2e] border-[#2a2a3e]" }}
+                classNames={{ trigger: "bg-muted border-[#2a2a3e]" }}
               >
                 {BILLING_INTERVAL_OPTIONS.map((opt) => (
                   <SelectItem key={opt.value}>{opt.label}</SelectItem>
@@ -270,11 +270,11 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
       )}
 
       {/* Trial toggle */}
-      <div className="p-4 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-4">
+      <div className="p-4 rounded-xl bg-muted border border-[#2a2a3e] space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-200">{t("trialTitle")}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{t("trialDesc")}</p>
+            <p className="text-sm font-medium text-foreground">{t("trialTitle")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("trialDesc")}</p>
           </div>
           <Controller
             name="has_trial"
@@ -297,7 +297,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
               label={t("trialDays")}
               placeholder="7"
               min={1}
-              classNames={{ inputWrapper: "bg-[#0f0f1a] border-[#2a2a3e]" }}
+              classNames={{ inputWrapper: "bg-background border-[#2a2a3e]" }}
               {...register("trial_days")}
             />
             <Input
@@ -305,7 +305,7 @@ export function PlanForm({ existing, onSuccess, onCancel }: PlanFormProps) {
               label={t("trialCredits")}
               placeholder="20"
               min={0}
-              classNames={{ inputWrapper: "bg-[#0f0f1a] border-[#2a2a3e]" }}
+              classNames={{ inputWrapper: "bg-background border-[#2a2a3e]" }}
               {...register("credits_released_trial_period")}
             />
           </div>

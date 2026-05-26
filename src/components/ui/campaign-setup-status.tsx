@@ -160,15 +160,15 @@ export function CampaignSetupStatus({
                   {step.completed ? (
                     <CheckCircle className="h-5 w-5 text-emerald-500" />
                   ) : (
-                    <Circle className="h-5 w-5 text-gray-300" />
+                    <Circle className="h-5 w-5 text-foreground" />
                   )}
                 </div>
                 <div>
                   <h3 className="text-sm font-medium flex items-center">
                     {step.label}
-                    <step.icon className="h-4 w-4 ml-1.5 text-gray-500" />
+                    <step.icon className="h-4 w-4 ml-1.5 text-muted-foreground" />
                   </h3>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {step.description}
                   </p>
                   {!step.completed && (

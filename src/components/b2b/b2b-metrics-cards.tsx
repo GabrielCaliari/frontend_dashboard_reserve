@@ -81,10 +81,10 @@ export function B2BMetricsCards() {
             <CardBody className="p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500 mb-1">{card.title}</p>
+                  <p className="text-sm text-muted-foreground mb-1">{card.title}</p>
                   <p className="text-2xl font-bold mb-1">{card.value}</p>
                   {card.subtitle && (
-                    <p className="text-xs text-gray-400">{card.subtitle}</p>
+                    <p className="text-xs text-muted-foreground">{card.subtitle}</p>
                   )}
                 </div>
                 <div className={`${card.bgColor} ${card.color} p-2 rounded-lg`}>

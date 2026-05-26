@@ -99,7 +99,7 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
                         <Cpu className="h-4 w-4 mr-2 text-emerald-600" />
                         {t("variation.aiVariation")}
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {t("variation.aiVariationDesc")}
                       </p>
                     </Label>
@@ -114,7 +114,7 @@ export function VariationConfigDialog({ isOpen, onClose, campaignId, copyVariati
                         <Edit className="h-4 w-4 mr-2 text-blue-600" />
                         {t("variation.manualVariation")}
                       </span>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {t("variation.manualVariationDesc")}
                       </p>
                     </Label>

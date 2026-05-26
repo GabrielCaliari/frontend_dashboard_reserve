@@ -150,29 +150,29 @@ export function EmailTemplateModal({
   ];
 
   const inputClasses =
-    "w-full px-3 py-2 bg-[#12121f] border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-200 placeholder-gray-500";
+    "w-full px-3 py-2 bg-card border border-border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-foreground placeholder-gray-500";
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#16162a] rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-auto border border-gray-800">
+      <div className="bg-card rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-auto border border-border">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
-            <h3 className="text-lg font-semibold text-gray-100">
+            <h3 className="text-lg font-semibold text-foreground">
               {emailStatus === "sent"
                 ? t("emailTemplate.viewEmail")
                 : t("emailTemplate.configureEmail")}
               : {templateName}
             </h3>
             {emailStatus !== "sent" && (
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {t("emailTemplate.configureContent")}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-200 transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
@@ -183,7 +183,7 @@ export function EmailTemplateModal({
           {emailStatus !== "sent" && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {t("emailTemplate.subject")}
                 </label>
                 <input
@@ -199,7 +199,7 @@ export function EmailTemplateModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {t("emailTemplate.preHeader")}
                 </label>
                 <input
@@ -217,7 +217,7 @@ export function EmailTemplateModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {t("emailTemplate.sender")}
                 </label>
                 <input
@@ -233,7 +233,7 @@ export function EmailTemplateModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {t("emailTemplate.emailProvider")}
                 </label>
                 <select
@@ -253,7 +253,7 @@ export function EmailTemplateModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {t("emailTemplate.sendAfter")}
                 </label>
                 <select
@@ -275,7 +275,7 @@ export function EmailTemplateModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {t("emailTemplate.timezone")}
                 </label>
                 <select
@@ -295,7 +295,7 @@ export function EmailTemplateModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   {t("emailTemplate.time")}
                 </label>
                 <input
@@ -312,30 +312,30 @@ export function EmailTemplateModal({
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               {t("emailTemplate.emailContent")}
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={t("emailTemplate.htmlPlaceholder")}
-              className="w-full h-64 px-3 py-2 bg-[#12121f] border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-200 placeholder-gray-500"
+              className="w-full h-64 px-3 py-2 bg-card border border-border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-foreground placeholder-gray-500"
             />
             {errors.content && (
               <p className="mt-1 text-sm text-red-400">{errors.content}</p>
             )}
           </div>
 
-          <div className="mt-4 p-4 border border-gray-700 rounded-md bg-white">
+          <div className="mt-4 p-4 border border-border rounded-md bg-white">
             <div dangerouslySetInnerHTML={{ __html: content }} />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-3 p-6 border-t border-gray-700 bg-[#12121f]">
+        <div className="flex justify-end gap-3 p-6 border-t border-border bg-card">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-400 hover:text-gray-200 transition-colors"
+            className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             {emailStatus === "sent" ? t("common.close") : t("common.cancel")}
           </button>

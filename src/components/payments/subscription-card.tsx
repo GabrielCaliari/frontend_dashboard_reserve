@@ -75,7 +75,7 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
   };
 
   return (
-    <div className="p-5 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e] space-y-4">
+    <div className="p-5 rounded-xl bg-muted border border-[#2a2a3e] space-y-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -83,8 +83,8 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
             <CreditCard className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-100">Stripe Subscription</p>
-            <p className="text-xs text-gray-500 font-mono">{subscription.stripeSubscriptionId}</p>
+            <p className="text-sm font-semibold text-foreground">Stripe Subscription</p>
+            <p className="text-xs text-muted-foreground font-mono">{subscription.stripeSubscriptionId}</p>
           </div>
         </div>
         <Chip
@@ -99,10 +99,10 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
 
       {/* Amount */}
       <div className="flex items-baseline gap-1.5">
-        <span className="text-2xl font-bold text-gray-100">
+        <span className="text-2xl font-bold text-foreground">
           {formatCurrency(subscription.formattedAmount, subscription.currency)}
         </span>
-        <span className="text-sm text-gray-400">
+        <span className="text-sm text-muted-foreground">
           / {subscription.intervalCount > 1 ? `${subscription.intervalCount} ` : ""}
           {INTERVAL_LABELS[subscription.interval] || subscription.interval}
         </span>
@@ -111,20 +111,20 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
       {/* Period */}
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-0.5">
-          <span className="text-xs text-gray-500">{t("periodStart")}</span>
-          <span className="text-sm text-gray-300">{formatDate(subscription.currentPeriodStart)}</span>
+          <span className="text-xs text-muted-foreground">{t("periodStart")}</span>
+          <span className="text-sm text-foreground">{formatDate(subscription.currentPeriodStart)}</span>
         </div>
         <div className="flex flex-col gap-0.5">
-          <span className="text-xs text-gray-500">{t("periodEnd")}</span>
-          <span className="text-sm text-gray-300">{formatDate(subscription.currentPeriodEnd)}</span>
+          <span className="text-xs text-muted-foreground">{t("periodEnd")}</span>
+          <span className="text-sm text-foreground">{formatDate(subscription.currentPeriodEnd)}</span>
         </div>
       </div>
 
       {/* Days remaining */}
       {subscription.isActive && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f1a] border border-[#2a2a3e]">
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-background border border-[#2a2a3e]">
           <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
-          <span className="text-sm text-gray-300">
+          <span className="text-sm text-foreground">
             {t("daysRemaining", { days: subscription.daysRemaining })}
           </span>
         </div>
@@ -134,7 +134,7 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
       {subscription.isInTrial && subscription.trialEnd && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 border border-primary/20">
           <Clock className="w-4 h-4 text-primary flex-shrink-0" />
-          <span className="text-sm text-gray-300">
+          <span className="text-sm text-foreground">
             {t("trialUntil", { date: formatDate(subscription.trialEnd) })}
           </span>
         </div>
@@ -153,12 +153,12 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
       {/* IDs */}
       <div className="pt-1 space-y-1">
         <div className="flex justify-between items-center">
-          <span className="text-xs text-gray-500">{t("customerId")}</span>
-          <span className="text-xs text-gray-400 font-mono">{subscription.stripeCustomerId}</span>
+          <span className="text-xs text-muted-foreground">{t("customerId")}</span>
+          <span className="text-xs text-muted-foreground font-mono">{subscription.stripeCustomerId}</span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-xs text-gray-500">{t("priceId")}</span>
-          <span className="text-xs text-gray-400 font-mono truncate max-w-[200px]">
+          <span className="text-xs text-muted-foreground">{t("priceId")}</span>
+          <span className="text-xs text-muted-foreground font-mono truncate max-w-[200px]">
             {subscription.stripePriceId}
           </span>
         </div>

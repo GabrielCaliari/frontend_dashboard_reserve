@@ -29,13 +29,13 @@ export function EmailPreviewDialog({ isOpen, onClose, emailContent, batchNumber 
             <TabsTrigger value="markdown">Markdown</TabsTrigger>
           </TabsList>
           <TabsContent value="html" className="flex-1 overflow-y-auto border rounded-md p-4 mt-2">
-            <div className="text-sm mb-2 text-gray-500">
+            <div className="text-sm mb-2 text-muted-foreground">
               <strong>{t("subject")}</strong> {emailContent.subject}
             </div>
             <div className="email-preview" dangerouslySetInnerHTML={{ __html: emailContent.htmlContent }} />
           </TabsContent>
           <TabsContent value="markdown" className="flex-1 overflow-y-auto border rounded-md p-4 mt-2">
-            <div className="text-sm mb-2 text-gray-500">
+            <div className="text-sm mb-2 text-muted-foreground">
               <strong>{t("subject")}</strong> {emailContent.subject}
             </div>
             <pre className="whitespace-pre-wrap font-mono text-sm">{emailContent.mdContent}</pre>

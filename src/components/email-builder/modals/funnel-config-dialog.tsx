@@ -126,7 +126,7 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
                           <Zap className="h-4 w-4 mr-2 text-amber-500" />
                           {t("funnelConfig.singleBatch")}
                         </Label>
-                        <p className="text-xs text-gray-500">{t("funnelConfig.singleBatchDesc")}</p>
+                        <p className="text-xs text-muted-foreground">{t("funnelConfig.singleBatchDesc")}</p>
                       </div>
                     </div>
 
@@ -137,7 +137,7 @@ export function FunnelConfigDialog({ isOpen, onClose, campaignId }: FunnelConfig
                           <Filter className="h-4 w-4 mr-2 text-purple-600" />
                           {t("funnelConfig.createFunnel")}
                         </Label>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           {t("funnelConfig.createFunnelDesc")}
                         </p>
                       </div>

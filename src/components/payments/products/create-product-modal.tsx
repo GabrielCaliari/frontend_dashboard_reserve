@@ -245,15 +245,15 @@ export function CreateProductModal({
       size="2xl"
       scrollBehavior="inside"
       classNames={{
-        base: 'bg-[#0f0f1a] border border-[#1f1f2e]',
-        header: 'border-b border-[#1f1f2e]',
+        base: 'bg-background border border-border',
+        header: 'border-b border-border',
         body: 'py-4',
-        footer: 'border-t border-[#1f1f2e]',
+        footer: 'border-t border-border',
       }}
     >
       <ModalContent>
         <ModalHeader>
-          <h3 className="text-base font-semibold text-gray-100">{modalTitle}</h3>
+          <h3 className="text-base font-semibold text-foreground">{modalTitle}</h3>
         </ModalHeader>
 
         <ModalBody className="gap-4">
@@ -272,7 +272,7 @@ export function CreateProductModal({
               onValueChange={handleNameChange}
               isRequired
               isDisabled={isLoading}
-              classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+              classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
             />
 
             <Input
@@ -285,7 +285,7 @@ export function CreateProductModal({
               description={t('slugDesc')}
               isRequired
               isDisabled={isLoading}
-              classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+              classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
             />
 
             <Textarea
@@ -295,7 +295,7 @@ export function CreateProductModal({
               onValueChange={(v) => set('description', v)}
               minRows={2}
               isDisabled={isLoading}
-              classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+              classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
             />
 
             {/* Categorias - para B2B e B2C */}
@@ -310,7 +310,7 @@ export function CreateProductModal({
                     onKeyDown={handleCategoryKeyDown}
                     description={t('categoriesDesc')}
                     isDisabled={isLoading}
-                    classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                    classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                   />
                 </div>
                 <Button
@@ -325,7 +325,7 @@ export function CreateProductModal({
               </div>
               
               {form.categories.length > 0 && (
-                <div className="flex flex-wrap gap-2 p-3 bg-[#1a1a2e] rounded-lg border border-[#2a2a3e]">
+                <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-lg border border-[#2a2a3e]">
                   {form.categories.map((category) => (
                     <div
                       key={category}
@@ -347,11 +347,11 @@ export function CreateProductModal({
             </div>
 
             {/* Toggle produto físico */}
-            <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#1a1a2e] border border-[#2a2a3e]">
+            <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-muted border border-[#2a2a3e]">
               <div className="flex items-center gap-2">
-                <Package className="w-4 h-4 text-gray-500" />
+                <Package className="w-4 h-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm text-gray-200">{t('physicalProductLabel')}</p>
+                  <p className="text-sm text-foreground">{t('physicalProductLabel')}</p>
                   <p className="text-xs text-gray-600">{t('physicalProductDesc')}</p>
                 </div>
               </div>
@@ -374,14 +374,14 @@ export function CreateProductModal({
                   currency={form.currency as 'brl' | 'usd'}
                   isRequired
                   isDisabled={isLoading}
-                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                 />
                 <Select
                   label={t('currencyLabel')}
                   selectedKeys={[form.currency]}
                   onChange={(e) => set('currency', e.target.value)}
                   isDisabled={isLoading}
-                  classNames={{ trigger: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ trigger: 'bg-muted border-[#2a2a3e]' }}
                 >
                   <SelectItem key="brl">{t('currencyBrl')}</SelectItem>
                   <SelectItem key="usd">{t('currencyUsd')}</SelectItem>
@@ -400,7 +400,7 @@ export function CreateProductModal({
                   onValueChange={(v) => set('priceName', v)}
                   description={t('priceNameDesc')}
                   isDisabled={isLoading}
-                  classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                  classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                 />
 
                 {/* Configuração de Billing */}
@@ -420,14 +420,14 @@ export function CreateProductModal({
                     currency={form.b2cCurrency as 'brl' | 'usd'}
                     isRequired
                     isDisabled={isLoading}
-                    classNames={{ inputWrapper: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                    classNames={{ inputWrapper: 'bg-muted border-[#2a2a3e]' }}
                   />
                   <Select
                     label={t('currencyLabel')}
                     selectedKeys={[form.b2cCurrency]}
                     onChange={(e) => set('b2cCurrency', e.target.value)}
                     isDisabled={isLoading}
-                    classNames={{ trigger: 'bg-[#1a1a2e] border-[#2a2a3e]' }}
+                    classNames={{ trigger: 'bg-muted border-[#2a2a3e]' }}
                   >
                     <SelectItem key="brl">{t('currencyBrl')}</SelectItem>
                     <SelectItem key="usd">{t('currencyUsd')}</SelectItem>

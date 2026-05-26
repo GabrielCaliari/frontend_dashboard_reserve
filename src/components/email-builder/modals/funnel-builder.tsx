@@ -167,7 +167,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
             <div className="flex items-center justify-between mb-1">
               <h3 className="text-sm font-medium">{step.name}</h3>
               {step.id !== "initial-email" && (
-                <button type="button" className="text-gray-400 hover:text-red-500" onClick={() => removeStep(step.id)}>
+                <button type="button" className="text-muted-foreground hover:text-red-500" onClick={() => removeStep(step.id)}>
                   <X className="h-4 w-4" />
                 </button>
               )}
@@ -396,7 +396,7 @@ export function FunnelBuilder({ onComplete, onCancel, isSubmitting }: FunnelBuil
           <Filter className="h-5 w-5" />
           {t("funnel.title")}
         </DialogTitle>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           {t("funnel.description")}
         </p>
       </DialogHeader>

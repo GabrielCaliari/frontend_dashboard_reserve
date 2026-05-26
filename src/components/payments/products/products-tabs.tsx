@@ -27,7 +27,7 @@ export function ProductsTabs() {
           onSelectionChange={(key) => setActiveTab(key as ProductType)}
           variant="underlined"
           classNames={{
-            tabList: 'gap-6 border-b border-[#1f1f2e] pb-0',
+            tabList: 'gap-6 border-b border-border pb-0',
             cursor: 'bg-primary',
             tab: 'px-0 h-10',
             tabContent: 'text-sm font-medium',

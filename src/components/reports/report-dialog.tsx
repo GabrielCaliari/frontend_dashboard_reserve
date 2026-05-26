@@ -77,7 +77,7 @@ export function ReportDialog({
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="flex flex-col w-full sm:max-w-md p-0">
-        <SheetHeader className="px-6 py-4 border-b border-gray-800">
+        <SheetHeader className="px-6 py-4 border-b border-border">
           <SheetTitle>{isEditing ? t("editReport") : t("newReport")}</SheetTitle>
         </SheetHeader>
         
@@ -135,7 +135,7 @@ export function ReportDialog({
             />
           </div>
           
-          <div className="px-6 py-4 border-t border-gray-800 flex justify-end gap-2 bg-[#16162a] mt-auto">
+          <div className="px-6 py-4 border-t border-border flex justify-end gap-2 bg-card mt-auto">
             <Button variant="light" onPress={onClose}>
               {t("cancel")}
             </Button>

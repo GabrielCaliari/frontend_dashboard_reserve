@@ -66,7 +66,7 @@ export function LeadEditForm({ lead, onSuccess, onCancel }: LeadEditFormProps) {
         size="sm"
         variant="bordered"
         {...register("name")}
-        classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+        classNames={{ inputWrapper: "border-border bg-muted" }}
       />
       <Input
         label="Email"
@@ -74,21 +74,21 @@ export function LeadEditForm({ lead, onSuccess, onCancel }: LeadEditFormProps) {
         variant="bordered"
         type="email"
         {...register("email")}
-        classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+        classNames={{ inputWrapper: "border-border bg-muted" }}
       />
       <Input
         label="Phone"
         size="sm"
         variant="bordered"
         {...register("phone_number")}
-        classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+        classNames={{ inputWrapper: "border-border bg-muted" }}
       />
       <Input
         label="Source (origin_font)"
         size="sm"
         variant="bordered"
         {...register("origin_font")}
-        classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+        classNames={{ inputWrapper: "border-border bg-muted" }}
       />
       <Textarea
         label="Description"
@@ -96,7 +96,7 @@ export function LeadEditForm({ lead, onSuccess, onCancel }: LeadEditFormProps) {
         variant="bordered"
         rows={3}
         {...register("description")}
-        classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+        classNames={{ inputWrapper: "border-border bg-muted" }}
       />
 
       <div className="flex gap-2 justify-end pt-2">

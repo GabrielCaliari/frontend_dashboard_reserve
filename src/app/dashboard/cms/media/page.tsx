@@ -131,8 +131,8 @@ export default function MediaLibraryPage() {
         {/* Page header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-100">{t("libraryTitle")}</h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <h1 className="text-2xl font-bold text-foreground">{t("libraryTitle")}</h1>
+            <p className="text-sm text-muted-foreground mt-1">
               {t("librarySubtitle")}
             </p>
           </div>
@@ -154,7 +154,7 @@ export default function MediaLibraryPage() {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 typeFilter === f.value
                   ? "bg-blue-600 text-white"
-                  : "bg-[#1a1a2e] text-gray-400 hover:text-gray-200 border border-gray-700 hover:border-gray-600"
+                  : "bg-muted text-muted-foreground hover:text-foreground border border-border hover:border-gray-600"
               }`}
             >
               {f.label}
@@ -163,7 +163,7 @@ export default function MediaLibraryPage() {
         </div>
 
         {/* Content area */}
-        <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
+        <div className="bg-card rounded-lg shadow-lg border border-border p-6">
           {isLoading ? (
             <div className="flex justify-center items-center py-24">
               <Spinner size="lg" label={t("loadingCollections")} />
@@ -174,13 +174,13 @@ export default function MediaLibraryPage() {
             </div>
           ) : collections.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-16 h-16 bg-[#1a1a2e] rounded-2xl flex items-center justify-center mb-4">
-                <FolderOpen className="w-8 h-8 text-gray-500" />
+              <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
+                <FolderOpen className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 {t("noCollectionsYet")}
               </h3>
-              <p className="text-gray-500 text-sm mb-6 text-center max-w-xs">
+              <p className="text-muted-foreground text-sm mb-6 text-center max-w-xs">
                 {t("noCollectionsDescription")}
               </p>
               <Button
@@ -215,7 +215,7 @@ export default function MediaLibraryPage() {
                 showControls
                 classNames={{
                   wrapper: "gap-2",
-                  item: "bg-[#1a1a2e] text-gray-300 border border-gray-700",
+                  item: "bg-muted text-foreground border border-border",
                   cursor: "bg-blue-600 text-white",
                 }}
               />
@@ -243,10 +243,10 @@ export default function MediaLibraryPage() {
         <ModalContent>
           <ModalHeader>{t("deleteCollectionTitle")}</ModalHeader>
           <ModalBody>
-            <p className="text-gray-300">
+            <p className="text-foreground">
               {t("deleteCollectionConfirm", { name: deleteTarget?.name || "" })}
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               {t("collectionMustBeEmpty")}
             </p>
           </ModalBody>

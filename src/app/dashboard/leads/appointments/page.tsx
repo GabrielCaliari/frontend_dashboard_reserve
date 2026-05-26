@@ -122,7 +122,7 @@ export default function AppointmentsPage() {
                   }}
                   aria-label={t("allStatuses")}
                   className="w-44"
-                  classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+                  classNames={{ trigger: "border-border bg-muted/50" }}
                 >
                   {STATUS_OPTIONS.map((opt) => (
                     <SelectItem key={opt.value}>

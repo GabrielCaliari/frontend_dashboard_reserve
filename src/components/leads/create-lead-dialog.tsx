@@ -83,7 +83,7 @@ export function CreateLeadDialog({ open, onClose, collectionId }: CreateLeadDial
               label="Name"
               size="sm"
               variant="bordered"
-              classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+              classNames={{ inputWrapper: "border-border bg-muted" }}
               {...register("name")}
             />
             <Input
@@ -91,7 +91,7 @@ export function CreateLeadDialog({ open, onClose, collectionId }: CreateLeadDial
               size="sm"
               variant="bordered"
               type="email"
-              classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+              classNames={{ inputWrapper: "border-border bg-muted" }}
               {...register("email")}
             />
           </div>
@@ -101,14 +101,14 @@ export function CreateLeadDialog({ open, onClose, collectionId }: CreateLeadDial
               label="Phone"
               size="sm"
               variant="bordered"
-              classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+              classNames={{ inputWrapper: "border-border bg-muted" }}
               {...register("phone_number")}
             />
             <Input
               label="Source (origin_font)"
               size="sm"
               variant="bordered"
-              classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+              classNames={{ inputWrapper: "border-border bg-muted" }}
               {...register("origin_font")}
             />
           </div>
@@ -123,7 +123,7 @@ export function CreateLeadDialog({ open, onClose, collectionId }: CreateLeadDial
                 variant="bordered"
                 selectedKeys={field.value ? [field.value] : []}
                 onChange={(e) => field.onChange(e.target.value)}
-                classNames={{ trigger: "border-gray-700 bg-gray-900" }}
+                classNames={{ trigger: "border-border bg-muted" }}
                 aria-label="Lead origin"
               >
                 {ORIGIN_OPTIONS.map((opt) => (
@@ -140,7 +140,7 @@ export function CreateLeadDialog({ open, onClose, collectionId }: CreateLeadDial
             size="sm"
             variant="bordered"
             rows={3}
-            classNames={{ inputWrapper: "border-gray-700 bg-gray-900" }}
+            classNames={{ inputWrapper: "border-border bg-muted" }}
             {...register("description")}
           />
 

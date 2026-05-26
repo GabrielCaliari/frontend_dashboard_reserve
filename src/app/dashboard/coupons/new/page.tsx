@@ -33,7 +33,7 @@ export default function CouponsNewPage() {
         <Button
           variant="light"
           startContent={<ArrowLeft className="w-4 h-4" />}
-          className="text-gray-400 mb-4 -ml-2"
+          className="text-muted-foreground mb-4 -ml-2"
           onPress={() => router.push("/dashboard/coupons")}
         >
           {t("back")}
@@ -44,12 +44,12 @@ export default function CouponsNewPage() {
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <Tag className="w-4 h-4 text-primary" />
             </div>
-            <h1 className="text-xl font-bold text-gray-100">{t("newCouponTitle")}</h1>
+            <h1 className="text-xl font-bold text-foreground">{t("newCouponTitle")}</h1>
           </div>
-          <p className="text-sm text-gray-400 ml-11">{t("newCouponSubtitle")}</p>
+          <p className="text-sm text-muted-foreground ml-11">{t("newCouponSubtitle")}</p>
         </div>
 
-        <div className="bg-[#111125] border border-gray-800 rounded-xl p-6">
+        <div className="bg-card border border-border rounded-xl p-6">
           <CouponForm
             isSubmitting={isPending}
             onSubmit={(payload) => handleSubmit(payload as CreateCouponPayload)}

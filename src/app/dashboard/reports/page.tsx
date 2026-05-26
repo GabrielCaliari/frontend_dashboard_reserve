@@ -136,7 +136,7 @@ export default function ReportsPage() {
               <FileBarChart2 className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-100">
+              <h1 className="text-2xl font-bold text-foreground">
                 {t("title")}
               </h1>
               <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
@@ -165,10 +165,10 @@ export default function ReportsPage() {
             </CardBody>
           </Card>
         ) : reports.length === 0 ? (
-          <Card className="border-gray-800 bg-[#111125]">
+          <Card className="border-border bg-card">
             <CardBody className="flex flex-col items-center justify-center py-16 text-center">
               <FileBarChart2 className="h-10 w-10 text-gray-600 mb-3" />
-              <p className="text-gray-400 mb-1">{t("noReportsFound")}</p>
+              <p className="text-muted-foreground mb-1">{t("noReportsFound")}</p>
               <p className="text-sm text-gray-600 mb-4">
                 {t("noReportsDescription")}
               </p>
@@ -188,9 +188,9 @@ export default function ReportsPage() {
             <Table
               aria-label={t("title")}
               classNames={{
-                wrapper: "bg-[#0f0f1a] border border-[#1f1f2e]",
-                th: "bg-[#111125] text-gray-400 text-xs uppercase",
-                td: "text-gray-300 text-sm",
+                wrapper: "bg-background border border-border",
+                th: "bg-card text-muted-foreground text-xs uppercase",
+                td: "text-foreground text-sm",
               }}
             >
               <TableHeader columns={columns}>
@@ -205,7 +205,7 @@ export default function ReportsPage() {
                   <TableRow key={report.id}>
                     <TableCell>{report.phone}</TableCell>
                     <TableCell>
-                      <span className="text-gray-400">
+                      <span className="text-muted-foreground">
                         {report.label || "—"}
                       </span>
                     </TableCell>
@@ -236,7 +236,7 @@ export default function ReportsPage() {
                             variant="light"
                             onPress={() => handleEdit(report)}
                           >
-                            <Pencil className="h-4 w-4 text-gray-400" />
+                            <Pencil className="h-4 w-4 text-muted-foreground" />
                           </Button>
                         </Tooltip>
                         <Tooltip content={t("delete")} color="danger">
@@ -258,7 +258,7 @@ export default function ReportsPage() {
 
             {/* Pagination */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {t("showingResults", {
                   start: String(start),
                   end: String(end),
@@ -276,7 +276,7 @@ export default function ReportsPage() {
                     setPage(1);
                   }}
                   className="w-24"
-                  classNames={{ trigger: "bg-[#111125] border-[#1f1f2e]" }}
+                  classNames={{ trigger: "bg-card border-border" }}
                 >
                   {LIMIT_OPTIONS.map((opt) => (
                     <SelectItem key={String(opt)}>

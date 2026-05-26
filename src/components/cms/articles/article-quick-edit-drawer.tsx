@@ -155,7 +155,7 @@ export function ArticleQuickEditDrawer({
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-6">
           {/* Status Actions */}
           <section className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Status
             </h3>
             <div className="flex flex-col gap-2">
@@ -203,7 +203,7 @@ export function ArticleQuickEditDrawer({
           {/* Quick Edit Section */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Quick Edit
               </h3>
               {!isEditing && (
@@ -228,7 +228,7 @@ export function ArticleQuickEditDrawer({
                   onValueChange={(value) => setFormData({ ...formData, metaTitle: value })}
                   size="sm"
                   classNames={{
-                    label: "text-xs text-gray-400",
+                    label: "text-xs text-muted-foreground",
                     input: "text-sm",
                   }}
                 />
@@ -240,7 +240,7 @@ export function ArticleQuickEditDrawer({
                   size="sm"
                   minRows={3}
                   classNames={{
-                    label: "text-xs text-gray-400",
+                    label: "text-xs text-muted-foreground",
                     input: "text-sm",
                   }}
                 />
@@ -253,7 +253,7 @@ export function ArticleQuickEditDrawer({
                   }}
                   size="sm"
                   classNames={{
-                    label: "text-xs text-gray-400",
+                    label: "text-xs text-muted-foreground",
                     value: "text-sm uppercase",
                   }}
                 >
@@ -270,7 +270,7 @@ export function ArticleQuickEditDrawer({
                   }}
                   size="sm"
                   classNames={{
-                    label: "text-xs text-gray-400",
+                    label: "text-xs text-muted-foreground",
                     value: "text-sm",
                   }}
                   renderValue={(items) =>
@@ -333,15 +333,15 @@ export function ArticleQuickEditDrawer({
             ) : (
               <dl className="space-y-3">
                 <div>
-                  <dt className="text-xs text-gray-400 mb-1">Meta Title</dt>
-                  <dd className="text-sm text-gray-300">
-                    {article.metaTitle || <span className="text-gray-500 italic">Not set</span>}
+                  <dt className="text-xs text-muted-foreground mb-1">Meta Title</dt>
+                  <dd className="text-sm text-foreground">
+                    {article.metaTitle || <span className="text-muted-foreground italic">Not set</span>}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gray-400 mb-1">Meta Description</dt>
-                  <dd className="text-sm text-gray-300">
-                    {article.metaDescription || <span className="text-gray-500 italic">Not set</span>}
+                  <dt className="text-xs text-muted-foreground mb-1">Meta Description</dt>
+                  <dd className="text-sm text-foreground">
+                    {article.metaDescription || <span className="text-muted-foreground italic">Not set</span>}
                   </dd>
                 </div>
               </dl>
@@ -352,19 +352,19 @@ export function ArticleQuickEditDrawer({
 
           {/* Meta Info */}
           <section className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Details
             </h3>
             <dl className="space-y-3">
               <div className="flex items-center gap-3">
-                <Hash size={15} className="text-gray-500 shrink-0" />
-                <dt className="text-sm text-gray-400 w-24 shrink-0">Article ID</dt>
-                <dd className="text-sm text-gray-300 font-mono">{article.id}</dd>
+                <Hash size={15} className="text-muted-foreground shrink-0" />
+                <dt className="text-sm text-muted-foreground w-24 shrink-0">Article ID</dt>
+                <dd className="text-sm text-foreground font-mono">{article.id}</dd>
               </div>
 
               <div className="flex items-center gap-3">
-                <Globe size={15} className="text-gray-500 shrink-0" />
-                <dt className="text-sm text-gray-400 w-24 shrink-0">Language</dt>
+                <Globe size={15} className="text-muted-foreground shrink-0" />
+                <dt className="text-sm text-muted-foreground w-24 shrink-0">Language</dt>
                 <dd>
                   <Chip size="sm" variant="flat" color="default" className="uppercase">
                     {article.language ?? "en_us"}
@@ -373,29 +373,29 @@ export function ArticleQuickEditDrawer({
               </div>
 
               <div className="flex items-center gap-3">
-                <Hash size={15} className="text-gray-500 shrink-0" />
-                <dt className="text-sm text-gray-400 w-24 shrink-0">Author</dt>
-                <dd className="text-sm text-gray-300">{getAuthorName(article.authorId)}</dd>
+                <Hash size={15} className="text-muted-foreground shrink-0" />
+                <dt className="text-sm text-muted-foreground w-24 shrink-0">Author</dt>
+                <dd className="text-sm text-foreground">{getAuthorName(article.authorId)}</dd>
               </div>
 
               {article.published_at && (
                 <div className="flex items-center gap-3">
-                  <Calendar size={15} className="text-gray-500 shrink-0" />
-                  <dt className="text-sm text-gray-400 w-24 shrink-0">Published</dt>
-                  <dd className="text-sm text-gray-300">{formatDate(article.published_at)}</dd>
+                  <Calendar size={15} className="text-muted-foreground shrink-0" />
+                  <dt className="text-sm text-muted-foreground w-24 shrink-0">Published</dt>
+                  <dd className="text-sm text-foreground">{formatDate(article.published_at)}</dd>
                 </div>
               )}
 
               <div className="flex items-center gap-3">
-                <Clock size={15} className="text-gray-500 shrink-0" />
-                <dt className="text-sm text-gray-400 w-24 shrink-0">Updated</dt>
-                <dd className="text-sm text-gray-300">{formatDate(article.updated_at)}</dd>
+                <Clock size={15} className="text-muted-foreground shrink-0" />
+                <dt className="text-sm text-muted-foreground w-24 shrink-0">Updated</dt>
+                <dd className="text-sm text-foreground">{formatDate(article.updated_at)}</dd>
               </div>
 
               <div className="flex items-center gap-3">
-                <Calendar size={15} className="text-gray-500 shrink-0" />
-                <dt className="text-sm text-gray-400 w-24 shrink-0">Created</dt>
-                <dd className="text-sm text-gray-300">{formatDate(article.created_at)}</dd>
+                <Calendar size={15} className="text-muted-foreground shrink-0" />
+                <dt className="text-sm text-muted-foreground w-24 shrink-0">Created</dt>
+                <dd className="text-sm text-foreground">{formatDate(article.created_at)}</dd>
               </div>
             </dl>
           </section>
@@ -405,10 +405,10 @@ export function ArticleQuickEditDrawer({
             <>
               <Divider className="bg-gray-800" />
               <section className="space-y-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Cover Image
                 </h3>
-                <div className="rounded-lg overflow-hidden border border-gray-800 aspect-video bg-gray-900">
+                <div className="rounded-lg overflow-hidden border border-border aspect-video bg-muted">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={article.coverImage.url}
@@ -422,7 +422,7 @@ export function ArticleQuickEditDrawer({
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-gray-800 space-y-2">
+        <div className="px-6 py-4 border-t border-border space-y-2">
           <Button
             color="primary"
             className="w-full"

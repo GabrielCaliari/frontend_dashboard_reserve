@@ -23,7 +23,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
 
   if (!batches || batches.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-muted-foreground">
         Nenhum disparo realizado para esta campanha.
       </div>
     );
@@ -44,54 +44,54 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-700">
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <tr className="border-b border-border">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 N
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 ID
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Leads
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Sucesso
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Erro
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Abertura
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Clique
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Data de Envio
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Acoes
               </th>
             </tr>
           </thead>
-          <tbody className="bg-[#12121f] divide-y divide-gray-800">
+          <tbody className="bg-card divide-y divide-gray-800">
             {batches.map((batch) => (
               <tr
                 key={batch.id}
-                className="hover:bg-[#1e1e3a] transition-colors"
+                className="hover:bg-muted transition-colors"
               >
-                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
+                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                   {batch.batchNumber}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {batch.id}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {batch.leadsCount}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.successCount}
                     </span>
                     <span className="ml-2 text-xs text-green-400">
@@ -105,7 +105,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.errorCount}
                     </span>
                     <span className="ml-2 text-xs text-red-400">
@@ -117,7 +117,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.openCount}
                     </span>
                     <span className="ml-2 text-xs text-emerald-400">
@@ -128,7 +128,7 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-200">
+                    <span className="text-sm text-foreground">
                       {batch.clickCount}
                     </span>
                     <span className="ml-2 text-xs text-blue-400">
@@ -138,14 +138,14 @@ export function BatchTable({ batches, campaignId }: BatchTableProps) {
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(batch.sentAt).toLocaleString("pt-BR")}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="p-2 rounded-full hover:bg-[#1a1a2e] transition-colors">
-                        <MoreHorizontalIcon className="h-5 w-5 text-gray-400" />
+                      <button className="p-2 rounded-full hover:bg-muted transition-colors">
+                        <MoreHorizontalIcon className="h-5 w-5 text-muted-foreground" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

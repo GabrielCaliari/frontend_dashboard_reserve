@@ -19,7 +19,7 @@ export function TrendBadge({ trend }: TrendBadgeProps) {
         "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
         isPositive && "bg-emerald-500/10 text-emerald-400",
         isNegative && "bg-red-500/10 text-red-400",
-        !isPositive && !isNegative && "bg-gray-500/10 text-gray-400"
+        !isPositive && !isNegative && "bg-gray-500/10 text-muted-foreground"
       )}
     >
       {isPositive && <TrendingUp className="h-3 w-3" />}

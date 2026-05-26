@@ -25,12 +25,12 @@ export function CouponSummaryCard({ coupon }: CouponSummaryCardProps) {
       : null;
 
   return (
-    <Card className="bg-[#111125] border border-gray-800">
+    <Card className="bg-card border border-border">
       <CardBody className="p-6 space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <span className="font-mono text-2xl font-bold text-gray-100 tracking-wide">{coupon.code}</span>
-            <p className="text-sm text-gray-400 mt-0.5">{coupon.name}</p>
+            <span className="font-mono text-2xl font-bold text-foreground tracking-wide">{coupon.code}</span>
+            <p className="text-sm text-muted-foreground mt-0.5">{coupon.name}</p>
           </div>
           <CouponBadgeStatus
             active={coupon.active}
@@ -40,45 +40,45 @@ export function CouponSummaryCard({ coupon }: CouponSummaryCardProps) {
           />
         </div>
 
-        {coupon.description && <p className="text-sm text-gray-400">{coupon.description}</p>}
+        {coupon.description && <p className="text-sm text-muted-foreground">{coupon.description}</p>}
 
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <p className="text-gray-500 text-xs uppercase tracking-wider mb-0.5">{t("summaryDiscount")}</p>
-            <p className="text-gray-100 font-semibold">
+            <p className="text-muted-foreground text-xs uppercase tracking-wider mb-0.5">{t("summaryDiscount")}</p>
+            <p className="text-foreground font-semibold">
               <DiscountValueDisplay discountType={coupon.discountType} discountValue={coupon.discountValue} />
             </p>
           </div>
           <div>
-            <p className="text-gray-500 text-xs uppercase tracking-wider mb-0.5">{t("summaryScope")}</p>
-            <p className="text-gray-100 font-semibold">
+            <p className="text-muted-foreground text-xs uppercase tracking-wider mb-0.5">{t("summaryScope")}</p>
+            <p className="text-foreground font-semibold">
               <CouponScopeDisplay scope={coupon.scope} productIds={coupon.productIds} categoryIds={coupon.categoryIds} />
             </p>
           </div>
           <div>
-            <p className="text-gray-500 text-xs uppercase tracking-wider mb-0.5">{t("summaryAppliesTo")}</p>
+            <p className="text-muted-foreground text-xs uppercase tracking-wider mb-0.5">{t("summaryAppliesTo")}</p>
             <AppliesToBadge appliesTo={coupon.appliesTo} />
           </div>
           <div>
-            <p className="text-gray-500 text-xs uppercase tracking-wider mb-0.5">{t("summaryExpiration")}</p>
-            <p className="text-gray-100"><ExpiresAtDisplay expiresAt={coupon.expiresAt} /></p>
+            <p className="text-muted-foreground text-xs uppercase tracking-wider mb-0.5">{t("summaryExpiration")}</p>
+            <p className="text-foreground"><ExpiresAtDisplay expiresAt={coupon.expiresAt} /></p>
           </div>
           {coupon.minOrderAmount !== null && (
             <div>
-              <p className="text-gray-500 text-xs uppercase tracking-wider mb-0.5">{t("summaryMinOrder")}</p>
-              <p className="text-gray-100">
+              <p className="text-muted-foreground text-xs uppercase tracking-wider mb-0.5">{t("summaryMinOrder")}</p>
+              <p className="text-foreground">
                 {(coupon.minOrderAmount / 100).toLocaleString(locale, { style: "currency", currency: "BRL" })}
               </p>
             </div>
           )}
           <div>
-            <p className="text-gray-500 text-xs uppercase tracking-wider mb-0.5">{t("summaryCumulative")}</p>
-            <p className="text-gray-100">{coupon.cumulative ? t("summaryCumulativeYes") : t("summaryCumulativeNo")}</p>
+            <p className="text-muted-foreground text-xs uppercase tracking-wider mb-0.5">{t("summaryCumulative")}</p>
+            <p className="text-foreground">{coupon.cumulative ? t("summaryCumulativeYes") : t("summaryCumulativeNo")}</p>
           </div>
         </div>
 
         <div>
-          <div className="flex justify-between text-xs text-gray-400 mb-1">
+          <div className="flex justify-between text-xs text-muted-foreground mb-1">
             <span>{t("summaryRedemptions")}</span>
             <span>{coupon.redeemedCount} / {coupon.maxRedemptions === null ? "∞" : coupon.maxRedemptions}</span>
           </div>
@@ -94,7 +94,7 @@ export function CouponSummaryCard({ coupon }: CouponSummaryCardProps) {
           )}
         </div>
 
-        <div className="flex gap-4 text-xs text-gray-600 pt-1 border-t border-gray-800">
+        <div className="flex gap-4 text-xs text-gray-600 pt-1 border-t border-border">
           <span>{t("summaryCreatedAt", { date: new Date(coupon.createdAt).toLocaleDateString(locale) })}</span>
           <span>{t("summaryUpdatedAt", { date: new Date(coupon.updatedAt).toLocaleDateString(locale) })}</span>
         </div>

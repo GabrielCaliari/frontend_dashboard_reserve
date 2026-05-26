@@ -90,7 +90,7 @@ export function B2BPurchasesTable() {
       </div>
 
       {purchases.length === 0 ? (
-        <div className="text-center py-10 text-gray-500">
+        <div className="text-center py-10 text-muted-foreground">
           {t('noPurchases')}
         </div>
       ) : (
@@ -128,7 +128,7 @@ export function B2BPurchasesTable() {
                   <div>
                     <div className="font-medium">{purchase.customerEmail}</div>
                     {purchase.customerName && (
-                      <div className="text-sm text-gray-500">{purchase.customerName}</div>
+                      <div className="text-sm text-muted-foreground">{purchase.customerName}</div>
                     )}
                   </div>
                 </TableCell>

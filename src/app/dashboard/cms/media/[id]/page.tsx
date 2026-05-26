@@ -133,10 +133,10 @@ export default function CollectionAssetBrowserPage() {
     return (
       <LayoutScopeRoot routeActive="media">
         <div className="p-4">
-          <div className="text-center py-16 bg-[#12121f] rounded-lg border border-gray-800">
+          <div className="text-center py-16 bg-card rounded-lg border border-border">
             <div className="text-5xl mb-4">📂</div>
-            <p className="text-gray-300 text-lg mb-2">{t("collectionNotFound")}</p>
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-foreground text-lg mb-2">{t("collectionNotFound")}</p>
+            <p className="text-muted-foreground text-sm mb-6">
               {t("collectionNotFoundMessage")}
             </p>
             <Button
@@ -176,13 +176,13 @@ export default function CollectionAssetBrowserPage() {
               size="sm"
               onPress={handleBack}
               aria-label={t("backToLibrary")}
-              className="text-gray-400 hover:text-gray-200"
+              className="text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-gray-100">{collection.name}</h1>
+                <h1 className="text-2xl font-bold text-foreground">{collection.name}</h1>
                 <Chip
                   size="sm"
                   color={typeBadge.color}
@@ -193,7 +193,7 @@ export default function CollectionAssetBrowserPage() {
                 </Chip>
               </div>
               {collection.description && (
-                <p className="text-sm text-gray-500 mt-0.5">{collection.description}</p>
+                <p className="text-sm text-muted-foreground mt-0.5">{collection.description}</p>
               )}
             </div>
           </div>
@@ -228,29 +228,29 @@ export default function CollectionAssetBrowserPage() {
         </div>
 
         {/* Collection constraints bar */}
-        <div className="flex flex-wrap gap-x-6 gap-y-1 mb-6 text-xs text-gray-500">
+        <div className="flex flex-wrap gap-x-6 gap-y-1 mb-6 text-xs text-muted-foreground">
           <span>
             {t("constraintMaxSize")}:{" "}
-            <span className="text-gray-400 font-medium">
+            <span className="text-muted-foreground font-medium">
               {formatFileSize(collection.max_file_size)}
             </span>
           </span>
           {collection.max_items && (
             <span>
               {t("constraintMaxItems")}:{" "}
-              <span className="text-gray-400 font-medium">{collection.max_items}</span>
+              <span className="text-muted-foreground font-medium">{collection.max_items}</span>
             </span>
           )}
           <span>
             {t("constraintAllowedTypes")}:{" "}
-            <span className="text-gray-400 font-medium">
+            <span className="text-muted-foreground font-medium">
               {collection.allowed_mime_types.join(", ")}
             </span>
           </span>
         </div>
 
         {/* Assets grid */}
-        <div className="bg-[#12121f] rounded-lg shadow-lg border border-gray-800 p-6">
+        <div className="bg-card rounded-lg shadow-lg border border-border p-6">
           <AssetGrid
             assets={assets}
             isLoading={assetsLoading}
@@ -261,7 +261,7 @@ export default function CollectionAssetBrowserPage() {
           {/* Pagination */}
           {meta && meta.totalPages > 1 && (
             <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t("showingAssets", { count: assets.length, total: meta.total })}
               </p>
               <Pagination
@@ -271,7 +271,7 @@ export default function CollectionAssetBrowserPage() {
                 showControls
                 classNames={{
                   wrapper: "gap-2",
-                  item: "bg-[#1a1a2e] text-gray-300 border border-gray-700",
+                  item: "bg-muted text-foreground border border-border",
                   cursor: "bg-blue-600 text-white",
                 }}
               />
@@ -310,10 +310,10 @@ export default function CollectionAssetBrowserPage() {
         <ModalContent>
           <ModalHeader>{t("deleteCollectionTitle")}</ModalHeader>
           <ModalBody>
-            <p className="text-gray-300">
+            <p className="text-foreground">
               {t("deleteCollectionConfirm", { name: collection.name })}
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               {t("collectionMustBeEmpty")}
             </p>
           </ModalBody>

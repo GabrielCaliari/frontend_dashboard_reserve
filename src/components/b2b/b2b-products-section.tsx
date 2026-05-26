@@ -22,7 +22,7 @@ export function B2BProductsSection() {
           </div>
           <div className="flex flex-col flex-1">
             <p className="text-lg font-semibold">{t('productsTitle')}</p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {t('productsSubtitle')}
             </p>
           </div>

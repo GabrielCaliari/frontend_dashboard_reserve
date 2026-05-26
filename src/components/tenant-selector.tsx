@@ -97,8 +97,8 @@ export default function TenantSelector() {
         isDisabled={true}
         className="max-w-xs"
         classNames={{
-          trigger: "bg-white/5 border-gray-800",
-          label: "text-gray-400",
+          trigger: "bg-white/5 border-border",
+          label: "text-muted-foreground",
         }}
       >
         <SelectItem key="loading">{t("tenantLoading")}</SelectItem>
@@ -114,8 +114,8 @@ export default function TenantSelector() {
         isDisabled={true}
         className="max-w-xs"
         classNames={{
-          trigger: "bg-white/5 border-gray-800",
-          label: "text-gray-400",
+          trigger: "bg-white/5 border-border",
+          label: "text-muted-foreground",
         }}
       >
         <SelectItem key="empty">{t("noTenants")}</SelectItem>
@@ -138,18 +138,18 @@ export default function TenantSelector() {
       className="max-w-xs"
       classNames={{
         trigger:
-          "bg-white/5 border-gray-800 hover:bg-white/10 transition-colors",
-        value: "text-gray-200 group-data-[has-value=true]:text-gray-200",
-        popoverContent: "bg-[#16162a] border-gray-800 text-gray-200",
-        label: "text-gray-400",
+          "bg-white/5 border-border hover:bg-white/10 transition-colors",
+        value: "text-foreground group-data-[has-value=true]:text-foreground",
+        popoverContent: "bg-card border-border text-foreground",
+        label: "text-muted-foreground",
       }}
       listboxProps={{
         itemClasses: {
           base: [
-            "text-gray-400",
-            "data-[hover=true]:text-gray-100",
-            "data-[hover=true]:bg-[#1e1e3a]",
-            "data-[selectable=true]:focus:bg-[#1e1e3a]",
+            "text-muted-foreground",
+            "data-[hover=true]:text-foreground",
+            "data-[hover=true]:bg-muted",
+            "data-[selectable=true]:focus:bg-muted",
           ],
         },
       }}

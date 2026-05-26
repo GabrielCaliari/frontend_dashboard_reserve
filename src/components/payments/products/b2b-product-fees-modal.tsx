@@ -54,15 +54,15 @@ export function B2BProductFeesModal({ isOpen, onClose, product }: B2BProductFees
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="sm"
-      classNames={{ base: 'bg-[#0e0e1a] border border-white/10', header: 'border-b border-white/[0.07]', footer: 'border-t border-white/[0.07]' }}>
+      classNames={{ base: 'bg-background border border-white/10', header: 'border-b border-white/[0.07]', footer: 'border-t border-white/[0.07]' }}>
       <ModalContent>
         <ModalHeader className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
             <Sliders className="w-3.5 h-3.5 text-primary" />
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-100 truncate">{t('feesProductModalTitle')}</p>
-            {product && <p className="text-xs text-gray-500 truncate">{product.name}</p>}
+            <p className="text-sm font-semibold text-foreground truncate">{t('feesProductModalTitle')}</p>
+            {product && <p className="text-xs text-muted-foreground truncate">{product.name}</p>}
           </div>
         </ModalHeader>
 
@@ -87,9 +87,9 @@ export function B2BProductFeesModal({ isOpen, onClose, product }: B2BProductFees
 
           <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
             <div className="flex items-center gap-2">
-              <Package className="w-4 h-4 text-gray-500" />
+              <Package className="w-4 h-4 text-muted-foreground" />
               <div>
-                <p className="text-sm text-gray-200">{t('feesProductPhysicalLabel')}</p>
+                <p className="text-sm text-foreground">{t('feesProductPhysicalLabel')}</p>
                 <p className="text-xs text-gray-600">{t('feesProductPhysicalDesc')}</p>
               </div>
             </div>
@@ -99,8 +99,8 @@ export function B2BProductFeesModal({ isOpen, onClose, product }: B2BProductFees
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 px-1">{t('feesProductOverridesTitle')}</p>
             <div className="space-y-3">
-              <Input label={t('feesProductChipOverrideLabel')} placeholder={t('feesProductChipOverridePlaceholder')} value={chipOverride} onValueChange={setChipOverride} type="number" min="0" step="0.1" startContent={<Percent className="w-3.5 h-3.5 text-gray-500" />} classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }} />
-              <Input label={t('feesProductShippingOverrideLabel')} placeholder={t('feesProductShippingOverridePlaceholder')} value={shippingOverride} onValueChange={setShippingOverride} type="number" min="0" step="0.01" startContent={<Truck className="w-3.5 h-3.5 text-gray-500" />} classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }} />
+              <Input label={t('feesProductChipOverrideLabel')} placeholder={t('feesProductChipOverridePlaceholder')} value={chipOverride} onValueChange={setChipOverride} type="number" min="0" step="0.1" startContent={<Percent className="w-3.5 h-3.5 text-muted-foreground" />} classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }} />
+              <Input label={t('feesProductShippingOverrideLabel')} placeholder={t('feesProductShippingOverridePlaceholder')} value={shippingOverride} onValueChange={setShippingOverride} type="number" min="0" step="0.01" startContent={<Truck className="w-3.5 h-3.5 text-muted-foreground" />} classNames={{ inputWrapper: 'bg-white/[0.03] border-white/[0.07]' }} />
             </div>
           </div>
 

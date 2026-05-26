@@ -133,9 +133,9 @@ export function BlogImageInsertDialog({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full max-w-full border-l border-border bg-[#16162a] p-0 sm:max-w-[94vw] xl:max-w-[1280px]"
+        className="w-full max-w-full border-l border-border bg-card p-0 sm:max-w-[94vw] xl:max-w-[1280px]"
       >
-        <SheetHeader className="shrink-0 border-b border-border bg-[#16162a] pr-14">
+        <SheetHeader className="shrink-0 border-b border-border bg-card pr-14">
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
 
@@ -326,7 +326,7 @@ export function BlogImageInsertDialog({
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-border bg-[#16162a] px-4 py-4 sm:px-6">
+        <div className="shrink-0 border-t border-border bg-card px-4 py-4 sm:px-6">
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancel

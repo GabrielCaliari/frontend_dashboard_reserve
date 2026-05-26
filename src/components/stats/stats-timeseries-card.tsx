@@ -49,16 +49,16 @@ export function StatsTimeseriesCard({
     })) ?? [];
 
   return (
-    <Card className="bg-[#111125] border-gray-800">
+    <Card className="bg-card border-border">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-lg text-gray-100 break-words">{title}</CardTitle>
+        <CardTitle className="text-lg text-foreground break-words">{title}</CardTitle>
         {description ? (
-          <CardDescription className="break-words text-gray-400">{description}</CardDescription>
+          <CardDescription className="break-words text-muted-foreground">{description}</CardDescription>
         ) : null}
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="h-[280px] animate-pulse rounded-lg bg-[#16162a]" />
+          <div className="h-[280px] animate-pulse rounded-lg bg-card" />
         ) : null}
 
         {!isLoading && error ? (
@@ -68,7 +68,7 @@ export function StatsTimeseriesCard({
         ) : null}
 
         {!isLoading && !error && chartData.length === 0 ? (
-          <div className="flex h-[280px] items-center justify-center rounded-lg border border-gray-800 bg-[#16162a] px-6 text-center text-sm text-gray-400">
+          <div className="flex h-[280px] items-center justify-center rounded-lg border border-border bg-card px-6 text-center text-sm text-muted-foreground">
             {t("noTimeseriesData")}
           </div>
         ) : null}

@@ -37,7 +37,7 @@ function getFilePreviewIcon(mimeType: string) {
   if (mimeType.startsWith("video/")) return <Video className="w-16 h-16 text-violet-400" />;
   if (mimeType.includes("pdf") || mimeType.includes("document"))
     return <FileText className="w-16 h-16 text-red-400" />;
-  return <File className="w-16 h-16 text-gray-400" />;
+  return <File className="w-16 h-16 text-muted-foreground" />;
 }
 
 export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }: AssetDrawerProps) {
@@ -142,10 +142,10 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
         onClick={onClose}
       />
       {/* Drawer panel */}
-      <div className="fixed right-0 top-0 h-full w-full sm:max-w-[95vw] md:max-w-2xl z-50 bg-[#0e0e1a] border-l border-gray-800 shadow-2xl flex flex-col overflow-hidden">
+      <div className="fixed right-0 top-0 h-full w-full sm:max-w-[95vw] md:max-w-2xl z-50 bg-background border-l border-border shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-800 flex-shrink-0">
-          <h2 className="text-lg font-semibold text-gray-100 truncate">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border flex-shrink-0">
+          <h2 className="text-lg font-semibold text-foreground truncate">
             {asset?.filename ?? t("assetDetails")}
           </h2>
           <Button
@@ -154,7 +154,7 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
             size="sm"
             onPress={onClose}
             aria-label={tCommon("close")}
-            className="text-gray-400 hover:text-gray-200"
+            className="text-muted-foreground hover:text-foreground"
           >
             <X className="w-5 h-5" />
           </Button>
@@ -169,7 +169,7 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
           <div className="flex-1 overflow-y-auto">
             <div className="flex flex-col lg:flex-row gap-0 h-full">
               {/* Preview panel */}
-              <div className="lg:w-[55%] bg-[#1a1a2e] flex items-center justify-center p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[280px] lg:min-h-0">
+              <div className="lg:w-[55%] bg-muted flex items-center justify-center p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[280px] lg:min-h-0">
                 {asset.mime_type.startsWith("image/") ? (
                   <img
                     src={asset.url}
@@ -186,39 +186,39 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
                 ) : (
                   <div className="flex flex-col items-center gap-3 text-center">
                     {getFilePreviewIcon(asset.mime_type)}
-                    <p className="text-sm text-gray-400">{asset.filename}</p>
+                    <p className="text-sm text-muted-foreground">{asset.filename}</p>
                   </div>
                 )}
               </div>
 
               {/* Info + edit panel */}
-              <div className="lg:w-[45%] p-4 sm:p-5 lg:p-6 space-y-5 border-t lg:border-t-0 lg:border-l border-gray-800">
+              <div className="lg:w-[45%] p-4 sm:p-5 lg:p-6 space-y-5 border-t lg:border-t-0 lg:border-l border-border">
                 {/* Read-only metadata */}
                 <div className="space-y-3">
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">{t("mimeType")}</p>
+                    <p className="text-xs text-muted-foreground mb-1">{t("mimeType")}</p>
                     <Chip size="sm" variant="flat" className="text-xs">
                       {asset.mime_type}
                     </Chip>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">{t("fileSize")}</p>
-                    <p className="text-sm text-gray-300">{formatFileSize(asset.file_size)}</p>
+                    <p className="text-xs text-muted-foreground mb-1">{t("fileSize")}</p>
+                    <p className="text-sm text-foreground">{formatFileSize(asset.file_size)}</p>
                   </div>
                   {asset.width && asset.height && (
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">{t("dimensions")}</p>
-                      <p className="text-sm text-gray-300">{asset.width} × {asset.height} px</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t("dimensions")}</p>
+                      <p className="text-sm text-foreground">{asset.width} × {asset.height} px</p>
                     </div>
                   )}
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">{t("uploadDate")}</p>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-xs text-muted-foreground mb-1">{t("uploadDate")}</p>
+                    <p className="text-sm text-foreground">
                       {new Date(asset.created_at).toLocaleString()}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">{tCommon("status")}</p>
+                    <p className="text-xs text-muted-foreground mb-1">{tCommon("status")}</p>
                     <Chip
                       size="sm"
                       variant="flat"
@@ -238,15 +238,15 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
 
                 {/* URL with copy */}
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">URL</p>
+                  <p className="text-xs text-muted-foreground mb-1">URL</p>
                   <div className="flex gap-2">
                     <Input
                       value={asset.url}
                       readOnly
                       size="sm"
                       classNames={{
-                        input: "text-gray-400 text-xs",
-                        inputWrapper: "bg-[#1a1a2e] border border-gray-700",
+                        input: "text-muted-foreground text-xs",
+                        inputWrapper: "bg-muted border border-border",
                       }}
                     />
                     <Button
@@ -288,8 +288,8 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
                     placeholder={t("altTextPlaceholder")}
                     size="sm"
                     classNames={{
-                      input: "bg-[#1a1a2e] text-gray-200",
-                      inputWrapper: "bg-[#1a1a2e] border border-gray-700 hover:border-gray-600",
+                      input: "bg-muted text-foreground",
+                      inputWrapper: "bg-muted border border-border hover:border-gray-600",
                     }}
                   />
                 </div>
@@ -303,8 +303,8 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
                     placeholder="{}"
                     minRows={4}
                     classNames={{
-                      input: "bg-[#1a1a2e] text-gray-200 font-mono text-xs",
-                      inputWrapper: "bg-[#1a1a2e] border border-gray-700 hover:border-gray-600",
+                      input: "bg-muted text-foreground font-mono text-xs",
+                      inputWrapper: "bg-muted border border-border hover:border-gray-600",
                     }}
                   />
                   {jsonError && (
@@ -325,9 +325,9 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
                 </Button>
 
                 {/* Associations section */}
-                <div className="border-t border-gray-800 pt-4">
+                <div className="border-t border-border pt-4">
                   <button
-                    className="flex items-center justify-between w-full text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors"
+                    className="flex items-center justify-between w-full text-sm font-medium text-foreground hover:text-foreground transition-colors"
                     onClick={() => setAssociationsOpen((v) => !v)}
                   >
                     <span>{t("associations")}</span>
@@ -340,7 +340,7 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
 
                   {associationsOpen && (
                     <div className="mt-3">
-                      <p className="text-xs text-gray-500 text-center py-4">
+                      <p className="text-xs text-muted-foreground text-center py-4">
                         Associations are managed from each entity editor via the relations endpoints.
                       </p>
                     </div>
@@ -348,7 +348,7 @@ export function AssetDrawer({ asset, isOpen, onClose, onDeleted, collectionId }:
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex gap-2 border-t border-gray-800 pt-4">
+                <div className="flex gap-2 border-t border-border pt-4">
                   <Button
                     variant="flat"
                     size="sm"

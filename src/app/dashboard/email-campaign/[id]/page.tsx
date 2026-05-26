@@ -78,7 +78,7 @@ export default async function EmailCampaignPage({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500 block text-nowrap">
+            <span className="text-sm text-muted-foreground block text-nowrap">
               {t("createdAt")} {formatDate(campaign.created_at)}
             </span>
           </div>
@@ -101,7 +101,7 @@ export default async function EmailCampaignPage({
           {/* Card de Leads */}
           <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-500 font-normal">
+              <CardTitle className="text-sm text-muted-foreground font-normal">
                 {t("totalLeads")}
               </CardTitle>
             </CardHeader>
@@ -124,7 +124,7 @@ export default async function EmailCampaignPage({
           {/* Card de Disparos */}
           <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-500 font-normal">
+              <CardTitle className="text-sm text-muted-foreground font-normal">
                 {t("batches")}
               </CardTitle>
             </CardHeader>
@@ -133,7 +133,7 @@ export default async function EmailCampaignPage({
                 <Zap className="h-5 w-5 text-amber-500 mr-2" />
                 <span className="text-2xl font-bold">{0}</span>
               </div>
-              <div className="text-sm text-gray-500 mt-1">
+              <div className="text-sm text-muted-foreground mt-1">
                 {0 > 0
                   ? `${0} ${t("leadsPerBatch")}`
                   : t("batchSizeNotConfirmed")}
@@ -150,7 +150,7 @@ export default async function EmailCampaignPage({
           {/* Card de Funil */}
           <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-500 font-normal">
+              <CardTitle className="text-sm text-muted-foreground font-normal">
                 {t("campaignType")}
               </CardTitle>
             </CardHeader>
@@ -166,7 +166,7 @@ export default async function EmailCampaignPage({
                 </span>
               </div>
               {funnelType === "funnel" && campaign.config?.funnel && (
-                <div className="text-sm text-gray-500 mt-1">
+                <div className="text-sm text-muted-foreground mt-1">
                   {campaign.config.funnel.steps.length} {t("stepsConfigured")}
                 </div>
               )}
@@ -182,7 +182,7 @@ export default async function EmailCampaignPage({
           {/* Card de Taxa de Abertura */}
           <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-500 font-normal">
+              <CardTitle className="text-sm text-muted-foreground font-normal">
                 {t("openRate")}
               </CardTitle>
             </CardHeader>
@@ -205,7 +205,7 @@ export default async function EmailCampaignPage({
           {/* Card de Taxa de Clique */}
           <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-500 font-normal">
+              <CardTitle className="text-sm text-muted-foreground font-normal">
                 {t("clickRate")}
               </CardTitle>
             </CardHeader>
@@ -228,7 +228,7 @@ export default async function EmailCampaignPage({
           {/* Card de Envios com Sucesso */}
           <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-500 font-normal">
+              <CardTitle className="text-sm text-muted-foreground font-normal">
                 {t("successfulSends")}
               </CardTitle>
             </CardHeader>
@@ -240,7 +240,7 @@ export default async function EmailCampaignPage({
                 </span>
               </div>
               {campaign.successfulSends && campaign.totalLeads > 0 && (
-                <span className="text-sm text-gray-500 mt-1">
+                <span className="text-sm text-muted-foreground mt-1">
                   {(
                     (campaign.successfulSends / campaign.totalLeads) *
                     100
@@ -254,7 +254,7 @@ export default async function EmailCampaignPage({
           {/* Card de Envios com Erro */}
           <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-gray-500 font-normal">
+              <CardTitle className="text-sm text-muted-foreground font-normal">
                 {t("failedSends")}
               </CardTitle>
             </CardHeader>
@@ -266,7 +266,7 @@ export default async function EmailCampaignPage({
                 </span>
               </div>
               {campaign.failedSends && campaign.totalLeads > 0 && (
-                <span className="text-sm text-gray-500 mt-1">
+                <span className="text-sm text-muted-foreground mt-1">
                   {((campaign.failedSends / campaign.totalLeads) * 100).toFixed(
                     1,
                   )}

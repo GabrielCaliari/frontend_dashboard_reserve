@@ -1,50 +1,58 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@config "../../../tailwind.config.js";
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Zarp Studio Light Theme */
+    --background: 80 27% 97%;
+    --foreground: 86 28% 5%;
+    --card: 0 0% 100%;
+    --card-foreground: 86 28% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 86 28% 5%;
+    --primary: 96 73% 67%;
+    --primary-foreground: 94 100% 10%;
+    --secondary: 96 62% 90%;
+    --secondary-foreground: 86 28% 5%;
+    --muted: 108 11% 91%;
+    --muted-foreground: 60 1% 52%;
+    --accent: 96 100% 84%;
+    --accent-foreground: 86 28% 5%;
+    --destructive: 358 64% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 108 11% 91%;
+    --input: 108 11% 91%;
+    --ring: 96 73% 67%;
+    
+    /* Zarp specific tokens */
+    --brand-ink: 86 28% 5%;
+    --brand-green: 96 73% 67%;
+    --brand-green-deep: 94 100% 10%;
+    --brand-mint: 96 62% 90%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Zarp Dark Mode (Full Dark) */
+    --background: 225 40% 10%;
+    --foreground: 226 26% 94%;
+    --card: 223 35% 16%;
+    --card-foreground: 226 26% 94%;
+    --popover: 223 35% 16%;
+    --popover-foreground: 226 26% 94%;
+    --primary: 96 73% 67%;
+    --primary-foreground: 94 100% 10%;
+    --secondary: 223 35% 25%;
+    --secondary-foreground: 226 26% 94%;
+    --muted: 223 35% 25%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 223 35% 30%;
+    --accent-foreground: 226 26% 94%;
+    --destructive: 358 64% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 35% 25%;
+    --input: 223 35% 25%;
+    --ring: 96 73% 67%;
   }
 }
 
@@ -418,3 +426,15 @@ select {
   color: hsl(var(--popover-foreground)) !important;
   border-color: hsl(var(--border)) !important;
 }
+
+/* Zarp Component Utilities */
+.btn-pill { border-radius: 9999px; font-weight: 600; transition: transform 0.18s ease, background-color 0.2s ease; }
+.btn-pill:hover { transform: scale(1.05); }
+.btn-pill:active { transform: scale(0.95); }
+.btn-primary { background-color: hsl(var(--brand-green)); color: hsl(var(--brand-green-deep)); }
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-ghost { background-color: color-mix(in oklch, hsl(var(--brand-green)) 8%, transparent); color: hsl(var(--foreground)); }
+.btn-ghost:hover { background-color: color-mix(in oklch, hsl(var(--brand-green)) 14%, transparent); }
+.btn-dark { background-color: hsl(var(--brand-ink)); color: hsl(var(--background)); }
+.card-zarp, .card-flat { border-radius: 30px; background-color: hsl(var(--card)); border: 1px solid color-mix(in oklch, hsl(var(--brand-ink)) 12%, transparent); box-shadow: 0 1px 0 color-mix(in oklch, #000 6%, transparent), 0 0 0 1px color-mix(in oklch, #000 8%, transparent); padding: clamp(1.2rem, 2.3vw, 2rem); }
+.pill-tag { border-radius: 9999px; background-color: hsl(var(--brand-mint)); color: hsl(var(--brand-green-deep)); font-size: 0.78rem; font-weight: 600; padding: 0.25rem 0.75rem; display: inline-flex; align-items: center; }

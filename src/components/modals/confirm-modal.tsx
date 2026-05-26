@@ -43,7 +43,7 @@ export function ConfirmModal({
           <span>{title}</span>
         </ModalHeader>
         <ModalBody>
-          <p className="text-gray-600 dark:text-gray-400">{message}</p>
+          <p className="text-gray-600 dark:text-muted-foreground">{message}</p>
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose} isDisabled={isLoading}>

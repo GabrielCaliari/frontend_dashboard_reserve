@@ -22,23 +22,23 @@ interface OverviewKpiProps {
 function OverviewKpi({ label, value, sub, icon, href, isLoading, accentClass }: OverviewKpiProps) {
   return (
     <Link href={href} className="group block">
-      <Card className="bg-[#111125] border-gray-800 transition-colors hover:border-gray-600 hover:bg-[#16162a]">
+      <Card className="bg-card border-border transition-colors hover:border-gray-600 hover:bg-card">
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div className={`rounded-lg p-2 ${accentClass}`}>
               {icon}
             </div>
-            <ArrowRight className="h-4 w-4 text-gray-600 group-hover:text-gray-400 transition-colors mt-0.5 shrink-0" />
+            <ArrowRight className="h-4 w-4 text-gray-600 group-hover:text-muted-foreground transition-colors mt-0.5 shrink-0" />
           </div>
           <div className="mt-3">
             {isLoading ? (
               <div className="h-7 w-16 rounded bg-[#1e1e35] animate-pulse mb-1" />
             ) : (
-              <p className="text-2xl font-bold text-gray-100">{value}</p>
+              <p className="text-2xl font-bold text-foreground">{value}</p>
             )}
-            <p className="text-xs text-gray-400 mt-0.5">{label}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
             {sub && !isLoading && (
-              <p className="text-xs text-gray-500 mt-1">{sub}</p>
+              <p className="text-xs text-muted-foreground mt-1">{sub}</p>
             )}
           </div>
         </CardContent>

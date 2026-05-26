@@ -286,7 +286,7 @@ export default function LeadsPage() {
             onChange={(e) => updateParam("collection", e.target.value)}
             aria-label={t("filterByCollection")}
             className="w-52"
-            classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+            classNames={{ trigger: "border-border bg-muted/50" }}
           >
             {[
               <SelectItem key="" value="">{t("allCollections")}</SelectItem>,
@@ -304,7 +304,7 @@ export default function LeadsPage() {
               onChange={(e) => updateParam("status", e.target.value)}
               aria-label={t("allStatuses")}
               className="w-44"
-              classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+              classNames={{ trigger: "border-border bg-muted/50" }}
             >
               {STATUS_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -320,7 +320,7 @@ export default function LeadsPage() {
               onChange={(e) => updateParam("origin", e.target.value)}
               aria-label={t("allOrigins")}
               className="w-48"
-              classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+              classNames={{ trigger: "border-border bg-muted/50" }}
             >
               {ORIGIN_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -335,7 +335,7 @@ export default function LeadsPage() {
             onChange={(e) => updateParam("limit", e.target.value)}
             aria-label={t("rowsPerPage")}
             className="w-36"
-            classNames={{ trigger: "border-gray-700 bg-gray-900/50" }}
+            classNames={{ trigger: "border-border bg-muted/50" }}
           >
             {LIMIT_OPTIONS.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>

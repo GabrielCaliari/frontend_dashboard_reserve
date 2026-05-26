@@ -40,10 +40,10 @@ export function CouponDeactivateModal({ coupon, isOpen, onClose }: CouponDeactiv
           {t("deactivateModalTitle")}
         </ModalHeader>
         <ModalBody>
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-foreground">
             {t("deactivateModalBody", { code: coupon.code })}
           </p>
-          <p className="text-xs text-gray-500 mt-1">{t("deactivateModalNote")}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t("deactivateModalNote")}</p>
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose} isDisabled={isPending}>

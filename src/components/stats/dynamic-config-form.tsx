@@ -77,11 +77,11 @@ export function DynamicConfigForm({
     <div className="space-y-4">
       {Object.entries(configSchema).map(([key, field]) => (
         <div key={key}>
-          <label className="block text-sm font-medium text-gray-200 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             {key}
             {field.required && <span className="text-red-400 ml-0.5">*</span>}
           </label>
-          <p className="text-xs text-gray-400 mb-1.5">{field.description}</p>
+          <p className="text-xs text-muted-foreground mb-1.5">{field.description}</p>
 
           {field.secret && (
             <div className="flex items-center gap-1.5 mb-1.5">
@@ -102,7 +102,7 @@ export function DynamicConfigForm({
                   : '{ "key": "value" }'
               }
               rows={4}
-              className="w-full rounded-md border border-gray-700 bg-[#0a0a1a] px-3 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+              className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
             />
           ) : (
             <input
@@ -112,7 +112,7 @@ export function DynamicConfigForm({
               placeholder={
                 field.secret && isEdit ? t("secretPlaceholder") : ""
               }
-              className="w-full rounded-md border border-gray-700 bg-[#0a0a1a] px-3 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary"
             />
           )}
 
