@@ -1,13 +1,17 @@
 'use client';
 import { useState } from 'react';
 import { useNotificationInbox } from '@/src/common/hooks/notifications/use-notification-inbox';
+import { useNotificationSettings } from '@/src/common/hooks/notifications/use-notification-settings';
 import { useTenantStore } from '@/src/common/stores/tenant-store';
+import { formatInTenantTimezone } from '@/src/common/utils/format-timezone';
 
 export function NotificationInbox() {
   const selectedTenant = useTenantStore((s) => s.selectedTenant);
   const tenantId = selectedTenant?.id ?? null;
   const [page, setPage] = useState(1);
-  const { data, total, loading, markAsViewed } = useNotificationInbox(tenantId, page, 20);
+  const { data, loading, markAsViewed } = useNotificationInbox(tenantId, page, 20);
+  const { settings } = useNotificationSettings(tenantId);
+  const timezone: string = settings?.timezone ?? 'America/Sao_Paulo';
 
   if (loading) return <div className="p-6 text-sm text-gray-500">Carregando...</div>;
 
@@ -25,11 +29,13 @@ export function NotificationInbox() {
             {!item.viewed && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
           </div>
           <p className="mt-1 line-clamp-2 text-xs text-gray-500">{item.Notification?.body ?? item.body}</p>
-          {item.first_viewed_at && (
-            <p className="mt-1 text-xs text-gray-400">
-              Visto em: {new Date(item.first_viewed_at).toLocaleDateString('pt-BR')}
-            </p>
-          )}
+          <p className="mt-1 text-xs text-gray-400">
+            {item.first_viewed_at
+              ? `Visto em: ${formatInTenantTimezone(item.first_viewed_at, timezone)}`
+              : item.Notification?.published_at
+              ? `Recebida em: ${formatInTenantTimezone(item.Notification.published_at, timezone)}`
+              : null}
+          </p>
         </div>
       ))}
     </div>
