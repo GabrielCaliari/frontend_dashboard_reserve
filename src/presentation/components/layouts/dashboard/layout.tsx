@@ -14,7 +14,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="inline-flex h-[calc(100svh-60px)] w-screen overflow-hidden">
+    <div className="inline-flex h-[calc(100svh-var(--header-height))] w-screen overflow-hidden">
       <Sidebar disabledTabs={[]} mobileStyle="footer" />
       {children}
     </div>

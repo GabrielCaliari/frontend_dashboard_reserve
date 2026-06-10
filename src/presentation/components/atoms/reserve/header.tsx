@@ -52,7 +52,7 @@ export function Header() {
     <>
       {pathname !== "/auth/login" && (
         <>
-          <header className="sticky top-0 z-40 flex items-center justify-between px-5 bg-background/88 backdrop-blur-md border-b border-border h-fit py-3 transition-all duration-300">
+          <header className="sticky top-0 z-40 flex h-[var(--header-height)] items-center justify-between px-5 bg-background/88 backdrop-blur-md border-b border-border transition-all duration-300">
             <div className="flex items-center gap-3">
               <button
                 onClick={openDrawer}

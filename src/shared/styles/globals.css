@@ -5,31 +5,35 @@
 @layer base {
   :root {
     /* Reserve Light Theme */
-    --background: 80 27% 97%;
+    --background: 60 40% 98%;
     --foreground: 86 28% 5%;
     --card: 0 0% 100%;
     --card-foreground: 86 28% 5%;
     --popover: 0 0% 100%;
     --popover-foreground: 86 28% 5%;
-    --primary: 96 73% 67%;
-    --primary-foreground: 94 100% 10%;
-    --secondary: 96 62% 90%;
+    --primary: 85 16% 53%;
+    --primary-foreground: 96 32% 13%;
+    --secondary: 80 21% 89%;
     --secondary-foreground: 86 28% 5%;
-    --muted: 108 11% 91%;
+    --muted: 90 10% 91%;
     --muted-foreground: 60 1% 52%;
-    --accent: 96 100% 84%;
+    --accent: 85 20% 84%;
     --accent-foreground: 86 28% 5%;
     --destructive: 358 64% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 108 11% 91%;
-    --input: 108 11% 91%;
-    --ring: 96 73% 67%;
-    
+    --border: 90 10% 91%;
+    --input: 90 10% 91%;
+    --ring: 85 16% 53%;
+
     /* Reserve specific tokens */
     --brand-ink: 86 28% 5%;
-    --brand-green: 96 73% 67%;
-    --brand-green-deep: 94 100% 10%;
-    --brand-mint: 96 62% 90%;
+    --brand-green: 85 16% 53%;
+    --brand-green-deep: 96 32% 13%;
+    --brand-mint: 80 21% 89%;
+
+    /* Layout tokens */
+    --header-height: 80px;
+    --sidebar-width: 310px;
   }
 
   .dark {
@@ -40,8 +44,8 @@
     --card-foreground: 226 26% 94%;
     --popover: 223 35% 16%;
     --popover-foreground: 226 26% 94%;
-    --primary: 96 73% 67%;
-    --primary-foreground: 94 100% 10%;
+    --primary: 85 20% 62%;
+    --primary-foreground: 96 32% 13%;
     --secondary: 223 35% 25%;
     --secondary-foreground: 226 26% 94%;
     --muted: 223 35% 25%;
@@ -52,7 +56,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 223 35% 25%;
     --input: 223 35% 25%;
-    --ring: 96 73% 67%;
+    --ring: 85 20% 62%;
   }
 }
 
@@ -436,5 +440,8 @@ select {
 .btn-ghost { background-color: color-mix(in oklch, hsl(var(--brand-green)) 8%, transparent); color: hsl(var(--foreground)); }
 .btn-ghost:hover { background-color: color-mix(in oklch, hsl(var(--brand-green)) 14%, transparent); }
 .btn-dark { background-color: hsl(var(--brand-ink)); color: hsl(var(--background)); }
-.card-reserve, .card-flat { border-radius: 30px; background-color: hsl(var(--card)); border: 1px solid color-mix(in oklch, hsl(var(--brand-ink)) 12%, transparent); box-shadow: 0 1px 0 color-mix(in oklch, #000 6%, transparent), 0 0 0 1px color-mix(in oklch, #000 8%, transparent); padding: clamp(1.2rem, 2.3vw, 2rem); }
+.card-reserve, .card-flat { border-radius: 16px; background-color: hsl(var(--card)); border: 1px solid color-mix(in oklch, hsl(var(--brand-ink)) 12%, transparent); box-shadow: 0 1px 0 color-mix(in oklch, #000 6%, transparent), 0 0 0 1px color-mix(in oklch, #000 8%, transparent); padding: clamp(1.2rem, 2.3vw, 2rem); }
 .pill-tag { border-radius: 9999px; background-color: hsl(var(--brand-mint)); color: hsl(var(--brand-green-deep)); font-size: 0.78rem; font-weight: 600; padding: 0.25rem 0.75rem; display: inline-flex; align-items: center; }
+
+/* Forca exibicao 24h em inputs de hora, independente do locale do navegador */
+input[type="time"]::-webkit-datetime-edit-ampm-field { display: none; }

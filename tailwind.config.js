@@ -100,8 +100,8 @@ module.exports = {
             content3: "#E5E9E4",
             content4: "#D8DFD7",
             primary: {
-              DEFAULT: "#9FE870",
-              foreground: "#163300",
+              DEFAULT: "#8B9B75",
+              foreground: "#1E2A16",
             },
             secondary: {
               DEFAULT: "#E2F6D5",
@@ -120,7 +120,7 @@ module.exports = {
               900: "#809C7D",
               foreground: "#0E1009",
             },
-            focus: "#9FE870",
+            focus: "#8B9B75",
           },
         },
         dark: {
@@ -132,8 +132,8 @@ module.exports = {
             content3: "#293355",
             content4: "#36436F",
             primary: {
-              DEFAULT: "#9FE870",
-              foreground: "#163300",
+              DEFAULT: "#8B9B75",
+              foreground: "#1E2A16",
             },
             secondary: {
               DEFAULT: "#1A2236",
@@ -152,7 +152,7 @@ module.exports = {
               900: "#B6C0DD",
               foreground: "#ECEEF5",
             },
-            focus: "#9FE870",
+            focus: "#8B9B75",
           },
         },
       },
