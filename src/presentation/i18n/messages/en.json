@@ -2031,5 +2031,25 @@
       "createSuccess": "Product created successfully",
       "createError": "Error creating product"
     }
+  },
+  "notifications": {
+    "eventLeadCreated": "New lead received",
+    "eventSubscriptionExpiring": "Subscription expiring",
+    "eventSubscriptionExpired": "Subscription expired",
+    "back": "Back",
+    "viewNotFound": "Notification not found",
+    "viewStatusRead": "Read",
+    "viewStatusUnread": "Unread",
+    "viewStatusLabel": "Status",
+    "audienceLabel": "Recipient",
+    "viewReceivedLabel": "Received at",
+    "inboxViewedAt": "Viewed at {date}",
+    "viewDetailsSection": "Details",
+    "viewOpenLink": "Open link",
+    "metaName": "Name",
+    "metaEmail": "Email",
+    "metaPhone": "Phone",
+    "metaSource": "Source",
+    "metaMessage": "Message"
   }
 }

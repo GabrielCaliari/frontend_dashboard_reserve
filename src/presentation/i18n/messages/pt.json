@@ -2031,5 +2031,25 @@
       "createSuccess": "Produto criado com sucesso",
       "createError": "Erro ao criar produto"
     }
+  },
+  "notifications": {
+    "eventLeadCreated": "Novo lead recebido",
+    "eventSubscriptionExpiring": "Assinatura expirando",
+    "eventSubscriptionExpired": "Assinatura expirada",
+    "back": "Voltar",
+    "viewNotFound": "Notificação não encontrada",
+    "viewStatusRead": "Lida",
+    "viewStatusUnread": "Não lida",
+    "viewStatusLabel": "Status",
+    "audienceLabel": "Destinatário",
+    "viewReceivedLabel": "Recebida em",
+    "inboxViewedAt": "Vista em {date}",
+    "viewDetailsSection": "Detalhes",
+    "viewOpenLink": "Abrir link",
+    "metaName": "Nome",
+    "metaEmail": "Email",
+    "metaPhone": "Telefone",
+    "metaSource": "Origem",
+    "metaMessage": "Mensagem"
   }
 }
