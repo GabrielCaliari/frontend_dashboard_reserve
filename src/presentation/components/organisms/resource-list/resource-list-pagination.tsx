@@ -46,7 +46,7 @@ export function ResourceListPagination({
       <div className="flex items-center gap-2">
         <button
           aria-label={labels?.previous ?? "Página anterior"}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-default-100 text-foreground transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-default-100 text-foreground transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={currentPage <= 1}
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
@@ -58,7 +58,7 @@ export function ResourceListPagination({
         </span>
         <button
           aria-label={labels?.next ?? "Próxima página"}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-default-100 text-foreground transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-default-100 text-foreground transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={currentPage >= totalPages}
           type="button"
           onClick={() => onPageChange(currentPage + 1)}
