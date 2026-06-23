@@ -14,6 +14,7 @@ module.exports = {
         nunito: ["var(--font-nunito)", "sans-serif"],
         sans: ["var(--font-nunito)", "var(--font-sans)"],
         mono: ["var(--font-mono)"],
+        portalDisplay: ["var(--font-portal-display)", "ui-serif", "Georgia", "serif"],
       },
       colors: {
         background: "hsl(var(--background))",

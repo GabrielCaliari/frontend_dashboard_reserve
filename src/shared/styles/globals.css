@@ -445,3 +445,12 @@ select {
 
 /* Forca exibicao 24h em inputs de hora, independente do locale do navegador */
 input[type="time"]::-webkit-datetime-edit-ampm-field { display: none; }
+
+/* Painel Reserve (client portal) design tokens */
+:root {
+  --portal-font-display: 'ui-serif', Georgia, serif; /* swap to PP Hatton per fonts.ts TODO */
+}
+
+.font-portal-display {
+  font-family: var(--font-portal-display, var(--portal-font-display));
+}
