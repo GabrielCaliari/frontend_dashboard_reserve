@@ -27,7 +27,7 @@ SheetOverlay.displayName = "SheetOverlay";
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
-  side?: "left" | "right";
+  side?: "left" | "right" | "bottom";
 }
 
 const SheetContent = React.forwardRef<
@@ -41,9 +41,12 @@ const SheetContent = React.forwardRef<
       className={cn(
         "fixed z-50 flex flex-col bg-card border-border transition ease-in-out",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300",
-        side === "right"
-          ? "inset-y-0 right-0 h-full w-full max-w-xl border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
-          : "inset-y-0 left-0 h-full w-full max-w-xl border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+        side === "right" &&
+          "inset-y-0 right-0 h-full w-full max-w-xl border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+        side === "left" &&
+          "inset-y-0 left-0 h-full w-full max-w-xl border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+        side === "bottom" &&
+          "inset-x-0 bottom-0 max-h-[80svh] w-full rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         className,
       )}
       {...props}
