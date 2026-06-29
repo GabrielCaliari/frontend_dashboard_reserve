@@ -17,3 +17,15 @@ export interface PeriodComparisonResponse {
   previous_period: { from: string; to: string };
   metrics: MetricComparison[];
 }
+
+export interface DailySeriesPoint {
+  date: string;
+  conversas_iniciadas: number;
+}
+
+export interface OverviewResponse {
+  headline_metrics: MetricComparison[]; // investimento, conversas_iniciadas, custo_por_conversa
+  daily_conversas: DailySeriesPoint[]; // last 30 days
+  last_report_preview: { id: string; title: string; excerpt: string; published_at: string } | null;
+  recent_activities: { id: string; title: string; occurred_at: string }[]; // last 5
+}

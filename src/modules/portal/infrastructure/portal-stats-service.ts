@@ -1,5 +1,6 @@
 import api from "@/src/infraestructure/axios/api";
 import type {
+  OverviewResponse,
   PeriodComparisonQuery,
   PeriodComparisonResponse,
 } from "@/src/modules/portal/domain/portal-stats";
@@ -14,6 +15,11 @@ export const portalStatsService = {
         to: query.to,
       },
     });
+    return response.data;
+  },
+
+  async getOverview(): Promise<OverviewResponse> {
+    const response = await api.get<OverviewResponse>("/portal/overview");
     return response.data;
   },
 };
