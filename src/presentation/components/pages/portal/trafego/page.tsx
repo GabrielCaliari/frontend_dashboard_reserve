@@ -7,6 +7,7 @@ import { CampaignTable } from "@/src/presentation/components/organisms/portal/tr
 import { PortalLineChart } from "@/src/presentation/components/organisms/portal/charts/line-chart";
 import { PortalBarChart } from "@/src/presentation/components/organisms/portal/charts/bar-chart";
 import { PortalChartSkeleton } from "@/src/presentation/components/organisms/portal/skeletons";
+import { AttributionWindowBanner } from "@/src/presentation/components/organisms/portal/attribution-window-banner";
 
 function defaultRange() {
   const to = new Date();
@@ -58,8 +59,11 @@ export default function PortalTrafegoPage() {
         />
       </section>
 
-      <section>
-        <h2 className="mb-2 text-sm font-medium text-muted-foreground">Desempenho por campanha</h2>
+      <section className="space-y-2">
+        <h2 className="text-sm font-medium text-muted-foreground">Desempenho por campanha</h2>
+        {/* 30 is a placeholder default per master doc §4.2's attribution_settings.window_days
+            default 30 — swap to the real per-tenant value once Task 14's BLOCKED endpoint lands. */}
+        <AttributionWindowBanner windowDays={30} />
         <CampaignTable campaigns={data?.campaigns ?? []} />
       </section>
     </div>
