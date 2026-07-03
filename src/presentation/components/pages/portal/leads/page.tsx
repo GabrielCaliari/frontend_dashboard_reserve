@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { usePortalLeadsCamada1 } from "@/src/modules/portal/presentation/hooks/use-portal-leads";
+import { useLinkConversionRate } from "@/src/modules/portal/presentation/hooks/use-link-conversion-rate";
 import { AcquisitionFunnel } from "@/src/presentation/components/organisms/portal/funnel/acquisition-funnel";
 import {
   DeviceBreakdownTable,
   CityBreakdownTable,
 } from "@/src/presentation/components/organisms/portal/leads/breakdown-table";
+import { LinkConversionTable } from "@/src/presentation/components/organisms/portal/leads/link-conversion-table";
 import { buildCamada1FunnelStages } from "@/src/modules/portal/domain/portal-leads";
 
 function defaultRange() {
@@ -19,6 +21,7 @@ function defaultRange() {
 export default function PortalLeadsPage() {
   const [range] = useState(defaultRange);
   const { data, isLoading } = usePortalLeadsCamada1(range);
+  const { data: linkRates } = useLinkConversionRate(range);
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -39,6 +42,11 @@ export default function PortalLeadsPage() {
           <h2 className="mb-2 text-sm font-medium text-muted-foreground">Por cidade</h2>
           <CityBreakdownTable rows={data?.by_city ?? []} />
         </div>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-sm font-medium text-muted-foreground">Taxa de conversão por link</h2>
+        <LinkConversionTable rows={linkRates ?? []} />
       </section>
     </div>
   );
