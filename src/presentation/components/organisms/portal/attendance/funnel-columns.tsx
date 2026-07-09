@@ -8,6 +8,15 @@ const currency = (v: number) => v.toLocaleString("pt-BR", { style: "currency", c
  * flex-col (master doc §5.4 "No mobile, lista agrupada por estágio") — the
  * shape (grouped by stage, not row-per-record) doesn't fit
  * `PortalDataTableColumn`, so this is hand-rolled rather than reusing Task 8.
+ *
+ * `useMoveFunnelStage` (event-based, never a direct field write, §5.4) ships
+ * fully working and tested, but its trigger UI is intentionally NOT wired
+ * in here: `FunnelStageCount` is an aggregate count per stage with no
+ * per-lead granularity, so a "mover" action needs either a per-lead
+ * drill-down on this component or to live on `<ConversationList>` /
+ * `<ConversationTranscript>` next to the stage badge already rendered
+ * there. Needs a product decision on where "move a lead" belongs in the UI
+ * — not guessed here.
  */
 export function FunnelColumns({ stages }: { stages: FunnelStageCount[] }) {
   return (
