@@ -55,6 +55,20 @@ export interface LeadsCamada1Response {
   by_city: LeadsByCity[];
 }
 
+/**
+ * §6.2 click→conversation rate per trackable link.
+ *
+ * BLOCKED (backend): requires the short-code-in-first-message mechanism
+ * (`link_code` extraction) described in master doc §6.2 — not built yet.
+ */
+export interface LinkConversionRow {
+  link_code: string;
+  label: string;
+  clicks: number;
+  conversations: number;
+  conversion_rate_pct: number;
+}
+
 export type FunnelStageKey = "alcance" | "cliques" | "conversas" | "qualificados" | "prontos" | "reservas";
 
 export interface FunnelStage {

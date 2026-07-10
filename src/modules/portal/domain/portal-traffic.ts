@@ -18,6 +18,9 @@ export interface CampaignPerformance {
   clicks: number;
   cpl: number;
   frequency: number;
+  /** null until master doc §6's source_id attribution join lands on the backend */
+  conversas_atribuidas: number | null;
+  qualificados_atribuidos: number | null;
 }
 
 export interface TrafficResponse {
