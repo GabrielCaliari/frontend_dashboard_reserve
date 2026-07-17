@@ -53,6 +53,15 @@ export function usePortalAuth() {
           email: response.details.email,
           tenant: response.details.tenant,
         });
+        // §3.7.1 digest-CTA deep-link contract (Task 31): today this always
+        // redirects to /portal/dashboard, dropping a deep-linked report an
+        // unauthenticated visitor arrived from (e.g. a digest email CTA to
+        // /portal/relatorios/[id], which resolvePortalRedirect correctly
+        // bounces to /portal/login first). Needs a product decision: is
+        // losing the original link on first login acceptable, or does this
+        // need a `?next=` query param round-trip (capture it in
+        // resolvePortalRedirect's login redirect, read it back here)? Not
+        // implemented — flagged rather than guessed.
         router.push("/portal/dashboard");
       } finally {
         setIsLoggingIn(false);
