@@ -7,6 +7,7 @@ import { PortalKpiCards } from "@/src/presentation/components/organisms/portal/o
 import { LastReportPreview } from "@/src/presentation/components/organisms/portal/overview/last-report-preview";
 import { ActivityFeed } from "@/src/presentation/components/organisms/portal/activity/activity-feed";
 import { GoalProgress } from "@/src/presentation/components/organisms/portal/goal-progress";
+import { ExportPdfButton } from "@/src/presentation/components/organisms/portal/export-pdf-button";
 import { PortalLineChart } from "@/src/presentation/components/organisms/portal/charts/line-chart";
 import { PortalChartSkeleton } from "@/src/presentation/components/organisms/portal/skeletons";
 
@@ -17,7 +18,10 @@ export default function PortalDashboardPage() {
 
   return (
     <div className="space-y-6 p-4 md:p-6">
-      <h1 className="font-portal-display text-2xl">Visão Geral</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-portal-display text-2xl">Visão Geral</h1>
+        <ExportPdfButton block="dashboard" label="Exportar relatório completo" />
+      </div>
 
       <PortalKpiCards metrics={data?.headline_metrics ?? []} isLoading={isLoading} />
       {goals
