@@ -35,7 +35,7 @@ export default function PortalTrafegoPage() {
           ))}
         </div>
       ) : (
-        <TrafficMetrics metrics={data!.headline_metrics} />
+        <TrafficMetrics metrics={data!.headline_metrics} googleAds={data?.google_ads ?? null} />
       )}
 
       <section>

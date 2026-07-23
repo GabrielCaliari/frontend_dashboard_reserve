@@ -35,4 +35,6 @@ export interface TrafficResponse {
   daily: DailyTrafficPoint[];
   biweekly_comparison: { period_label: string; investimento: number; conversas_iniciadas: number }[];
   campaigns: CampaignPerformance[];
+  /** null until Google Ads OAuth (master doc §4.1) is connected for this tenant */
+  google_ads: { investimento: number; cliques: number; custo_por_clique: number } | null;
 }
