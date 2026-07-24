@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRoiLevel1, useRoiLevel2 } from "@/src/modules/portal/presentation/hooks/use-portal-roi";
+import { useRoiLevel1, useRoiLevel2, useRoiLevel3 } from "@/src/modules/portal/presentation/hooks/use-portal-roi";
 import { usePortalChannels } from "@/src/modules/portal/presentation/hooks/use-portal-channels";
 import { RoiLevel1Cards } from "@/src/presentation/components/organisms/portal/roi/roi-level1-cards";
 import { RoiLevel2Cards } from "@/src/presentation/components/organisms/portal/roi/roi-level2-cards";
+import { RoiLevel3Cards } from "@/src/presentation/components/organisms/portal/roi/roi-level3-cards";
 import { AttributionWindowBanner } from "@/src/presentation/components/organisms/portal/attribution-window-banner";
 import { PortalCardSkeleton } from "@/src/presentation/components/organisms/portal/skeletons";
 
@@ -21,6 +22,7 @@ export default function PortalRetornoPage() {
   const { data: channels } = usePortalChannels();
   const botActive = channels?.find((c) => c.kind === "whatsapp")?.bot_active ?? false;
   const { data: level2, isLoading: level2Loading } = useRoiLevel2(range, botActive);
+  const { data: level3 } = useRoiLevel3(range);
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -34,7 +36,13 @@ export default function PortalRetornoPage() {
           {level2Loading ? <PortalCardSkeleton /> : level2 && <RoiLevel2Cards data={level2} />}
         </section>
       )}
-      {/* Nível 3 (Task 35) section is appended below in a later task */}
+
+      {level3 && (
+        <section>
+          <h2 className="mb-2 text-sm font-medium text-muted-foreground">Com motor de reservas integrado</h2>
+          <RoiLevel3Cards data={level3} />
+        </section>
+      )}
     </div>
   );
 }

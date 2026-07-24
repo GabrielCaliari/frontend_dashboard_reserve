@@ -8,6 +8,7 @@ import { PortalLineChart } from "@/src/presentation/components/organisms/portal/
 import { PortalBarChart } from "@/src/presentation/components/organisms/portal/charts/bar-chart";
 import { PortalChartSkeleton } from "@/src/presentation/components/organisms/portal/skeletons";
 import { AttributionWindowBanner } from "@/src/presentation/components/organisms/portal/attribution-window-banner";
+import { ExportPdfButton } from "@/src/presentation/components/organisms/portal/export-pdf-button";
 
 function defaultRange() {
   const to = new Date();
@@ -22,7 +23,10 @@ export default function PortalTrafegoPage() {
 
   return (
     <div className="space-y-6 p-4 md:p-6">
-      <h1 className="font-portal-display text-2xl">Tráfego Pago</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-portal-display text-2xl">Tráfego Pago</h1>
+        <ExportPdfButton block="trafego" />
+      </div>
 
       {isLoading ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
@@ -31,7 +35,7 @@ export default function PortalTrafegoPage() {
           ))}
         </div>
       ) : (
-        <TrafficMetrics metrics={data!.headline_metrics} />
+        <TrafficMetrics metrics={data!.headline_metrics} googleAds={data?.google_ads ?? null} />
       )}
 
       <section>

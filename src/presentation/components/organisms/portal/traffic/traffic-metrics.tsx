@@ -12,7 +12,13 @@ const ROWS: { key: GlossaryKey; format: (v: number) => string }[] = [
   { key: "frequencia", format: (v) => v.toFixed(1) },
 ];
 
-export function TrafficMetrics({ metrics }: { metrics: TrafficResponse["headline_metrics"] }) {
+export function TrafficMetrics({
+  metrics,
+  googleAds,
+}: {
+  metrics: TrafficResponse["headline_metrics"];
+  googleAds?: TrafficResponse["google_ads"];
+}) {
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
       {ROWS.map((row) => (
@@ -23,6 +29,15 @@ export function TrafficMetrics({ metrics }: { metrics: TrafficResponse["headline
           <p className="text-xl font-semibold">{row.format(metrics[row.key as keyof TrafficResponse["headline_metrics"]])}</p>
         </Card>
       ))}
+      {googleAds && (
+        <Card className="space-y-1 p-4">
+          <p className="text-sm text-muted-foreground">Google Ads</p>
+          <p className="text-xl font-semibold">
+            {googleAds.investimento.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+          </p>
+          <p className="text-xs text-muted-foreground">{googleAds.cliques} cliques</p>
+        </Card>
+      )}
     </div>
   );
 }
