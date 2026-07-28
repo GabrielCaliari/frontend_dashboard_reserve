@@ -4,7 +4,18 @@ import { CampaignTable } from "../campaign-table";
 import type { CampaignPerformance } from "@/src/modules/portal/domain/portal-traffic";
 
 const campaigns: CampaignPerformance[] = [
-  { id: "c1", name: "Verão 2026", spend: 850, reach: 12000, impressions: 30000, clicks: 120, cpl: 7.08, frequency: 2.5 },
+  {
+    id: "c1",
+    name: "Verão 2026",
+    spend: 850,
+    reach: 12000,
+    impressions: 30000,
+    clicks: 120,
+    cpl: 7.08,
+    frequency: 2.5,
+    conversas_atribuidas: 47,
+    qualificados_atribuidos: 12,
+  },
 ];
 
 describe("CampaignTable", () => {
@@ -17,5 +28,11 @@ describe("CampaignTable", () => {
   it("shows an empty state when there are no campaigns", () => {
     render(<CampaignTable campaigns={[]} forceMobile={false} />);
     expect(screen.getByText(/nenhuma campanha/i)).toBeInTheDocument();
+  });
+
+  it("renders an em dash when attribution data is not yet available (§6 join not landed)", () => {
+    const pending: CampaignPerformance = { ...campaigns[0], conversas_atribuidas: null, qualificados_atribuidos: null };
+    render(<CampaignTable campaigns={[pending]} forceMobile={false} />);
+    expect(screen.getAllByText("—").length).toBeGreaterThanOrEqual(2);
   });
 });
