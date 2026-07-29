@@ -10,6 +10,7 @@ import {
 } from "@/src/presentation/components/organisms/portal/leads/breakdown-table";
 import { LinkConversionTable } from "@/src/presentation/components/organisms/portal/leads/link-conversion-table";
 import { buildCamada1FunnelStages } from "@/src/modules/portal/domain/portal-leads";
+import { PortalCardSkeleton, PortalTableSkeleton } from "@/src/presentation/components/organisms/portal/skeletons";
 
 function defaultRange() {
   const to = new Date();
@@ -21,7 +22,7 @@ function defaultRange() {
 export default function PortalLeadsPage() {
   const [range] = useState(defaultRange);
   const { data, isLoading } = usePortalLeadsCamada1(range);
-  const { data: linkRates } = useLinkConversionRate(range);
+  const { data: linkRates, isLoading: linkRatesLoading } = useLinkConversionRate(range);
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -31,22 +32,26 @@ export default function PortalLeadsPage() {
         completo do atendimento (qualificados, prontos para fechar) aparece aqui quando o bot estiver ativo.
       </p>
 
-      {!isLoading && data && <AcquisitionFunnel stages={buildCamada1FunnelStages(data)} />}
+      {isLoading ? (
+        <PortalCardSkeleton />
+      ) : (
+        data && <AcquisitionFunnel stages={buildCamada1FunnelStages(data)} />
+      )}
 
       <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <h2 className="mb-2 text-sm font-medium text-muted-foreground">Por dispositivo</h2>
-          <DeviceBreakdownTable rows={data?.by_device ?? []} />
+          {isLoading ? <PortalTableSkeleton rows={3} /> : <DeviceBreakdownTable rows={data?.by_device ?? []} />}
         </div>
         <div>
           <h2 className="mb-2 text-sm font-medium text-muted-foreground">Por cidade</h2>
-          <CityBreakdownTable rows={data?.by_city ?? []} />
+          {isLoading ? <PortalTableSkeleton rows={3} /> : <CityBreakdownTable rows={data?.by_city ?? []} />}
         </div>
       </section>
 
       <section>
         <h2 className="mb-2 text-sm font-medium text-muted-foreground">Taxa de conversão por link</h2>
-        <LinkConversionTable rows={linkRates ?? []} />
+        {linkRatesLoading ? <PortalTableSkeleton rows={4} /> : <LinkConversionTable rows={linkRates ?? []} />}
       </section>
     </div>
   );

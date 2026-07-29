@@ -24,7 +24,7 @@ export default function PortalLoginPage() {
   return (
     <main className="flex min-h-svh items-center justify-center px-4">
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
-        <h1 className="text-2xl font-semibold">Painel Reserve</h1>
+        <h1 className="font-portal-display text-2xl">Painel Reserve</h1>
         <Input
           type="email"
           placeholder="E-mail"

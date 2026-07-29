@@ -28,14 +28,14 @@ export default function PortalTrafegoPage() {
         <ExportPdfButton block="trafego" />
       </div>
 
-      {isLoading ? (
+      {isLoading || !data ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <PortalChartSkeleton key={i} />
           ))}
         </div>
       ) : (
-        <TrafficMetrics metrics={data!.headline_metrics} googleAds={data?.google_ads ?? null} />
+        <TrafficMetrics metrics={data.headline_metrics} googleAds={data.google_ads ?? null} />
       )}
 
       <section>
