@@ -17,6 +17,35 @@ export const isUnauthorizedError = (error: unknown): boolean => {
 };
 
 /**
+ * True when the failed request targeted the client-portal backend
+ * (`/portal/**`), which authenticates with its own `portal-token` session
+ * (see `src/infraestructure/axios/get-auth-headers.ts`) and must never be
+ * redirected to the admin login nor have its admin cookies cleared —
+ * the two sessions are intentionally isolated (master doc §4.1).
+ */
+export const isPortalRequestError = (error: unknown): boolean => {
+  const url = (error as { config?: { url?: string } } | undefined)?.config?.url;
+  return typeof url === "string" && url.startsWith("/portal/");
+};
+
+/**
+ * Clear the portal session cookies and redirect to the portal login page.
+ * Mirrors `handleUnauthorizedError` but scoped to the client-portal session
+ * (`portal-token` / `portal-session-*`) instead of the admin one.
+ */
+export const handlePortalUnauthorizedError = (): void => {
+  if (typeof window !== "undefined") {
+    document.cookie = "portal-token=; Max-Age=0; path=/;";
+    document.cookie = "portal-session-role=; Max-Age=0; path=/;";
+    document.cookie = "portal-session-name=; Max-Age=0; path=/;";
+    document.cookie = "portal-session-email=; Max-Age=0; path=/;";
+    document.cookie = "portal-session-tenant=; Max-Age=0; path=/;";
+
+    window.location.href = "/portal/login";
+  }
+};
+
+/**
  * Clear authentication cookies and redirect to login page
  * Should only be called when a 401 error is truly unrecoverable
  */

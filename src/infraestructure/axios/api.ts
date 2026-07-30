@@ -1,6 +1,8 @@
 import axios from "axios";
 import {
+  handlePortalUnauthorizedError,
   handleUnauthorizedError,
+  isPortalRequestError,
   isUnauthorizedError,
 } from "@/src/shared/utils/auth-error-handler";
 import { buildApiBaseUrl } from "./build-api-base-url";
@@ -57,7 +59,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (isUnauthorizedError(error)) {
-      handleUnauthorizedError();
+      if (isPortalRequestError(error)) {
+        handlePortalUnauthorizedError();
+      } else {
+        handleUnauthorizedError();
+      }
     }
     return Promise.reject(error);
   },

@@ -24,25 +24,25 @@ export default function PortalInstagramPage() {
       <h1 className="font-portal-display text-2xl">Instagram Orgânico</h1>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {isLoading ? (
+        {isLoading || !data ? (
           Array.from({ length: 4 }).map((_, i) => <PortalCardSkeleton key={i} />)
         ) : (
           <>
             <Card className="space-y-1 p-4">
               <div className="text-sm text-muted-foreground"><MetricLabel metricKey="seguidores" /></div>
-              <p className="text-xl font-semibold">{data!.followers_count.toLocaleString("pt-BR")}</p>
+              <p className="text-xl font-semibold">{data.followers_count.toLocaleString("pt-BR")}</p>
             </Card>
             <Card className="space-y-1 p-4">
               <div className="text-sm text-muted-foreground"><MetricLabel metricKey="alcance_organico" /></div>
-              <p className="text-xl font-semibold">{data!.reach.toLocaleString("pt-BR")}</p>
+              <p className="text-xl font-semibold">{data.reach.toLocaleString("pt-BR")}</p>
             </Card>
             <Card className="space-y-1 p-4">
               <div className="text-sm text-muted-foreground"><MetricLabel metricKey="engajamento" /></div>
-              <p className="text-xl font-semibold">{data!.engagement.toLocaleString("pt-BR")}</p>
+              <p className="text-xl font-semibold">{data.engagement.toLocaleString("pt-BR")}</p>
             </Card>
             <Card className="space-y-1 p-4">
               <div className="text-sm text-muted-foreground"><MetricLabel metricKey="taxa_engajamento" /></div>
-              <p className="text-xl font-semibold">{data!.engagement_rate_pct}%</p>
+              <p className="text-xl font-semibold">{data.engagement_rate_pct}%</p>
             </Card>
           </>
         )}
