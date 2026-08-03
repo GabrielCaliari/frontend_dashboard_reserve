@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchAssets,
   fetchCollectionAssets,
@@ -7,40 +7,27 @@ import {
   updateAsset,
   deleteAsset,
   deleteCollectionAsset,
-  type PaginationParams,
   type AssetFilters,
   type UploadAssetDto,
   type UpdateAssetDto,
-} from "@/src/modules/cms/infrastructure/adapters";
-import { useSelectedTenantId } from "@/src/shared/stores/tenant-store";
-import { useState } from "react";
-import type {
-  CmsMediaId,
-  MediaAsset,
-  PaginatedResponse,
-} from "@/src/shared/domain/types/@cms-media";
+} from '@/src/modules/cms/infrastructure/media-adapters';
+import type { PaginationParams } from '@/src/shared/domain/types/@cms-media';
+import { useSelectedTenantId } from '@/src/shared/stores/tenant-store';
+import { useState } from 'react';
+import type { CmsMediaId, MediaAsset, PaginatedResponse } from '@/src/shared/domain/types/@cms-media';
 
 /**
  * Query key factory for assets
  * Provides consistent query keys for cache management
  */
 export const assetKeys = {
-  all: (tenantId: string | null) => ["assets", tenantId] as const,
-  lists: (tenantId: string | null) =>
-    [...assetKeys.all(tenantId), "list"] as const,
-  list: (
-    tenantId: string | null,
-    filters?: AssetFilters,
-    params?: PaginationParams,
-  ) => [...assetKeys.lists(tenantId), filters, params] as const,
-  collection: (
-    tenantId: string | null,
-    collectionId: CmsMediaId,
-    params?: PaginationParams,
-  ) =>
-    [...assetKeys.lists(tenantId), "collection", collectionId, params] as const,
-  details: (tenantId: string | null) =>
-    [...assetKeys.all(tenantId), "detail"] as const,
+  all: (tenantId: string | null) => ['assets', tenantId] as const,
+  lists: (tenantId: string | null) => [...assetKeys.all(tenantId), 'list'] as const,
+  list: (tenantId: string | null, filters?: AssetFilters, params?: PaginationParams) =>
+    [...assetKeys.lists(tenantId), filters, params] as const,
+  collection: (tenantId: string | null, collectionId: CmsMediaId, params?: PaginationParams) =>
+    [...assetKeys.lists(tenantId), 'collection', collectionId, params] as const,
+  details: (tenantId: string | null) => [...assetKeys.all(tenantId), 'detail'] as const,
   detail: (tenantId: string | null, id: CmsMediaId) =>
     [...assetKeys.details(tenantId), id] as const,
 };
@@ -67,10 +54,7 @@ export function useAssets(
   });
 }
 
-export function useCollectionAssets(
-  collectionId: CmsMediaId,
-  params?: PaginationParams,
-) {
+export function useCollectionAssets(collectionId: CmsMediaId, params?: PaginationParams) {
   const tenantId = useSelectedTenantId();
 
   return useQuery({
@@ -113,7 +97,7 @@ export function useUploadAsset() {
 
       queryClient.setQueryData(
         assetKeys.detail(tenantId, newAsset.id),
-        newAsset,
+        newAsset
       );
 
       queryClient.invalidateQueries({
@@ -147,14 +131,14 @@ export function useUpdateAsset() {
       });
 
       const previousAsset = queryClient.getQueryData(
-        assetKeys.detail(tenantId, id),
+        assetKeys.detail(tenantId, id)
       );
 
       if (previousAsset) {
-        queryClient.setQueryData(assetKeys.detail(tenantId, id), {
-          ...previousAsset,
-          ...data,
-        });
+        queryClient.setQueryData(
+          assetKeys.detail(tenantId, id),
+          { ...previousAsset, ...data }
+        );
       }
 
       return { previousAsset };
@@ -163,7 +147,7 @@ export function useUpdateAsset() {
       if (context?.previousAsset) {
         queryClient.setQueryData(
           assetKeys.detail(tenantId, variables.id),
-          context.previousAsset,
+          context.previousAsset
         );
       }
     },
@@ -183,8 +167,7 @@ export function useDeleteCollectionAsset(collectionId: CmsMediaId) {
   const tenantId = useSelectedTenantId();
 
   return useMutation({
-    mutationFn: (assetId: CmsMediaId) =>
-      deleteCollectionAsset(collectionId, assetId),
+    mutationFn: (assetId: CmsMediaId) => deleteCollectionAsset(collectionId, assetId),
     onMutate: async (assetId) => {
       await queryClient.cancelQueries({
         queryKey: assetKeys.collection(tenantId, collectionId),
@@ -207,7 +190,7 @@ export function useDeleteCollectionAsset(collectionId: CmsMediaId) {
               total: Math.max(old.meta.total - 1, 0),
             },
           };
-        },
+        }
       );
 
       return { previousCollectionQueries };
@@ -263,7 +246,7 @@ export function useDeleteAsset() {
               total: Math.max(old.meta.total - 1, 0),
             },
           };
-        },
+        }
       );
 
       return { previousLists };

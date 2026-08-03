@@ -17,7 +17,7 @@ export type { CreateAuthorDto, UpdateAuthorDto, AssignAvatarDto };
  * Normalize a raw API response into the UI Author shape.
  * The backend has returned both snake_case and camelCase fields across endpoints.
  */
-function normalizeAuthor(raw: AuthorApiResponse | Record<string, any>): Author {
+function normalizeAuthor(raw: Record<string, any>): Author {
   const firstName = raw.first_name ?? raw.firstName ?? "";
   const lastName = raw.last_name ?? raw.lastName ?? "";
   const avatar = raw.avatar ?? undefined;

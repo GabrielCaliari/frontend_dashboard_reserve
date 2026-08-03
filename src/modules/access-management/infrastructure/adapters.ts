@@ -224,7 +224,7 @@ export const fetchTenants = async (
     ...t,
     is_active: t.is_active ?? t.active ?? false,
     scheduled_for_deletion:
-      t.scheduled_for_deletion ?? t.deletion_scheduled_for_at != null ?? false,
+      t.scheduled_for_deletion ?? (t.deletion_scheduled_for_at != null),
     deletion_scheduled_for_at: t.deletion_scheduled_for_at ?? null,
   }));
   const filteredTenants = search

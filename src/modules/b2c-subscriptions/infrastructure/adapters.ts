@@ -73,9 +73,10 @@ export const getMetrics = async (): Promise<SubscriptionMetrics> => {
 
   return {
     totalActive: active,
-    totalCanceled: canceled,
     mrr,
-    total: subscriptions.length,
+    churnRate: 0,
+    newSubscribers: 0,
+    topProducts: [],
   } as SubscriptionMetrics;
 };
 

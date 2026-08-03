@@ -110,6 +110,8 @@ export interface LeadCollection {
   active: boolean;
   tenant_id?: string;
   secret_key?: string;
+  access_mode?: CollectionAccessMode;
+  lead_count?: number;
   created_at: string;
   updated_at: string;
 }
@@ -151,7 +153,7 @@ export interface RegenerateKeyResponse {
 
 // Keep for backward compat
 export enum CollectionAccessMode {
-  PUBLIC = "public",
-  PRIVATE = "private",
-  RESTRICTED = "restricted",
+  PUBLIC = 'public',
+  PRIVATE = 'private',
+  RESTRICTED = 'restricted',
 }
