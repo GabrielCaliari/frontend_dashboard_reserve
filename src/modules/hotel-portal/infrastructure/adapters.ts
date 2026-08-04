@@ -6,45 +6,22 @@
  * signatures) unchanged so consuming hooks (now under
  * `src/shared/hooks/hotel-portal/`) only need their import path updated.
  *
- * Backend module: `reserve-client-portal`. Its 9 controllers have no `@ApiTags`
- * decorator, so NestJS Swagger auto-tags each by class name, producing one
- * generated service directory per controller under
- * `src/infraestructure/server/services/`: `adminhotelclient`, `adminhotelmetrics`,
- * `adminreservations`, `clientportal`, `guestcrm`, `report`, `whatsapp`,
- * `whatsappredirect`, `whatsapptracking`.
- *
- * Of these, only `adminhotelclient`, `clientportal`, and `report` overlap with
- * what this hand-written service actually calls today (`adminhotelmetrics`,
- * `adminreservations`, `guestcrm`, `whatsapp*` back features not yet wired up
- * on the frontend). Even for the overlapping ones, this adapter keeps the
- * original `api`-based implementations verbatim rather than delegating,
- * because of real behavioral mismatches found on inspection:
- *
- *   - Every method here explicitly sends `headers: { "x-skip-tenant": "true" }`
- *     so admin/portal hotel-portal calls bypass tenant-scoping. None of the
- *     generated services (`adminhotelclient`, `clientportal`, `report`) set
- *     this header — delegating would silently reintroduce tenant-header
- *     injection and likely break these cross-tenant admin/portal calls.
- *   - All generated response types are `unknown` and DTOs are
- *     `Record<string, unknown>` (see `adminhotelclient/types.ts`), so there is
- *     no structural-typing benefit to delegating.
- *   - `report`'s generated `create(body)` posts to `/api/admin/hotel-portal/reports`
- *     with the client id expected inside the body, while `createReport` here
- *     posts to `/admin/hotel-portal/clients/{clientId}/reports`; `findByClientId`
- *     hits `/admin/hotel-portal/reports/client/{clientId}` instead of
- *     `/admin/hotel-portal/clients/{clientId}/reports`. Different URL shapes,
- *     not a drop-in swap.
- *   - The generated `report` service has no generic "update" operation at all
- *     (only `submitForReview` and `publish`), so `updateReport`
- *     (`PATCH /admin/hotel-portal/reports/{reportId}`) has no generated
- *     counterpart to delegate to.
- *
- * Forcing delegation here would change behavior with no typing gain, so all
- * methods below are ported verbatim. All URL paths and header logic match the
- * pre-migration service exactly.
+ * WIP NOTE (rescued from the pre-Fase4 working tree, hotel-portal v2 redesign):
+ * this file was expanded well beyond the original Fase4 port (clients, OTA data,
+ * reports, reputation/KPI/booking-window/rate-parity/budget metrics, reservations,
+ * guest CRM, WhatsApp templates/messages/links, and the portal-facing dashboard/
+ * snapshots/campaigns/site-metrics/overview endpoints). All methods below are
+ * ported verbatim from the working tree at rescue time — behavior is unverified
+ * against the current `backend_reserve` contract beyond what Fase4 already
+ * confirmed for the original 6 methods (see git history for the pre-expansion
+ * version). Every admin-scoped call still explicitly sends
+ * `headers: { "x-skip-tenant": "true" }`; portal-scoped calls (My Clients,
+ * Dashboard, Snapshots, Campaigns, Site Metrics, Overview) intentionally do not,
+ * since they run tenant-scoped from the logged-in hotel client's own session.
  */
 
-import api from "@/src/infraestructure/axios/api";
+import api from '@/src/infraestructure/axios/api';
+import type { HotelOverviewResponse } from '@/src/shared/domain/types/@hotel-portal-v1';
 import type {
   HotelClient,
   HotelDashboardResponse,
@@ -52,124 +29,463 @@ import type {
   HotelSiteMetricsResponse,
   MonthlyReport,
   OtaMonthlyData,
+  PortalSnapshot,
   CreateHotelClientDto,
   UpdateHotelClientDto,
   InsertOtaDataDto,
   PublishReportDto,
   CreateReportDto,
-} from "@/src/shared/domain/types/@hotel-portal";
+  SubmitReviewDto,
+  ReputationEntry,
+  ReputationSummary,
+  KpiEntry,
+  KpiSummary,
+  BookingWindowEntry,
+  RateParityEntry,
+  RateParityViolation,
+  BudgetEntry,
+  BudgetComparison,
+  Reservation,
+  ReservationStats,
+  Guest,
+  GuestWithHistory,
+  GuestStay,
+  WhatsAppTemplate,
+  WhatsAppMessage,
+  WhatsAppLink,
+  WhatsAppLinkStats,
+  InsertReputationDto,
+  InsertKpiDto,
+  InsertBookingWindowDto,
+  InsertRateParityDto,
+  InsertBudgetDto,
+  CreateReservationDto,
+  CreateGuestDto,
+  AddGuestStayDto,
+  CreateWhatsAppTemplateDto,
+  SendWhatsAppDto,
+  CreateWhatsAppLinkDto,
+  UpdateWhatsAppLinkDto,
+} from '@/src/shared/domain/types/@hotel-portal';
+
+const adminConfig = { headers: { 'x-skip-tenant': 'true' } };
+const adminHeaders = adminConfig as never;
+
+function toArray<T>(raw: unknown): T[] {
+  if (Array.isArray(raw)) return raw as T[];
+  if (Array.isArray((raw as any)?.data)) return (raw as any).data as T[];
+  return [];
+}
+
+function normalizeWhatsAppLink(raw: any): WhatsAppLink {
+  const code = raw.code ?? raw.short_code ?? raw.slug ?? '';
+  // Backend builds redirect_url against its own origin (e.g. backend-reserve-mkt.vercel.app/wa/<code>).
+  // Prefer it; only fall back to the API origin (never window.location.origin, which is the dashboard).
+  const apiOrigin = (
+    process.env.NEXT_PUBLIC_RESERVE_API_URL ??
+    process.env.NEXT_PUBLIC_API_URL ??
+    ''
+  ).replace(/\/api\/?$/i, '');
+  const short_url =
+    raw.redirect_url ??
+    raw.short_url ??
+    raw.url ??
+    raw.link ??
+    (code && apiOrigin ? `${apiOrigin}/wa/${code}` : '');
+  return { ...raw, code, short_url };
+}
+
+function normalizeWhatsAppLinkStats(raw: any): WhatsAppLinkStats {
+  const stats = raw?.stats ?? raw ?? {};
+  const byDay = stats.by_day ?? stats.clicks_by_day ?? [];
+  return {
+    total_clicks: stats.total ?? stats.total_clicks ?? raw?.link?.total_clicks ?? 0,
+    clicks_by_day: byDay.map((d: any) => ({ date: d.day ?? d.date ?? '', count: d.count ?? 0 })),
+    by_device: stats.by_device ?? [],
+    by_country: stats.by_country ?? [],
+    by_region: stats.by_region ?? [],
+    by_city: stats.by_city ?? [],
+    recent_clicks: raw?.recent_clicks ?? [],
+  };
+}
 
 export const hotelPortalService = {
   // ── Admin: Clients ─────────────────────────────────────────────────────
 
+  async getClientByUserId(userId: string): Promise<HotelClient | null> {
+    try {
+      const res = await api.get<any>(`/admin/hotel-portal/clients/by-user/${userId}`, adminHeaders);
+      const raw = res.data;
+      if (raw?.id) return raw as HotelClient;
+      if (raw?.data?.id) return raw.data as HotelClient;
+      return null;
+    } catch {
+      return null;
+    }
+  },
+
+  async getClientForCurrentTenant(): Promise<HotelClient | null> {
+    try {
+      const res = await api.get<any>('/admin/hotel-portal/clients');
+      const list = toArray<HotelClient>(res.data);
+      return list[0] ?? null;
+    } catch {
+      return null;
+    }
+  },
+
   async listClients(): Promise<HotelClient[]> {
-    const res = await api.get<HotelClient[]>("/admin/hotel-portal/clients", {
-      headers: { "x-skip-tenant": "true" },
-    } as never);
-    return res.data;
+    const res = await api.get<any>('/admin/hotel-portal/clients', adminHeaders);
+    return toArray<HotelClient>(res.data);
   },
 
   async getClient(id: string): Promise<HotelClient> {
-    const res = await api.get<HotelClient>(
-      `/admin/hotel-portal/clients/${id}`,
-      {
-        headers: { "x-skip-tenant": "true" },
-      } as never,
-    );
+    const res = await api.get<HotelClient>(`/admin/hotel-portal/clients/${id}`, adminHeaders);
     return res.data;
   },
 
   async createClient(data: CreateHotelClientDto): Promise<HotelClient> {
-    const res = await api.post<HotelClient>(
-      "/admin/hotel-portal/clients",
-      data,
-      {
-        headers: { "x-skip-tenant": "true" },
-      } as never,
-    );
+    const res = await api.post<HotelClient>('/admin/hotel-portal/clients', data, adminHeaders);
     return res.data;
   },
 
-  async updateClient(
-    id: string,
-    data: UpdateHotelClientDto,
-  ): Promise<HotelClient> {
-    const res = await api.patch<HotelClient>(
-      `/admin/hotel-portal/clients/${id}`,
-      data,
-      {
-        headers: { "x-skip-tenant": "true" },
-      } as never,
-    );
+  async updateClient(id: string, data: UpdateHotelClientDto): Promise<HotelClient> {
+    const res = await api.patch<HotelClient>(`/admin/hotel-portal/clients/${id}`, data, adminHeaders);
     return res.data;
+  },
+
+  async deleteClient(id: string): Promise<void> {
+    await api.delete(`/admin/hotel-portal/clients/${id}`, adminHeaders);
   },
 
   // ── Admin: OTA Data ────────────────────────────────────────────────────
 
-  async insertOtaData(
-    clientId: string,
-    data: InsertOtaDataDto,
-  ): Promise<OtaMonthlyData> {
+  async insertOtaData(clientId: string, data: InsertOtaDataDto): Promise<OtaMonthlyData> {
     const res = await api.post<OtaMonthlyData>(
       `/admin/hotel-portal/clients/${clientId}/ota-data`,
       data,
-      { headers: { "x-skip-tenant": "true" } } as never,
+      adminHeaders,
     );
     return res.data;
   },
 
   async listOtaData(clientId: string): Promise<OtaMonthlyData[]> {
-    const res = await api.get<OtaMonthlyData[]>(
-      `/admin/hotel-portal/clients/${clientId}/ota-data`,
-      { headers: { "x-skip-tenant": "true" } } as never,
-    );
-    return res.data;
+    const res = await api.get<any>(`/admin/hotel-portal/clients/${clientId}/ota-data`, adminHeaders);
+    return toArray<OtaMonthlyData>(res.data);
   },
 
   // ── Admin: Reports ─────────────────────────────────────────────────────
 
   async listReports(clientId: string): Promise<MonthlyReport[]> {
-    const res = await api.get<MonthlyReport[]>(
-      `/admin/hotel-portal/clients/${clientId}/reports`,
-      { headers: { "x-skip-tenant": "true" } } as never,
+    const res = await api.get<any>(
+      `/admin/hotel-portal/reports/client/${clientId}`,
+      adminHeaders,
     );
+    return toArray<MonthlyReport>(res.data);
+  },
+
+  async getReport(reportId: string): Promise<MonthlyReport> {
+    const res = await api.get<MonthlyReport>(`/admin/hotel-portal/reports/${reportId}`, adminHeaders);
     return res.data;
   },
 
-  async createReport(
-    clientId: string,
-    data: CreateReportDto,
-  ): Promise<MonthlyReport> {
-    const res = await api.post<MonthlyReport>(
-      `/admin/hotel-portal/clients/${clientId}/reports`,
-      data,
-      { headers: { "x-skip-tenant": "true" } } as never,
-    );
+  async createReport(data: CreateReportDto): Promise<MonthlyReport> {
+    const res = await api.post<MonthlyReport>('/admin/hotel-portal/reports', data, adminHeaders);
     return res.data;
   },
 
-  async updateReport(
-    reportId: string,
-    data: Partial<PublishReportDto>,
-  ): Promise<MonthlyReport> {
+  async submitReportForReview(reportId: string, data: SubmitReviewDto): Promise<MonthlyReport> {
     const res = await api.patch<MonthlyReport>(
-      `/admin/hotel-portal/reports/${reportId}`,
+      `/admin/hotel-portal/reports/${reportId}/submit-review`,
       data,
-      { headers: { "x-skip-tenant": "true" } } as never,
+      adminHeaders,
     );
     return res.data;
   },
 
-  async publishReport(
-    reportId: string,
-    data: PublishReportDto,
-  ): Promise<MonthlyReport> {
+  async updateReport(reportId: string, data: Partial<PublishReportDto>): Promise<MonthlyReport> {
+    const res = await api.patch<MonthlyReport>(
+      `/admin/hotel-portal/reports/${reportId}/submit-review`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async publishReport(reportId: string, data: PublishReportDto): Promise<MonthlyReport> {
     const res = await api.patch<MonthlyReport>(
       `/admin/hotel-portal/reports/${reportId}/publish`,
       data,
-      { headers: { "x-skip-tenant": "true" } } as never,
+      adminHeaders,
     );
     return res.data;
+  },
+
+  // ── Admin: Metrics — Reputation ────────────────────────────────────────
+
+  async insertReputation(clientId: string, data: InsertReputationDto): Promise<ReputationEntry> {
+    const res = await api.post<ReputationEntry>(
+      `/admin/hotel-portal/metrics/${clientId}/reputation`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listReputation(clientId: string): Promise<ReputationEntry[]> {
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/reputation`, adminHeaders);
+    return toArray<ReputationEntry>(res.data);
+  },
+
+  async getReputationSummary(clientId: string): Promise<ReputationSummary> {
+    const res = await api.get<ReputationSummary>(
+      `/admin/hotel-portal/metrics/${clientId}/reputation/summary`,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  // ── Admin: Metrics — KPI ───────────────────────────────────────────────
+
+  async insertKpi(clientId: string, data: InsertKpiDto): Promise<KpiEntry> {
+    const res = await api.post<KpiEntry>(
+      `/admin/hotel-portal/metrics/${clientId}/kpi`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listKpi(clientId: string): Promise<KpiEntry[]> {
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/kpi`, adminHeaders);
+    return toArray<KpiEntry>(res.data);
+  },
+
+  async getKpiSummary(clientId: string): Promise<KpiSummary> {
+    const res = await api.get<KpiSummary>(
+      `/admin/hotel-portal/metrics/${clientId}/kpi/summary`,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  // ── Admin: Metrics — Booking Window ───────────────────────────────────
+
+  async insertBookingWindow(clientId: string, data: InsertBookingWindowDto): Promise<BookingWindowEntry> {
+    const res = await api.post<BookingWindowEntry>(
+      `/admin/hotel-portal/metrics/${clientId}/booking-window`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listBookingWindow(clientId: string): Promise<BookingWindowEntry[]> {
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/booking-window`, adminHeaders);
+    return toArray<BookingWindowEntry>(res.data);
+  },
+
+  // ── Admin: Metrics — Rate Parity ──────────────────────────────────────
+
+  async insertRateParity(clientId: string, data: InsertRateParityDto): Promise<RateParityEntry> {
+    const res = await api.post<RateParityEntry>(
+      `/admin/hotel-portal/metrics/${clientId}/rate-parity`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listRateParity(clientId: string): Promise<RateParityEntry[]> {
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/rate-parity`, adminHeaders);
+    return toArray<RateParityEntry>(res.data);
+  },
+
+  async getRateParityViolations(clientId: string): Promise<RateParityViolation[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/metrics/${clientId}/rate-parity/violations`,
+      adminHeaders,
+    );
+    return toArray<RateParityViolation>(res.data);
+  },
+
+  // ── Admin: Metrics — Budget ────────────────────────────────────────────
+
+  async insertBudget(clientId: string, data: InsertBudgetDto): Promise<BudgetEntry> {
+    const res = await api.post<BudgetEntry>(
+      `/admin/hotel-portal/metrics/${clientId}/budget`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listBudget(clientId: string): Promise<BudgetEntry[]> {
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/budget`, adminHeaders);
+    return toArray<BudgetEntry>(res.data);
+  },
+
+  async getBudgetComparison(clientId: string): Promise<BudgetComparison[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/metrics/${clientId}/budget/comparison`,
+      adminHeaders,
+    );
+    return toArray<BudgetComparison>(res.data);
+  },
+
+  // ── Admin: Reservations ────────────────────────────────────────────────
+
+  async createReservation(tenantId: string, data: CreateReservationDto): Promise<Reservation> {
+    const res = await api.post<Reservation>(
+      `/admin/hotel-portal/reservations/${tenantId}`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listReservations(tenantId: string, params?: { from?: string; to?: string; status?: string }): Promise<Reservation[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/reservations/${tenantId}`,
+      { ...adminConfig, params } as never,
+    );
+    return toArray<Reservation>(res.data);
+  },
+
+  async getReservationStats(tenantId: string, params?: { from?: string; to?: string }): Promise<ReservationStats> {
+    const res = await api.get<ReservationStats>(
+      `/admin/hotel-portal/reservations/${tenantId}/stats`,
+      { ...adminConfig, params } as never,
+    );
+    return res.data;
+  },
+
+  // ── Admin: Guest CRM ───────────────────────────────────────────────────
+
+  async createGuest(clientId: string, data: CreateGuestDto): Promise<Guest> {
+    const res = await api.post<Guest>(
+      `/admin/hotel-portal/guests/${clientId}`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listGuests(clientId: string, params?: { search?: string; tag?: string }): Promise<Guest[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/guests/${clientId}`,
+      { ...adminConfig, params } as never,
+    );
+    return toArray<Guest>(res.data);
+  },
+
+  async getReactivationList(clientId: string, params?: { days?: number }): Promise<Guest[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/guests/${clientId}/reactivation`,
+      { ...adminConfig, params } as never,
+    );
+    return toArray<Guest>(res.data);
+  },
+
+  async getGuest(guestId: string): Promise<GuestWithHistory> {
+    const res = await api.get<GuestWithHistory>(
+      `/admin/hotel-portal/guests/guest/${guestId}`,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async addGuestStay(guestId: string, data: AddGuestStayDto): Promise<GuestStay> {
+    const res = await api.post<GuestStay>(
+      `/admin/hotel-portal/guests/guest/${guestId}/stays`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  // ── Admin: WhatsApp ────────────────────────────────────────────────────
+
+  async createWhatsAppTemplate(clientId: string, data: CreateWhatsAppTemplateDto): Promise<WhatsAppTemplate> {
+    const res = await api.post<WhatsAppTemplate>(
+      `/admin/hotel-portal/whatsapp/${clientId}/templates`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listWhatsAppTemplates(clientId: string): Promise<WhatsAppTemplate[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/whatsapp/${clientId}/templates`,
+      adminHeaders,
+    );
+    return toArray<WhatsAppTemplate>(res.data);
+  },
+
+  async sendWhatsApp(clientId: string, data: SendWhatsAppDto): Promise<WhatsAppMessage> {
+    const res = await api.post<WhatsAppMessage>(
+      `/admin/hotel-portal/whatsapp/${clientId}/send`,
+      data,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listWhatsAppMessages(clientId: string, params?: { from?: string; to?: string }): Promise<WhatsAppMessage[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/whatsapp/${clientId}/messages`,
+      { ...adminConfig, params } as never,
+    );
+    return toArray<WhatsAppMessage>(res.data);
+  },
+
+  // ── Admin: WhatsApp Links ──────────────────────────────────────────────
+
+  async listWhatsAppLinks(clientId: string): Promise<WhatsAppLink[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/whatsapp-links/${clientId}`,
+      adminHeaders,
+    );
+    const list = toArray<any>(res.data);
+    return list.map(normalizeWhatsAppLink);
+  },
+
+  async createWhatsAppLink(clientId: string, data: CreateWhatsAppLinkDto): Promise<WhatsAppLink> {
+    const res = await api.post<any>(
+      `/admin/hotel-portal/whatsapp-links/${clientId}`,
+      data,
+      adminHeaders,
+    );
+    return normalizeWhatsAppLink(res.data);
+  },
+
+  async getWhatsAppLinkStats(clientId: string, id: string): Promise<WhatsAppLinkStats> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/whatsapp-links/${clientId}/${id}/stats`,
+      adminHeaders,
+    );
+    return normalizeWhatsAppLinkStats(res.data);
+  },
+
+  async updateWhatsAppLink(clientId: string, id: string, data: UpdateWhatsAppLinkDto): Promise<WhatsAppLink> {
+    const res = await api.put<any>(
+      `/admin/hotel-portal/whatsapp-links/${clientId}/${id}`,
+      data,
+      adminHeaders,
+    );
+    return normalizeWhatsAppLink(res.data);
+  },
+
+  async deleteWhatsAppLink(clientId: string, id: string): Promise<void> {
+    await api.delete(`/admin/hotel-portal/whatsapp-links/${clientId}/${id}`, adminHeaders);
+  },
+
+  // ── Portal: My Clients (tenant logado) ────────────────────────────────
+
+  async getMyClients(): Promise<HotelClient[]> {
+    const res = await api.get<any>('/hotel-portal/my-clients');
+    return toArray<HotelClient>(res.data);
   },
 
   // ── Portal: Dashboard ──────────────────────────────────────────────────
@@ -178,11 +494,17 @@ export const hotelPortalService = {
     clientId: string,
     params?: { from?: string; to?: string },
   ): Promise<HotelDashboardResponse> {
-    const res = await api.get<HotelDashboardResponse>(
-      `/hotel-portal/${clientId}/dashboard`,
-      { params, headers: { "x-skip-tenant": "true" } } as never,
-    );
+    const res = await api.get<HotelDashboardResponse>(`/hotel-portal/${clientId}/dashboard`, {
+      params,
+    });
     return res.data;
+  },
+
+  // ── Portal: Snapshots ──────────────────────────────────────────────────
+
+  async getSnapshots(clientId: string, params?: { from?: string; to?: string }): Promise<PortalSnapshot[]> {
+    const res = await api.get<any>(`/hotel-portal/${clientId}/snapshots`, { params });
+    return toArray<PortalSnapshot>(res.data);
   },
 
   // ── Portal: Campaigns ──────────────────────────────────────────────────
@@ -191,10 +513,9 @@ export const hotelPortalService = {
     clientId: string,
     params?: { from?: string; to?: string },
   ): Promise<HotelCampaignsResponse> {
-    const res = await api.get<HotelCampaignsResponse>(
-      `/hotel-portal/${clientId}/campaigns`,
-      { params, headers: { "x-skip-tenant": "true" } } as never,
-    );
+    const res = await api.get<HotelCampaignsResponse>(`/hotel-portal/${clientId}/campaigns`, {
+      params,
+    });
     return res.data;
   },
 
@@ -204,9 +525,21 @@ export const hotelPortalService = {
     clientId: string,
     params?: { from?: string; to?: string },
   ): Promise<HotelSiteMetricsResponse> {
-    const res = await api.get<HotelSiteMetricsResponse>(
-      `/hotel-portal/${clientId}/site-metrics`,
-      { params, headers: { "x-skip-tenant": "true" } } as never,
+    const res = await api.get<HotelSiteMetricsResponse>(`/hotel-portal/${clientId}/site-metrics`, {
+      params,
+    });
+    return res.data;
+  },
+
+  // ── Portal: Overview consolidado (contrato §3 — KPI calculado) ──────────
+
+  async getOverview(
+    clientId: string,
+    params: { from: string; to: string },
+  ): Promise<HotelOverviewResponse> {
+    const res = await api.get<HotelOverviewResponse>(
+      `/hotel-portal/${clientId}/overview`,
+      { params },
     );
     return res.data;
   },

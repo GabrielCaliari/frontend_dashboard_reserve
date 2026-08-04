@@ -70,6 +70,7 @@ const normalizePublicArticle = (
   language: normalizeLanguage(article.language),
   status: article.status,
   published_at: article.published_at,
+  scheduled_at: null,
   created_at: article.created_at,
   updated_at: article.updated_at,
   images: article.images ?? [],

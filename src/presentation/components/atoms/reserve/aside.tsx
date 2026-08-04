@@ -35,6 +35,10 @@ import {
   Package,
   Briefcase,
   Bell,
+  Megaphone,
+  Globe,
+  TrendingUp,
+  Link2,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -67,7 +71,7 @@ export function Sidebar({
   mobileStyle = "footer",
 }: SidebarProps) {
   const { push } = useRouter();
-  const { isSuperAdmin } = usePermissions();
+  const { isSuperAdmin, isManager } = usePermissions();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const [userName, setUserName] = useState<string>("");
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
@@ -157,12 +161,6 @@ export function Sidebar({
           label: t("dashboard"),
           icon: LayoutDashboardIcon,
           path: "/dashboard",
-        },
-        {
-          id: "hotel-portal",
-          label: "Portal de Clientes",
-          icon: Building2,
-          path: "/dashboard/hotel-portal",
         },
         {
           id: "leads-menu",
@@ -270,6 +268,55 @@ export function Sidebar({
           ],
         },
         {
+          id: "hotel-menu",
+          label: "Hotel Marketing",
+          icon: Building2,
+          subItems: [
+            {
+              id: "hotel-overview",
+              label: "Visão Geral",
+              icon: LayoutDashboardIcon,
+              path: "/dashboard/hotel/overview",
+            },
+            {
+              id: "hotel-campaigns",
+              label: "Campanhas",
+              icon: Megaphone,
+              path: "/dashboard/hotel/campaigns",
+            },
+            {
+              id: "hotel-site",
+              label: "Site",
+              icon: Globe,
+              path: "/dashboard/hotel/site",
+            },
+            {
+              id: "hotel-ota",
+              label: "OTA vs Direto",
+              icon: TrendingUp,
+              path: "/dashboard/hotel/ota",
+            },
+            {
+              id: "hotel-reports",
+              label: "Relatório Mensal",
+              icon: FileText,
+              path: "/dashboard/hotel/reports",
+            },
+            {
+              id: "hotel-whatsapp-links",
+              label: "Links WhatsApp",
+              icon: Link2,
+              path: "/dashboard/hotel/whatsapp-links",
+            },
+            {
+              id: "hotel-config",
+              label: "Configurações",
+              icon: Settings,
+              path: "/dashboard/hotel/config",
+            },
+          ],
+        },
+        {
           id: "notifications",
           label: t("notifications"),
           icon: Bell,
@@ -316,7 +363,74 @@ export function Sidebar({
       ];
     }
 
-    // Roles normais (owner, manager, editor, viewer)
+    // Manager = dono do hotel (portal de resultados RÉSERVE)
+    if (isManager) {
+      return [
+        {
+          id: "hotel-overview",
+          label: "Visão Geral",
+          icon: LayoutDashboardIcon,
+          path: "/dashboard/hotel/overview",
+        },
+        {
+          id: "hotel-campaigns",
+          label: "Campanhas",
+          icon: Megaphone,
+          path: "/dashboard/hotel/campaigns",
+        },
+        {
+          id: "hotel-site",
+          label: "Site",
+          icon: Globe,
+          path: "/dashboard/hotel/site",
+        },
+        {
+          id: "hotel-ota",
+          label: "OTA vs Direto",
+          icon: TrendingUp,
+          path: "/dashboard/hotel/ota",
+        },
+        {
+          id: "hotel-reports",
+          label: "Relatório Mensal",
+          icon: FileText,
+          path: "/dashboard/hotel/reports",
+        },
+        {
+          id: "hotel-whatsapp-links",
+          label: "Links WhatsApp",
+          icon: Link2,
+          path: "/dashboard/hotel/whatsapp-links",
+        },
+        {
+          id: "hotel-config",
+          label: "Configurações",
+          icon: Settings,
+          path: "/dashboard/hotel/config",
+        },
+        {
+          id: "notifications",
+          label: t("notifications"),
+          icon: Bell,
+          path: "/dashboard/notifications",
+          badge: <NotificationBadge />,
+        },
+        {
+          id: "profile",
+          label: t("profile"),
+          icon: UserCircle2,
+          path: "/dashboard/profile",
+        },
+        {
+          id: "settings",
+          label: t("settings"),
+          icon: Settings,
+          path: "/dashboard/settings",
+        },
+      ];
+    }
+
+    // Roles normais (owner, editor, viewer)
     return [
       {
         id: "leads-menu",
@@ -438,7 +552,7 @@ export function Sidebar({
         ],
       },
     ];
-  }, [isSuperAdmin, t]);
+  }, [isSuperAdmin, isManager, t]);
 
   // Filter items recursively based on disabledTabs
   const filterDisabled = (items: NavItem[]): NavItem[] => {
@@ -522,6 +636,19 @@ export function Sidebar({
     ) {
       setExpandedMenus((prev) =>
         prev.includes("payments-menu") ? prev : [...prev, "payments-menu"],
+      );
+    }
+    if (
+      activeTab === "hotel-overview" ||
+      activeTab === "hotel-campaigns" ||
+      activeTab === "hotel-site" ||
+      activeTab === "hotel-ota" ||
+      activeTab === "hotel-reports" ||
+      activeTab === "hotel-whatsapp-links" ||
+      activeTab === "hotel-config"
+    ) {
+      setExpandedMenus((prev) =>
+        prev.includes("hotel-menu") ? prev : [...prev, "hotel-menu"],
       );
     }
   }, [activeTab]);
