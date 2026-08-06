@@ -38,6 +38,7 @@
     "globalWorkspace": "Workspace global da plataforma",
     "dashboard": "Dashboard",
     "globalDashboard": "Visão Global",
+    "hotelPortal": "Portal de Clientes",
     "tenantLabel": "Tenant",
     "tenantLoading": "Carregando...",
     "noTenantsAvailable": "Nenhum tenant disponível",

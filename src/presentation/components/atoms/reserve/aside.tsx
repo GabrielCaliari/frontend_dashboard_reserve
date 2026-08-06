@@ -103,6 +103,12 @@ export function Sidebar({
           path: "/dashboard/global",
         },
         {
+          id: "hotel-portal",
+          label: t("hotelPortal"),
+          icon: Building2,
+          path: "/dashboard/hotel-portal",
+        },
+        {
           id: "reports",
           label: t("reports"),
           icon: FileBarChart2,
