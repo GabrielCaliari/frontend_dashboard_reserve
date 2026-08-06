@@ -94,6 +94,10 @@ export function Sidebar({
   };
 
   const navItems: NavItem[] = useMemo(() => {
+    // Super admin ve o menu completo: itens globais da plataforma + todos os
+    // modulos operacionais. Antes eram dois blocos `if (isSuperAdmin)` e o
+    // segundo nunca era alcancado, o que deixava leads, CMS, hotel marketing e
+    // pagamentos inacessiveis pelo menu.
     if (isSuperAdmin) {
       return [
         {
@@ -103,70 +107,16 @@ export function Sidebar({
           path: "/dashboard/global",
         },
         {
-          id: "hotel-portal",
-          label: t("hotelPortal"),
-          icon: Building2,
-          path: "/dashboard/hotel-portal",
-        },
-        {
-          id: "reports",
-          label: t("reports"),
-          icon: FileBarChart2,
-          path: "/dashboard/reports",
-        },
-        {
-          id: "access-management",
-          label: t("accessManagement"),
-          icon: Shield,
-          subItems: [
-            {
-              id: "admins",
-              label: t("admins"),
-              icon: UserCog,
-              path: "/dashboard/access-management/admins",
-            },
-            {
-              id: "tenants",
-              label: t("tenants"),
-              icon: Building2,
-              path: "/dashboard/access-management/tenants",
-            },
-            {
-              id: "users",
-              label: t("users"),
-              icon: Users,
-              path: "/dashboard/access-management/users",
-            },
-          ],
-        },
-        {
-          id: "notifications-global",
-          label: t("notifications"),
-          icon: Bell,
-          path: "/dashboard/global/notifications",
-        },
-        {
-          id: "profile",
-          label: t("profile"),
-          icon: UserCircle2,
-          path: "/dashboard/profile",
-        },
-        {
-          id: "settings",
-          label: t("settings"),
-          icon: Settings,
-          path: "/dashboard/settings",
-        },
-      ];
-    }
-
-    if (isSuperAdmin) {
-      return [
-        {
           id: "dashboard",
           label: t("dashboard"),
           icon: LayoutDashboardIcon,
           path: "/dashboard",
+        },
+        {
+          id: "hotel-portal",
+          label: t("hotelPortal"),
+          icon: Building2,
+          path: "/dashboard/hotel-portal",
         },
         {
           id: "leads-menu",
@@ -323,11 +273,23 @@ export function Sidebar({
           ],
         },
         {
+          id: "reports",
+          label: t("reports"),
+          icon: FileBarChart2,
+          path: "/dashboard/reports",
+        },
+        {
           id: "notifications",
           label: t("notifications"),
           icon: Bell,
           path: "/dashboard/notifications",
           badge: <NotificationBadge />,
+        },
+        {
+          id: "notifications-global",
+          label: t("globalNotifications"),
+          icon: Bell,
+          path: "/dashboard/global/notifications",
         },
         {
           id: "profile",
