@@ -36,3 +36,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Worktrees de agentes (copias do projeto, nao versionar)
+.claude/worktrees/
