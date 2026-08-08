@@ -67,6 +67,24 @@ import type {
   CreateWhatsAppLinkDto,
   UpdateWhatsAppLinkDto,
 } from '@/src/shared/domain/types/@hotel-portal';
+import type {
+  ActivityLogPage,
+  BotChannelsResponse,
+  BotConfigProposal,
+  ContentPost,
+  ConversationDetailResponse,
+  ConversationFilters,
+  ConversationListItem,
+  ConversationListResponse,
+  CreateBotConfigProposalDto,
+  FunnelBoardColumn,
+  FunnelMetricsResponse,
+  InstagramOverviewResponse,
+  LeadsOverviewResponse,
+  Milestone,
+  RoiResponse,
+  SemesterPlan,
+} from '@/src/shared/domain/types/@hotel-painel';
 
 const adminConfig = { headers: { 'x-skip-tenant': 'true' } };
 const adminHeaders = adminConfig as never;
@@ -542,5 +560,164 @@ export const hotelPortalService = {
       { params },
     );
     return res.data;
+  },
+
+  // ── Painel Reserve: blocos do cliente (ClientPortalController) ──────────
+  //
+  // Todas escopadas por `:clientId` e protegidas pelo AdminJwtGuard, ou seja:
+  // usam a MESMA sessao do dashboard (cookie `token`). Nao existe sessao
+  // separada de portal.
+
+  /** §3.3 Camada 1 — cliques nos links rastreaveis ate leads gerados. */
+  async getLeadsOverview(
+    clientId: string,
+    params: { from: string; to: string },
+  ): Promise<LeadsOverviewResponse> {
+    const res = await api.get<LeadsOverviewResponse>(
+      `/hotel-portal/${clientId}/leads-overview`,
+      { params },
+    );
+    return res.data;
+  },
+
+  /** §3.9 Analise de ROI. `nivel2`/`nivel3` podem vir ausentes — ver tipo. */
+  async getRoi(
+    clientId: string,
+    params: { from: string; to: string },
+  ): Promise<RoiResponse> {
+    const res = await api.get<RoiResponse>(`/hotel-portal/${clientId}/roi`, {
+      params,
+    });
+    return res.data;
+  },
+
+  /**
+   * O backend devolve TODOS os planos do tenant ordenados por semestre desc
+   * (`findByTenantId`), nao um so. O plano corrente e o primeiro.
+   */
+  async getSemesterPlans(clientId: string): Promise<SemesterPlan[]> {
+    const res = await api.get<any>(`/hotel-portal/${clientId}/semester-plan`);
+    return toArray<SemesterPlan>(res.data);
+  },
+
+  async listBotConfigProposals(clientId: string): Promise<BotConfigProposal[]> {
+    const res = await api.get<any>(
+      `/hotel-portal/${clientId}/bot-config-proposals`,
+    );
+    return toArray<BotConfigProposal>(res.data);
+  },
+
+  async createBotConfigProposal(
+    clientId: string,
+    data: CreateBotConfigProposalDto,
+  ): Promise<BotConfigProposal> {
+    const res = await api.post<any>(
+      `/hotel-portal/${clientId}/bot-config-proposals`,
+      data,
+    );
+    return (res.data?.data ?? res.data) as BotConfigProposal;
+  },
+
+  async getBotChannels(clientId: string): Promise<BotChannelsResponse> {
+    const res = await api.get<BotChannelsResponse>(
+      `/hotel-portal/${clientId}/whatsapp/channels`,
+    );
+    return res.data;
+  },
+
+  async listConversations(
+    clientId: string,
+    params?: ConversationFilters,
+  ): Promise<ConversationListItem[]> {
+    const res = await api.get<ConversationListResponse>(
+      `/hotel-portal/${clientId}/whatsapp/conversations`,
+      { params },
+    );
+    return res.data?.conversations ?? [];
+  },
+
+  async getConversationDetail(
+    clientId: string,
+    numeroContato: string,
+  ): Promise<ConversationDetailResponse> {
+    const res = await api.get<ConversationDetailResponse>(
+      `/hotel-portal/${clientId}/whatsapp/conversations/${encodeURIComponent(numeroContato)}`,
+    );
+    return res.data;
+  },
+
+  async getFunnelBoard(clientId: string): Promise<FunnelBoardColumn[]> {
+    const res = await api.get<FunnelBoardColumn[]>(
+      `/hotel-portal/${clientId}/whatsapp/funnel`,
+    );
+    return toArray<FunnelBoardColumn>(res.data);
+  },
+
+  async getFunnelMetrics(
+    clientId: string,
+    params: { from: string; to: string },
+  ): Promise<FunnelMetricsResponse> {
+    const res = await api.get<FunnelMetricsResponse>(
+      `/hotel-portal/${clientId}/whatsapp/funnel/metrics`,
+      { params },
+    );
+    return res.data;
+  },
+
+  async getInstagramOverview(
+    clientId: string,
+    params: { from: string; to: string },
+  ): Promise<InstagramOverviewResponse> {
+    const res = await api.get<InstagramOverviewResponse>(
+      `/hotel-portal/${clientId}/instagram`,
+      { params },
+    );
+    return res.data;
+  },
+
+  async getContentPosts(clientId: string, month: string): Promise<ContentPost[]> {
+    const res = await api.get<any>(`/hotel-portal/${clientId}/content-posts`, {
+      params: { month },
+    });
+    return toArray<ContentPost>(res.data);
+  },
+
+  async getActivities(
+    clientId: string,
+    params?: { page?: number; limit?: number },
+  ): Promise<ActivityLogPage> {
+    const res = await api.get<ActivityLogPage>(
+      `/hotel-portal/${clientId}/activities`,
+      { params },
+    );
+    return res.data;
+  },
+
+  /**
+   * §3.8 — PDF gerado no backend (Puppeteer). Hoje o backend so suporta a
+   * secao `overview` (`SUPPORTED_SECTIONS` no PdfExportController), entao nao
+   * ofereca exportacao nas outras telas: passar outra secao devolve 400.
+   */
+  async exportReportPdf(
+    clientId: string,
+    params: { from: string; to: string },
+  ): Promise<Blob> {
+    const res = await api.get(`/hotel-portal/${clientId}/export/report`, {
+      params: { ...params, section: 'overview' },
+      responseType: 'blob',
+    });
+    return res.data as Blob;
+  },
+
+  /**
+   * Marcos da linha do tempo. Unica rota do Painel escopada por `tenantId`
+   * (nao por `clientId`) — o controller e o admin-milestone, nao o
+   * ClientPortalController.
+   */
+  async listMilestones(tenantId: string): Promise<Milestone[]> {
+    const res = await api.get<any>(
+      `/admin/hotel-portal/${tenantId}/milestones`,
+    );
+    return toArray<Milestone>(res.data);
   },
 };
