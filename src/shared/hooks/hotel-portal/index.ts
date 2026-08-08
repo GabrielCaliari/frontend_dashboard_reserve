@@ -12,3 +12,4 @@ export * from './use-hotel-portal-guests';
 export * from './use-hotel-portal-whatsapp';
 export * from './use-hotel-portal-whatsapp-links';
 export * from './use-hotel-portal-snapshots';
+export * from './use-hotel-painel';

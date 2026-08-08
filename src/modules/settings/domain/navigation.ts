@@ -28,15 +28,39 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
   coupons: ["coupons"],
   reports: ["reports"],
   notifications: ["notifications", "notifications-global"],
+  // Painel Reserve. Todo id que aparece em `buildHotelNavItems`
+  // (src/presentation/components/atoms/reserve/hotel-nav-items.tsx) precisa
+  // estar aqui — id ausente nao e gateado e vaza para tenant que nao
+  // contratou o modulo.
   hotel: [
-    "hotel-menu",
     "hotel-overview",
-    "hotel-config",
+    // grupos
+    "hotel-marketing-menu",
+    "hotel-atendimento-menu",
+    "hotel-reservas-menu",
+    "hotel-resultados-menu",
+    "hotel-conta-menu",
+    // Marketing
+    "hotel-trafego",
     "hotel-campaigns",
-    "hotel-ota",
-    "hotel-reports",
+    "hotel-instagram",
     "hotel-site",
+    // Atendimento
+    "hotel-conversas",
+    "hotel-bot",
+    "hotel-funil",
     "hotel-whatsapp-links",
+    // Reservas
+    "hotel-ota",
+    "hotel-calendario",
+    // Resultados
+    "hotel-retorno",
+    "hotel-reports",
+    "hotel-evolucao",
+    // Conta
+    "hotel-plano",
+    "hotel-atividades",
+    "hotel-config",
   ],
   metrics: [],
 };
@@ -97,6 +121,16 @@ const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
   "hotel-reports": ["hotel.read"],
   "hotel-site": ["hotel.read"],
   "hotel-whatsapp-links": ["hotel.read"],
+  "hotel-trafego": ["hotel.read"],
+  "hotel-instagram": ["hotel.read"],
+  "hotel-conversas": ["hotel.read"],
+  "hotel-bot": ["hotel.read"],
+  "hotel-funil": ["hotel.read"],
+  "hotel-calendario": ["hotel.read"],
+  "hotel-retorno": ["hotel.read"],
+  "hotel-evolucao": ["hotel.read"],
+  "hotel-plano": ["hotel.read"],
+  "hotel-atividades": ["hotel.read"],
 };
 
 export function filterNavigationByPermissions<T extends ModuleNavItem>(

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { resolvePortalRedirect } from "@/src/modules/portal/domain/resolve-portal-redirect";
 
 export async function proxy(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
@@ -18,13 +17,6 @@ export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/dashboard")) {
     if (!token) {
       return NextResponse.redirect(new URL("/auth/login", request.url));
-    }
-  }
-  if (request.nextUrl.pathname.startsWith("/portal")) {
-    const portalToken = request.cookies.get("portal-token")?.value;
-    const redirectTo = resolvePortalRedirect(request.nextUrl.pathname, Boolean(portalToken));
-    if (redirectTo) {
-      return NextResponse.redirect(new URL(redirectTo, request.url));
     }
   }
   return NextResponse.next();

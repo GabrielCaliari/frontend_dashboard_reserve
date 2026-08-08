@@ -28,28 +28,15 @@ function extractTenantId(cookieValue: string): string | null {
 }
 
 /**
- * Requests to the client-portal backend (`/portal/**`) authenticate with a
- * separate session (`portal-token` cookie, set by `usePortalAuth` — see
- * `src/modules/portal/presentation/hooks/use-portal-auth.ts`) that is
- * intentionally isolated from the admin `token`/`tenant-storage` cookies so
- * an admin session never grants portal access and vice versa (master doc
- * §4.1, Assumption 2 in the portal frontend plan). Route on `config.url`
- * rather than the browser location, since axios requests can be issued from
- * any page.
- */
-function isPortalRequest(url: string | undefined): boolean {
-  return typeof url === "string" && url.startsWith("/portal/");
-}
-
-/**
  * Injeta headers de autenticacao (Authorization, session-id, x-tenant-id) no config do axios.
  *
  * O tenant-id e lido do cookie "tenant-storage" (unica fonte de verdade, setado pelo Zustand).
  * Funciona tanto no client quanto no server.
  *
- * Requisicoes para `/portal/**` (client-portal) usam o cookie `portal-token`
- * como Bearer em vez do `token` administrativo, e nao enviam `x-tenant-id`
- * (a sessao do portal ja e escopada a um unico tenant pelo backend).
+ * O Painel Reserve do cliente de hotelaria NAO tem sessao propria: ele e um
+ * tenant como qualquer outro e usa este mesmo `token`. As rotas
+ * `/hotel-portal/**` do backend sao protegidas pelo AdminJwtGuard e escopadas
+ * por `:clientId` no path, entao nao ha caso especial aqui.
  */
 export async function injectAuthHeaders(
   config: InternalAxiosRequestConfig,
@@ -57,7 +44,6 @@ export async function injectAuthHeaders(
   const requestConfig = config as InternalAxiosRequestConfig & {
     skipTenantHeader?: boolean;
   };
-  const portalRequest = isPortalRequest(config.url);
 
   if (typeof window !== "undefined") {
     // === CLIENT-SIDE ===
@@ -68,12 +54,6 @@ export async function injectAuthHeaders(
         ?.split("=")
         .slice(1)
         .join("=") ?? null;
-
-    if (portalRequest) {
-      const portalToken = getCookie("portal-token");
-      if (portalToken) config.headers.Authorization = `Bearer ${portalToken}`;
-      return config;
-    }
 
     const token = getCookie("token");
     const sessionId = getCookie("session-code");
@@ -94,12 +74,6 @@ export async function injectAuthHeaders(
     try {
       const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
-
-      if (portalRequest) {
-        const portalToken = cookieStore.get("portal-token")?.value;
-        if (portalToken) config.headers.Authorization = `Bearer ${portalToken}`;
-        return config;
-      }
 
       const token = cookieStore.get("token")?.value;
       const sessionId = cookieStore.get("session-code")?.value;
