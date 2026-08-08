@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { GATEABLE_MODULES, normalizeModuleFlags } from "./tenant-modules";
+import {
+  GATEABLE_MODULES,
+  backendModuleKey,
+  normalizeModuleFlags,
+  toBackendModulePatch,
+} from "./tenant-modules";
 
 describe("GATEABLE_MODULES", () => {
   it("lists exactly the modules the Reserve backend gates today", () => {
@@ -42,5 +47,48 @@ describe("normalizeModuleFlags", () => {
     expect(normalizeModuleFlags(null).leads).toBe(true);
     expect(normalizeModuleFlags(undefined).leads).toBe(true);
     expect(normalizeModuleFlags("not an object").leads).toBe(true);
+  });
+
+  it("reads the backend's own names for the modules that differ", () => {
+    const flags = normalizeModuleFlags({
+      "client-portal": false,
+      stats: false,
+    });
+    expect(flags.hotel).toBe(false);
+    expect(flags.metrics).toBe(false);
+  });
+
+  it("prefers this catalog's name when both are present", () => {
+    const flags = normalizeModuleFlags({
+      hotel: true,
+      "client-portal": false,
+    });
+    expect(flags.hotel).toBe(true);
+  });
+});
+
+describe("writing back to the backend", () => {
+  it("translates this catalog's names into the backend's", () => {
+    expect(backendModuleKey("hotel")).toBe("client-portal");
+    expect(backendModuleKey("metrics")).toBe("stats");
+    expect(backendModuleKey("leads")).toBe("leads");
+  });
+
+  it("builds a patch the backend understands", () => {
+    expect(toBackendModulePatch({ hotel: false, leads: true })).toEqual({
+      "client-portal": false,
+      leads: true,
+    });
+  });
+
+  it("drops non-boolean entries from the patch", () => {
+    expect(
+      toBackendModulePatch({ hotel: undefined, cms: false }),
+    ).toEqual({ cms: false });
+  });
+
+  it("round-trips: what we write comes back onto the same flag", () => {
+    const patch = toBackendModulePatch({ hotel: false });
+    expect(normalizeModuleFlags(patch).hotel).toBe(false);
   });
 });

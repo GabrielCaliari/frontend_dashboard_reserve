@@ -30,8 +30,10 @@ import {
   FileText,
   CheckCircle2,
   Clock,
+  SlidersHorizontal,
 } from "lucide-react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
+import { TenantModulesCard } from "@/src/modules/settings/presentation/components/tenant-modules-card";
 import { useTenantById } from "@/src/shared/hooks/access-management/useTenants";
 import { AdminRole } from "@/src/shared/domain/types/@access-management";
 import { toast } from "react-hot-toast";
@@ -522,6 +524,13 @@ export default function TenantDetailPage() {
                   </CardBody>
                 </Card>
               )}
+            </div>
+          </Tab>
+
+          {/* Modulos contratados — o que este tenant enxerga no painel */}
+          <Tab title={<div className="flex items-center gap-2"><SlidersHorizontal className="h-4 w-4" /><span>Módulos</span></div>}>
+            <div className="pt-6">
+              <TenantModulesCard tenantId={String(tenant.id)} />
             </div>
           </Tab>
         </Tabs>
