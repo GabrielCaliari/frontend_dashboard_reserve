@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { TenantCapabilitiesProvider } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 
 const Sidebar = dynamic(
   () =>
@@ -14,9 +15,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="inline-flex h-[calc(100svh-var(--header-height))] w-screen overflow-hidden">
-      <Sidebar disabledTabs={[]} mobileStyle="footer" />
-      {children}
-    </div>
+    <TenantCapabilitiesProvider>
+      <div className="inline-flex h-[calc(100svh-var(--header-height))] w-screen overflow-hidden">
+        <Sidebar disabledTabs={[]} mobileStyle="footer" />
+        {children}
+      </div>
+    </TenantCapabilitiesProvider>
   );
 }

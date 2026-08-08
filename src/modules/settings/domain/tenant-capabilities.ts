@@ -63,14 +63,36 @@ function normalizeRole(value: unknown): AdminRoleValue {
     : "viewer";
 }
 
+/**
+ * O catalogo do backend nao e identico ao daqui: la o dominio do hotel se chama
+ * "client-portal" e as metricas do dashboard, "stats". Sem essa traducao o
+ * modulo chega ausente e `toModuleFlags` assume `true` -- ou seja, Hotel
+ * Marketing apareceria para todo tenant, gateado por nada.
+ */
+const BACKEND_MODULE_ALIASES: Partial<Record<GateableModule, readonly string[]>> =
+  {
+    hotel: ["client-portal"],
+    metrics: ["stats"],
+  };
+
+function readModuleEntry(value: Record<string, unknown>, module: GateableModule) {
+  const direct = value[module];
+  if (isRecord(direct)) return direct;
+  for (const alias of BACKEND_MODULE_ALIASES[module] ?? []) {
+    const aliased = value[alias];
+    if (isRecord(aliased)) return aliased;
+  }
+  return undefined;
+}
+
 function normalizeModuleResolutions(
   value: unknown,
 ): Partial<Record<GateableModule, ModulePolicyResolution>> {
   if (!isRecord(value)) return {};
   const result: Partial<Record<GateableModule, ModulePolicyResolution>> = {};
   for (const module of GATEABLE_MODULES) {
-    const entry = value[module];
-    if (!isRecord(entry)) continue;
+    const entry = readModuleEntry(value, module);
+    if (!entry) continue;
     const source =
       typeof entry.source === "string" &&
       (VALID_SOURCES as readonly string[]).includes(entry.source)

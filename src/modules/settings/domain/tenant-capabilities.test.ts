@@ -53,6 +53,34 @@ describe("normalizeTenantCapabilities", () => {
     expect(result.modules.hotel).toBe(true);
   });
 
+  it("maps the backend module names onto this catalog's names", () => {
+    // O backend chama de "client-portal" e "stats" o que aqui e "hotel" e
+    // "metrics". Sem a traducao os dois cairiam no default `true` e o Hotel
+    // Marketing apareceria para todo tenant, gateado por nada.
+    const result = normalizeTenantCapabilities({
+      modules: {
+        "client-portal": { enabled: false, source: "tenantTypePolicy" },
+        stats: { enabled: false, source: "tenantOverride" },
+      },
+    });
+    expect(result.modules.hotel).toBe(false);
+    expect(result.modules.metrics).toBe(false);
+    expect(result.moduleResolutions.hotel).toEqual({
+      enabled: false,
+      source: "tenantTypePolicy",
+    });
+  });
+
+  it("prefers this catalog's own module name over the backend alias", () => {
+    const result = normalizeTenantCapabilities({
+      modules: {
+        hotel: { enabled: true, source: "tenantOverride" },
+        "client-portal": { enabled: false, source: "tenantTypePolicy" },
+      },
+    });
+    expect(result.modules.hotel).toBe(true);
+  });
+
   it("filters non-string entries out of permissions", () => {
     const result = normalizeTenantCapabilities({
       permissions: ["leads.read", 42, null, "cms.article.read"],
