@@ -78,13 +78,8 @@ export function Sidebar({
 }: SidebarProps) {
   const { push } = useRouter();
   const { isSuperAdmin, isManager } = usePermissions();
-  const {
-    modules,
-    permissions,
-    isMasterTenant,
-    isLoading: capabilitiesLoading,
-    isError: capabilitiesError,
-  } = useTenantCapabilities();
+  const { modules, permissions, isMasterTenant, policy } =
+    useTenantCapabilities();
   const selectedTenant = useTenantStore((state) => state.selectedTenant);
   const [userName, setUserName] = useState<string>("");
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
@@ -551,27 +546,23 @@ export function Sidebar({
   // O menu reflete o que o tenant contratou: primeiro os disabledTabs
   // explicitos, depois os modulos habilitados para o tenant e por fim as
   // permissoes de leitura do admin. O tenant MASTER e a plataforma em si, entao
-  // nao passa pelo gating. Enquanto as capabilities carregam (ou se a chamada
-  // falha), getUsableModuleFlags devolve undefined e o filtro de modulo nao
-  // remove nada -- melhor mostrar a mais por um instante do que piscar um menu
-  // vazio a cada troca de tenant.
+  // nao passa pelo gating.
+  //
+  // Nada e filtrado enquanto `policy.ready` for falso (sem tenant selecionado,
+  // capabilities carregando ou a chamada falhou). Sem essa porta o menu fica
+  // praticamente vazio nesses estados: `permissions` chega como Set vazio e
+  // filterNavigationByPermissions remove todo item com permissao declarada em
+  // NAV_READ_PERMISSIONS. Gating de UI e conveniencia -- quem barra de verdade
+  // e o ModuleAccessGuard no backend --, entao na duvida mostramos a mais.
   const filteredNavItems = useMemo(() => {
     const explicitlyFiltered = filterDisabled(navItems);
-    if (isMasterTenant) return explicitlyFiltered;
+    if (isMasterTenant || !policy.ready) return explicitlyFiltered;
     const moduleFiltered = filterNavigationByModuleFlags(
       explicitlyFiltered,
-      getUsableModuleFlags(modules, capabilitiesLoading, capabilitiesError),
+      getUsableModuleFlags(modules, false, false),
     );
     return filterNavigationByPermissions(moduleFiltered, permissions);
-  }, [
-    navItems,
-    disabledTabs,
-    modules,
-    isMasterTenant,
-    permissions,
-    capabilitiesLoading,
-    capabilitiesError,
-  ]);
+  }, [navItems, disabledTabs, modules, isMasterTenant, permissions, policy]);
 
   // Deriva o activeTab a partir do pathname quando o prop não é fornecido
   const activeTab = useMemo(() => {
