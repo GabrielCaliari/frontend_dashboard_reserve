@@ -35,10 +35,6 @@ import {
   Package,
   Briefcase,
   Bell,
-  Megaphone,
-  Globe,
-  TrendingUp,
-  Link2,
 } from "lucide-react";
 
 import { HiOutlineDatabase, HiOutlineDocumentSearch } from "react-icons/hi";
@@ -55,6 +51,10 @@ import {
   filterNavigationByPermissions,
   getUsableModuleFlags,
 } from "@/src/modules/settings/domain/navigation";
+import {
+  buildHotelNavItems,
+  HOTEL_GROUP_IDS,
+} from "@/src/presentation/components/atoms/reserve/hotel-nav-items";
 
 export interface SidebarProps {
   activeTab?: string; // opcional — derivado de usePathname() quando omitido
@@ -231,55 +231,7 @@ export function Sidebar({
             },
           ],
         },
-        {
-          id: "hotel-menu",
-          label: "Hotel Marketing",
-          icon: Building2,
-          subItems: [
-            {
-              id: "hotel-overview",
-              label: "Visão Geral",
-              icon: LayoutDashboardIcon,
-              path: "/dashboard/hotel/overview",
-            },
-            {
-              id: "hotel-campaigns",
-              label: "Campanhas",
-              icon: Megaphone,
-              path: "/dashboard/hotel/campaigns",
-            },
-            {
-              id: "hotel-site",
-              label: "Site",
-              icon: Globe,
-              path: "/dashboard/hotel/site",
-            },
-            {
-              id: "hotel-ota",
-              label: "OTA vs Direto",
-              icon: TrendingUp,
-              path: "/dashboard/hotel/ota",
-            },
-            {
-              id: "hotel-reports",
-              label: "Relatório Mensal",
-              icon: FileText,
-              path: "/dashboard/hotel/reports",
-            },
-            {
-              id: "hotel-whatsapp-links",
-              label: "Links WhatsApp",
-              icon: Link2,
-              path: "/dashboard/hotel/whatsapp-links",
-            },
-            {
-              id: "hotel-config",
-              label: "Configurações",
-              icon: Settings,
-              path: "/dashboard/hotel/config",
-            },
-          ],
-        },
+        ...buildHotelNavItems(t),
         {
           id: "reports",
           label: t("reports"),
@@ -339,51 +291,13 @@ export function Sidebar({
       ];
     }
 
-    // Manager = dono do hotel (portal de resultados RÉSERVE)
+    // Manager = dono do hotel. Mesma arvore de navegacao do superadmin, para
+    // que os dois vejam o Painel Reserve exatamente igual — o que o gerente
+    // pode ou nao ver ja e decidido pelo modulo e pelas permissoes, nao por
+    // uma segunda lista escrita a mao que sai de sincronia.
     if (isManager) {
       return [
-        {
-          id: "hotel-overview",
-          label: "Visão Geral",
-          icon: LayoutDashboardIcon,
-          path: "/dashboard/hotel/overview",
-        },
-        {
-          id: "hotel-campaigns",
-          label: "Campanhas",
-          icon: Megaphone,
-          path: "/dashboard/hotel/campaigns",
-        },
-        {
-          id: "hotel-site",
-          label: "Site",
-          icon: Globe,
-          path: "/dashboard/hotel/site",
-        },
-        {
-          id: "hotel-ota",
-          label: "OTA vs Direto",
-          icon: TrendingUp,
-          path: "/dashboard/hotel/ota",
-        },
-        {
-          id: "hotel-reports",
-          label: "Relatório Mensal",
-          icon: FileText,
-          path: "/dashboard/hotel/reports",
-        },
-        {
-          id: "hotel-whatsapp-links",
-          label: "Links WhatsApp",
-          icon: Link2,
-          path: "/dashboard/hotel/whatsapp-links",
-        },
-        {
-          id: "hotel-config",
-          label: "Configurações",
-          icon: Settings,
-          path: "/dashboard/hotel/config",
-        },
+        ...buildHotelNavItems(t),
         {
           id: "notifications",
           label: t("notifications"),
@@ -630,19 +544,22 @@ export function Sidebar({
         prev.includes("payments-menu") ? prev : [...prev, "payments-menu"],
       );
     }
-    if (
-      activeTab === "hotel-overview" ||
-      activeTab === "hotel-campaigns" ||
-      activeTab === "hotel-site" ||
-      activeTab === "hotel-ota" ||
-      activeTab === "hotel-reports" ||
-      activeTab === "hotel-whatsapp-links" ||
-      activeTab === "hotel-config"
-    ) {
+    // Os grupos do Painel Reserve derivam do proprio `buildHotelNavItems` em
+    // vez de uma lista de ids repetida aqui — assim, item novo no menu ja
+    // abre o grupo certo sem precisar lembrar de editar este efeito.
+    const hotelGroup = HOTEL_GROUP_IDS.find((groupId) =>
+      buildHotelNavItems(t)
+        .find((item) => item.id === groupId)
+        ?.subItems?.some((subItem) => subItem.id === activeTab),
+    );
+    if (hotelGroup) {
       setExpandedMenus((prev) =>
-        prev.includes("hotel-menu") ? prev : [...prev, "hotel-menu"],
+        prev.includes(hotelGroup) ? prev : [...prev, hotelGroup],
       );
     }
+    // `t` e estavel entre renders do next-intl; incluir na lista de deps
+    // reexecutaria o efeito a cada render sem mudar nada.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const isItemActive = (item: NavItem): boolean => {
