@@ -41,7 +41,9 @@ describe("MotorTarifasPage", () => {
   it("mostra temporadas, regras de preco e politica", () => {
     render(<MotorTarifasPage />);
     expect(screen.getByText("Tarifas")).toBeInTheDocument();
-    expect(screen.getByText("Alta — Julho")).toBeInTheDocument();
+    // O nome tambem aparece na option escondida do Select de temporada,
+    // entao o assert mira o <strong> da lista.
+    expect(screen.getByText("Alta — Julho", { selector: "strong" })).toBeInTheDocument();
     expect(screen.getByText(/Sáb, Dom/)).toBeInTheDocument(); // dow_mask 96 = sab+dom
     expect(screen.getByText(/7 dias/)).toBeInTheDocument();
   });
