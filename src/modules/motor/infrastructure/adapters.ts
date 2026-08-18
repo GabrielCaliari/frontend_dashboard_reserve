@@ -7,8 +7,11 @@ import type {
   CreateMotorRoomTypeDto,
   CreateMotorSeasonDto,
   CreateMotorUnitDto,
+  ConnectMotorCanalDto,
   MotorBlock,
   MotorCalendar,
+  MotorCanaisOverview,
+  MotorCanalConnectResult,
   MotorDailyInventoryRow,
   MotorReservation,
   MotorRoomType,
@@ -167,5 +170,31 @@ export const motorService = {
   },
   async cancelReservation(tenantId: string, id: string, dto: { motivo: string }) {
     return (await api.post(`/motor/${tenantId}/reservations/${id}/cancel`, dto, adminConfig)).data;
+  },
+
+  // ── Canais (Beds24) ──────────────────────────────────────────────────────
+  async getCanais(tenantId: string): Promise<MotorCanaisOverview> {
+    const res = await api.get(`/motor/${tenantId}/canais`, adminConfig);
+    const data = res.data as any;
+    return {
+      ...data,
+      fila_erros: (data.fila_erros ?? []).map((item: any) => ({
+        ...item,
+        range_inicio: String(item.range_inicio).slice(0, 10),
+        range_fim: String(item.range_fim).slice(0, 10),
+      })),
+    };
+  },
+  async connectCanal(tenantId: string, dto: ConnectMotorCanalDto): Promise<MotorCanalConnectResult> {
+    return (await api.post(`/motor/${tenantId}/canais/connect`, dto, adminConfig)).data;
+  },
+  async saveCanalRoomMap(tenantId: string, map: Record<string, number>) {
+    return (await api.put(`/motor/${tenantId}/canais/room-map`, { map }, adminConfig)).data;
+  },
+  async setCanalReconcile2x(tenantId: string, enabled: boolean) {
+    return (await api.put(`/motor/${tenantId}/canais/reconcile-2x`, { enabled }, adminConfig)).data;
+  },
+  async reconcileCanalNow(tenantId: string): Promise<{ corrigidas: number }> {
+    return (await api.post(`/motor/${tenantId}/canais/reconcile`, {}, adminConfig)).data;
   },
 };

@@ -175,6 +175,7 @@ describe("modulo motor", () => {
       "motor-tarifas",
       "motor-reservas",
       "motor-acomodacoes",
+      "motor-canais",
     ];
     for (const id of groupIds) {
       expect(MODULE_NAV_IDS.motor).toContain(id);
@@ -187,6 +188,7 @@ describe("modulo motor", () => {
       "motor-tarifas",
       "motor-reservas",
       "motor-acomodacoes",
+      "motor-canais",
     ]) {
       expect(NAV_READ_PERMISSIONS[id]).toEqual(["motor.read"]);
     }

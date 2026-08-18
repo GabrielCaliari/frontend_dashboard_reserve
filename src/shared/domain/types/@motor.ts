@@ -218,6 +218,44 @@ export interface CreateMotorBlockDto {
   nota?: string;
 }
 
+// ── Canais (Beds24) ──────────────────────────────────────────────────────────
+
+export type MotorCanalStatus = 'OK' | 'DIVERGENTE' | 'ERRO' | 'DESCONECTADO';
+
+export interface MotorCanalFilaErro {
+  id: string;
+  room_type_id: string;
+  range_inicio: string;
+  range_fim: string;
+  attempts: number;
+}
+
+/**
+ * Shape seguro do GET /canais — o backend NUNCA devolve refresh token nem
+ * webhook_secret aqui (ChannelAdminService.toSafeShape).
+ */
+export interface MotorCanaisOverview {
+  status: MotorCanalStatus;
+  conectado: boolean;
+  reconcile_2x: boolean;
+  beds24_property_id: string | null;
+  beds24_room_id_map: Record<string, number | string> | null;
+  last_push_at: string | null;
+  last_webhook_at: string | null;
+  last_reconcile_at: string | null;
+  fila_erros: MotorCanalFilaErro[];
+}
+
+export interface ConnectMotorCanalDto {
+  invite_code: string;
+  beds24_property_id: string;
+}
+
+/** Resposta do connect: o webhook_secret aparece AQUI, uma unica vez. */
+export interface MotorCanalConnectResult extends Omit<MotorCanaisOverview, 'fila_erros'> {
+  webhook_secret: string;
+}
+
 export interface CreateMotorManualReservationDto {
   room_type_id: string;
   unit_id?: string;

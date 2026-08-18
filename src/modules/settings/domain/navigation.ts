@@ -70,6 +70,7 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
     "motor-tarifas",
     "motor-reservas",
     "motor-acomodacoes",
+    "motor-canais",
   ],
   metrics: [],
 };
@@ -144,6 +145,7 @@ export const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
   "motor-tarifas": ["motor.read"],
   "motor-reservas": ["motor.read"],
   "motor-acomodacoes": ["motor.read"],
+  "motor-canais": ["motor.read"],
 };
 
 export function filterNavigationByPermissions<T extends ModuleNavItem>(
