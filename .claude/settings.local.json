@@ -107,7 +107,22 @@
       "Bash('C:\\\\Users\\\\gabri\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-gabri-OneDrive-Documents-GitHub-frontend-dashboard-reserve\\\\b9121fe1-dc3a-46b9-9ffd-3d4838530bf0\\\\scratchpad\\\\port_file.sh' src/app/dashboard/cms/media/upload/page.tsx src/presentation/components/pages/dashboard/cms/media/upload/page.tsx)",
       "Read(//c/Users/gabri/OneDrive/Documents/GitHub/frontend-hotel-portal-v2-remap/**)",
       "Bash(rm -f \"src/app/dashboard/hotel-portal/new/page.tsx\")",
-      "Bash(rm -f \"src/presentation/components/pages/dashboard/hotel-portal/new/page.tsx\")"
+      "Bash(rm -f \"src/presentation/components/pages/dashboard/hotel-portal/new/page.tsx\")",
+      "Bash(sed -n '/^enum EFunnelStage/,/^}/p' prisma/schema.prisma)",
+      "Bash(sed -n '/^enum EFunnelEventAuthor/,/^}/p' prisma/schema.prisma)",
+      "Bash(sed -n '/^enum EBotContactStatus/,/^}/p' prisma/schema.prisma)",
+      "Bash(sed -n '/^model BotStageWebhookDispatch/,/^}/p' prisma/schema.prisma)",
+      "Bash(sed -n '/^model FunnelEvent/,/^}/p' prisma/schema.prisma)",
+      "PowerShell(Get-Process *)",
+      "Read(//c/Users/gabri/OneDrive/Documents/GitHub/backend-wt-reports/**)",
+      "Bash(cmd //c mklink /J node_modules \"C:\\\\Users\\\\gabri\\\\OneDrive\\\\Documents\\\\GitHub\\\\backend_reserve\\\\node_modules\")",
+      "PowerShell(Out-File *)",
+      "Bash(echo \"TSC_EXIT=$?\")",
+      "Bash(grep -oE \"^\\(DATABASE_URL|SHADOW_DATABASE_URL\\)=.{0,30}\" .env)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(echo \"DONE exit=$?\")",
+      "Bash(git push *)",
+      "Bash(python -)"
     ]
   },
   "enabledPlugins": {
