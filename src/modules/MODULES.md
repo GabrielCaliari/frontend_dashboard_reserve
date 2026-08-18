@@ -18,6 +18,7 @@ before deciding whether a new file belongs here or in global `presentation/`/`sh
 | `b2c-products` | `reserve-b2c-products` | infrastructure |
 | `b2c-subscriptions` | `reserve-b2c-subscriptions` | infrastructure |
 | `hotel-portal` | `reserve-client-portal` | infrastructure |
+| `motor` | `reserve-motor` — Motor de Reservas: adapter HTTP para `/api/motor` (acomodações, tarifas, calendário de ocupação, reservas, blocks) | infrastructure |
 | `notifications` | `reserve-notifications` | infrastructure |
 | `reports` | `reserve-reports` | infrastructure |
 | `stats` | `reserve-stats` | infrastructure |
