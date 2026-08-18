@@ -18,7 +18,14 @@ import type { MotorReservation } from "@/src/shared/domain/types/@motor";
 const fmtBRL = (n: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
 
-const STATUS_OPTIONS = ["CONFIRMADA", "CHECKIN_FEITO", "CONCLUIDA", "CANCELADA", "NOSHOW"];
+// Rotulos legiveis no filtro; o Chip da tabela mostra o status cru.
+const STATUS_OPTIONS = [
+  { key: "CONFIRMADA", label: "Confirmada" },
+  { key: "CHECKIN_FEITO", label: "Check-in feito" },
+  { key: "CONCLUIDA", label: "Concluída" },
+  { key: "CANCELADA", label: "Cancelada" },
+  { key: "NOSHOW", label: "No-show" },
+];
 const ORIGEM_LABELS: Record<string, string> = {
   BOT_WHATSAPP: "Bot WhatsApp",
   OTA_BOOKING: "Booking",
@@ -97,7 +104,7 @@ export default function MotorReservasPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
         >
           {STATUS_OPTIONS.map((status) => (
-            <SelectItem key={status}>{status}</SelectItem>
+            <SelectItem key={status.key}>{status.label}</SelectItem>
           ))}
         </Select>
       }
