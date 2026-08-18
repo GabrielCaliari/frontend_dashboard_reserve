@@ -6,6 +6,7 @@ import {
   isTenantSettingsAvailable,
   type ModuleNavItem,
   MODULE_NAV_IDS,
+  NAV_READ_PERMISSIONS,
 } from "./navigation";
 import { normalizeModuleFlags } from "./tenant-modules";
 import { buildHotelNavItems } from "@/src/presentation/components/atoms/reserve/hotel-nav-items";
@@ -121,8 +122,10 @@ describe("gating do Painel Reserve", () => {
     }),
   );
 
-  it("registra todo id da navegacao de hotel no modulo hotel", () => {
-    const registered = new Set(MODULE_NAV_IDS.hotel);
+  it("registra todo id da navegacao de hotel nos modulos hotel ou motor", () => {
+    // O grupo "hotel-motor-menu" e gateado pelo modulo `motor`, nao pelo
+    // `hotel` -- por isso a uniao dos dois catalogos.
+    const registered = new Set([...MODULE_NAV_IDS.hotel, ...MODULE_NAV_IDS.motor]);
     const ids = hotelNav.flatMap((item) => [
       item.id,
       ...(item.subItems?.map((sub) => sub.id) ?? []),
@@ -131,13 +134,13 @@ describe("gating do Painel Reserve", () => {
     expect(ids.filter((id) => !registered.has(id))).toEqual([]);
   });
 
-  it("esconde o Painel Reserve inteiro quando o modulo hotel esta desligado", () => {
-    const flags = normalizeModuleFlags({ hotel: false });
+  it("esconde o Painel Reserve inteiro quando hotel e motor estao desligados", () => {
+    const flags = normalizeModuleFlags({ hotel: false, motor: false });
     expect(filterNavigationByModuleFlags(hotelNav, flags)).toEqual([]);
   });
 
-  it("mostra os cinco grupos e a visao geral quando o modulo esta ligado", () => {
-    const flags = normalizeModuleFlags({ hotel: true });
+  it("mostra os seis grupos e a visao geral quando os modulos estao ligados", () => {
+    const flags = normalizeModuleFlags({ hotel: true, motor: true });
     expect(
       filterNavigationByModuleFlags(hotelNav, flags).map((item) => item.id),
     ).toEqual([
@@ -145,6 +148,7 @@ describe("gating do Painel Reserve", () => {
       "hotel-marketing-menu",
       "hotel-atendimento-menu",
       "hotel-reservas-menu",
+      "hotel-motor-menu",
       "hotel-resultados-menu",
       "hotel-conta-menu",
     ]);
@@ -160,5 +164,39 @@ describe("gating do Painel Reserve", () => {
       "hotel-funil",
       "hotel-whatsapp-links",
     ]);
+  });
+});
+
+describe("modulo motor", () => {
+  it("todos os ids do grupo motor estao gateados pelo modulo motor", () => {
+    const groupIds = [
+      "hotel-motor-menu",
+      "motor-calendario",
+      "motor-tarifas",
+      "motor-reservas",
+      "motor-acomodacoes",
+    ];
+    for (const id of groupIds) {
+      expect(MODULE_NAV_IDS.motor).toContain(id);
+    }
+  });
+
+  it("itens do motor exigem motor.read", () => {
+    for (const id of [
+      "motor-calendario",
+      "motor-tarifas",
+      "motor-reservas",
+      "motor-acomodacoes",
+    ]) {
+      expect(NAV_READ_PERMISSIONS[id]).toEqual(["motor.read"]);
+    }
+  });
+
+  it("grupo motor some quando o modulo esta desligado", () => {
+    const t = (key: string) => key;
+    const nav = buildHotelNavItems(t);
+    const flags = normalizeModuleFlags({ motor: false, hotel: true });
+    const result = filterNavigationByModuleFlags(nav, flags);
+    expect(result.some((item) => item.id === "hotel-motor-menu")).toBe(false);
   });
 });

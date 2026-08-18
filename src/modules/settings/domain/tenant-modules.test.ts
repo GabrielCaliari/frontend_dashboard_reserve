@@ -17,6 +17,7 @@ describe("GATEABLE_MODULES", () => {
       "reports",
       "notifications",
       "hotel",
+      "motor",
       "metrics",
     ]);
   });

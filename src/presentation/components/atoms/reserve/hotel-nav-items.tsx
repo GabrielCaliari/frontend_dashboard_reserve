@@ -1,7 +1,12 @@
 import {
   BarChart3,
+  BedDouble,
+  BookMarked,
   Bot,
   Calendar,
+  CalendarDays,
+  CalendarRange,
+  DollarSign,
   FileText,
   Globe,
   Instagram,
@@ -39,7 +44,10 @@ export interface HotelNavItem {
  *
  * Os ids batem com `MODULE_NAV_IDS.hotel` em
  * `src/modules/settings/domain/navigation.ts` — id que nao estiver la nao e
- * gateado pelo modulo e vaza para tenant que nao contratou.
+ * gateado pelo modulo e vaza para tenant que nao contratou. Excecao: o grupo
+ * "Calendario" (`hotel-motor-menu` e os ids `motor-*`) e gateado pelo modulo
+ * `motor` via `MODULE_NAV_IDS.motor` — motor de reservas e contratado a parte
+ * do painel de marketing.
  */
 export function buildHotelNavItems(
   t: (key: string) => string,
@@ -133,6 +141,37 @@ export function buildHotelNavItems(
       ],
     },
     {
+      id: "hotel-motor-menu",
+      label: t("hotelMotor"),
+      icon: CalendarDays,
+      subItems: [
+        {
+          id: "motor-calendario",
+          label: t("motorCalendario"),
+          icon: CalendarRange,
+          path: "/dashboard/motor/calendario",
+        },
+        {
+          id: "motor-tarifas",
+          label: t("motorTarifas"),
+          icon: DollarSign,
+          path: "/dashboard/motor/tarifas",
+        },
+        {
+          id: "motor-reservas",
+          label: t("motorReservas"),
+          icon: BookMarked,
+          path: "/dashboard/motor/reservas",
+        },
+        {
+          id: "motor-acomodacoes",
+          label: t("motorAcomodacoes"),
+          icon: BedDouble,
+          path: "/dashboard/motor/acomodacoes",
+        },
+      ],
+    },
+    {
       id: "hotel-resultados-menu",
       label: t("hotelResultados"),
       icon: PiggyBank,
@@ -190,6 +229,7 @@ export const HOTEL_GROUP_IDS = [
   "hotel-marketing-menu",
   "hotel-atendimento-menu",
   "hotel-reservas-menu",
+  "hotel-motor-menu",
   "hotel-resultados-menu",
   "hotel-conta-menu",
 ] as const;

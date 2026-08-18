@@ -62,6 +62,15 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
     "hotel-atividades",
     "hotel-config",
   ],
+  // Motor de reservas: grupo "Calendario" da sidebar. Gateado a parte do
+  // modulo hotel -- tenant pode contratar o painel sem o motor e vice-versa.
+  motor: [
+    "hotel-motor-menu",
+    "motor-calendario",
+    "motor-tarifas",
+    "motor-reservas",
+    "motor-acomodacoes",
+  ],
   metrics: [],
 };
 
@@ -93,7 +102,7 @@ export function filterNavigationByModuleFlags<T extends ModuleNavItem>(
   });
 }
 
-const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
+export const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
   dashboard: ["metrics.dashboard.read"],
   leads: ["leads.read"],
   "lead-collections": ["leads.collection.read"],
@@ -131,6 +140,10 @@ const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
   "hotel-evolucao": ["hotel.read"],
   "hotel-plano": ["hotel.read"],
   "hotel-atividades": ["hotel.read"],
+  "motor-calendario": ["motor.read"],
+  "motor-tarifas": ["motor.read"],
+  "motor-reservas": ["motor.read"],
+  "motor-acomodacoes": ["motor.read"],
 };
 
 export function filterNavigationByPermissions<T extends ModuleNavItem>(

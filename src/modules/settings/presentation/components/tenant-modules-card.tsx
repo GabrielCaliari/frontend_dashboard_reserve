@@ -23,6 +23,10 @@ const MODULE_LABELS: Record<GateableModule, { title: string; hint: string }> = {
     title: "Hotel Marketing e Portal",
     hint: "Visão geral, campanhas, site, OTA, relatório mensal e links de WhatsApp",
   },
+  motor: {
+    title: "Motor de Reservas",
+    hint: "Calendário de ocupação, tarifas, reservas e acomodações",
+  },
   leads: {
     title: "Leads e Funil",
     hint: "Leads, coleções, agendamentos e carrinhos abandonados",
@@ -53,6 +57,7 @@ const MODULE_LABELS: Record<GateableModule, { title: string; hint: string }> = {
 
 const MODULE_ORDER: readonly GateableModule[] = [
   "hotel",
+  "motor",
   "leads",
   "cms",
   "mailer",

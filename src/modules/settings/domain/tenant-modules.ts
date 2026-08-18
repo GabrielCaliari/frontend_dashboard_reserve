@@ -14,6 +14,9 @@ export const GATEABLE_MODULES = [
   "reports",
   "notifications",
   "hotel",
+  // Motor de reservas (calendario de ocupacao, tarifas, reservas,
+  // acomodacoes). O backend usa o mesmo nome -- sem alias.
+  "motor",
   "metrics",
 ] as const;
 
