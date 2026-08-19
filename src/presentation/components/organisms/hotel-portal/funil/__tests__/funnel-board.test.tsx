@@ -1,0 +1,83 @@
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { FunnelBoard, resolveDrop } from "../funnel-board";
+import type { FunnelBoardColumn } from "@/src/shared/domain/types/@hotel-painel";
+import type { DragEndEvent } from "@dnd-kit/core";
+
+const columns: FunnelBoardColumn[] = [
+  { stage: "CONTATO_INICIADO", count: 1, leads: [
+    { numeroContato: "+5511999", nome: "Ana", acomodacaoInteresse: null, datasInteresse: null, tipoPublico: "MENSALISTA" },
+  ]},
+  ...[
+    "PUBLICO_IDENTIFICADO", "QUALIFICADO", "ACOMODACAO_APRESENTADA", "OFERTA_FEITA",
+    "FECHAMENTO_INICIADO", "COMPROVANTE_RECEBIDO", "RESERVA_CONFIRMADA", "PERDIDO",
+  ].map((stage) => ({ stage: stage as FunnelBoardColumn["stage"], count: 0, leads: [] })),
+];
+
+describe("FunnelBoard", () => {
+  it("renderiza as 9 colunas na ordem e o badge de subtipo", () => {
+    render(<FunnelBoard columns={columns} canManage onMove={vi.fn()} />);
+    const headers = screen.getAllByTestId("coluna-header").map((h) => h.textContent);
+    expect(headers[0]).toContain("Contato iniciado");
+    expect(headers[8]).toContain("Perdido");
+    expect(headers).toHaveLength(9);
+    expect(screen.getByText("Mensalista")).toBeInTheDocument();
+  });
+
+  it("menu do card move direto para estagio comum", async () => {
+    const onMove = vi.fn().mockResolvedValue(undefined);
+    render(<FunnelBoard columns={columns} canManage onMove={onMove} />);
+    fireEvent.click(screen.getByRole("button", { name: /mover ana/i }));
+    fireEvent.click(await screen.findByText("Qualificado"));
+    await waitFor(() =>
+      expect(onMove).toHaveBeenCalledWith("+5511999", { para_estagio: "QUALIFICADO" }),
+    );
+  });
+
+  it("mover para perdido exige motivo no modal", async () => {
+    const onMove = vi.fn().mockResolvedValue(undefined);
+    render(<FunnelBoard columns={columns} canManage onMove={onMove} />);
+    fireEvent.click(screen.getByRole("button", { name: /mover ana/i }));
+    fireEvent.click(await screen.findByText("Perdido"));
+    const confirmar = await screen.findByRole("button", { name: /confirmar/i });
+    fireEvent.click(confirmar);
+    expect(onMove).not.toHaveBeenCalled(); // sem motivo nao envia
+    fireEvent.change(screen.getByLabelText(/motivo da perda/i), { target: { value: "sem resposta" } });
+    fireEvent.click(confirmar);
+    await waitFor(() =>
+      expect(onMove).toHaveBeenCalledWith("+5511999", { para_estagio: "PERDIDO", motivo: "sem resposta" }),
+    );
+  });
+
+  it("publico identificado oferece subtipo com pular", async () => {
+    const onMove = vi.fn().mockResolvedValue(undefined);
+    render(<FunnelBoard columns={columns} canManage onMove={onMove} />);
+    fireEvent.click(screen.getByRole("button", { name: /mover ana/i }));
+    fireEvent.click(await screen.findByText("Público identificado"));
+    fireEvent.click(await screen.findByRole("button", { name: /pular/i }));
+    await waitFor(() =>
+      expect(onMove).toHaveBeenCalledWith("+5511999", { para_estagio: "PUBLICO_IDENTIFICADO" }),
+    );
+  });
+
+  it("sem canManage nao ha menu de mover", () => {
+    render(<FunnelBoard columns={columns} canManage={false} onMove={vi.fn()} />);
+    expect(screen.queryByRole("button", { name: /mover ana/i })).not.toBeInTheDocument();
+  });
+});
+
+describe("resolveDrop", () => {
+  const evt = (activeId: string | null, overId: string | null) =>
+    ({ active: activeId ? { id: activeId } : null, over: overId ? { id: overId } : null }) as unknown as DragEndEvent;
+
+  it("extrai numero e estagios do drop valido", () => {
+    expect(resolveDrop(evt("CONTATO_INICIADO|+5511999", "QUALIFICADO"))).toEqual({
+      numeroContato: "+5511999", deEstagio: "CONTATO_INICIADO", paraEstagio: "QUALIFICADO",
+    });
+  });
+
+  it("drop na propria coluna ou fora e null", () => {
+    expect(resolveDrop(evt("QUALIFICADO|+5511999", "QUALIFICADO"))).toBeNull();
+    expect(resolveDrop(evt("QUALIFICADO|+5511999", null))).toBeNull();
+  });
+});
