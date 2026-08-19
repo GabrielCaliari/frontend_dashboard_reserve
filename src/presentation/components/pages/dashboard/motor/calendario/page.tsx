@@ -6,6 +6,7 @@ import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks
 import { useMotorCalendarRange, useMotorGrade } from "@/src/shared/hooks/motor";
 import { PainelPageShell } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
+import { BulkUpdateForm } from "@/src/presentation/components/organisms/motor/bulk-update-form";
 import { CellActionModal } from "@/src/presentation/components/organisms/motor/cell-action-modal";
 import { ESTADO_STYLES, OccupancyGrid } from "@/src/presentation/components/organisms/motor/occupancy-grid";
 import { RateGrid } from "@/src/presentation/components/organisms/motor/rate-grid";
@@ -96,10 +97,14 @@ export default function MotorCalendarioPage() {
         </Tab>
         <Tab key="massa" title="Atualização em massa">
           <div className="pt-4">
-            <PortalEmptyState
-              title="Em construção nesta entrega"
-              description="A atualização em massa por período e dia da semana chega numa próxima entrega."
-            />
+            {tenantId ? (
+              <BulkUpdateForm canManage={hasPermission("motor.settings.manage")} tenantId={tenantId} />
+            ) : (
+              <PortalEmptyState
+                title="Nenhum tenant selecionado"
+                description="Selecione um tenant para atualizar tarifas em massa."
+              />
+            )}
           </div>
         </Tab>
       </Tabs>
