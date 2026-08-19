@@ -35,6 +35,15 @@ export function CellActionModal({ tenantId, unidade, dia, canManage, onClose }: 
 
   const livre = dia.estado === "LIVRE";
 
+  // O backend distingue as causas (sem tarifa configurada, tipo esgotado,
+  // reserva sobreposta) — mostrar a mensagem real evita o palpite generico.
+  function apiErrorMessage(error: unknown, fallback: string): string {
+    const message = (error as { response?: { data?: { message?: string } } })
+      ?.response?.data?.message;
+
+    return typeof message === "string" && message.length > 0 ? message : fallback;
+  }
+
   async function handleBlock() {
     try {
       await createBlock.mutateAsync({
@@ -47,8 +56,8 @@ export function CellActionModal({ tenantId, unidade, dia, canManage, onClose }: 
       });
       toast.success("Bloqueio criado");
       onClose();
-    } catch {
-      toast.error("Não foi possível bloquear — há reserva no período?");
+    } catch (error) {
+      toast.error(apiErrorMessage(error, "Não foi possível bloquear — há reserva no período?"));
     }
   }
 
@@ -69,8 +78,8 @@ export function CellActionModal({ tenantId, unidade, dia, canManage, onClose }: 
       });
       toast.success("Reserva criada");
       onClose();
-    } catch {
-      toast.error("Não foi possível reservar — datas indisponíveis?");
+    } catch (error) {
+      toast.error(apiErrorMessage(error, "Não foi possível reservar — datas indisponíveis"));
     }
   }
 
