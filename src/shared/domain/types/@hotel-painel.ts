@@ -344,3 +344,26 @@ export interface Milestone {
   title: string;
   type: MilestoneType;
 }
+
+// ── Home consolidada (GET /hotel-portal/:clientId/home) ─────────────────────
+//
+// Junta o funil do bot com as metricas do motor de reservas na mesma tela.
+// Dinheiro aqui vem em REAIS (nao centavos como PainelMoney) — o motor nao
+// segue a convencao do resto do painel.
+
+export interface MotorHomeMetrics {
+  receita: number;
+  reservas: number;
+  ticket_medio: number;
+  room_nights: number;
+  canceladas: { quantidade: number; valor: number };
+  a_recuperar: { quantidade: number; valor: number };
+  receita_bot: number;
+  por_origem: { origem: string; reservas: number; receita: number }[];
+}
+
+export interface HotelHomeResponse {
+  period: { from: string; to: string };
+  funil: FunnelMetricsResponse;
+  motor: MotorHomeMetrics;
+}

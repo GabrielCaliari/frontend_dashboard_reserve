@@ -271,3 +271,59 @@ export interface CreateMotorManualReservationDto {
   origem?: 'MANUAL' | 'SITE_HSYSTEM';
   observacoes?: string;
 }
+
+// ── Range de calendario e grade de precificacao ─────────────────────────────
+
+export interface MotorCalendarRange {
+  from: string;
+  to: string;
+  unidades: MotorCalendarUnidade[];
+}
+
+export interface MotorGradeDia {
+  data: string;
+  preco: number | null;
+  min_stay: number | null;
+  stop_sell: boolean;
+  closed_arrival: boolean;
+  closed_departure: boolean;
+  override: boolean;
+  unidades_livres: number;
+}
+
+export interface MotorGradeRoomType {
+  room_type_id: string;
+  nome: string;
+  capacidade_base: number;
+  capacidade_max: number;
+  valor_pessoa_adicional: number;
+  total_units: number;
+  dias: MotorGradeDia[];
+}
+
+export interface MotorGrade {
+  from: string;
+  to: string;
+  room_types: MotorGradeRoomType[];
+}
+
+export interface BulkMotorDailyInventoryDto {
+  room_type_ids: string[];
+  from: string;
+  to: string;
+  dow_mask: number;
+  preco?: number;
+  min_stay?: number;
+  stop_sell?: boolean;
+  closed_arrival?: boolean;
+  closed_departure?: boolean;
+  dry_run?: boolean;
+}
+
+export interface MotorBulkResumo {
+  total_datas: number;
+  atualizar: number;
+  criar: number;
+  ignoradas_sem_preco: number;
+  aplicado: boolean;
+}

@@ -1,5 +1,6 @@
 import api from '@/src/infraestructure/axios/api';
 import type {
+  BulkMotorDailyInventoryDto,
   CreateMotorBlockDto,
   CreateMotorManualReservationDto,
   CreateMotorPolicyDto,
@@ -9,10 +10,13 @@ import type {
   CreateMotorUnitDto,
   ConnectMotorCanalDto,
   MotorBlock,
+  MotorBulkResumo,
   MotorCalendar,
+  MotorCalendarRange,
   MotorCanaisOverview,
   MotorCanalConnectResult,
   MotorDailyInventoryRow,
+  MotorGrade,
   MotorReservation,
   MotorRoomType,
   MotorTarifasOverview,
@@ -134,6 +138,25 @@ export const motorService = {
   async getCalendar(tenantId: string, mes: string): Promise<MotorCalendar> {
     const res = await api.get(`/motor/${tenantId}/calendar`, { params: { mes }, ...adminConfig });
     return res.data as MotorCalendar;
+  },
+  async getCalendarRange(tenantId: string, from: string, to: string): Promise<MotorCalendarRange> {
+    const { data } = await api.get(`/motor/${tenantId}/calendar/range`, { params: { from, to }, ...adminConfig });
+    return data;
+  },
+  async getGrade(tenantId: string, from: string, to: string): Promise<MotorGrade> {
+    const { data } = await api.get(`/motor/${tenantId}/calendar/grade`, { params: { from, to }, ...adminConfig });
+    return {
+      ...data,
+      room_types: (data.room_types ?? []).map((rt: any) => ({
+        ...rt,
+        valor_pessoa_adicional: num(rt.valor_pessoa_adicional),
+        dias: (rt.dias ?? []).map((d: any) => ({ ...d, preco: d.preco == null ? null : num(d.preco) })),
+      })),
+    };
+  },
+  async bulkDailyInventory(tenantId: string, dto: BulkMotorDailyInventoryDto): Promise<MotorBulkResumo> {
+    const { data } = await api.post(`/motor/${tenantId}/daily-inventory/bulk`, dto, adminConfig);
+    return data;
   },
   async createBlock(tenantId: string, dto: CreateMotorBlockDto): Promise<MotorBlock> {
     return (await api.post(`/motor/${tenantId}/blocks`, dto, adminConfig)).data as MotorBlock;

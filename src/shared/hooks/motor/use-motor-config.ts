@@ -152,7 +152,11 @@ export function useMotorDailyInventory(
 }
 
 export function useUpsertDailyInventory(tenantId: string) {
-  const invalidate = useInvalidate([['motor', 'daily-inventory', tenantId]]);
+  const invalidate = useInvalidate([
+    ['motor', 'daily-inventory', tenantId],
+    ['motor', 'grade', tenantId],
+    ['motor', 'calendar-range', tenantId],
+  ]);
   return useMutation({
     mutationFn: (dto: UpsertMotorDailyInventoryDto) =>
       motorService.upsertDailyInventory(tenantId, dto),

@@ -79,6 +79,7 @@ import type {
   CreateBotConfigProposalDto,
   FunnelBoardColumn,
   FunnelMetricsResponse,
+  HotelHomeResponse,
   InstagramOverviewResponse,
   LeadsOverviewResponse,
   Milestone,
@@ -719,5 +720,16 @@ export const hotelPortalService = {
       `/admin/hotel-portal/${tenantId}/milestones`,
     );
     return toArray<Milestone>(res.data);
+  },
+
+  /** Home consolidada: funil do bot + metricas do motor de reservas. */
+  async getHome(
+    clientId: string,
+    period: { from: string; to: string },
+  ): Promise<HotelHomeResponse> {
+    const res = await api.get<HotelHomeResponse>(`/hotel-portal/${clientId}/home`, {
+      params: { from: period.from, to: period.to },
+    });
+    return res.data;
   },
 };

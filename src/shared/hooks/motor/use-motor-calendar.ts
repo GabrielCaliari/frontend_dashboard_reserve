@@ -10,6 +10,16 @@ export function useMotorCalendar(tenantId: string | null, mes: string) {
   });
 }
 
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+export function useMotorCalendarRange(tenantId: string | null, from: string, to: string) {
+  return useQuery({
+    queryKey: ['motor', 'calendar-range', tenantId, from, to],
+    queryFn: () => motorService.getCalendarRange(tenantId!, from, to),
+    enabled: !!tenantId && ISO_DATE.test(from) && ISO_DATE.test(to),
+  });
+}
+
 export function useCreateBlock(tenantId: string) {
   const qc = useQueryClient();
   return useMutation({
