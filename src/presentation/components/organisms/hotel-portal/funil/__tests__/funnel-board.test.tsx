@@ -15,6 +15,23 @@ const columns: FunnelBoardColumn[] = [
 ];
 
 describe("FunnelBoard", () => {
+  it("datasInteresse nao-string (payload legado do bot) nao quebra a renderizacao", () => {
+    // defesa em profundidade: o backend normaliza para string, mas cache
+    // antigo do React Query ainda pode servir o objeto {checkin, checkout}
+    const legado: FunnelBoardColumn[] = [
+      {
+        ...columns[0],
+        leads: [{
+          ...columns[0].leads[0],
+          datasInteresse: { checkin: "2026-09-12", checkout: "2026-09-15" } as unknown as string,
+        }],
+      },
+      ...columns.slice(1),
+    ];
+    render(<FunnelBoard columns={legado} canManage onMove={vi.fn()} />);
+    expect(screen.getByText("Ana")).toBeInTheDocument();
+  });
+
   it("renderiza as 9 colunas na ordem e o badge de subtipo", () => {
     render(<FunnelBoard columns={columns} canManage onMove={vi.fn()} />);
     const headers = screen.getAllByTestId("coluna-header").map((h) => h.textContent);

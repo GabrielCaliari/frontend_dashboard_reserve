@@ -200,7 +200,8 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
         {lead.acomodacaoInteresse && (
           <p className="text-xs text-muted-foreground">{lead.acomodacaoInteresse}</p>
         )}
-        {lead.datasInteresse && (
+        {/* datas_interesse e Json do bot: cache antigo pode trazer objeto em vez de string */}
+        {typeof lead.datasInteresse === "string" && lead.datasInteresse && (
           <p className="text-xs text-muted-foreground">{lead.datasInteresse}</p>
         )}
         {lead.tipoPublico != null && (
