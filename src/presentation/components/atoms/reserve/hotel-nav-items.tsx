@@ -10,7 +10,6 @@ import {
   FileText,
   Globe,
   Instagram,
-  LayoutDashboardIcon,
   Link2,
   ListChecks,
   Megaphone,
@@ -19,7 +18,6 @@ import {
   Settings,
   Share2,
   Target,
-  TrendingUp,
   History,
 } from "lucide-react";
 
@@ -35,9 +33,10 @@ export interface HotelNavItem {
  * Navegacao do Painel Reserve, agrupada por TIPO de assunto em vez de
  * empilhada num submenu unico "Hotel Marketing".
  *
- * A Visao Geral fica solta no topo de proposito: e a primeira tela depois do
- * login e responde "esta indo bem?" em 10 segundos (§3.1) — enterrar ela num
- * grupo custaria um clique justamente na tela mais usada.
+ * "Visao Geral" (hotel-overview) e "OTA vs Direto" (hotel-ota) foram
+ * aposentadas: as rotas /dashboard/hotel/overview e /dashboard/hotel/ota
+ * agora redirecionam para /dashboard, que vira a home unificada numa tarefa
+ * futura.
  *
  * O Funil do Bot fica em Atendimento, NAO no grupo Leads: o grupo Leads e o
  * modulo de captacao do site; o funil do bot e o kanban das conversas de
@@ -46,20 +45,14 @@ export interface HotelNavItem {
  * Os ids batem com `MODULE_NAV_IDS.hotel` em
  * `src/modules/settings/domain/navigation.ts` — id que nao estiver la nao e
  * gateado pelo modulo e vaza para tenant que nao contratou. Excecao: o grupo
- * "Calendario" (`hotel-motor-menu` e os ids `motor-*`) e gateado pelo modulo
- * `motor` via `MODULE_NAV_IDS.motor` — motor de reservas e contratado a parte
- * do painel de marketing.
+ * "Motor de Reservas" (`hotel-motor-menu` e os ids `motor-*`) e gateado pelo
+ * modulo `motor` via `MODULE_NAV_IDS.motor` — motor de reservas e contratado
+ * a parte do painel de marketing.
  */
 export function buildHotelNavItems(
   t: (key: string) => string,
 ): HotelNavItem[] {
   return [
-    {
-      id: "hotel-overview",
-      label: t("hotelOverview"),
-      icon: LayoutDashboardIcon,
-      path: "/dashboard/hotel/overview",
-    },
     {
       id: "hotel-marketing-menu",
       label: t("hotelMarketing"),
@@ -127,12 +120,6 @@ export function buildHotelNavItems(
       label: t("hotelReservas"),
       icon: Calendar,
       subItems: [
-        {
-          id: "hotel-ota",
-          label: t("hotelOta"),
-          icon: TrendingUp,
-          path: "/dashboard/hotel/ota",
-        },
         {
           id: "hotel-calendario",
           label: t("hotelCalendario"),

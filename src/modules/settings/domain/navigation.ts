@@ -33,7 +33,6 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
   // estar aqui — id ausente nao e gateado e vaza para tenant que nao
   // contratou o modulo.
   hotel: [
-    "hotel-overview",
     // grupos
     "hotel-marketing-menu",
     "hotel-atendimento-menu",
@@ -51,7 +50,6 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
     "hotel-funil",
     "hotel-whatsapp-links",
     // Reservas
-    "hotel-ota",
     "hotel-calendario",
     // Resultados
     "hotel-retorno",
@@ -62,8 +60,8 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
     "hotel-atividades",
     "hotel-config",
   ],
-  // Motor de reservas: grupo "Calendario" da sidebar. Gateado a parte do
-  // modulo hotel -- tenant pode contratar o painel sem o motor e vice-versa.
+  // Motor de reservas: grupo "Motor de Reservas" da sidebar. Gateado a parte
+  // do modulo hotel -- tenant pode contratar o painel sem o motor e vice-versa.
   motor: [
     "hotel-motor-menu",
     "motor-calendario",
@@ -124,10 +122,8 @@ export const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
   admins: ["admins.read"],
   users: ["users.read"],
   tenants: ["tenants.read"],
-  "hotel-overview": ["hotel.read"],
   "hotel-config": ["hotel.read"],
   "hotel-campaigns": ["hotel.read"],
-  "hotel-ota": ["hotel.read"],
   "hotel-reports": ["hotel.read"],
   "hotel-site": ["hotel.read"],
   "hotel-whatsapp-links": ["hotel.read"],

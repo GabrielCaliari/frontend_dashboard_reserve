@@ -45,7 +45,7 @@ const nav: ModuleNavItem[] = [
   },
   {
     id: "hotel-menu",
-    subItems: [{ id: "hotel-overview" }, { id: "hotel-config" }],
+    subItems: [{ id: "hotel-plano" }, { id: "hotel-config" }],
   },
 ];
 
@@ -139,12 +139,11 @@ describe("gating do Painel Reserve", () => {
     expect(filterNavigationByModuleFlags(hotelNav, flags)).toEqual([]);
   });
 
-  it("mostra os seis grupos e a visao geral quando os modulos estao ligados", () => {
+  it("mostra os seis grupos quando os modulos estao ligados", () => {
     const flags = normalizeModuleFlags({ hotel: true, motor: true });
     expect(
       filterNavigationByModuleFlags(hotelNav, flags).map((item) => item.id),
     ).toEqual([
-      "hotel-overview",
       "hotel-marketing-menu",
       "hotel-atendimento-menu",
       "hotel-reservas-menu",
