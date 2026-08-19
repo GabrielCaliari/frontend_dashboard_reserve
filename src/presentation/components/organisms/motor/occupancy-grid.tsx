@@ -2,7 +2,6 @@
 
 import { useMediaQuery } from "@/src/shared/hooks/use-media-query";
 import type {
-  MotorCalendar,
   MotorCalendarDia,
   MotorCalendarEstado,
   MotorCalendarUnidade,
@@ -19,7 +18,9 @@ export const ESTADO_STYLES: Record<MotorCalendarEstado, { cell: string; label: s
 };
 
 interface OccupancyGridProps {
-  calendar: MotorCalendar;
+  // Afrouxado (Task 9): o componente so usa `unidades`, entao aceita qualquer
+  // shape que tenha esse campo (MotorCalendar ou MotorCalendarRange).
+  calendar: { unidades: MotorCalendarUnidade[] };
   onCellClick: (unidade: MotorCalendarUnidade, dia: MotorCalendarDia) => void;
 }
 
