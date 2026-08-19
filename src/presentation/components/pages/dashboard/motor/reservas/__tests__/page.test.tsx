@@ -48,7 +48,10 @@ describe("MotorReservasPage", () => {
     render(<MotorReservasPage />);
     expect(screen.getByText("Maria Silva")).toBeInTheDocument();
     expect(screen.getByText("Casal 01")).toBeInTheDocument();
-    expect(screen.getByText("CONFIRMADA")).toBeInTheDocument();
+    // O status aparece com o rotulo legivel no Chip da linha (o mesmo texto
+    // tambem existe na option escondida do filtro), nunca com o codigo cru.
+    expect(screen.getByText("Confirmada", { selector: "span" })).toBeInTheDocument();
+    expect(screen.queryByText("CONFIRMADA")).not.toBeInTheDocument();
     expect(screen.getByText(/R\$\s?339,00/)).toBeInTheDocument();
   });
 });

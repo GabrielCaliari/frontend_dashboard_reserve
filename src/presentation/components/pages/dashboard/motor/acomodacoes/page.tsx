@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Card, CardBody, Chip, Input, Switch } from "@heroui/react";
-import { Plus } from "lucide-react";
+import { BedDouble, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import {
@@ -14,6 +14,7 @@ import {
 } from "@/src/shared/hooks/motor";
 import { PainelPageShell } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
+import { ConfirmModal } from "@/src/presentation/components/organisms/modals/confirm-modal";
 
 const fmtBRL = (n: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
@@ -46,6 +47,8 @@ export default function MotorAcomodacoesPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<RoomTypeForm>(EMPTY_FORM);
   const [newUnit, setNewUnit] = useState<Record<string, string>>({});
+  // Desativar unidade e destrutivo do ponto de vista do calendario: confirma antes.
+  const [unitToDisable, setUnitToDisable] = useState<{ id: string; identificador: string } | null>(null);
 
   async function handleCreate() {
     if (!form.nome.trim()) return toast.error("Informe o nome do tipo");
@@ -79,6 +82,18 @@ export default function MotorAcomodacoesPage() {
     }
   }
 
+  async function handleDisableUnit() {
+    if (!unitToDisable) return;
+    const { id, identificador } = unitToDisable;
+    setUnitToDisable(null);
+    try {
+      await updateUnit.mutateAsync({ id, dto: { ativo: false } });
+      toast.success(`${identificador} desativada`);
+    } catch {
+      toast.error("Erro ao desativar a unidade");
+    }
+  }
+
   return (
     <PainelPageShell
       title="Acomodações"
@@ -96,36 +111,49 @@ export default function MotorAcomodacoesPage() {
     >
       {showForm ? (
         <Card className="rounded-3xl border border-border bg-default-50 shadow-none">
-          <CardBody className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-5">
-            <Input
-              label="Nome"
-              value={form.nome}
-              onChange={(e) => setForm({ ...form, nome: e.target.value })}
-            />
-            <Input
-              label="Pessoas incluídas no preço"
-              type="number"
-              value={String(form.capacidade_base)}
-              onChange={(e) => setForm({ ...form, capacidade_base: Number(e.target.value) || 1 })}
-            />
-            <Input
-              label="Valor por pessoa adicional (noite)"
-              type="number"
-              value={String(form.valor_pessoa_adicional)}
-              onChange={(e) => setForm({ ...form, valor_pessoa_adicional: Number(e.target.value) || 0 })}
-            />
-            <Input
-              label="Taxa de pet por dia"
-              type="number"
-              value={String(form.taxa_pet_dia)}
-              onChange={(e) => setForm({ ...form, taxa_pet_dia: Number(e.target.value) || 0 })}
-            />
-            <div className="flex items-end gap-4">
-              <Switch isSelected={form.aceita_pets} onValueChange={(v) => setForm({ ...form, aceita_pets: v })}>
-                Aceita pets
-              </Switch>
+          <CardBody className="space-y-4 p-6">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-foreground">Novo tipo de acomodação</h2>
+              <p className="text-sm text-foreground/60">
+                O preço vale para as pessoas incluídas; acima disso o motor cobra o adicional por noite.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <Input
+                label="Nome"
+                value={form.nome}
+                onChange={(e) => setForm({ ...form, nome: e.target.value })}
+              />
+              <Input
+                label="Pessoas incluídas no preço"
+                type="number"
+                value={String(form.capacidade_base)}
+                onChange={(e) => setForm({ ...form, capacidade_base: Number(e.target.value) || 1 })}
+              />
+              <Input
+                label="Valor por pessoa adicional (noite)"
+                type="number"
+                value={String(form.valor_pessoa_adicional)}
+                onChange={(e) => setForm({ ...form, valor_pessoa_adicional: Number(e.target.value) || 0 })}
+              />
+              <Input
+                label="Taxa de pet por dia"
+                type="number"
+                value={String(form.taxa_pet_dia)}
+                onChange={(e) => setForm({ ...form, taxa_pet_dia: Number(e.target.value) || 0 })}
+              />
+              <div className="flex items-end gap-4">
+                <Switch isSelected={form.aceita_pets} onValueChange={(v) => setForm({ ...form, aceita_pets: v })}>
+                  Aceita pets
+                </Switch>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
               <Button color="primary" isLoading={createRoomType.isPending} onPress={handleCreate}>
                 Salvar
+              </Button>
+              <Button variant="light" onPress={() => setShowForm(false)}>
+                Descartar
               </Button>
             </div>
           </CardBody>
@@ -133,14 +161,14 @@ export default function MotorAcomodacoesPage() {
       ) : null}
 
       {roomTypes && roomTypes.length > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {roomTypes.map((roomType) => (
             <Card key={roomType.id} className="rounded-3xl border border-border bg-default-50 shadow-none">
-              <CardBody className="space-y-4 p-6 sm:p-8">
+              <CardBody className="space-y-5 p-6 sm:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <h2 className="text-lg font-semibold tracking-tight text-foreground">{roomType.nome}</h2>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-foreground/60">
                       {roomType.capacidade_base} + {roomType.capacidade_max - roomType.capacidade_base} pessoas
                       {" · adicional "}
                       {fmtBRL(roomType.valor_pessoa_adicional)}/noite
@@ -159,39 +187,47 @@ export default function MotorAcomodacoesPage() {
                     </Switch>
                   ) : null}
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  {roomType.units.map((unit) => (
-                    <Chip
-                      key={unit.id}
-                      color={unit.ativo ? "primary" : "default"}
-                      variant="flat"
-                      onClose={
-                        canManage && unit.ativo
-                          ? async () => {
-                              await updateUnit.mutateAsync({ id: unit.id, dto: { ativo: false } });
-                              toast.success(`${unit.identificador} desativada`);
-                            }
-                          : undefined
-                      }
-                    >
-                      {unit.identificador}
-                    </Chip>
-                  ))}
-                  {canManage ? (
-                    <div className="flex items-center gap-2">
-                      <Input
-                        aria-label={`Nova unidade de ${roomType.nome}`}
-                        className="w-40"
-                        placeholder="Ex.: Casal 03"
-                        size="sm"
-                        value={newUnit[roomType.id] ?? ""}
-                        onChange={(e) => setNewUnit((prev) => ({ ...prev, [roomType.id]: e.target.value }))}
-                      />
-                      <Button size="sm" variant="flat" onPress={() => handleAddUnit(roomType.id)}>
-                        Adicionar unidade
-                      </Button>
-                    </div>
-                  ) : null}
+                <div className="space-y-2 border-t border-border pt-5">
+                  <p className="text-sm font-medium text-foreground">
+                    Unidades <span className="text-foreground/60">({roomType.units.length})</span>
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {roomType.units.length ? (
+                      roomType.units.map((unit) => (
+                        <Chip
+                          key={unit.id}
+                          color={unit.ativo ? "primary" : "default"}
+                          variant="flat"
+                          onClose={
+                            canManage && unit.ativo
+                              ? () => setUnitToDisable({ id: unit.id, identificador: unit.identificador })
+                              : undefined
+                          }
+                        >
+                          {unit.identificador}
+                        </Chip>
+                      ))
+                    ) : (
+                      <p className="text-sm text-foreground/60">
+                        Sem unidades — o calendário não tem o que reservar neste tipo.
+                      </p>
+                    )}
+                    {canManage ? (
+                      <div className="flex items-center gap-2">
+                        <Input
+                          aria-label={`Nova unidade de ${roomType.nome}`}
+                          className="w-40"
+                          placeholder="Ex.: Casal 03"
+                          size="sm"
+                          value={newUnit[roomType.id] ?? ""}
+                          onChange={(e) => setNewUnit((prev) => ({ ...prev, [roomType.id]: e.target.value }))}
+                        />
+                        <Button size="sm" variant="flat" onPress={() => handleAddUnit(roomType.id)}>
+                          Adicionar unidade
+                        </Button>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               </CardBody>
             </Card>
@@ -199,10 +235,24 @@ export default function MotorAcomodacoesPage() {
         </div>
       ) : (
         <PortalEmptyState
-          title="Nenhum tipo de acomodação"
+          actionLabel={canManage ? "Criar tipo de acomodação" : undefined}
           description="Cadastre os tipos (ex.: Suíte Casal, Chalé) e as unidades físicas de cada um."
+          icon={BedDouble}
+          title="Nenhum tipo de acomodação"
+          onAction={canManage ? () => setShowForm(true) : undefined}
         />
       )}
+
+      <ConfirmModal
+        confirmColor="danger"
+        confirmText="Desativar"
+        isOpen={!!unitToDisable}
+        isLoading={updateUnit.isPending}
+        message={`Desativar a unidade "${unitToDisable?.identificador ?? ""}"? Ela sai do calendário e deixa de receber reservas novas. As reservas já feitas continuam valendo.`}
+        title="Confirmar desativação"
+        onClose={() => setUnitToDisable(null)}
+        onConfirm={handleDisableUnit}
+      />
     </PainelPageShell>
   );
 }

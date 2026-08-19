@@ -41,7 +41,9 @@ describe("MotorCanaisPage", () => {
   it("mostra status, timestamps, room map e fila de erros", () => {
     render(<MotorCanaisPage />);
     expect(screen.getByText("Canais (OTAs)")).toBeInTheDocument();
-    expect(screen.getByText("DIVERGENTE")).toBeInTheDocument();
+    // Rotulo legivel no Chip, nunca o codigo cru do backend.
+    expect(screen.getByText("Divergente")).toBeInTheDocument();
+    expect(screen.queryByText("DIVERGENTE")).not.toBeInTheDocument();
     // Divergencia em destaque (spec §5).
     expect(screen.getByText(/risco de overbooking/)).toBeInTheDocument();
     // Webhook nunca recebido -> travessao.
@@ -50,8 +52,10 @@ describe("MotorCanaisPage", () => {
     // Propriedade conectada e room map preenchido a partir do estado salvo.
     expect(screen.getByText("12345")).toBeInTheDocument();
     expect(screen.getByLabelText("roomId Beds24 de Suíte Casal")).toHaveValue(777);
-    // Fila de erros com nome legivel da acomodacao.
-    expect(screen.getByText(/2026-09-01 → 2026-09-05 · 5 tentativa/)).toBeInTheDocument();
+    // Fila de erros como tabela: acomodacao (nome legivel), periodo e tentativas.
+    expect(screen.getByText("2026-09-01 → 2026-09-05")).toBeInTheDocument();
+    expect(screen.getByText("Suíte Casal", { selector: "td" })).toBeInTheDocument();
+    expect(screen.getByText("5", { selector: "td" })).toBeInTheDocument();
     // O segredo do webhook NAO aparece em leitura normal — so na resposta do connect.
     expect(screen.queryByText(/segredo do webhook AGORA/)).not.toBeInTheDocument();
   });

@@ -61,7 +61,7 @@ export function BulkUpdateForm({ tenantId, canManage }: BulkUpdateFormProps) {
     return (
       <PortalEmptyState
         title="Sem permissão"
-        description="Você não tem permissao para editar tarifas."
+        description="Você não tem permissão para editar tarifas."
       />
     );
   }
@@ -189,7 +189,7 @@ export function BulkUpdateForm({ tenantId, canManage }: BulkUpdateFormProps) {
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <Input
-            label="Preco/noite (opcional)"
+            label="Preço/noite (opcional)"
             type="number"
             value={preco}
             onChange={(e) => setPrecoReset(e.target.value)}
@@ -231,7 +231,7 @@ export function BulkUpdateForm({ tenantId, canManage }: BulkUpdateFormProps) {
 
         <div className="flex flex-wrap items-center gap-3">
           <Button color="default" isLoading={bulkUpdate.isPending} onPress={handlePreview}>
-            Pre-visualizar
+            Pré-visualizar
           </Button>
           <Button color="primary" isDisabled={!resumo} onPress={() => setIsConfirmOpen(true)}>
             Aplicar

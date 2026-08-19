@@ -18,8 +18,8 @@ describe("BulkUpdateForm", () => {
     fireEvent.click(screen.getByLabelText("Suite Casal"));
     fireEvent.change(screen.getByLabelText("Início"), { target: { value: "2026-09-01" } });
     fireEvent.change(screen.getByLabelText("Fim"), { target: { value: "2026-09-30" } });
-    fireEvent.change(screen.getByLabelText(/preco\/noite/i), { target: { value: "400" } });
-    fireEvent.click(screen.getByRole("button", { name: /pre-visualizar/i }));
+    fireEvent.change(screen.getByLabelText(/preço\/noite/i), { target: { value: "400" } });
+    fireEvent.click(screen.getByRole("button", { name: /pré-visualizar/i }));
     await waitFor(() => expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ dry_run: true, preco: 400 })));
     expect(await screen.findByText(/8 datas atualizadas/i)).toBeInTheDocument();
   });
@@ -32,6 +32,8 @@ describe("BulkUpdateForm", () => {
 
   it("sem permissao mostra aviso e nenhum form", () => {
     render(<BulkUpdateForm tenantId="tenant_1" canManage={false} />);
-    expect(screen.getByText(/permissao/i)).toBeInTheDocument();
+    expect(screen.getByText("Sem permissão")).toBeInTheDocument();
+    expect(screen.getByText(/não tem permissão para editar tarifas/i)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /pré-visualizar/i })).not.toBeInTheDocument();
   });
 });

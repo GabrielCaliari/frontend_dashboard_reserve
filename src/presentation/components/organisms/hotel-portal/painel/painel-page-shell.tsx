@@ -65,21 +65,31 @@ export function PainelPageShell({
   );
 }
 
-/** Cabecalho de secao com a barrinha primaria das telas de hotel. */
+/**
+ * Cabecalho de secao com a barrinha primaria das telas de hotel. A descricao e
+ * opcional e alinha com o titulo (6px da barra + 12px do gap).
+ */
 export function PainelSection({
   title,
+  description,
   children,
 }: {
   title: string;
+  description?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="space-y-4">
-      <div className="flex items-center gap-3">
-        <div className="h-6 w-1.5 rounded-full bg-primary" />
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">
-          {title}
-        </h2>
+      <div className="space-y-1">
+        <div className="flex items-center gap-3">
+          <div className="h-6 w-1.5 rounded-full bg-primary" />
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            {title}
+          </h2>
+        </div>
+        {description ? (
+          <p className="pl-[18px] text-sm text-foreground/60">{description}</p>
+        ) : null}
       </div>
       {children}
     </section>
