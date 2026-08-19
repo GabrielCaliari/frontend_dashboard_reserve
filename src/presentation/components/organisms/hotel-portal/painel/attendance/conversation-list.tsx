@@ -2,18 +2,8 @@ import Link from "next/link";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { ExternalLink } from "lucide-react";
-import type {
-  ConversationListItem,
-  FunnelStage,
-} from "@/src/shared/domain/types/@hotel-painel";
-
-export const STAGE_LABEL: Record<FunnelStage, string> = {
-  NOVO: "Novo",
-  QUALIFICADO: "Qualificado",
-  PAGAMENTO: "Pagamento",
-  FECHADO: "Fechado",
-  PERDIDO: "Perdido",
-};
+import type { ConversationListItem } from "@/src/shared/domain/types/@hotel-painel";
+import { stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 
 /**
  * Somente leitura por construcao (Decisao 11 do plano mestre): nunca renderiza
@@ -40,7 +30,7 @@ export function ConversationList({
                 {conv.nome ?? conv.numeroContato}
               </Link>
               <p className="text-xs text-muted-foreground">
-                {conv.numeroContato} · {STAGE_LABEL[conv.currentStage]}
+                {conv.numeroContato} · {stageLabel(conv.currentStage)}
               </p>
             </div>
             {conv.statusBot === "PAUSADO" && (

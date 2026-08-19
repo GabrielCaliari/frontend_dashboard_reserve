@@ -5,15 +5,7 @@ import type {
   ConversationFilters,
   FunnelStage,
 } from "@/src/shared/domain/types/@hotel-painel";
-import { STAGE_LABEL } from "./conversation-list";
-
-const STAGES: FunnelStage[] = [
-  "NOVO",
-  "QUALIFICADO",
-  "PAGAMENTO",
-  "FECHADO",
-  "PERDIDO",
-];
+import { FUNNEL_STAGES } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 
 export function ConversationSearch({
   filters,
@@ -41,9 +33,9 @@ export function ConversationSearch({
         }
       >
         <option value="">Todos os estágios</option>
-        {STAGES.map((stage) => (
-          <option key={stage} value={stage}>
-            {STAGE_LABEL[stage]}
+        {FUNNEL_STAGES.map((s) => (
+          <option key={s.stage} value={s.stage}>
+            {s.label}
           </option>
         ))}
       </select>

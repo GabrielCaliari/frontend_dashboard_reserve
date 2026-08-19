@@ -12,7 +12,7 @@ import {
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
 import { ConversationTranscript } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
-import { STAGE_LABEL } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-list";
+import { stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 
@@ -61,7 +61,7 @@ export default function HotelConversationDetailPage({
           </span>
           <span>
             <span className="text-muted-foreground">Estágio: </span>
-            {STAGE_LABEL[contact.currentStage]}
+            {stageLabel(contact.currentStage)}
           </span>
           <span>
             <span className="text-muted-foreground">Bot: </span>

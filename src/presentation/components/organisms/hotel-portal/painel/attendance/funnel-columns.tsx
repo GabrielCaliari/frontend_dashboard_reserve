@@ -1,6 +1,6 @@
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import type { FunnelBoardColumn } from "@/src/shared/domain/types/@hotel-painel";
-import { STAGE_LABEL } from "./conversation-list";
+import { stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 
 /**
  * Kanban de conversas do bot. Desktop: colunas lado a lado. Mobile: as mesmas
@@ -23,7 +23,7 @@ export function FunnelColumns({ columns }: { columns: FunnelBoardColumn[] }) {
         <div key={column.stage} className="flex flex-1 flex-col gap-2">
           <Card className="space-y-1 p-4">
             <p className="text-sm text-muted-foreground">
-              {STAGE_LABEL[column.stage]}
+              {stageLabel(column.stage)}
             </p>
             <p className="text-2xl font-semibold">{column.count}</p>
           </Card>

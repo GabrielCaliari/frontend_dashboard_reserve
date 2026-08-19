@@ -30,7 +30,6 @@ import {
   type PeriodPreset,
 } from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
 import { formatNumber, formatPercent } from "@/src/shared/utils/hotel-format";
-import type { FunnelStage } from "@/src/shared/domain/types/@hotel-painel";
 
 /** Dinheiro do motor de reservas e do dashboard.kpi vem em REAIS, nao em
  * centavos — nunca usar hotel-format.formatMoney aqui (essa divide por 100). */
@@ -50,8 +49,6 @@ function fmt(n: number, style: "currency" | "percent" | "decimal" = "decimal") {
     }).format(n);
   return new Intl.NumberFormat("pt-BR").format(n);
 }
-
-const RESERVA_CONFIRMADA_STAGE = "RESERVA_CONFIRMADA" as FunnelStage;
 
 /**
  * Home unica do Painel (manager): funil do bot + motor de reservas + canais
@@ -86,7 +83,7 @@ export function ManagerHome() {
     if (!home) return 0;
     return (
       home.funil.distribuicaoFunil.find(
-        (item) => item.stage === RESERVA_CONFIRMADA_STAGE,
+        (item) => item.stage === "RESERVA_CONFIRMADA",
       )?.count ?? 0
     );
   }, [home]);

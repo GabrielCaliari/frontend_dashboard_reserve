@@ -109,11 +109,28 @@ export interface BotChannelsResponse {
 // ── Conversas (GET /hotel-portal/:clientId/whatsapp/conversations) ──────────
 
 export type FunnelStage =
-  | 'NOVO'
+  | 'CONTATO_INICIADO'
+  | 'PUBLICO_IDENTIFICADO'
   | 'QUALIFICADO'
-  | 'PAGAMENTO'
-  | 'FECHADO'
+  | 'ACOMODACAO_APRESENTADA'
+  | 'OFERTA_FEITA'
+  | 'FECHAMENTO_INICIADO'
+  | 'COMPROVANTE_RECEBIDO'
+  | 'RESERVA_CONFIRMADA'
   | 'PERDIDO';
+
+export type BotContactAudience =
+  | 'LEAD'
+  | 'HOSPEDE_EM_ESTADIA'
+  | 'MENSALISTA'
+  | 'MARINA'
+  | 'EQUIPE';
+
+export interface FunnelStageChangeDto {
+  para_estagio: FunnelStage;
+  motivo?: string;
+  tipo_publico?: BotContactAudience;
+}
 
 export type BotContactStatus = 'ATIVO' | 'PAUSADO';
 
@@ -169,6 +186,7 @@ export interface FunnelBoardLead {
   nome: string | null;
   acomodacaoInteresse: string | null;
   datasInteresse: string | null;
+  tipoPublico: BotContactAudience | null;
 }
 
 export interface FunnelBoardColumn {
