@@ -79,6 +79,7 @@ import type {
   CreateBotConfigProposalDto,
   FunnelBoardColumn,
   FunnelMetricsResponse,
+  FunnelStageChangeDto,
   HotelHomeResponse,
   InstagramOverviewResponse,
   LeadsOverviewResponse,
@@ -652,6 +653,18 @@ export const hotelPortalService = {
       `/hotel-portal/${clientId}/whatsapp/funnel`,
     );
     return toArray<FunnelBoardColumn>(res.data);
+  },
+
+  async moveFunnelStage(
+    tenantId: string,
+    numeroContato: string,
+    dto: FunnelStageChangeDto,
+  ): Promise<void> {
+    await api.patch(
+      `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/stage`,
+      dto,
+      adminHeaders,
+    );
   },
 
   async getFunnelMetrics(
