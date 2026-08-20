@@ -56,6 +56,31 @@ const STATUS_COLORS: Record<string, "success" | "warning" | "danger" | "default"
   NOSHOW: "danger",
 };
 
+// Badge de origem: bot em primary, OTAs em secondary, resto neutro.
+function origemBadgeClass(origem: string) {
+  if (origem === "BOT_WHATSAPP") return "bg-primary/10 text-primary";
+  if (origem.startsWith("OTA_")) return "bg-secondary/20 text-secondary-600";
+  return "bg-default-100 text-foreground/70";
+}
+
+function OrigemBadge({ origem }: { origem: string }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${origemBadgeClass(origem)}`}
+    >
+      {ORIGEM_LABELS[origem] ?? origem}
+    </span>
+  );
+}
+
+// Iniciais do hospede pro avatar da listagem.
+function initials(nome: string) {
+  const parts = nome.trim().split(/\s+/);
+  const first = parts[0]?.[0] ?? "";
+  const last = parts.length > 1 ? (parts[parts.length - 1][0] ?? "") : "";
+  return `${first}${last}`.toUpperCase();
+}
+
 export default function MotorReservasPage() {
   const { tenantId, hasPermission } = useTenantCapabilities();
   const [statusFilter, setStatusFilter] = useState<string>("");
@@ -131,10 +156,24 @@ export default function MotorReservasPage() {
       {rows.length > 0 ? (
         <PortalDataTable<MotorReservation>
           columns={[
-            { key: "hospede", header: "Hóspede", render: (r) => r.hospede_nome },
+            {
+              key: "hospede",
+              header: "Hóspede",
+              render: (r) => (
+                <span className="flex items-center gap-2.5">
+                  <span
+                    aria-hidden
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary"
+                  >
+                    {initials(r.hospede_nome)}
+                  </span>
+                  <span className="font-medium text-foreground">{r.hospede_nome}</span>
+                </span>
+              ),
+            },
             { key: "periodo", header: "Período", render: (r) => `${r.checkin} → ${r.checkout}` },
             { key: "unidade", header: "Unidade", render: (r) => r.unit?.identificador ?? "—" },
-            { key: "origem", header: "Origem", render: (r) => ORIGEM_LABELS[r.origem] ?? r.origem },
+            { key: "origem", header: "Origem", render: (r) => <OrigemBadge origem={r.origem} /> },
             {
               key: "status",
               header: "Status",

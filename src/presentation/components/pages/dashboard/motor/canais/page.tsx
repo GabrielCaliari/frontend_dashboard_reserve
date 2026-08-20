@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Card, CardBody, Chip, Input, Switch } from "@heroui/react";
-import { AlertTriangle, Copy, RefreshCw } from "lucide-react";
+import { AlertTriangle, BedDouble, Copy, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import {
@@ -18,6 +18,7 @@ import {
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
 import { PortalDataTable } from "@/src/presentation/components/organisms/hotel-portal/painel/data-table";
+import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
 import type { MotorCanalFilaErro, MotorCanalStatus } from "@/src/shared/domain/types/@motor";
 
 const STATUS_COLORS: Record<MotorCanalStatus, "success" | "warning" | "danger" | "default"> = {
@@ -290,9 +291,11 @@ export default function MotorCanaisPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-foreground/60">
-                  Nenhuma acomodação cadastrada — crie as acomodações antes de mapear.
-                </p>
+                <PortalEmptyState
+                  description="Crie as acomodações antes de mapear os quartos do Beds24."
+                  icon={BedDouble}
+                  title="Nenhuma acomodação cadastrada"
+                />
               )}
               {canManage && (roomTypes ?? []).length ? (
                 <Button color="primary" isLoading={saveMap.isPending} onPress={handleSaveMap}>

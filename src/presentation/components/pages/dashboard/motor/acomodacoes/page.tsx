@@ -166,14 +166,22 @@ export default function MotorAcomodacoesPage() {
             <Card key={roomType.id} className="rounded-3xl border border-border bg-default-50 shadow-none">
               <CardBody className="space-y-5 p-6 sm:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h2 className="text-lg font-semibold tracking-tight text-foreground">{roomType.nome}</h2>
-                    <p className="text-sm text-foreground/60">
-                      {roomType.capacidade_base} + {roomType.capacidade_max - roomType.capacidade_base} pessoas
-                      {" · adicional "}
-                      {fmtBRL(roomType.valor_pessoa_adicional)}/noite
-                      {roomType.aceita_pets ? ` · pet ${fmtBRL(roomType.taxa_pet_dia)}/dia` : " · não aceita pets"}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <span
+                      aria-hidden
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary"
+                    >
+                      <BedDouble className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight text-foreground">{roomType.nome}</h2>
+                      <p className="text-sm text-foreground/60">
+                        {roomType.capacidade_base} + {roomType.capacidade_max - roomType.capacidade_base} pessoas
+                        {" · adicional "}
+                        {fmtBRL(roomType.valor_pessoa_adicional)}/noite
+                        {roomType.aceita_pets ? ` · pet ${fmtBRL(roomType.taxa_pet_dia)}/dia` : " · não aceita pets"}
+                      </p>
+                    </div>
                   </div>
                   {canManage ? (
                     <Switch

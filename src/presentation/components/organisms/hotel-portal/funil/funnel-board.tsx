@@ -7,6 +7,7 @@ import {
   useDroppable,
   type DragEndEvent,
 } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import {
   Button,
   Dropdown,
@@ -194,7 +195,7 @@ interface FunnelLeadCardProps {
 }
 
 function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCardProps) {
-  const { attributes, listeners, setNodeRef } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: dragId(column.stage, lead.numeroContato),
   });
 
@@ -205,9 +206,12 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
       ref={canManage ? setNodeRef : undefined}
       {...(canManage ? attributes : {})}
       {...(canManage ? listeners : {})}
+      // O transform do dnd-kit e o que faz o card SEGUIR o cursor durante o
+      // arrasto; sem ele o drop funciona mas o card parece fixo.
+      style={canManage ? { transform: CSS.Translate.toString(transform) } : undefined}
       className={`flex items-start justify-between gap-2 rounded-2xl bg-background p-3 text-sm transition-colors hover:border-primary/40 ${
-        canManage ? "cursor-grab active:cursor-grabbing" : ""
-      }`}
+        canManage ? "cursor-grab touch-none active:cursor-grabbing" : ""
+      } ${isDragging ? "relative z-50 opacity-90 shadow-none ring-1 ring-primary/50" : ""}`}
     >
       <div className="flex min-w-0 items-start gap-2.5">
         <span

@@ -4,7 +4,7 @@ import {
   TypeAvailabilityHeatmap,
   availabilityTone,
 } from "../type-availability-heatmap";
-import type { MotorCalendarUnidade } from "@/src/shared/domain/types/@motor";
+import type { MotorCalendarUnidade, MotorGrade } from "@/src/shared/domain/types/@motor";
 
 const unidades: MotorCalendarUnidade[] = [
   {
@@ -21,23 +21,40 @@ const unidades: MotorCalendarUnidade[] = [
     room_type_nome: "Suite Casal",
     dias: [{ data: "2026-08-01", estado: "CONFIRMADA" }],
   },
-  {
-    unit_id: "u3",
-    identificador: "Teste 1",
-    room_type_id: "rt2",
-    room_type_nome: "Teste",
-    dias: [{ data: "2026-08-01", estado: "BLOCK" }],
-  },
 ] as MotorCalendarUnidade[];
 
+const grade: MotorGrade = {
+  from: "2026-08-01",
+  to: "2026-08-02",
+  room_types: [
+    {
+      room_type_id: "rt1",
+      nome: "Suite Casal",
+      capacidade_base: 2,
+      capacidade_max: 3,
+      valor_pessoa_adicional: 50,
+      total_units: 2,
+      dias: [
+        { data: "2026-08-01", preco: 320, min_stay: 1, stop_sell: false, closed_arrival: false, closed_departure: false, override: false, unidades_livres: 1 },
+        { data: "2026-08-02", preco: 320, min_stay: 1, stop_sell: true, closed_arrival: false, closed_departure: false, override: false, unidades_livres: 2 },
+      ],
+    },
+  ],
+};
+
 describe("TypeAvailabilityHeatmap", () => {
-  it("agrega unidades livres por tipo e dia", () => {
-    render(<TypeAvailabilityHeatmap unidades={unidades} />);
+  it("usa a mesma fonte da grade: mostra unidades a venda por tipo e dia", () => {
+    render(<TypeAvailabilityHeatmap grade={grade} unidades={unidades} />);
     expect(screen.getByText("Suite Casal")).toBeInTheDocument();
     expect(screen.getByText("2 un.")).toBeInTheDocument();
-    expect(screen.getByLabelText("Suite Casal 2026-08-01: 1 de 2 livres")).toBeInTheDocument();
-    // bloqueio/mensalista nao conta como livre
-    expect(screen.getByLabelText("Teste 2026-08-01: 0 de 1 livres")).toBeInTheDocument();
+    expect(screen.getByLabelText("Suite Casal 2026-08-01: 1 à venda de 2")).toBeInTheDocument();
+  });
+
+  it("dia com stop de vendas mostra 0 mesmo com unidades livres (sincronia com a grade)", () => {
+    render(<TypeAvailabilityHeatmap grade={grade} unidades={unidades} />);
+    const celula = screen.getByLabelText("Suite Casal 2026-08-02: 0 à venda de 2");
+    expect(celula).toBeInTheDocument();
+    expect(celula).toHaveTextContent("0");
   });
 });
 

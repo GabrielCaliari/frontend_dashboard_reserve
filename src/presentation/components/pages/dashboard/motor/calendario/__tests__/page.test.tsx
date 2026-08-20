@@ -13,7 +13,17 @@ vi.mock("@/src/shared/hooks/motor", () => ({
     data: { from: "2026-08-01", to: "2026-08-31", unidades: [{ unit_id: "u1", identificador: "Casal 1", room_type_id: "rt1", room_type_nome: "Suite Casal", dias: [{ data: "2026-08-01", estado: "LIVRE" }] }] },
     isLoading: false, isError: false,
   }),
-  useMotorGrade: () => ({ data: { from: "2026-08-01", to: "2026-08-31", room_types: [] }, isLoading: false, isError: false }),
+  useMotorGrade: () => ({
+    data: {
+      from: "2026-08-01", to: "2026-08-31",
+      room_types: [{
+        room_type_id: "rt1", nome: "Suite Casal", capacidade_base: 2, capacidade_max: 3,
+        valor_pessoa_adicional: 50, total_units: 1,
+        dias: [{ data: "2026-08-01", preco: 320, min_stay: 1, stop_sell: false, closed_arrival: false, closed_departure: false, override: false, unidades_livres: 1 }],
+      }],
+    },
+    isLoading: false, isError: false,
+  }),
   useCreateBlock: () => mutation,
   useCreateManualReservation: () => mutation,
   useUpsertDailyInventory: () => mutation,
@@ -41,7 +51,7 @@ describe("MotorCalendarioPage", () => {
   it("troca para a grade de tarifas", () => {
     render(<MotorCalendarioPage />);
     fireEvent.click(screen.getByRole("tab", { name: "Grade de tarifas" }));
-    // grade vazia => empty state
-    expect(screen.getByText(/nenhuma acomodacao|nenhum tipo/i)).toBeInTheDocument();
+    expect(screen.getByText("À venda")).toBeInTheDocument();
+    expect(screen.getByText("2 pessoas")).toBeInTheDocument();
   });
 });

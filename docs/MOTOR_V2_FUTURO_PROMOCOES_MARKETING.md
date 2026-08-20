@@ -32,6 +32,13 @@ Tese registrada para quando for priorizada:
 - E-mail pré-estadia/pós-estadia/aniversário: avaliar como mensagens do bot (templates WhatsApp) antes de construir infraestrutura de e-mail. E-mail entra se/quando houver demanda de cliente que não opera por WhatsApp.
 - Dados necessários já existem no motor: `reservation` (datas, hóspede, e-mail/telefone) e `reservation_event`.
 
+## Frente 6 — Atendimento: retomada humana e inteligência de hóspede (registrado em 2026-08-19)
+
+Ideias do Gabriel durante o redesign do inbox estilo WhatsApp Web (que já foi entregue como leitura + etiquetas de estágio):
+
+- **Botão "Retomar conversa"**: na conversa pausada (aguardando humano), a pessoa da equipe clica, o sistema registra QUEM assumiu e devolve o contato ao bot num estágio escolhido ("retomar no estágio tal"). Exige endpoint novo no back + evento para o N8N/bot (hoje o painel é somente leitura por decisão de produto — Decisão 11; retomada muda essa decisão e precisa ser desenhada com o time do bot).
+- **Inteligência de hóspede**: quando a reserva é confirmada no motor, o contato do funil vira HÓSPEDE na data do check-in — o bot deve saber que aquele número é hóspede (nome + acomodação + datas), puxando do motor. Liga `motor_reservations` → `bot_contacts.tipo_publico = HOSPEDE_EM_ESTADIA` por telefone, com transição automática na data. Envolve o cérebro do bot (Meta/N8N) + job no back.
+
 ## Gatilhos de repriorização
 
 - Cliente pedindo cupom/código em campanha → Frente 4.

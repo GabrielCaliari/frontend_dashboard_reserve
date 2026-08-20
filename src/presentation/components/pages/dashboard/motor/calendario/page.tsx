@@ -59,7 +59,7 @@ export default function MotorCalendarioPage() {
       <Tabs aria-label="Abas do calendário do motor de reservas">
         <Tab key="ocupacao" title="Ocupação">
           <div className="pt-4">
-            {calLoading ? (
+            {calLoading || (ocupacaoView === "tipo" && gradeLoading) ? (
               <div className="flex items-center justify-center py-16">
                 <Spinner color="primary" size="lg" />
               </div>
@@ -97,7 +97,10 @@ export default function MotorCalendarioPage() {
                   )}
                 </div>
                 {ocupacaoView === "tipo" ? (
-                  <TypeAvailabilityHeatmap unidades={calendar.unidades} />
+                  <TypeAvailabilityHeatmap
+                    grade={grade ?? { from: period.from, to: period.to, room_types: [] }}
+                    unidades={calendar.unidades}
+                  />
                 ) : (
                   <OccupancyGrid
                     calendar={calendar}
