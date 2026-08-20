@@ -24,6 +24,17 @@ import type {
 /** Etiqueta ativa: todas, pausadas (aguardando humano) ou um estagio do funil. */
 type Etiqueta = "todas" | "pausadas" | FunnelStage;
 
+/** +5535999110001 -> +55 (35) 99911-0001; formatos fora do padrao BR ficam como vieram. */
+export function formatPhoneBR(numero: string): string {
+  const digitos = numero.replace(/\D/g, "");
+  const semPais = digitos.startsWith("55") ? digitos.slice(2) : null;
+  if (!semPais || semPais.length < 10 || semPais.length > 11) return numero;
+  const ddd = semPais.slice(0, 2);
+  const corpo = semPais.slice(2);
+  const quebra = corpo.length - 4;
+  return `+55 (${ddd}) ${corpo.slice(0, quebra)}-${corpo.slice(quebra)}`;
+}
+
 function formatWhen(iso: string | null): string {
   if (!iso) return "";
   const d = new Date(iso);
@@ -64,7 +75,7 @@ function ContactRow({
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex items-baseline justify-between gap-2">
-          <span className="truncate text-sm font-semibold">{conv.nome ?? conv.numeroContato}</span>
+          <span className="truncate text-sm font-semibold">{conv.nome ?? formatPhoneBR(conv.numeroContato)}</span>
           <span className="shrink-0 text-[11px] text-foreground/50">{formatWhen(conv.lastMessageAt)}</span>
         </span>
         <span className="mt-0.5 flex items-center gap-1.5">
@@ -217,9 +228,9 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                 {contactInitials(contato.nome, contato.numeroContato)}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{contato.nome ?? contato.numeroContato}</p>
+                <p className="truncate text-sm font-semibold">{contato.nome ?? formatPhoneBR(contato.numeroContato)}</p>
                 <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-foreground/60">
-                  <span>{contato.numeroContato}</span>
+                  <span>{formatPhoneBR(contato.numeroContato)}</span>
                   <span className={`rounded-full px-1.5 py-px text-[10px] font-medium ${STAGE_TONES[contato.currentStage]}`}>
                     {stageLabel(contato.currentStage)}
                   </span>

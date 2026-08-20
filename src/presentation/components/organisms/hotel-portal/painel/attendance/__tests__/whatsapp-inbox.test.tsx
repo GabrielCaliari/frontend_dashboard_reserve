@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { WhatsappInbox } from "../whatsapp-inbox";
+import { WhatsappInbox, formatPhoneBR } from "../whatsapp-inbox";
 import type { ConversationListItem } from "@/src/shared/domain/types/@hotel-painel";
 
 const conversas: ConversationListItem[] = [
@@ -61,6 +61,12 @@ describe("WhatsappInbox", () => {
     expect(screen.getByText("Oi, tem vaga?")).toBeInTheDocument();
     expect(screen.getByText(/somente leitura/i)).toBeInTheDocument();
     expect(screen.getByText(/responder no chatwoot/i)).toBeInTheDocument();
+  });
+
+  it("formata numero brasileiro para exibicao", () => {
+    expect(formatPhoneBR("+5535999110001")).toBe("+55 (35) 99911-0001");
+    expect(formatPhoneBR("5511987654321")).toBe("+55 (11) 98765-4321");
+    expect(formatPhoneBR("+14155550123")).toBe("+14155550123"); // fora do padrao BR, intacto
   });
 
   it("etiqueta aguardando humano filtra os pausados", () => {
