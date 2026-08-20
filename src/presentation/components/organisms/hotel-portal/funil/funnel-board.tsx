@@ -14,11 +14,14 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/react";
-import { MoreVertical } from "lucide-react";
+import { BedDouble, CalendarRange, MoreVertical } from "lucide-react";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import {
   AUDIENCE_LABELS,
+  AUDIENCE_TONES,
   FUNNEL_STAGES,
+  STAGE_ACCENTS,
+  contactInitials,
   stageLabel,
 } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import {
@@ -91,7 +94,9 @@ export function FunnelBoard({ columns, canManage, onMove }: FunnelBoardProps) {
   }
 
   const board = (
-    <div className="flex flex-col gap-3 md:flex-row md:items-stretch">
+    // Desktop: colunas de largura fixa com scroll horizontal — 9 estagios
+    // espremidos em flex-1 viravam tiras ilegiveis.
+    <div className="flex flex-col gap-3 md:flex-row md:items-start md:overflow-x-auto md:pb-3">
       {columns.map((column) => (
         <FunnelColumnView
           key={column.stage}
@@ -133,18 +138,22 @@ function FunnelColumnView({ column, canManage, onRequestMove }: FunnelColumnView
   return (
     <div
       ref={canManage ? setNodeRef : undefined}
-      className={`flex flex-1 flex-col gap-2 rounded-3xl ${
+      className={`flex flex-col gap-2 rounded-3xl md:w-72 md:flex-none ${
         canManage && isOver ? "ring-1 ring-primary/40" : ""
       }`}
     >
-      <Card data-testid="coluna-header" className="space-y-1 p-4">
+      <div
+        data-testid="coluna-header"
+        className="flex items-center gap-2 rounded-2xl border border-border bg-default-50 px-3 py-2.5"
+      >
+        <span aria-hidden className={`h-2.5 w-2.5 shrink-0 rounded-full ${STAGE_ACCENTS[column.stage]}`} />
         {/* Rotulo e contagem num unico no de texto: se o rotulo ficar sozinho
             num no de texto (mesmo com um <span> vizinho) ele bate igual ao
             item "mover para X" do menu do card e o teste acha 2 matches. */}
-        <p className="text-sm text-muted-foreground">{`${stageLabel(column.stage)} · ${column.count}`}</p>
-      </Card>
+        <p className="truncate text-sm font-semibold text-foreground">{`${stageLabel(column.stage)} · ${column.count}`}</p>
+      </div>
 
-      <div className="space-y-1.5">
+      <div className="min-h-12 space-y-1.5 rounded-2xl bg-default-100/40 p-1.5">
         {column.leads.map((lead) => (
           <FunnelLeadCard
             key={lead.numeroContato}
@@ -154,6 +163,9 @@ function FunnelColumnView({ column, canManage, onRequestMove }: FunnelColumnView
             onRequestMove={onRequestMove}
           />
         ))}
+        {column.leads.length === 0 && (
+          <p className="px-2 py-3 text-center text-xs text-foreground/40">Sem conversas aqui</p>
+        )}
         {column.count > column.leads.length && (
           <p className="px-1 text-xs text-muted-foreground">
             +{column.count - column.leads.length} não exibido
@@ -193,22 +205,42 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
       ref={canManage ? setNodeRef : undefined}
       {...(canManage ? attributes : {})}
       {...(canManage ? listeners : {})}
-      className="flex items-start justify-between gap-2 p-3 text-sm"
+      className={`flex items-start justify-between gap-2 rounded-2xl bg-background p-3 text-sm transition-colors hover:border-primary/40 ${
+        canManage ? "cursor-grab active:cursor-grabbing" : ""
+      }`}
     >
-      <div>
-        <p className="font-medium">{lead.nome ?? lead.numeroContato}</p>
-        {lead.acomodacaoInteresse && (
-          <p className="text-xs text-muted-foreground">{lead.acomodacaoInteresse}</p>
-        )}
-        {/* datas_interesse e Json do bot: cache antigo pode trazer objeto em vez de string */}
-        {typeof lead.datasInteresse === "string" && lead.datasInteresse && (
-          <p className="text-xs text-muted-foreground">{lead.datasInteresse}</p>
-        )}
-        {lead.tipoPublico != null && (
-          <span className="mt-1 inline-block rounded-full bg-default-100 px-2 py-0.5 text-xs">
-            {AUDIENCE_LABELS[lead.tipoPublico]}
-          </span>
-        )}
+      <div className="flex min-w-0 items-start gap-2.5">
+        <span
+          aria-hidden
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary"
+        >
+          {contactInitials(lead.nome, lead.numeroContato)}
+        </span>
+        <div className="min-w-0 space-y-0.5">
+          <p className="truncate font-semibold">{lead.nome ?? lead.numeroContato}</p>
+          {lead.acomodacaoInteresse && (
+            <p className="flex items-center gap-1 text-xs text-muted-foreground">
+              <BedDouble aria-hidden className="h-3 w-3 shrink-0" />
+              <span className="truncate">{lead.acomodacaoInteresse}</span>
+            </p>
+          )}
+          {/* datas_interesse e Json do bot: cache antigo pode trazer objeto em vez de string */}
+          {typeof lead.datasInteresse === "string" && lead.datasInteresse && (
+            <p className="flex items-center gap-1 text-xs text-muted-foreground">
+              <CalendarRange aria-hidden className="h-3 w-3 shrink-0" />
+              <span className="truncate">{lead.datasInteresse}</span>
+            </p>
+          )}
+          {lead.tipoPublico != null && (
+            <span
+              className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                AUDIENCE_TONES[lead.tipoPublico] ?? "bg-default-100 text-foreground/70"
+              }`}
+            >
+              {AUDIENCE_LABELS[lead.tipoPublico]}
+            </span>
+          )}
+        </div>
       </div>
 
       {canManage && (

@@ -1,5 +1,10 @@
 {
+  "skipDangerousModePermissionPrompt": true,
   "permissions": {
+    "defaultMode": "bypassPermissions",
+    "additionalDirectories": [
+      "C:\\Users\\gabri\\OneDrive\\Documents\\GitHub\\backend_reserve"
+    ],
     "allow": [
       "Bash(npx tsc --noEmit --skipLibCheck)",
       "Bash(npx tsc --noEmit --project tsconfig.json)",

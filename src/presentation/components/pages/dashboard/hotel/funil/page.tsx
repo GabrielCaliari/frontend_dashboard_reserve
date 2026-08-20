@@ -69,6 +69,7 @@ export default function HotelFunilPage() {
 
   return (
     <PainelPageShell
+      wide
       title="Funil do Bot"
       description="Onde cada conversa parou. A fronteira mostra com dado onde a Reserve entrega e onde o hotel converte."
       isLoading={clientLoading || boardLoading}

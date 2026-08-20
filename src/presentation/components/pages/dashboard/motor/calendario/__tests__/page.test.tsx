@@ -22,11 +22,19 @@ vi.mock("@/src/shared/hooks/motor", () => ({
 }));
 
 describe("MotorCalendarioPage", () => {
-  it("renderiza as tres abas e a ocupacao por padrao", () => {
+  it("renderiza as tres abas e a ocupacao por tipo por padrao", () => {
     render(<MotorCalendarioPage />);
     expect(screen.getByRole("tab", { name: "Ocupação" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Grade de tarifas" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Atualização em massa" })).toBeInTheDocument();
+    // visao padrao agrega por tipo: mostra o nome do tipo, nao a unidade
+    expect(screen.getByText("Suite Casal")).toBeInTheDocument();
+    expect(screen.queryByText("Casal 1")).not.toBeInTheDocument();
+  });
+
+  it("troca para a visao por unidade", () => {
+    render(<MotorCalendarioPage />);
+    fireEvent.click(screen.getByRole("button", { name: "Por unidade" }));
     expect(screen.getByText("Casal 1")).toBeInTheDocument();
   });
 

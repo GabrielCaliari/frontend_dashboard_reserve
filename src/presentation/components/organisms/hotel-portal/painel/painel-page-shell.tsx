@@ -16,6 +16,7 @@ export function PainelPageShell({
   isError,
   errorMessage = "Erro ao carregar os dados desta tela.",
   actions,
+  wide,
   children,
 }: {
   title: string;
@@ -24,11 +25,15 @@ export function PainelPageShell({
   isError?: boolean;
   errorMessage?: string;
   actions?: React.ReactNode;
+  /** Telas densas em colunas (calendario, kanban) precisam de mais largura util. */
+  wide?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <LayoutScopeRoot>
-      <div className="mx-auto max-w-[1400px] animate-fade-in space-y-8 px-4 py-8 sm:px-8 lg:px-10">
+      <div
+        className={`mx-auto ${wide ? "max-w-[1840px]" : "max-w-[1400px]"} animate-fade-in space-y-8 px-4 py-8 sm:px-8 lg:px-10`}
+      >
         <div className="relative overflow-hidden rounded-3xl border border-border bg-default-50 p-8 sm:p-10">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

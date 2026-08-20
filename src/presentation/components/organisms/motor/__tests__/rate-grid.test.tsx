@@ -30,8 +30,10 @@ describe("RateGrid", () => {
     expect(onCellClick).toHaveBeenCalledWith(grade.room_types[0], grade.room_types[0].dias[0]);
   });
 
-  it("dia com stop de vendas fica marcado", () => {
+  it("dia com stop de vendas fica marcado e mostra 0 a venda", () => {
     render(<RateGrid grade={grade} canManage onCellClick={vi.fn()} />);
-    expect(screen.getByRole("button", { name: /suite casal 2026-09-06.*fechado/i })).toBeInTheDocument();
+    const fechado = screen.getByRole("button", { name: /suite casal 2026-09-06: 0 à venda, fechado/i });
+    expect(fechado).toBeInTheDocument();
+    expect(fechado).toHaveTextContent("0");
   });
 });

@@ -17,15 +17,17 @@ export const ESTADO_STYLES: Record<MotorCalendarEstado, { cell: string; label: s
   MENSALISTA: { cell: "bg-secondary/40", label: "Mensalista" },
 };
 
-const WEEKDAY_ABBR = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+export const WEEKDAY_ABBR = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
 // A data vem como YYYY-MM-DD; monta no fuso local pra nao escorregar um dia.
-function weekdayOf(data: string): number {
+// Exportados: a grade de tarifas e o mapa por tipo usam a mesma marcacao de
+// fim de semana e de "hoje" para as tres visoes lerem igual.
+export function weekdayOf(data: string): number {
   const [year, month, day] = data.split("-").map(Number);
   return new Date(year, (month ?? 1) - 1, day ?? 1).getDay();
 }
 
-function todayISO(): string {
+export function todayISO(): string {
   const now = new Date();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
