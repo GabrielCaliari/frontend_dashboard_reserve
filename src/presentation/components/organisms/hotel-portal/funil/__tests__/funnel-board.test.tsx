@@ -4,14 +4,18 @@ import { FunnelBoard, resolveDrop } from "../funnel-board";
 import type { FunnelBoardColumn } from "@/src/shared/domain/types/@hotel-painel";
 import type { DragEndEvent } from "@dnd-kit/core";
 
+const lead = {
+  numeroContato: "+5511999", nome: "Ana", acomodacaoInteresse: null, datasInteresse: null,
+  tipoPublico: "MENSALISTA" as const, statusBot: "PAUSADO" as const,
+  aguardandoDesde: new Date(Date.now() - 5 * 60_000).toISOString(),
+  valorCotacao: 1250, etiqueta: "RECUPERAR" as const,
+};
 const columns: FunnelBoardColumn[] = [
-  { stage: "CONTATO_INICIADO", count: 1, leads: [
-    { numeroContato: "+5511999", nome: "Ana", acomodacaoInteresse: null, datasInteresse: null, tipoPublico: "MENSALISTA" },
-  ]},
+  { stage: "CONTATO_INICIADO", count: 1, valorAberto: 1250, valorConfirmado: 0, leads: [lead] },
   ...[
     "PUBLICO_IDENTIFICADO", "QUALIFICADO", "ACOMODACAO_APRESENTADA", "OFERTA_FEITA",
     "FECHAMENTO_INICIADO", "COMPROVANTE_RECEBIDO", "RESERVA_CONFIRMADA", "PERDIDO",
-  ].map((stage) => ({ stage: stage as FunnelBoardColumn["stage"], count: 0, leads: [] })),
+  ].map((stage) => ({ stage: stage as FunnelBoardColumn["stage"], count: 0, valorAberto: 0, valorConfirmado: 0, leads: [] })),
 ];
 
 describe("FunnelBoard", () => {
@@ -22,7 +26,7 @@ describe("FunnelBoard", () => {
       {
         ...columns[0],
         leads: [{
-          ...columns[0].leads[0],
+          ...lead,
           datasInteresse: { checkin: "2026-09-12", checkout: "2026-09-15" } as unknown as string,
         }],
       },
@@ -80,6 +84,37 @@ describe("FunnelBoard", () => {
   it("sem canManage nao ha menu de mover", () => {
     render(<FunnelBoard columns={columns} canManage={false} onMove={vi.fn()} />);
     expect(screen.queryByRole("button", { name: /mover ana/i })).not.toBeInTheDocument();
+  });
+
+  it("cabecalho da coluna mostra R$ aberto e confirmado quando ha valor", () => {
+    const comConfirmado = [
+      { ...columns[0], valorConfirmado: 600 },
+      ...columns.slice(1),
+    ];
+    render(<FunnelBoard columns={comConfirmado} canManage onMove={vi.fn()} />);
+    const header = screen.getAllByTestId("coluna-header")[0];
+    expect(header).toHaveTextContent("R$ 1.250,00 em aberto");
+    expect(header).toHaveTextContent("R$ 600,00 confirmado");
+    // coluna vazia nao polui com "R$ 0,00"
+    expect(screen.getAllByTestId("coluna-header")[1]).not.toHaveTextContent("R$");
+  });
+
+  it("card mostra valor da cotacao, espera, etiqueta de recuperacao e quem esta com a bola", () => {
+    render(<FunnelBoard columns={columns} canManage onMove={vi.fn()} />);
+    expect(screen.getByText("R$ 1.250,00")).toBeInTheDocument();
+    expect(screen.getByText("há 5 min")).toBeInTheDocument();
+    expect(screen.getByText("Recuperar")).toBeInTheDocument();
+    expect(screen.getByLabelText("Com humano")).toBeInTheDocument();
+  });
+
+  it("card com bot ativo mostra indicador do bot", () => {
+    const ativo = [
+      { ...columns[0], leads: [{ ...lead, statusBot: "ATIVO" as const, etiqueta: null }] },
+      ...columns.slice(1),
+    ];
+    render(<FunnelBoard columns={ativo} canManage onMove={vi.fn()} />);
+    expect(screen.getByLabelText("Com o bot")).toBeInTheDocument();
+    expect(screen.queryByText("Recuperar")).not.toBeInTheDocument();
   });
 });
 

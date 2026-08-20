@@ -1,6 +1,7 @@
 import type {
   BotContactAudience,
   FunnelBoardColumn,
+  FunnelLeadTag,
   FunnelStage,
 } from "@/src/shared/domain/types/@hotel-painel";
 
@@ -86,12 +87,42 @@ export function moveLeadInBoard(
   if (!origem || origem.stage === paraEstagio) return board;
   const lead = origem.leads.find((l) => l.numeroContato === numeroContato)!;
   return board.map((c) => {
+    const valor = lead.valorCotacao ?? 0;
     if (c.stage === origem.stage) {
-      return { ...c, count: Math.max(0, c.count - 1), leads: c.leads.filter((l) => l.numeroContato !== numeroContato) };
+      return {
+        ...c,
+        count: Math.max(0, c.count - 1),
+        valorAberto: Math.max(0, c.valorAberto - valor),
+        leads: c.leads.filter((l) => l.numeroContato !== numeroContato),
+      };
     }
     if (c.stage === paraEstagio) {
-      return { ...c, count: c.count + 1, leads: [lead, ...c.leads] };
+      return { ...c, count: c.count + 1, valorAberto: c.valorAberto + valor, leads: [lead, ...c.leads] };
     }
     return c;
   });
 }
+
+const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
+/** Reais → "R$ 1.250,00". O motor manda reais (Decimal), nao centavos. */
+export function formatBRL(value: number): string {
+  return BRL.format(value).replace(/ /g, " ");
+}
+
+/** "há 2 min" / "há 3 h" / "há 3 d" desde a ultima mensagem; null sem data. */
+export function waitingLabel(iso: string | null, now: Date = new Date()): string | null {
+  if (!iso) return null;
+  const diffMs = now.getTime() - new Date(iso).getTime();
+  if (Number.isNaN(diffMs)) return null;
+  const min = Math.floor(diffMs / 60_000);
+  if (min < 1) return "agora";
+  if (min < 60) return `há ${min} min`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `há ${h} h`;
+  return `há ${Math.floor(h / 24)} d`;
+}
+
+export const TAG_LABELS: Record<FunnelLeadTag, string> = {
+  RECUPERAR: "Recuperar",
+};

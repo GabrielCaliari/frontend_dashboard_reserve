@@ -15,15 +15,18 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/react";
-import { BedDouble, CalendarRange, MoreVertical } from "lucide-react";
+import { BedDouble, Bot, CalendarRange, Clock, MoreVertical, UserRound } from "lucide-react";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import {
   AUDIENCE_LABELS,
   AUDIENCE_TONES,
   FUNNEL_STAGES,
   STAGE_ACCENTS,
+  TAG_LABELS,
   contactInitials,
+  formatBRL,
   stageLabel,
+  waitingLabel,
 } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import {
   MoveStageModal,
@@ -145,13 +148,25 @@ function FunnelColumnView({ column, canManage, onRequestMove }: FunnelColumnView
     >
       <div
         data-testid="coluna-header"
-        className="flex items-center gap-2 rounded-2xl border border-border bg-default-50 px-3 py-2.5"
+        className="flex flex-col gap-1 rounded-2xl border border-border bg-default-50 px-3 py-2.5"
       >
-        <span aria-hidden className={`h-2.5 w-2.5 shrink-0 rounded-full ${STAGE_ACCENTS[column.stage]}`} />
-        {/* Rotulo e contagem num unico no de texto: se o rotulo ficar sozinho
-            num no de texto (mesmo com um <span> vizinho) ele bate igual ao
-            item "mover para X" do menu do card e o teste acha 2 matches. */}
-        <p className="truncate text-sm font-semibold text-foreground">{`${stageLabel(column.stage)} · ${column.count}`}</p>
+        <div className="flex items-center gap-2">
+          <span aria-hidden className={`h-2.5 w-2.5 shrink-0 rounded-full ${STAGE_ACCENTS[column.stage]}`} />
+          {/* Rotulo e contagem num unico no de texto: se o rotulo ficar sozinho
+              num no de texto (mesmo com um <span> vizinho) ele bate igual ao
+              item "mover para X" do menu do card e o teste acha 2 matches. */}
+          <p className="truncate text-sm font-semibold text-foreground">{`${stageLabel(column.stage)} · ${column.count}`}</p>
+        </div>
+        {/* Dinheiro visivel no topo da coluna (benchmark P0-2 / Asksuite Auto
+            Kanban). Zero nao aparece: coluna vazia fica limpa. */}
+        {(column.valorAberto > 0 || column.valorConfirmado > 0) && (
+          <p className="flex flex-wrap gap-x-2 pl-[18px] text-[11px] text-muted-foreground">
+            {column.valorAberto > 0 && <span>{`${formatBRL(column.valorAberto)} em aberto`}</span>}
+            {column.valorConfirmado > 0 && (
+              <span className="text-success-600">{`${formatBRL(column.valorConfirmado)} confirmado`}</span>
+            )}
+          </p>
+        )}
       </div>
 
       <div className="min-h-12 space-y-1.5 rounded-2xl bg-default-100/40 p-1.5">
@@ -221,7 +236,15 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
           {contactInitials(lead.nome, lead.numeroContato)}
         </span>
         <div className="min-w-0 space-y-0.5">
-          <p className="truncate font-semibold">{lead.nome ?? lead.numeroContato}</p>
+          <p className="flex items-center gap-1.5 truncate font-semibold">
+            {/* Quem esta com a bola (benchmark §5 passo 6): bot ou humano. */}
+            {lead.statusBot === "PAUSADO" ? (
+              <UserRound aria-label="Com humano" className="h-3.5 w-3.5 shrink-0 text-warning-600" />
+            ) : (
+              <Bot aria-label="Com o bot" className="h-3.5 w-3.5 shrink-0 text-primary" />
+            )}
+            <span className="truncate">{lead.nome ?? lead.numeroContato}</span>
+          </p>
           {lead.acomodacaoInteresse && (
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
               <BedDouble aria-hidden className="h-3 w-3 shrink-0" />
@@ -235,15 +258,35 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
               <span className="truncate">{lead.datasInteresse}</span>
             </p>
           )}
-          {lead.tipoPublico != null && (
-            <span
-              className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                AUDIENCE_TONES[lead.tipoPublico] ?? "bg-default-100 text-foreground/70"
-              }`}
-            >
-              {AUDIENCE_LABELS[lead.tipoPublico]}
-            </span>
+          {(lead.valorCotacao != null || lead.aguardandoDesde) && (
+            <p className="flex items-center gap-2 text-xs">
+              {lead.valorCotacao != null && (
+                <span className="font-semibold text-foreground">{formatBRL(lead.valorCotacao)}</span>
+              )}
+              {waitingLabel(lead.aguardandoDesde) && (
+                <span className="flex items-center gap-1 text-muted-foreground">
+                  <Clock aria-hidden className="h-3 w-3" />
+                  {waitingLabel(lead.aguardandoDesde)}
+                </span>
+              )}
+            </p>
           )}
+          <span className="flex flex-wrap gap-1">
+            {lead.etiqueta && (
+              <span className="mt-1 inline-block rounded-full bg-danger/10 px-2 py-0.5 text-xs font-medium text-danger">
+                {TAG_LABELS[lead.etiqueta]}
+              </span>
+            )}
+            {lead.tipoPublico != null && (
+              <span
+                className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                  AUDIENCE_TONES[lead.tipoPublico] ?? "bg-default-100 text-foreground/70"
+                }`}
+              >
+                {AUDIENCE_LABELS[lead.tipoPublico]}
+              </span>
+            )}
+          </span>
         </div>
       </div>
 

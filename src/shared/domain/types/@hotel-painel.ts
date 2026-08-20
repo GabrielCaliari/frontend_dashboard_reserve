@@ -181,17 +181,29 @@ export interface ConversationFilters {
 
 // ── Funil do bot (GET /hotel-portal/:clientId/whatsapp/funnel) ──────────────
 
+export type FunnelLeadTag = 'RECUPERAR';
+
 export interface FunnelBoardLead {
   numeroContato: string;
   nome: string | null;
   acomodacaoInteresse: string | null;
   datasInteresse: string | null;
   tipoPublico: BotContactAudience | null;
+  statusBot: BotContactStatus;
+  /** ISO da ultima mensagem do contato; base do "aguardando ha X". */
+  aguardandoDesde: string | null;
+  /** Reais (nao centavos): valor_total do hold mais recente do contato. */
+  valorCotacao: number | null;
+  etiqueta: FunnelLeadTag | null;
 }
 
 export interface FunnelBoardColumn {
   stage: FunnelStage;
   count: number;
+  /** Reais: holds ativos/expirados dos leads da coluna. */
+  valorAberto: number;
+  /** Reais: reservas confirmadas (origem bot) dos leads da coluna. */
+  valorConfirmado: number;
   leads: FunnelBoardLead[];
 }
 
