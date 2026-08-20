@@ -107,7 +107,7 @@ const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" 
 
 /** Reais → "R$ 1.250,00". O motor manda reais (Decimal), nao centavos. */
 export function formatBRL(value: number): string {
-  return BRL.format(value).replace(/ /g, " ");
+  return BRL.format(value).replace(/\u00a0/g, " ");
 }
 
 /** "há 2 min" / "há 3 h" / "há 3 d" desde a ultima mensagem; null sem data. */
