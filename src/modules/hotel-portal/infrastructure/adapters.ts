@@ -79,6 +79,7 @@ import type {
   CreateBotConfigProposalDto,
   FunnelBoardColumn,
   FunnelMetricsResponse,
+  FunnelStage,
   FunnelStageChangeDto,
   HotelHomeResponse,
   InstagramOverviewResponse,
@@ -662,6 +663,19 @@ export const hotelPortalService = {
   ): Promise<void> {
     await api.patch(
       `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/stage`,
+      dto,
+      adminHeaders,
+    );
+  },
+
+  /** Retomada humana: despausa o bot e (opcionalmente) devolve o lead a um estagio. */
+  async resumeConversation(
+    tenantId: string,
+    numeroContato: string,
+    dto: { estagio?: FunnelStage },
+  ): Promise<void> {
+    await api.post(
+      `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/resume`,
       dto,
       adminHeaders,
     );

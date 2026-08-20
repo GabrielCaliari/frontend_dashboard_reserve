@@ -12,7 +12,9 @@ vi.mock("@/src/shared/hooks/motor", () => ({
 }));
 
 describe("BulkUpdateForm", () => {
-  it("preview chama a mutation com dry_run e mostra o resumo", async () => {
+  // timeout folgado: sob a suite completa em paralelo o jsdom fica lento e os
+  // 5s padrao estouram (isolado roda em <2s) — flake de maquina, nao de logica
+  it("preview chama a mutation com dry_run e mostra o resumo", { timeout: 20_000 }, async () => {
     mutateAsync.mockResolvedValue({ total_datas: 10, atualizar: 8, criar: 2, ignoradas_sem_preco: 0, aplicado: false });
     render(<BulkUpdateForm tenantId="tenant_1" canManage />);
     fireEvent.click(screen.getByLabelText("Suite Casal"));
@@ -20,8 +22,11 @@ describe("BulkUpdateForm", () => {
     fireEvent.change(screen.getByLabelText("Fim"), { target: { value: "2026-09-30" } });
     fireEvent.change(screen.getByLabelText(/preço\/noite/i), { target: { value: "400" } });
     fireEvent.click(screen.getByRole("button", { name: /pré-visualizar/i }));
-    await waitFor(() => expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ dry_run: true, preco: 400 })));
-    expect(await screen.findByText(/8 datas atualizadas/i)).toBeInTheDocument();
+    await waitFor(
+      () => expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ dry_run: true, preco: 400 })),
+      { timeout: 15_000 },
+    );
+    expect(await screen.findByText(/8 datas atualizadas/i, undefined, { timeout: 15_000 })).toBeInTheDocument();
   });
 
   it("aplicar so habilita depois do preview e envia sem dry_run", async () => {

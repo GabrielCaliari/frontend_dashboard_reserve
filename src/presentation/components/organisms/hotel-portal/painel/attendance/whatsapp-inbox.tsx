@@ -2,11 +2,24 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, MessageSquareText, PauseCircle, Search, ShieldAlert } from "lucide-react";
-import { Button, Spinner } from "@heroui/react";
+import toast from "react-hot-toast";
+import { ArrowLeft, ExternalLink, MessageSquareText, PauseCircle, Play, Search, ShieldAlert } from "lucide-react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
+  Spinner,
+} from "@heroui/react";
+import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import {
   useHotelConversationDetail,
   useHotelConversations,
+  useResumeConversation,
 } from "@/src/shared/hooks/hotel-portal";
 import { ConversationTranscript } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
@@ -101,6 +114,12 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
   const [buscaAplicada, setBuscaAplicada] = useState("");
   const [etiqueta, setEtiqueta] = useState<Etiqueta>("todas");
   const [selecionado, setSelecionado] = useState<string | null>(null);
+  const [retomadaAberta, setRetomadaAberta] = useState(false);
+  const [estagioRetomada, setEstagioRetomada] = useState<FunnelStage | null>(null);
+
+  const { tenantId, hasPermission } = useTenantCapabilities();
+  const podeRetomar = hasPermission("hotel-portal.whatsapp-funnel.manage");
+  const retomada = useResumeConversation(tenantId, clientId);
 
   // debounce simples pra nao consultar a cada tecla
   useEffect(() => {
@@ -246,6 +265,18 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                   ) : null}
                 </p>
               </div>
+              {contato.statusBot === "PAUSADO" && podeRetomar ? (
+                <Button
+                  color="primary"
+                  size="sm"
+                  onPress={() => {
+                    setEstagioRetomada(contato.currentStage);
+                    setRetomadaAberta(true);
+                  }}
+                >
+                  <Play className="mr-1 h-3.5 w-3.5" /> Retomar conversa
+                </Button>
+              ) : null}
               {contato.chatwootDeepLink ? (
                 <Button
                   as={Link}
@@ -272,6 +303,56 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
           </div>
         )}
       </section>
+
+      {retomadaAberta && contato ? (
+        <Modal isOpen onClose={() => setRetomadaAberta(false)}>
+          <ModalContent>
+            <ModalHeader>Retomar conversa</ModalHeader>
+            <ModalBody className="space-y-3">
+              <p className="text-sm text-foreground/70">
+                O bot volta a responder {contato.nome ?? formatPhoneBR(contato.numeroContato)} no
+                estágio escolhido. Fica registrado que você assumiu esta conversa.
+              </p>
+              <Select
+                aria-label="Estágio de retomada"
+                label="Retomar no estágio"
+                selectedKeys={estagioRetomada ? [estagioRetomada] : []}
+                onSelectionChange={(keys) => {
+                  const [key] = [...keys];
+                  if (key) setEstagioRetomada(key as FunnelStage);
+                }}
+              >
+                {FUNNEL_STAGES.filter((s) => s.stage !== "PERDIDO").map((s) => (
+                  <SelectItem key={s.stage}>{s.label}</SelectItem>
+                ))}
+              </Select>
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="flat" onPress={() => setRetomadaAberta(false)}>
+                Cancelar
+              </Button>
+              <Button
+                color="primary"
+                isLoading={retomada.isPending}
+                onPress={async () => {
+                  try {
+                    await retomada.mutateAsync({
+                      numeroContato: contato.numeroContato,
+                      estagio: estagioRetomada ?? undefined,
+                    });
+                    toast.success("Conversa retomada — o bot volta a responder este contato.");
+                    setRetomadaAberta(false);
+                  } catch {
+                    toast.error("Não foi possível retomar a conversa.");
+                  }
+                }}
+              >
+                Retomar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
     </div>
   );
 }

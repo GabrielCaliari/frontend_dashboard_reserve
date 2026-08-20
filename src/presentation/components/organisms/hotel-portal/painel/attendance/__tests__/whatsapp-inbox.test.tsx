@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { WhatsappInbox, formatPhoneBR } from "../whatsapp-inbox";
 import type { ConversationListItem } from "@/src/shared/domain/types/@hotel-painel";
 
@@ -24,7 +24,14 @@ const conversas: ConversationListItem[] = [
   },
 ];
 
+vi.mock("@/src/modules/settings/presentation/hooks/tenant-capabilities-provider", () => ({
+  useTenantCapabilities: () => ({ tenantId: "tenant_1", hasPermission: () => true }),
+}));
+
+const resumeMutation = { mutateAsync: vi.fn().mockResolvedValue(undefined), isPending: false };
+
 vi.mock("@/src/shared/hooks/hotel-portal", () => ({
+  useResumeConversation: () => resumeMutation,
   useHotelConversations: () => ({ data: conversas, isLoading: false }),
   useHotelConversationDetail: (_clientId: string | null, numero: string | null) => ({
     data: numero
@@ -61,6 +68,20 @@ describe("WhatsappInbox", () => {
     expect(screen.getByText("Oi, tem vaga?")).toBeInTheDocument();
     expect(screen.getByText(/somente leitura/i)).toBeInTheDocument();
     expect(screen.getByText(/responder no chatwoot/i)).toBeInTheDocument();
+  });
+
+  it("conversa pausada oferece retomada com estagio e chama a mutation", async () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    fireEvent.click(screen.getByText("Bruno Lima"));
+    fireEvent.click(screen.getByRole("button", { name: /retomar conversa/i }));
+    expect(screen.getByText(/fica registrado que você assumiu/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /^retomar$/i }));
+    await waitFor(() =>
+      expect(resumeMutation.mutateAsync).toHaveBeenCalledWith({
+        numeroContato: "+5535999110002",
+        estagio: "QUALIFICADO",
+      }),
+    );
   });
 
   it("formata numero brasileiro para exibicao", () => {

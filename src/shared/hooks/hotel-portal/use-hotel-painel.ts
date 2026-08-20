@@ -6,6 +6,7 @@ import type {
   ConversationFilters,
   CreateBotConfigProposalDto,
   FunnelBoardColumn,
+  FunnelStage,
   FunnelStageChangeDto,
 } from '@/src/shared/domain/types/@hotel-painel';
 
@@ -125,6 +126,25 @@ export function useMoveFunnelStage(tenantId: string | null, clientId: string | n
       qc.invalidateQueries({ queryKey: boardKey });
       qc.invalidateQueries({ queryKey: ['hotel-portal', 'funnel-metrics', clientId] });
       qc.invalidateQueries({ queryKey: ['hotel-portal', 'home', clientId] });
+    },
+  });
+}
+
+/**
+ * Retomada humana de conversa pausada: despausa o bot e (opcionalmente)
+ * devolve o lead ao estagio escolhido. `tenantId` escopa o endpoint admin;
+ * `clientId` escopa as queries do painel a invalidar.
+ */
+export function useResumeConversation(tenantId: string | null, clientId: string | null) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ numeroContato, estagio }: { numeroContato: string; estagio?: FunnelStage }) =>
+      hotelPortalService.resumeConversation(tenantId!, numeroContato, { estagio }),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'conversations', clientId] });
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'conversation', clientId, vars.numeroContato] });
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'funnel-board', clientId] });
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'funnel-metrics', clientId] });
     },
   });
 }
