@@ -16,6 +16,7 @@ import {
 import { FunnelBoard } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-board";
 import { stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import { FollowupEffectivenessChart } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/followup-effectiveness-chart";
+import { HandoffMetrics } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/handoff-metrics";
 import { PortalCardSkeleton } from "@/src/presentation/components/organisms/hotel-portal/painel/skeletons";
 import { MetricCard } from "@/src/presentation/components/organisms/hotel-portal/ui";
 import { resolvePreset } from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
@@ -109,6 +110,12 @@ export default function HotelFunilPage() {
       {metrics && metrics.efetividadeFollowup.length > 0 && (
         <PainelSection title="Efetividade do follow-up">
           <FollowupEffectivenessChart data={metrics.efetividadeFollowup} />
+        </PainelSection>
+      )}
+
+      {metrics && (
+        <PainelSection title="Handoff bot → humano">
+          <HandoffMetrics handoff={metrics.handoff} />
         </PainelSection>
       )}
 

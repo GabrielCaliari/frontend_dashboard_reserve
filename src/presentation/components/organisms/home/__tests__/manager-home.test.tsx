@@ -11,6 +11,7 @@ vi.mock("@/src/shared/hooks/hotel-portal", () => ({
         conversasIniciadas: { value: 42, previous: null, delta: null, source: "auto" },
         distribuicaoFunil: [{ stage: "RESERVA_CONFIRMADA", count: 5 }],
         leadsProntos: 7, taxaQualificacao: 0.5, contatosPausados: 0,
+        handoff: { total: 0, taxaHandover: 0, motivos: [], tempoMedioComBotSegundos: null },
       },
       motor: {
         receita: 10170, reservas: 5, ticket_medio: 2034, room_nights: 12,

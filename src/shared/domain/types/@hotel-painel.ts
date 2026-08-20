@@ -220,6 +220,12 @@ export interface FunnelMetricsResponse {
   volumePorOrigem: { origem: string; count: number }[];
   contatosPausados: number;
   audiosTranscritos: number;
+  handoff: {
+    total: number;
+    taxaHandover: number;
+    motivos: { motivo: string; count: number }[];
+    tempoMedioComBotSegundos: number | null;
+  };
 }
 
 // ── Propostas de config do bot (…/bot-config-proposals) ─────────────────────
