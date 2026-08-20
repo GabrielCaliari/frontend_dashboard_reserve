@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { ArrowLeft, ExternalLink, MessageSquareText, PauseCircle, Play, Search, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Bot, ExternalLink, MessageSquareText, Play, Search, ShieldAlert, UserRound } from "lucide-react";
 import {
   Button,
   Modal,
@@ -96,8 +96,10 @@ function ContactRow({
             {stageLabel(conv.currentStage)}
           </span>
           {conv.statusBot === "PAUSADO" ? (
-            <PauseCircle aria-label="Pausado — aguardando humano" className="h-3.5 w-3.5 text-warning-600" />
-          ) : null}
+            <UserRound aria-label="Com humano" className="h-3.5 w-3.5 text-warning-600" />
+          ) : (
+            <Bot aria-label="Com o bot" className="h-3.5 w-3.5 text-primary/60" />
+          )}
         </span>
       </span>
     </button>

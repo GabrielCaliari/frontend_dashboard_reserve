@@ -96,4 +96,10 @@ describe("WhatsappInbox", () => {
     expect(screen.queryByText("Ana Souza")).not.toBeInTheDocument();
     expect(screen.getByText("Bruno Lima")).toBeInTheDocument();
   });
+
+  it("lista sinaliza quem esta com a bola em cada conversa", () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    expect(screen.getByLabelText("Com humano")).toBeInTheDocument();
+    expect(screen.getByLabelText("Com o bot")).toBeInTheDocument();
+  });
 });
