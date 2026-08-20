@@ -173,6 +173,12 @@ export function ManagerHome() {
                 value={`${formatNumber(home.motor.a_recuperar.quantidade)} holds expirados · ${fmtBRL(home.motor.a_recuperar.valor)}`}
                 hint="hóspedes que não concluíram o pagamento — o bot faz o follow-up"
               />
+              <MetricCard
+                label="Recuperadas"
+                value={`${formatNumber(home.motor.recuperadas.quantidade)} reserva${home.motor.recuperadas.quantidade === 1 ? "" : "s"} · ${fmtBRL(home.motor.recuperadas.valor)}`}
+                hint="fecharam depois de um hold expirado — o follow-up funcionou"
+                accent
+              />
             </div>
           </PainelSection>
 

@@ -394,6 +394,7 @@ export interface MotorHomeMetrics {
   room_nights: number;
   canceladas: { quantidade: number; valor: number };
   a_recuperar: { quantidade: number; valor: number };
+  recuperadas: { quantidade: number; valor: number };
   receita_bot: number;
   por_origem: { origem: string; reservas: number; receita: number }[];
 }
