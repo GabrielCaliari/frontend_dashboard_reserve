@@ -2,7 +2,243 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export type CreateBotConfigProposalDto = Record<string, unknown>;
+export interface BotMetricDto {
+  value: number;
+  previous: number | null;
+  delta: number | null;
+  source: 'auto' | 'manual';
+}
+
+export interface LeadsByDayDto {
+  date: string;
+  count: number;
+}
+
+export interface LeadsByDeviceDto {
+  device: string;
+  count: number;
+}
+
+export interface LeadsByCityDto {
+  city: string;
+  count: number;
+}
+
+export interface LeadsCicloDto {
+  cliques: number;
+  conversas: number;
+  reservas: number;
+}
+
+export interface LeadsOverviewResponseDto {
+  clicks: BotMetricDto;
+  byDay: LeadsByDayDto[];
+  byDevice: LeadsByDeviceDto[];
+  byCity: LeadsByCityDto[];
+  ciclo: LeadsCicloDto;
+}
+
+export interface HomePeriodDto {
+  from: string;
+  to: string;
+}
+
+export interface StageCountDto {
+  stage: string;
+  count: number;
+}
+
+export interface StageAvgSecondsDto {
+  stage: string;
+  avgSeconds: number;
+}
+
+export interface StageConversionDto {
+  stage: string;
+  count: number;
+  rate: number;
+}
+
+export interface FollowupEffectivenessDto {
+  regua: string;
+  status: string;
+  count: number;
+}
+
+export interface OrigemVolumeDto {
+  origem: string;
+  count: number;
+}
+
+export interface AnuncioVolumeDto {
+  sourceId: string;
+  count: number;
+}
+
+export interface HandoffMotivoDto {
+  motivo: string;
+  count: number;
+}
+
+export interface HandoffMetricsDto {
+  total: number;
+  motivos: HandoffMotivoDto[];
+  tempoMedioComBotSegundos: number | null;
+  taxaHandover: number;
+}
+
+export interface FunnelMetricsResponseDto {
+  conversasIniciadas: BotMetricDto;
+  taxaRespostaBot: number;
+  tempoMedioPrimeiraRespostaSegundos: number | null;
+  distribuicaoFunil: StageCountDto[];
+  tempoMedioPorEstagioSegundos: StageAvgSecondsDto[];
+  taxaQualificacao: number;
+  leadsProntos: number;
+  taxaConversaoPorEtapa: StageConversionDto[];
+  efetividadeFollowup: FollowupEffectivenessDto[];
+  volumePorOrigem: OrigemVolumeDto[];
+  conversasPorAnuncio: AnuncioVolumeDto[];
+  contatosPausados: number;
+  audiosTranscritos: number;
+  handoff: HandoffMetricsDto;
+}
+
+export interface HomeBotRecuperarDto {
+  quantidade: number;
+  valor: number;
+}
+
+export interface HomeBotDto {
+  /** Receita confirmada pelo bot, em reais. */
+  receitaConfirmada: number;
+  reservas: number;
+  aRecuperar: HomeBotRecuperarDto;
+}
+
+export interface HomeResponseDto {
+  period: HomePeriodDto;
+  funil: FunnelMetricsResponseDto;
+  /** Metricas do motor de reservas. */
+  motor: Record<string, unknown>;
+  bot: HomeBotDto;
+}
+
+export interface CreateBotConfigProposalDto {
+  /** Chave do campo de configuracao proposto. */
+  campo: string;
+  /** Categoria (conjunto fechado: dados sim, comportamento nao). */
+  categoria: 'pricing' | 'policies' | 'packages' | 'hours';
+  /** Valor atual (qualquer JSON). */
+  valor_atual?: Record<string, unknown> | null;
+  /** Valor proposto (qualquer JSON, obrigatorio). */
+  valor_proposto: Record<string, unknown>;
+  /** Por que o cliente quer a mudanca. */
+  justificativa?: string;
+}
+
+export interface WhatsAppChannelDto {
+  connected: boolean;
+  botEnabled: boolean;
+  heartbeatAgeMinutes: number | null;
+  heartbeatStale: boolean;
+  activeConversations: number;
+  pausedAwaitingHuman: number;
+  mode: string | null;
+  aiEnabled: boolean | null;
+  lastEchoAt: string | null;
+  lastPollingAt: string | null;
+}
+
+export interface SocialChannelDto {
+  connected: boolean;
+  tokenStatus: string | null;
+}
+
+export interface ChannelsResponseDto {
+  whatsapp: WhatsAppChannelDto;
+  instagram: SocialChannelDto;
+  metaAds: SocialChannelDto;
+}
+
+export interface ConversationSummaryDto {
+  numeroContato: string;
+  nome: string | null;
+  statusBot: string;
+  lastMessageAt: string | null;
+  consentimentoLgpd: boolean;
+  tipoPublico: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE' | null;
+  currentStage: 'CONTATO_INICIADO' | 'PUBLICO_IDENTIFICADO' | 'QUALIFICADO' | 'ACOMODACAO_APRESENTADA' | 'OFERTA_FEITA' | 'FECHAMENTO_INICIADO' | 'COMPROVANTE_RECEBIDO' | 'RESERVA_CONFIRMADA' | 'PERDIDO';
+  /** Abre a conversa no WhatsApp Web da pousada. */
+  whatsappWebLink: string;
+}
+
+export interface ConversationsListResponseDto {
+  conversations: ConversationSummaryDto[];
+}
+
+export interface ConversationHoldDto {
+  codigo: string | null;
+  status: string | null;
+  acomodacao: string | null;
+  checkIn: string | null;
+  checkOut: string | null;
+  valor: number | null;
+}
+
+export interface ConversationDetailContactDto {
+  numeroContato: string;
+  nome: string | null;
+  statusBot: string;
+  lastMessageAt: string | null;
+  consentimentoLgpd: boolean;
+  tipoPublico: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE' | null;
+  currentStage: 'CONTATO_INICIADO' | 'PUBLICO_IDENTIFICADO' | 'QUALIFICADO' | 'ACOMODACAO_APRESENTADA' | 'OFERTA_FEITA' | 'FECHAMENTO_INICIADO' | 'COMPROVANTE_RECEBIDO' | 'RESERVA_CONFIRMADA' | 'PERDIDO';
+  /** Abre a conversa no WhatsApp Web da pousada. */
+  whatsappWebLink: string;
+  ocasiao: string | null;
+  hold: ConversationHoldDto | null;
+}
+
+export interface ConversationMessageDto {
+  role: string;
+  tipo: string;
+  contentPreview: string | null;
+  ocorridoEm: string;
+}
+
+export interface ConversationDetailResponseDto {
+  contact: ConversationDetailContactDto;
+  messages: ConversationMessageDto[];
+}
+
+export interface FunnelLeadCardDto {
+  numeroContato: string;
+  nome: string | null;
+  tipoPublico: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE' | null;
+  acomodacaoInteresse: string | null;
+  /** Texto de apresentacao das datas. */
+  datasInteresse: string | null;
+  statusBot: string;
+  /** Ultima mensagem do hospede (ISO). */
+  aguardandoDesde: string | null;
+  /** Valor da cotacao em reais. */
+  valorCotacao: number | null;
+  etiqueta: 'RECUPERAR' | null;
+  motivoPerda: string | null;
+  holdStatus: string | null;
+  holdCodigo: string | null;
+}
+
+export interface FunnelColumnDto {
+  stage: 'CONTATO_INICIADO' | 'PUBLICO_IDENTIFICADO' | 'QUALIFICADO' | 'ACOMODACAO_APRESENTADA' | 'OFERTA_FEITA' | 'FECHAMENTO_INICIADO' | 'COMPROVANTE_RECEBIDO' | 'RESERVA_CONFIRMADA' | 'PERDIDO';
+  count: number;
+  /** Soma dos holds em aberto, em reais. */
+  valorAberto: number;
+  /** Soma dos valores confirmados, em reais. */
+  valorConfirmado: number;
+  leads: FunnelLeadCardDto[];
+}
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
@@ -15,7 +251,7 @@ export interface GetOverviewParams {
 }
 
 /** GET /hotel-portal/{clientId}/leads-overview — response */
-export type GetLeadsOverviewResponse = unknown;
+export type GetLeadsOverviewResponse = LeadsOverviewResponseDto;
 /** GET /hotel-portal/{clientId}/leads-overview — query params */
 export interface GetLeadsOverviewParams {
   from: string;
@@ -23,7 +259,7 @@ export interface GetLeadsOverviewParams {
 }
 
 /** GET /hotel-portal/{clientId}/home — response */
-export type GetHomeResponse = unknown;
+export type GetHomeResponse = HomeResponseDto;
 /** GET /hotel-portal/{clientId}/home — query params */
 export interface GetHomeParams {
   from: string;
@@ -50,19 +286,19 @@ export type SubmitBotConfigProposalBody = CreateBotConfigProposalDto;
 export type GetBotConfigProposalsResponse = unknown;
 
 /** GET /hotel-portal/{clientId}/whatsapp/channels — response */
-export type GetWhatsAppChannelsResponse = unknown;
+export type GetWhatsAppChannelsResponse = ChannelsResponseDto;
 
 /** GET /hotel-portal/{clientId}/whatsapp/conversations — response */
-export type ListWhatsAppConversationsResponse = unknown;
+export type ListWhatsAppConversationsResponse = ConversationsListResponseDto;
 
 /** GET /hotel-portal/{clientId}/whatsapp/conversations/{numeroContato} — response */
-export type GetWhatsAppConversationDetailResponse = unknown;
+export type GetWhatsAppConversationDetailResponse = ConversationDetailResponseDto;
 
 /** GET /hotel-portal/{clientId}/whatsapp/funnel — response */
-export type GetWhatsAppFunnelBoardResponse = unknown;
+export type GetWhatsAppFunnelBoardResponse = FunnelColumnDto[];
 
 /** GET /hotel-portal/{clientId}/whatsapp/funnel/metrics — response */
-export type GetWhatsAppFunnelMetricsResponse = unknown;
+export type GetWhatsAppFunnelMetricsResponse = FunnelMetricsResponseDto;
 /** GET /hotel-portal/{clientId}/whatsapp/funnel/metrics — query params */
 export interface GetWhatsAppFunnelMetricsParams {
   from: string;

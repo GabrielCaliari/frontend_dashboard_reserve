@@ -2,7 +2,17 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export type RejectBotConfigProposalDto = Record<string, unknown>;
+export interface PanelActionResponseDto {
+  /** false = acao registrada, mas o bot nao foi avisado agora (sera reenviado). */
+  ok: boolean;
+  /** Estado do contato devolvido pelo bot (ex.: ATIVO, PAUSADO). */
+  state: string | null;
+}
+
+export interface RejectBotConfigProposalDto {
+  /** Justificativa da rejeicao (obrigatoria). */
+  justificativa: string;
+}
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
@@ -14,7 +24,7 @@ export interface FindByTenantIdParams {
 }
 
 /** PATCH /admin/hotel-portal/{tenantId}/bot-config-proposals/{id}/approve — response */
-export type ApproveResponse = unknown;
+export type ApproveResponse = PanelActionResponseDto;
 
 /** PATCH /admin/hotel-portal/{tenantId}/bot-config-proposals/{id}/reject — response */
 export type RejectResponse = unknown;

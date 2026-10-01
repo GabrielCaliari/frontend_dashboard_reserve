@@ -2,7 +2,35 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export type CreateWhatsAppTemplateDto = Record<string, unknown>;
+export interface CreateWhatsAppTemplateDto {
+  name: string;
+  type: 'PRE_ARRIVAL' | 'POST_STAY' | 'REACTIVATION' | 'UPSELL';
+  body: string;
+  active?: boolean;
+}
+
+export interface SendBotMessageDto {
+  /** Telefone do destinatario (com DDI). */
+  to_phone: string;
+  /** Nome do destinatario. */
+  to_name?: string;
+  /** Texto livre da mensagem. */
+  body: string;
+}
+
+export interface SendWhatsAppMessageDto {
+  template_id: string;
+  guest_phone: string;
+  guest_name?: string;
+}
+
+export interface SendBotMessageResponseDto {
+  /** false = mensagem NAO enviada (HTTP 502); nao e reenviada automaticamente. */
+  ok: boolean;
+  state: string | null;
+  /** true se a ultima mensagem do cliente tem mais de 24h (a Meta pode recusar). */
+  foraDaJanela: boolean;
+}
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
@@ -15,7 +43,9 @@ export type CreateTemplateBody = CreateWhatsAppTemplateDto;
 export type FindTemplatesResponse = unknown;
 
 /** POST /admin/hotel-portal/whatsapp/{clientId}/send — response */
-export type SendMessageResponse = unknown;
+export type SendMessageResponse = SendBotMessageResponseDto;
+/** POST /admin/hotel-portal/whatsapp/{clientId}/send — payload */
+export type SendMessageBody = SendBotMessageDto | SendWhatsAppMessageDto;
 
 /** GET /admin/hotel-portal/whatsapp/{clientId}/messages — response */
 export type GetMessageHistoryResponse = unknown;

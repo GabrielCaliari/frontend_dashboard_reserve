@@ -2,32 +2,57 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export type ResumeConversationDto = Record<string, unknown>;
+export interface ResumeConversationDto {
+  /** Estagio ao qual devolver o lead ao retomar o bot. */
+  estagio?: 'CONTATO_INICIADO' | 'PUBLICO_IDENTIFICADO' | 'QUALIFICADO' | 'ACOMODACAO_APRESENTADA' | 'OFERTA_FEITA' | 'FECHAMENTO_INICIADO' | 'COMPROVANTE_RECEBIDO' | 'RESERVA_CONFIRMADA' | 'PERDIDO';
+}
 
-export type FunnelStageChangeDto = Record<string, unknown>;
+export interface PanelActionResponseDto {
+  /** false = acao registrada, mas o bot nao foi avisado agora (sera reenviado). */
+  ok: boolean;
+  /** Estado do contato devolvido pelo bot (ex.: ATIVO, PAUSADO). */
+  state: string | null;
+}
 
-export type PauseConversationDto = Record<string, unknown>;
+export interface FunnelStageChangeDto {
+  /** Estagio de destino do lead. */
+  para_estagio: 'CONTATO_INICIADO' | 'PUBLICO_IDENTIFICADO' | 'QUALIFICADO' | 'ACOMODACAO_APRESENTADA' | 'OFERTA_FEITA' | 'FECHAMENTO_INICIADO' | 'COMPROVANTE_RECEBIDO' | 'RESERVA_CONFIRMADA' | 'PERDIDO';
+  /** Obrigatorio quando para_estagio = PERDIDO e deve ser um de: caro, data, pesquisando, sumiu, outro. */
+  motivo?: string;
+  /** Subtipo do publico, gravado no contato. */
+  tipo_publico?: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE';
+}
 
-export type ExtendHoldDto = Record<string, unknown>;
+export interface PauseConversationDto {
+  /** Motivo da pausa (assumir conversa). */
+  motivo?: string;
+}
+
+export interface ExtendHoldDto {
+  /** Minutos adicionais de hold (padrao 60). */
+  minutos?: number;
+  /** Codigo do hold a estender; omitido usa o hold atual do lead. */
+  codigo?: string;
+}
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
 /** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/resume — response */
-export type ResumeConversationResponse = unknown;
+export type ResumeConversationResponse = PanelActionResponseDto;
 /** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/resume — payload */
 export type ResumeConversationBody = ResumeConversationDto;
 
 /** PATCH /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/stage — response */
-export type MoveStageResponse = unknown;
+export type MoveStageResponse = PanelActionResponseDto;
 /** PATCH /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/stage — payload */
 export type MoveStageBody = FunnelStageChangeDto;
 
 /** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/pause — response */
-export type PauseConversationResponse = unknown;
+export type PauseConversationResponse = PanelActionResponseDto;
 /** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/pause — payload */
 export type PauseConversationBody = PauseConversationDto;
 
 /** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/extend-hold — response */
-export type ExtendHoldResponse = unknown;
+export type ExtendHoldResponse = PanelActionResponseDto;
 /** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/extend-hold — payload */
 export type ExtendHoldBody = ExtendHoldDto;

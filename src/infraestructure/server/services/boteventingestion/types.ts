@@ -2,7 +2,33 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export type BotEventBatchDto = Record<string, unknown>;
+export interface BotEventV2Dto {
+  /** Id unico do evento (idempotencia). */
+  event_id: string;
+  /** Tenant do evento (deve coincidir com o do lote). */
+  tenant_id?: string;
+  /** Quando ocorreu (ISO 8601). */
+  occurred_at: string;
+  /** Tipo do evento do contrato v2 (contato.criado, mensagem.recebida, funil.estagio_alterado, hold.criado, ...). */
+  type: string;
+  /** Quem gerou o evento (bot, humano). */
+  actor?: Record<string, unknown> | null;
+  /** Dados do contato (numero, nome, ...). */
+  contact?: Record<string, unknown> | null;
+  /** Estagio do funil associado. */
+  stage?: string | null;
+  /** Dados do hold (codigo, status, valor). */
+  hold?: Record<string, unknown> | null;
+  /** Payload especifico do tipo. */
+  data?: Record<string, unknown> | null;
+}
+
+export interface BotEventBatchDto {
+  /** Tenant dono do lote. */
+  tenant_id: string;
+  /** Eventos do lote (1 a 250). */
+  events: BotEventV2Dto[];
+}
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
