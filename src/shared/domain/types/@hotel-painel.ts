@@ -29,6 +29,8 @@ export interface LeadsOverviewResponse {
   byDay: { date: string; count: number }[];
   byDevice: { device: string; count: number }[];
   byCity: { city: string; count: number }[];
+  /** Clique no link rastreavel -> conversa iniciada -> reserva confirmada. */
+  ciclo?: { cliques: number; conversas: number; reservas: number };
 }
 
 // ── ROI (GET /hotel-portal/:clientId/roi) ──────────────────────────────────
@@ -101,6 +103,11 @@ export interface BotChannelsResponse {
     heartbeatStale: boolean;
     activeConversations: number;
     pausedAwaitingHuman: number;
+    /** hospedin = bot fecha no PMS; handoff = bot qualifica e passa para a equipe. */
+    mode?: string | null;
+    aiEnabled?: boolean | null;
+    lastEchoAt?: string | null;
+    lastPollingAt?: string | null;
   };
   instagram: { connected: boolean; tokenStatus: string | null };
   metaAds: { connected: boolean; lastSyncAt?: string | null };
@@ -132,7 +139,34 @@ export interface FunnelStageChangeDto {
   tipo_publico?: BotContactAudience;
 }
 
-export type BotContactStatus = 'ATIVO' | 'PAUSADO';
+/** Os 10 estados do bot (contrato v2 §3.4 / §7). */
+export type BotContactStatus =
+  | 'ATIVO'
+  | 'VERIFICANDO'
+  | 'AGUARDANDO_FICHA'
+  | 'AGUARDANDO_PAGAMENTO'
+  | 'EM_CONFIRMACAO'
+  | 'PAUSADO'
+  | 'PAUSADO_HUMANO'
+  | 'FECHADO'
+  | 'EM_ESTADIA'
+  | 'FRIO';
+
+/** Pre-reserva ou reserva ligada ao contato. `valor` em reais. */
+export interface HoldResumo {
+  codigo: string | null;
+  status: string | null; // DISPONIVEL | AGUARDANDO | CONFIRMADA | EXPIRADA | CANCELADA | EXCECAO
+  acomodacao: string | null;
+  checkIn: string | null;
+  checkOut: string | null;
+  valor: number | null;
+}
+
+/** Resposta do bot a uma acao do painel (Canal B, contrato v2 §5.2). */
+export interface PanelActionResult {
+  ok: boolean;
+  state: string | null;
+}
 
 export interface ConversationListItem {
   numeroContato: string;
@@ -147,6 +181,8 @@ export interface ConversationListItem {
    * Decisao 11 do plano mestre: responder acontece no Chatwoot, nunca aqui.
    */
   chatwootDeepLink: string | null;
+  /** Abre a conversa no WhatsApp Web da conta logada — a da pousada. */
+  whatsappWebLink?: string;
 }
 
 export interface ConversationListResponse {
@@ -168,6 +204,10 @@ export interface ConversationDetailResponse {
     consentimentoLgpd: boolean;
     currentStage: FunnelStage;
     chatwootDeepLink: string | null;
+    whatsappWebLink?: string;
+    /** romantica | familia | grupo | descanso */
+    ocasiao?: string | null;
+    hold?: HoldResumo | null;
   };
   messages: ConversationMessage[];
 }
@@ -195,6 +235,10 @@ export interface FunnelBoardLead {
   /** Reais (nao centavos): valor_total do hold mais recente do contato. */
   valorCotacao: number | null;
   etiqueta: FunnelLeadTag | null;
+  /** caro | data | pesquisando | sumiu | outro (so em leads perdidos). */
+  motivoPerda?: string | null;
+  holdStatus?: string | null;
+  holdCodigo?: string | null;
 }
 
 export interface FunnelBoardColumn {
@@ -218,6 +262,8 @@ export interface FunnelMetricsResponse {
   taxaConversaoPorEtapa: { stage: FunnelStage; count: number; rate: number }[];
   efetividadeFollowup: { tipoJanela: string; status: string; count: number }[];
   volumePorOrigem: { origem: string; count: number }[];
+  /** Conversas iniciadas por anuncio (source_id da Meta), maiores primeiro. */
+  conversasPorAnuncio?: { sourceId: string; count: number }[];
   contatosPausados: number;
   audiosTranscritos: number;
   handoff: {
@@ -258,6 +304,7 @@ export interface BotConfigProposal {
   valor_proposto: unknown;
   status: BotConfigProposalStatus;
   justificativa: string | null;
+  justificativa_cliente?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -267,6 +314,7 @@ export interface CreateBotConfigProposalDto {
   categoria: BotConfigProposalCategory;
   valor_atual?: unknown;
   valor_proposto: unknown;
+  justificativa?: string;
 }
 
 // ── Instagram (GET /hotel-portal/:clientId/instagram) ───────────────────────
@@ -403,4 +451,10 @@ export interface HotelHomeResponse {
   period: { from: string; to: string };
   funil: FunnelMetricsResponse;
   motor: MotorHomeMetrics;
+  /** Numeros do bot lidos dos eventos (reais). Ausente em backend antigo. */
+  bot?: {
+    receitaConfirmada: number;
+    reservas: number;
+    aRecuperar: { quantidade: number; valor: number };
+  };
 }
