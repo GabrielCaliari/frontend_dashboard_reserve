@@ -165,6 +165,16 @@ export function usePauseConversation(tenantId: string | null, clientId: string |
   });
 }
 
+/** Estende o prazo da pre-reserva que esta aguardando pagamento. */
+export function useExtendHold(tenantId: string | null, clientId: string | null) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ numeroContato, codigo, minutos }: { numeroContato: string; codigo?: string; minutos?: number }) =>
+      hotelPortalService.extendHold(tenantId!, numeroContato, { codigo, minutos }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['hotel-portal', 'funnel-board', clientId] }),
+  });
+}
+
 export function useHotelFunnelMetrics(clientId: string | null, period: Period) {
   return useQuery({
     queryKey: ['hotel-portal', 'funnel-metrics', clientId, period.from, period.to],

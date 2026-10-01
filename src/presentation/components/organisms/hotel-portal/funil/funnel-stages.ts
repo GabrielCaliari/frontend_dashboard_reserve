@@ -126,3 +126,18 @@ export function waitingLabel(iso: string | null, now: Date = new Date()): string
 export const TAG_LABELS: Record<FunnelLeadTag, string> = {
   RECUPERAR: "Recuperar",
 };
+
+/** Motivos de perda do contrato v2 (§3.5, evento `perdido`). Lista fechada: o backend recusa outro valor. */
+export const LOSS_REASONS: { value: string; label: string }[] = [
+  { value: "caro", label: "Achou caro" },
+  { value: "data", label: "Data indisponível" },
+  { value: "pesquisando", label: "Ainda pesquisando" },
+  { value: "sumiu", label: "Parou de responder" },
+  { value: "outro", label: "Outro motivo" },
+];
+
+/** Historico anterior ao contrato v2 tem motivo em texto livre: cai no proprio texto. */
+export function lossReasonLabel(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return LOSS_REASONS.find((r) => r.value === value)?.label ?? value;
+}

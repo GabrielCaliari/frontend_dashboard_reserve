@@ -696,6 +696,20 @@ export const hotelPortalService = {
     return res.data;
   },
 
+  /** Soma minutos ao prazo do hold que esta aguardando pagamento (Canal B, extend_hold). */
+  async extendHold(
+    tenantId: string,
+    numeroContato: string,
+    dto: { minutos?: number; codigo?: string },
+  ): Promise<PanelActionResult> {
+    const res = await api.post<PanelActionResult>(
+      `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/extend-hold`,
+      dto,
+      adminHeaders,
+    );
+    return res.data;
+  },
+
   async getFunnelMetrics(
     clientId: string,
     params: { from: string; to: string },

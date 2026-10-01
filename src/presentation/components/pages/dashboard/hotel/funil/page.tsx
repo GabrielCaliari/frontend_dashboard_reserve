@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import {
   useActiveHotelClient,
+  useExtendHold,
   useHotelFunnelBoard,
   useHotelFunnelMetrics,
   useMoveFunnelStage,
@@ -21,7 +22,7 @@ import { PortalCardSkeleton } from "@/src/presentation/components/organisms/hote
 import { MetricCard } from "@/src/presentation/components/organisms/hotel-portal/ui";
 import { resolvePreset } from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
 import { formatNumber, formatPercent } from "@/src/shared/utils/hotel-format";
-import type { FunnelStageChangeDto } from "@/src/shared/domain/types/@hotel-painel";
+import type { FunnelBoardLead, FunnelStageChangeDto } from "@/src/shared/domain/types/@hotel-painel";
 
 function formatSeconds(seconds: number | null): string {
   if (seconds == null) return "—";
@@ -57,6 +58,7 @@ export default function HotelFunilPage() {
     useHotelFunnelBoard(clientId);
   const { data: metrics } = useHotelFunnelMetrics(clientId, period);
   const moveStage = useMoveFunnelStage(tenantId, clientId);
+  const extendHold = useExtendHold(tenantId, clientId);
 
   const handleMove = async (numeroContato: string, dto: FunnelStageChangeDto) => {
     try {
@@ -65,6 +67,19 @@ export default function HotelFunilPage() {
     } catch (error) {
       toast.error(apiErrorMessage(error, "Não foi possível mover o card."));
       throw error; // modal aberto decide permanecer aberto
+    }
+  };
+
+  const handleExtendHold = async (lead: FunnelBoardLead) => {
+    try {
+      const result = await extendHold.mutateAsync({
+        numeroContato: lead.numeroContato,
+        codigo: lead.holdCodigo ?? undefined,
+      });
+      if (result.ok) toast.success("Prazo estendido em 60 minutos.");
+      else toast("Pedido registrado. O bot não confirmou agora; o painel vai reenviar.", { icon: "⏳" });
+    } catch (error) {
+      toast.error(apiErrorMessage(error, "Não foi possível estender o prazo."));
     }
   };
 
@@ -101,7 +116,12 @@ export default function HotelFunilPage() {
 
       <PainelSection title="Quadro do funil">
         {board ? (
-          <FunnelBoard columns={board} canManage={canManage} onMove={handleMove} />
+          <FunnelBoard
+            columns={board}
+            canManage={canManage}
+            onMove={handleMove}
+            onExtendHold={canManage ? handleExtendHold : undefined}
+          />
         ) : (
           <PortalCardSkeleton />
         )}

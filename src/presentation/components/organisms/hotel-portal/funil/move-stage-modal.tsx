@@ -10,9 +10,8 @@ import {
   ModalHeader,
   Select,
   SelectItem,
-  Textarea,
 } from "@heroui/react";
-import { AUDIENCE_LABELS, stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
+import { AUDIENCE_LABELS, LOSS_REASONS, stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import type {
   BotContactAudience,
   FunnelStage,
@@ -78,17 +77,31 @@ export function MoveStageModal({ pending, onConfirm, onClose }: MoveStageModalPr
         <ModalHeader className="flex-col gap-1">{titulo}</ModalHeader>
         <ModalBody className="pb-6">
           {pending.paraEstagio === "PERDIDO" ? (
-            <Textarea
-              label="Motivo da perda"
-              maxLength={255}
-              value={motivo}
-              isInvalid={motivoInvalido}
-              errorMessage={motivoInvalido ? "Informe o motivo da perda" : undefined}
-              onChange={(e) => {
-                setMotivo(e.target.value);
-                if (motivoInvalido) setMotivoInvalido(false);
-              }}
-            />
+            <div className="space-y-1">
+              <label className="block text-sm font-medium" htmlFor="motivo-perda">
+                Motivo da perda
+              </label>
+              <select
+                id="motivo-perda"
+                aria-invalid={motivoInvalido}
+                className={`w-full rounded-xl border bg-background px-3 py-2 text-sm ${
+                  motivoInvalido ? "border-danger" : "border-input"
+                }`}
+                value={motivo}
+                onChange={(e) => {
+                  setMotivo(e.target.value);
+                  if (motivoInvalido) setMotivoInvalido(false);
+                }}
+              >
+                <option value="">Selecione…</option>
+                {LOSS_REASONS.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+              {motivoInvalido ? <p className="text-xs text-danger">Informe o motivo da perda</p> : null}
+            </div>
           ) : (
             <Select
               label="Subtipo do público"

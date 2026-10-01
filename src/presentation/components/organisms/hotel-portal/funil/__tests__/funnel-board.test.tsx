@@ -63,10 +63,10 @@ describe("FunnelBoard", () => {
     const confirmar = await screen.findByRole("button", { name: /confirmar/i });
     fireEvent.click(confirmar);
     expect(onMove).not.toHaveBeenCalled(); // sem motivo nao envia
-    fireEvent.change(screen.getByLabelText(/motivo da perda/i), { target: { value: "sem resposta" } });
+    fireEvent.change(screen.getByLabelText(/motivo da perda/i), { target: { value: "sumiu" } });
     fireEvent.click(confirmar);
     await waitFor(() =>
-      expect(onMove).toHaveBeenCalledWith("+5511999", { para_estagio: "PERDIDO", motivo: "sem resposta" }),
+      expect(onMove).toHaveBeenCalledWith("+5511999", { para_estagio: "PERDIDO", motivo: "sumiu" }),
     );
   });
 
@@ -115,6 +115,46 @@ describe("FunnelBoard", () => {
     render(<FunnelBoard columns={ativo} canManage onMove={vi.fn()} />);
     expect(screen.getByLabelText("Com o bot")).toBeInTheDocument();
     expect(screen.queryByText("Recuperar")).not.toBeInTheDocument();
+  });
+});
+
+describe("FunnelBoard (contrato v2)", () => {
+  it("card perdido mostra o motivo traduzido", () => {
+    const perdido: FunnelBoardColumn[] = columns.map((c) =>
+      c.stage === "PERDIDO"
+        ? { ...c, count: 1, leads: [{ ...columns[0].leads[0], motivoPerda: "caro" }] }
+        : { ...c, count: 0, leads: [] },
+    );
+    render(<FunnelBoard columns={perdido} canManage onMove={vi.fn()} />);
+    expect(screen.getByText("Achou caro")).toBeInTheDocument();
+  });
+
+  it("hold aguardando pagamento oferece estender prazo", async () => {
+    const onExtendHold = vi.fn();
+    const comHold: FunnelBoardColumn[] = [
+      { ...columns[0], leads: [{ ...columns[0].leads[0], holdStatus: "AGUARDANDO", holdCodigo: "M57" }] },
+      ...columns.slice(1),
+    ];
+    render(<FunnelBoard columns={comHold} canManage onMove={vi.fn()} onExtendHold={onExtendHold} />);
+    fireEvent.click(screen.getByRole("button", { name: /mover ana/i }));
+    fireEvent.click(await screen.findByText(/estender prazo/i));
+    expect(onExtendHold).toHaveBeenCalledWith(expect.objectContaining({ holdCodigo: "M57" }));
+  });
+
+  it("sem hold aguardando, nao ha opcao de estender", async () => {
+    render(<FunnelBoard columns={columns} canManage onMove={vi.fn()} onExtendHold={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: /mover ana/i }));
+    await screen.findByText("Qualificado");
+    expect(screen.queryByText(/estender prazo/i)).not.toBeInTheDocument();
+  });
+
+  it("PAUSADO_HUMANO tambem aparece como com humano", () => {
+    const comEquipe: FunnelBoardColumn[] = [
+      { ...columns[0], leads: [{ ...columns[0].leads[0], statusBot: "PAUSADO_HUMANO" as const }] },
+      ...columns.slice(1),
+    ];
+    render(<FunnelBoard columns={comEquipe} canManage onMove={vi.fn()} />);
+    expect(screen.getByLabelText("Com humano")).toBeInTheDocument();
   });
 });
 

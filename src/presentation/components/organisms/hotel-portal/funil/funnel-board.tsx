@@ -13,6 +13,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
+  DropdownSection,
   DropdownTrigger,
 } from "@heroui/react";
 import { BedDouble, Bot, CalendarRange, Clock, MoreVertical, UserRound } from "lucide-react";
@@ -25,9 +26,11 @@ import {
   TAG_LABELS,
   contactInitials,
   formatBRL,
+  lossReasonLabel,
   stageLabel,
   waitingLabel,
 } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
+import { isWithHuman } from "@/src/presentation/components/organisms/hotel-portal/funil/bot-status";
 import {
   MoveStageModal,
   type PendingMove,
@@ -75,9 +78,10 @@ interface FunnelBoardProps {
   columns: FunnelBoardColumn[];
   canManage: boolean;
   onMove: (numeroContato: string, dto: FunnelStageChangeDto) => Promise<void>;
+  onExtendHold?: (lead: FunnelBoardLead) => void;
 }
 
-export function FunnelBoard({ columns, canManage, onMove }: FunnelBoardProps) {
+export function FunnelBoard({ columns, canManage, onMove, onExtendHold }: FunnelBoardProps) {
   const [pending, setPending] = useState<PendingMove | null>(null);
 
   function requestMove(lead: FunnelBoardLead, _deEstagio: FunnelStage, paraEstagio: FunnelStage) {
@@ -107,6 +111,7 @@ export function FunnelBoard({ columns, canManage, onMove }: FunnelBoardProps) {
           column={column}
           canManage={canManage}
           onRequestMove={requestMove}
+          onExtendHold={onExtendHold}
         />
       ))}
     </div>
@@ -134,9 +139,10 @@ interface FunnelColumnViewProps {
   column: FunnelBoardColumn;
   canManage: boolean;
   onRequestMove: (lead: FunnelBoardLead, deEstagio: FunnelStage, paraEstagio: FunnelStage) => void;
+  onExtendHold?: (lead: FunnelBoardLead) => void;
 }
 
-function FunnelColumnView({ column, canManage, onRequestMove }: FunnelColumnViewProps) {
+function FunnelColumnView({ column, canManage, onRequestMove, onExtendHold }: FunnelColumnViewProps) {
   const { setNodeRef, isOver } = useDroppable({ id: column.stage });
 
   return (
@@ -177,6 +183,7 @@ function FunnelColumnView({ column, canManage, onRequestMove }: FunnelColumnView
             column={column}
             canManage={canManage}
             onRequestMove={onRequestMove}
+            onExtendHold={onExtendHold}
           />
         ))}
         {column.leads.length === 0 && (
@@ -207,9 +214,10 @@ interface FunnelLeadCardProps {
   column: FunnelBoardColumn;
   canManage: boolean;
   onRequestMove: (lead: FunnelBoardLead, deEstagio: FunnelStage, paraEstagio: FunnelStage) => void;
+  onExtendHold?: (lead: FunnelBoardLead) => void;
 }
 
-function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCardProps) {
+function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }: FunnelLeadCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: dragId(column.stage, lead.numeroContato),
   });
@@ -238,7 +246,7 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
         <div className="min-w-0 space-y-0.5">
           <p className="flex items-center gap-1.5 truncate font-semibold">
             {/* Quem esta com a bola (benchmark §5 passo 6): bot ou humano. */}
-            {lead.statusBot === "PAUSADO" ? (
+            {isWithHuman(lead.statusBot) ? (
               <UserRound aria-label="Com humano" className="h-3.5 w-3.5 shrink-0 text-warning-600" />
             ) : (
               <Bot aria-label="Com o bot" className="h-3.5 w-3.5 shrink-0 text-primary" />
@@ -272,6 +280,11 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
             </p>
           )}
           <span className="flex flex-wrap gap-1">
+            {lossReasonLabel(lead.motivoPerda) && (
+              <span className="mt-1 inline-block rounded-full bg-danger/10 px-2 py-0.5 text-xs font-medium text-danger">
+                {lossReasonLabel(lead.motivoPerda)}
+              </span>
+            )}
             {lead.etiqueta && (
               <span className="mt-1 inline-block rounded-full bg-danger/10 px-2 py-0.5 text-xs font-medium text-danger">
                 {TAG_LABELS[lead.etiqueta]}
@@ -303,14 +316,23 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove }: FunnelLeadCa
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label={`Mover ${lead.nome ?? lead.numeroContato}`}>
-            {destinos.map((destino) => (
-              <DropdownItem
-                key={destino.stage}
-                onPress={() => onRequestMove(lead, column.stage, destino.stage)}
-              >
-                {destino.label}
-              </DropdownItem>
-            ))}
+            {lead.holdStatus === "AGUARDANDO" && onExtendHold ? (
+              <DropdownSection showDivider title="Pré-reserva">
+                <DropdownItem key="extend-hold" onPress={() => onExtendHold(lead)}>
+                  Estender prazo (+60 min)
+                </DropdownItem>
+              </DropdownSection>
+            ) : null}
+            <DropdownSection title="Mover para">
+              {destinos.map((destino) => (
+                <DropdownItem
+                  key={destino.stage}
+                  onPress={() => onRequestMove(lead, column.stage, destino.stage)}
+                >
+                  {destino.label}
+                </DropdownItem>
+              ))}
+            </DropdownSection>
           </DropdownMenu>
         </Dropdown>
       )}

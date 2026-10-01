@@ -26,6 +26,7 @@ vi.mock("@/src/shared/hooks/hotel-portal", () => ({
   }),
   useHotelFunnelMetrics: () => ({ data: undefined }),
   useMoveFunnelStage: () => mutation,
+  useExtendHold: () => mutation,
 }));
 
 describe("HotelFunilPage", () => {
