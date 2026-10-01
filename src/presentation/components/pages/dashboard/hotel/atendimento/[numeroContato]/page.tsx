@@ -1,7 +1,6 @@
 "use client";
 
 import { use } from "react";
-import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import {
   useActiveHotelClient,
@@ -13,7 +12,7 @@ import {
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
 import { ConversationTranscript } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
 import { stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
-import { Button } from "@/src/presentation/components/atoms/shadcn-ui/button";
+import { botStatusLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/bot-status";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 
 export default function HotelConversationDetailPage({
@@ -35,21 +34,20 @@ export default function HotelConversationDetailPage({
   return (
     <PainelPageShell
       title={contact?.nome ?? decoded}
-      description="Transcrição somente leitura. Responder acontece no Chatwoot."
+      description="Transcrição somente leitura. A equipe responde pelo WhatsApp Business da pousada."
       isLoading={clientLoading || isLoading}
       isError={isError}
       errorMessage="Conversa não encontrada."
       actions={
-        contact?.chatwootDeepLink ? (
-          <Button asChild size="sm" variant="outline">
-            <Link
-              href={contact.chatwootDeepLink}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Responder no Chatwoot <ExternalLink className="ml-1 size-3.5" />
-            </Link>
-          </Button>
+        contact ? (
+          <a
+            className="inline-flex items-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent"
+            href={contact.whatsappWebLink}
+            rel="noreferrer"
+            target="_blank"
+          >
+            Abrir no WhatsApp Web <ExternalLink aria-hidden className="ml-1 size-3.5" />
+          </a>
         ) : undefined
       }
     >
@@ -65,9 +63,7 @@ export default function HotelConversationDetailPage({
           </span>
           <span>
             <span className="text-muted-foreground">Bot: </span>
-            {contact.statusBot === "PAUSADO"
-              ? "pausado — aguardando humano"
-              : "ativo"}
+            {botStatusLabel(contact.statusBot)}
           </span>
           {!contact.consentimentoLgpd && (
             <span className="text-amber-600">

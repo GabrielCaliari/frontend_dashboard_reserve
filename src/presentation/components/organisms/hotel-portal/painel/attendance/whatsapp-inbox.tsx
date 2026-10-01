@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import toast from "react-hot-toast";
 import { ArrowLeft, Bot, ExternalLink, MessageSquareText, Play, Search, ShieldAlert, UserRound } from "lucide-react";
 import {
@@ -107,9 +106,10 @@ function ContactRow({
 }
 
 /**
- * Inbox estilo WhatsApp Web, SOMENTE LEITURA (Decisao 11 do plano mestre):
- * lista com etiquetas de estagio a esquerda, transcricao a direita; responder
- * acontece no Chatwoot via deep link. Mobile alterna lista <-> conversa.
+ * Inbox estilo WhatsApp Web, SOMENTE LEITURA (contrato v2 §4.2): lista com
+ * etiquetas de estagio a esquerda, transcricao a direita. A equipe responde
+ * pelo WhatsApp Business da pousada; daqui so se abre a conversa no WhatsApp
+ * Web. Mobile alterna lista <-> conversa.
  */
 export function WhatsappInbox({ clientId }: { clientId: string }) {
   const [busca, setBusca] = useState("");
@@ -279,24 +279,20 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                   <Play className="mr-1 h-3.5 w-3.5" /> Retomar conversa
                 </Button>
               ) : null}
-              {contato.chatwootDeepLink ? (
-                <Button
-                  as={Link}
-                  href={contato.chatwootDeepLink}
-                  rel="noreferrer"
-                  size="sm"
-                  target="_blank"
-                  variant="flat"
-                >
-                  Responder no Chatwoot <ExternalLink className="ml-1 h-3.5 w-3.5" />
-                </Button>
-              ) : null}
+              <a
+                className="inline-flex shrink-0 items-center rounded-xl bg-default-100 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-default-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                href={contato.whatsappWebLink}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Abrir no WhatsApp Web <ExternalLink aria-hidden className="ml-1 h-3.5 w-3.5" />
+              </a>
             </header>
             <div className="flex-1 overflow-y-auto bg-default-100/30 p-4">
               <ConversationTranscript messages={detail?.messages ?? []} />
             </div>
             <footer className="border-t border-border bg-default-50 px-4 py-2.5 text-center text-xs text-foreground/50">
-              Somente leitura — a resposta acontece no Chatwoot, a fonte única do atendimento.
+              Somente leitura — a equipe responde pelo WhatsApp Business da pousada.
             </footer>
           </>
         ) : (

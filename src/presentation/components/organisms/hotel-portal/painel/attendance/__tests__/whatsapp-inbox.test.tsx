@@ -11,7 +11,7 @@ const conversas: ConversationListItem[] = [
     lastMessageAt: "2026-08-19T14:32:00.000Z",
     consentimentoLgpd: true,
     currentStage: "CONTATO_INICIADO",
-    chatwootDeepLink: null,
+    whatsappWebLink: "https://web.whatsapp.com/send?phone=5535999110001",
   },
   {
     numeroContato: "+5535999110002",
@@ -20,7 +20,7 @@ const conversas: ConversationListItem[] = [
     lastMessageAt: null,
     consentimentoLgpd: false,
     currentStage: "QUALIFICADO",
-    chatwootDeepLink: "https://chatwoot.example/conv/2",
+    whatsappWebLink: "https://web.whatsapp.com/send?phone=5535999110002",
   },
 ];
 
@@ -42,7 +42,7 @@ vi.mock("@/src/shared/hooks/hotel-portal", () => ({
             statusBot: "PAUSADO",
             consentimentoLgpd: false,
             currentStage: "QUALIFICADO",
-            chatwootDeepLink: "https://chatwoot.example/conv/2",
+            whatsappWebLink: "https://web.whatsapp.com/send?phone=5535999110002",
           },
           messages: [
             { role: "user", tipo: "texto", contentPreview: "Oi, tem vaga?", ocorridoEm: "2026-08-19T14:00:00.000Z" },
@@ -67,7 +67,10 @@ describe("WhatsappInbox", () => {
     fireEvent.click(screen.getByText("Bruno Lima"));
     expect(screen.getByText("Oi, tem vaga?")).toBeInTheDocument();
     expect(screen.getByText(/somente leitura/i)).toBeInTheDocument();
-    expect(screen.getByText(/responder no chatwoot/i)).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: /abrir no whatsapp web/i });
+    expect(link).toHaveAttribute("href", "https://web.whatsapp.com/send?phone=5535999110002");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(screen.queryByText(/chatwoot/i)).not.toBeInTheDocument();
   });
 
   it("conversa pausada oferece retomada com estagio e chama a mutation", async () => {

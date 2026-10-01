@@ -12,9 +12,9 @@ import { PortalTableSkeleton } from "@/src/presentation/components/organisms/hot
 
 /**
  * Bloco Conversas (§5.3). Somente leitura por decisao de produto (Decisao 11):
- * o painel mostra historico, busca e status; responder acontece no Chatwoot,
- * via deep link. Nao adicionar caixa de resposta aqui — o Chatwoot e a fonte
- * unica da verdade do atendimento, e duas caixas dessincronizam o bot.
+ * o painel mostra historico, busca e status; responder acontece no WhatsApp
+ * Business da pousada. Nao adicionar caixa de resposta aqui — duas caixas
+ * dessincronizam o bot.
  * Layout estilo WhatsApp Web: lista com etiquetas de estagio + transcricao.
  */
 export default function HotelAtendimentoPage() {
@@ -27,7 +27,7 @@ export default function HotelAtendimentoPage() {
     <PainelPageShell
       wide
       title="Conversas"
-      description="Histórico e status das conversas do WhatsApp. Para responder, abra no Chatwoot."
+      description="Histórico e status das conversas do WhatsApp. Para responder, abra a conversa no WhatsApp Web."
       isLoading={clientLoading}
     >
       <PainelSection title="Canais">

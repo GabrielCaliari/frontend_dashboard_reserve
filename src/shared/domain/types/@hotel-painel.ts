@@ -175,14 +175,8 @@ export interface ConversationListItem {
   lastMessageAt: string | null;
   consentimentoLgpd: boolean;
   currentStage: FunnelStage;
-  /**
-   * Deep link para o Chatwoot. `null` quando o tenant nao tem
-   * `chatwoot_base_url` configurado — o backend nunca devolve link quebrado.
-   * Decisao 11 do plano mestre: responder acontece no Chatwoot, nunca aqui.
-   */
-  chatwootDeepLink: string | null;
   /** Abre a conversa no WhatsApp Web da conta logada — a da pousada. */
-  whatsappWebLink?: string;
+  whatsappWebLink: string;
 }
 
 export interface ConversationListResponse {
@@ -203,8 +197,7 @@ export interface ConversationDetailResponse {
     statusBot: BotContactStatus;
     consentimentoLgpd: boolean;
     currentStage: FunnelStage;
-    chatwootDeepLink: string | null;
-    whatsappWebLink?: string;
+    whatsappWebLink: string;
     /** romantica | familia | grupo | descanso */
     ocasiao?: string | null;
     hold?: HoldResumo | null;

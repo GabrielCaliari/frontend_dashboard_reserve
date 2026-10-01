@@ -43,7 +43,7 @@ function apiErrorMessage(error: unknown, fallback: string): string {
  * WhatsApp, outro fluxo. O quadro deixou de ser somente leitura: com a
  * permissao certa da capacidade "hotel-portal.whatsapp-funnel.manage" o
  * usuario move o lead por drag ou pelo menu do card. As conversas em si
- * seguem read-only, geridas pelo Chatwoot.
+ * seguem read-only; a equipe responde pelo WhatsApp Business.
  */
 export default function HotelFunilPage() {
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();

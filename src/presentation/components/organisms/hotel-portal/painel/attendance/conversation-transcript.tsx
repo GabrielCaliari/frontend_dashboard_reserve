@@ -13,9 +13,18 @@ const roleLabel: Record<string, string> = {
   human: "Equipe do hotel",
 };
 
+const tipoLabel: Record<string, string> = {
+  audio: "áudio transcrito",
+  imagem: "imagem",
+  botoes: "botões",
+  template: "modelo",
+  sistema: "sistema",
+};
+
 /**
- * O backend devolve `contentPreview` (previa), nao a mensagem inteira — a
- * transcricao completa vive no Chatwoot. Nao tente reconstruir o conteudo aqui.
+ * O backend devolve `contentPreview` (previa de ate 180 caracteres), nao a
+ * mensagem inteira — o texto completo fica no bot (contrato v2 §8). Nao tente
+ * reconstruir o conteudo aqui.
  */
 export function ConversationTranscript({
   messages,
@@ -35,7 +44,7 @@ export function ConversationTranscript({
         >
           <p className="mb-0.5 text-xs font-medium text-muted-foreground">
             {roleLabel[msg.role] ?? msg.role}
-            {msg.tipo === "audio" && " · áudio transcrito"}
+            {tipoLabel[msg.tipo] ? ` · ${tipoLabel[msg.tipo]}` : ""}
           </p>
           <p>{msg.contentPreview ?? "—"}</p>
         </div>
