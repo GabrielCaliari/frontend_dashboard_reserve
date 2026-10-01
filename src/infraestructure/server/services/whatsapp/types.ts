@@ -4,8 +4,6 @@
 
 export type CreateWhatsAppTemplateDto = Record<string, unknown>;
 
-export type SendWhatsAppMessageDto = Record<string, unknown>;
-
 // ─── Operation types ────────────────────────────────────────────────────────
 
 /** POST /admin/hotel-portal/whatsapp/{clientId}/templates — response */
@@ -18,8 +16,6 @@ export type FindTemplatesResponse = unknown;
 
 /** POST /admin/hotel-portal/whatsapp/{clientId}/send — response */
 export type SendMessageResponse = unknown;
-/** POST /admin/hotel-portal/whatsapp/{clientId}/send — payload */
-export type SendMessageBody = SendWhatsAppMessageDto;
 
 /** GET /admin/hotel-portal/whatsapp/{clientId}/messages — response */
 export type GetMessageHistoryResponse = unknown;

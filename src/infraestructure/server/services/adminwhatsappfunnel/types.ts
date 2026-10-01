@@ -6,6 +6,10 @@ export type ResumeConversationDto = Record<string, unknown>;
 
 export type FunnelStageChangeDto = Record<string, unknown>;
 
+export type PauseConversationDto = Record<string, unknown>;
+
+export type ExtendHoldDto = Record<string, unknown>;
+
 // ─── Operation types ────────────────────────────────────────────────────────
 
 /** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/resume — response */
@@ -17,3 +21,13 @@ export type ResumeConversationBody = ResumeConversationDto;
 export type MoveStageResponse = unknown;
 /** PATCH /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/stage — payload */
 export type MoveStageBody = FunnelStageChangeDto;
+
+/** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/pause — response */
+export type PauseConversationResponse = unknown;
+/** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/pause — payload */
+export type PauseConversationBody = PauseConversationDto;
+
+/** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/extend-hold — response */
+export type ExtendHoldResponse = unknown;
+/** POST /admin/hotel-portal/{tenantId}/whatsapp/funnel/{contactId}/extend-hold — payload */
+export type ExtendHoldBody = ExtendHoldDto;
