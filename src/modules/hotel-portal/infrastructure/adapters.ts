@@ -81,6 +81,7 @@ import type {
   FunnelMetricsResponse,
   FunnelStage,
   FunnelStageChangeDto,
+  PanelActionResult,
   HotelHomeResponse,
   InstagramOverviewResponse,
   LeadsOverviewResponse,
@@ -679,6 +680,20 @@ export const hotelPortalService = {
       dto,
       adminHeaders,
     );
+  },
+
+  /** "Assumir conversa": pausa o bot para o contato (Canal B, pause_bot). */
+  async pauseConversation(
+    tenantId: string,
+    numeroContato: string,
+    dto: { motivo?: string },
+  ): Promise<PanelActionResult> {
+    const res = await api.post<PanelActionResult>(
+      `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/pause`,
+      dto,
+      adminHeaders,
+    );
+    return res.data;
   },
 
   async getFunnelMetrics(

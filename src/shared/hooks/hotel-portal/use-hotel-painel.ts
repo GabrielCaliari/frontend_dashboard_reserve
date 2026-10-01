@@ -145,6 +145,22 @@ export function useResumeConversation(tenantId: string | null, clientId: string 
       qc.invalidateQueries({ queryKey: ['hotel-portal', 'conversation', clientId, vars.numeroContato] });
       qc.invalidateQueries({ queryKey: ['hotel-portal', 'funnel-board', clientId] });
       qc.invalidateQueries({ queryKey: ['hotel-portal', 'funnel-metrics', clientId] });
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'bot-channels', clientId] });
+    },
+  });
+}
+
+/** "Assumir conversa": o humano pausa o bot para aquele contato. */
+export function usePauseConversation(tenantId: string | null, clientId: string | null) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ numeroContato, motivo }: { numeroContato: string; motivo?: string }) =>
+      hotelPortalService.pauseConversation(tenantId!, numeroContato, { motivo }),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'conversations', clientId] });
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'conversation', clientId, vars.numeroContato] });
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'funnel-board', clientId] });
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'bot-channels', clientId] });
     },
   });
 }

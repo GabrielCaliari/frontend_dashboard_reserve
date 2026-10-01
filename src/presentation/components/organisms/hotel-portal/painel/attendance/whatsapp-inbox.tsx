@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { ArrowLeft, Bot, ExternalLink, MessageSquareText, Play, Search, ShieldAlert, UserRound } from "lucide-react";
+import { ArrowLeft, Bot, ExternalLink, Hand, MessageSquareText, Play, Search, UserRound } from "lucide-react";
 import {
   Button,
   Modal,
@@ -18,12 +18,22 @@ import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks
 import {
   useHotelConversationDetail,
   useHotelConversations,
+  usePauseConversation,
   useResumeConversation,
 } from "@/src/shared/hooks/hotel-portal";
 import { ConversationTranscript } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
 import {
+  HOLD_STATUS_LABELS,
+  OCCASION_LABELS,
+  botStatusLabel,
+  botStatusTone,
+  canTakeOver,
+  isWithHuman,
+} from "@/src/presentation/components/organisms/hotel-portal/funil/bot-status";
+import {
   FUNNEL_STAGES,
+  formatBRL,
   STAGE_TONES,
   contactInitials,
   stageLabel,
@@ -94,7 +104,7 @@ function ContactRow({
           <span className={`rounded-full px-1.5 py-px text-[10px] font-medium ${STAGE_TONES[conv.currentStage]}`}>
             {stageLabel(conv.currentStage)}
           </span>
-          {conv.statusBot === "PAUSADO" ? (
+          {isWithHuman(conv.statusBot) ? (
             <UserRound aria-label="Com humano" className="h-3.5 w-3.5 text-warning-600" />
           ) : (
             <Bot aria-label="Com o bot" className="h-3.5 w-3.5 text-primary/60" />
@@ -103,6 +113,12 @@ function ContactRow({
       </span>
     </button>
   );
+}
+
+/** 2026-11-20 -> 20/11 */
+function diaMes(iso: string | null): string {
+  const m = /^\d{4}-(\d{2})-(\d{2})/.exec(iso ?? "");
+  return m ? `${m[2]}/${m[1]}` : "";
 }
 
 /**
@@ -122,6 +138,9 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
   const { tenantId, hasPermission } = useTenantCapabilities();
   const podeRetomar = hasPermission("hotel-portal.whatsapp-funnel.manage");
   const retomada = useResumeConversation(tenantId, clientId);
+  const [assumirAberto, setAssumirAberto] = useState(false);
+  const [motivoAssumir, setMotivoAssumir] = useState("");
+  const pausa = usePauseConversation(tenantId, clientId);
 
   // debounce simples pra nao consultar a cada tecla
   useEffect(() => {
@@ -141,10 +160,10 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
 
   const visiveis = useMemo(() => {
     const lista = conversations ?? [];
-    return etiqueta === "pausadas" ? lista.filter((c) => c.statusBot === "PAUSADO") : lista;
+    return etiqueta === "pausadas" ? lista.filter((c) => isWithHuman(c.statusBot)) : lista;
   }, [conversations, etiqueta]);
 
-  const pausadas = (conversations ?? []).filter((c) => c.statusBot === "PAUSADO").length;
+  const pausadas = (conversations ?? []).filter((c) => isWithHuman(c.statusBot)).length;
   const contato = detail?.contact;
 
   const etiquetas: { key: Etiqueta; label: string; tone?: string }[] = [
@@ -231,7 +250,7 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
           </div>
         ) : contato ? (
           <>
-            <header className="flex items-center gap-3 border-b border-border bg-default-50 px-4 py-3">
+            <header data-testid="conversa-cabecalho" className="flex flex-wrap items-center gap-3 border-b border-border bg-default-50 px-4 py-3">
               <Button
                 isIconOnly
                 aria-label="Voltar para a lista"
@@ -255,19 +274,37 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                   <span className={`rounded-full px-1.5 py-px text-[10px] font-medium ${STAGE_TONES[contato.currentStage]}`}>
                     {stageLabel(contato.currentStage)}
                   </span>
-                  {contato.statusBot === "PAUSADO" ? (
-                    <span className="rounded-full bg-warning/20 px-1.5 py-px text-[10px] font-medium text-warning-600">
-                      Pausado — aguardando humano
-                    </span>
-                  ) : null}
-                  {!contato.consentimentoLgpd ? (
-                    <span className="flex items-center gap-1 text-foreground/50">
-                      <ShieldAlert aria-hidden className="h-3 w-3" /> LGPD não confirmado
-                    </span>
-                  ) : null}
+                  <span className={`rounded-full px-1.5 py-px text-[10px] font-medium ${botStatusTone(contato.statusBot)}`}>
+                    {botStatusLabel(contato.statusBot)}
+                  </span>
                 </p>
+                {contato.ocasiao || contato.hold ? (
+                  <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-foreground/70">
+                    {contato.ocasiao ? (
+                      <span className="rounded-full bg-secondary/20 px-1.5 py-px text-[10px] font-medium text-secondary-600">
+                        {OCCASION_LABELS[contato.ocasiao] ?? contato.ocasiao}
+                      </span>
+                    ) : null}
+                    {contato.hold ? (
+                      <>
+                        {contato.hold.acomodacao ? <span className="font-medium">{contato.hold.acomodacao}</span> : null}
+                        {contato.hold.checkIn && contato.hold.checkOut ? (
+                          <span>{diaMes(contato.hold.checkIn)} – {diaMes(contato.hold.checkOut)}</span>
+                        ) : null}
+                        {contato.hold.valor != null ? (
+                          <span className="font-semibold text-foreground">{formatBRL(contato.hold.valor)}</span>
+                        ) : null}
+                        {contato.hold.status ? (
+                          <span className="text-foreground/50">
+                            {HOLD_STATUS_LABELS[contato.hold.status] ?? contato.hold.status}
+                          </span>
+                        ) : null}
+                      </>
+                    ) : null}
+                  </p>
+                ) : null}
               </div>
-              {contato.statusBot === "PAUSADO" && podeRetomar ? (
+              {isWithHuman(contato.statusBot) && podeRetomar ? (
                 <Button
                   color="primary"
                   size="sm"
@@ -277,6 +314,11 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                   }}
                 >
                   <Play className="mr-1 h-3.5 w-3.5" /> Retomar conversa
+                </Button>
+              ) : null}
+              {canTakeOver(contato.statusBot) && podeRetomar ? (
+                <Button size="sm" variant="flat" onPress={() => { setMotivoAssumir(""); setAssumirAberto(true); }}>
+                  <Hand className="mr-1 h-3.5 w-3.5" /> Assumir conversa
                 </Button>
               ) : null}
               <a
@@ -301,6 +343,54 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
           </div>
         )}
       </section>
+
+      {assumirAberto && contato ? (
+        <Modal isOpen onClose={() => setAssumirAberto(false)}>
+          <ModalContent>
+            <ModalHeader>Assumir conversa</ModalHeader>
+            <ModalBody className="space-y-3">
+              <p className="text-sm text-foreground/70">
+                O bot para de responder {contato.nome ?? formatPhoneBR(contato.numeroContato)} e os
+                lembretes automáticos são encerrados. A conversa continua pelo WhatsApp Business da
+                pousada; depois, use "Retomar conversa" para devolver ao bot.
+              </p>
+              <label className="block space-y-1 text-sm">
+                <span className="font-medium">Motivo (opcional)</span>
+                <input
+                  className="w-full rounded-xl border border-border bg-default-50 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  maxLength={255}
+                  value={motivoAssumir}
+                  onChange={(e) => setMotivoAssumir(e.target.value)}
+                />
+              </label>
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="flat" onPress={() => setAssumirAberto(false)}>
+                Cancelar
+              </Button>
+              <Button
+                color="primary"
+                isLoading={pausa.isPending}
+                onPress={async () => {
+                  try {
+                    const result = await pausa.mutateAsync({
+                      numeroContato: contato.numeroContato,
+                      motivo: motivoAssumir.trim() || undefined,
+                    });
+                    if (result.ok) toast.success("Conversa assumida — o bot parou de responder este contato.");
+                    else toast("Pausa registrada. O bot não confirmou agora; o painel vai reenviar.", { icon: "⏳" });
+                    setAssumirAberto(false);
+                  } catch {
+                    toast.error("Não foi possível assumir a conversa.");
+                  }
+                }}
+              >
+                Assumir
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
 
       {retomadaAberta && contato ? (
         <Modal isOpen onClose={() => setRetomadaAberta(false)}>

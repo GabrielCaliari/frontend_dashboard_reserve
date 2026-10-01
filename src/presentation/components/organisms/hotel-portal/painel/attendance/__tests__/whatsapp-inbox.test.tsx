@@ -7,7 +7,7 @@ const conversas: ConversationListItem[] = [
   {
     numeroContato: "+5535999110001",
     nome: "Ana Souza",
-    statusBot: "ATIVO",
+    statusBot: "AGUARDANDO_PAGAMENTO",
     lastMessageAt: "2026-08-19T14:32:00.000Z",
     consentimentoLgpd: true,
     currentStage: "CONTATO_INICIADO",
@@ -28,13 +28,29 @@ vi.mock("@/src/modules/settings/presentation/hooks/tenant-capabilities-provider"
   useTenantCapabilities: () => ({ tenantId: "tenant_1", hasPermission: () => true }),
 }));
 
+const pauseMutation = { mutateAsync: vi.fn().mockResolvedValue({ ok: true, state: "PAUSADO" }), isPending: false };
 const resumeMutation = { mutateAsync: vi.fn().mockResolvedValue(undefined), isPending: false };
 
 vi.mock("@/src/shared/hooks/hotel-portal", () => ({
   useResumeConversation: () => resumeMutation,
+  usePauseConversation: () => pauseMutation,
   useHotelConversations: () => ({ data: conversas, isLoading: false }),
   useHotelConversationDetail: (_clientId: string | null, numero: string | null) => ({
-    data: numero
+    data: numero === "+5535999110001"
+      ? {
+          contact: {
+            numeroContato: numero, nome: "Ana Souza", statusBot: "AGUARDANDO_PAGAMENTO",
+            consentimentoLgpd: true, currentStage: "FECHAMENTO_INICIADO",
+            whatsappWebLink: "https://web.whatsapp.com/send?phone=5535999110001",
+            ocasiao: "romantica",
+            hold: {
+              codigo: "M57", status: "AGUARDANDO", acomodacao: "Suíte Master",
+              checkIn: "2026-11-20", checkOut: "2026-11-22", valor: 1049,
+            },
+          },
+          messages: [],
+        }
+      : numero
       ? {
           contact: {
             numeroContato: numero,
@@ -98,6 +114,46 @@ describe("WhatsappInbox", () => {
     fireEvent.click(screen.getByRole("button", { name: /^aguardando humano/i }));
     expect(screen.queryByText("Ana Souza")).not.toBeInTheDocument();
     expect(screen.getByText("Bruno Lima")).toBeInTheDocument();
+  });
+
+  it("cabecalho mostra o status do bot, a ocasiao e a pre-reserva", () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    fireEvent.click(screen.getByText("Ana Souza"));
+    const cabecalho = screen.getByTestId("conversa-cabecalho");
+    expect(cabecalho).toHaveTextContent("Aguardando pagamento");
+    expect(cabecalho).toHaveTextContent("Romântica");
+    expect(cabecalho).toHaveTextContent("Suíte Master");
+    expect(cabecalho).toHaveTextContent("20/11 – 22/11");
+    expect(cabecalho).toHaveTextContent("R$ 1.049,00");
+  });
+
+  it("conversa com o bot oferece assumir, e nao retomar", async () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    fireEvent.click(screen.getByText("Ana Souza"));
+    expect(screen.queryByRole("button", { name: /retomar conversa/i })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /assumir conversa/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^assumir$/i }));
+    await waitFor(() =>
+      expect(pauseMutation.mutateAsync).toHaveBeenCalledWith({
+        numeroContato: "+5535999110001",
+        motivo: undefined,
+      }),
+    );
+  });
+
+  it("conversa ja com a equipe nao oferece assumir", () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    fireEvent.click(screen.getByText("Bruno Lima"));
+    expect(screen.queryByRole("button", { name: /assumir conversa/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /retomar conversa/i })).toBeInTheDocument();
+  });
+
+  it("PAUSADO_HUMANO tambem conta como aguardando humano", () => {
+    conversas[0].statusBot = "PAUSADO_HUMANO";
+    render(<WhatsappInbox clientId="client_1" />);
+    fireEvent.click(screen.getByRole("button", { name: /^aguardando humano/i }));
+    expect(screen.getByText("Ana Souza")).toBeInTheDocument();
+    conversas[0].statusBot = "AGUARDANDO_PAGAMENTO";
   });
 
   it("lista sinaliza quem esta com a bola em cada conversa", () => {
