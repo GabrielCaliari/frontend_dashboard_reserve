@@ -41,3 +41,6 @@ export interface GetOtaDataParams {
   from: string;
   to: string;
 }
+
+/** POST /admin/hotel-portal/clients/{id}/import-baseline — response */
+export type ImportBaselineResponse = unknown;

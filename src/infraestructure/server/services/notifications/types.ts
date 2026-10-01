@@ -12,6 +12,28 @@ export interface CreateNotificationDTO {
   scheduled_at?: string;
 }
 
+export interface NotificationResponseDto {
+  id: string;
+  title: string;
+  body: string;
+  type: 'manual' | 'event' | 'scheduled';
+  scope: 'broadcast' | 'targeted';
+  tenant_ids: string[];
+  event_key?: string | null;
+  metadata?: Record<string, unknown> | null;
+  send_email: boolean;
+  scheduled_at?: string | null;
+  published_at?: string | null;
+  created_by?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PaginatedNotificationsResponseDto {
+  data: NotificationResponseDto[];
+  total: number;
+}
+
 export interface UpdateNotificationDTO {
   title?: string;
   body?: string;
@@ -24,12 +46,12 @@ export interface UpdateNotificationDTO {
 // ─── Operation types ────────────────────────────────────────────────────────
 
 /** POST /notifications — response */
-export type CreateResponse = unknown;
+export type CreateResponse = NotificationResponseDto;
 /** POST /notifications — payload */
 export type CreateBody = CreateNotificationDTO;
 
 /** GET /notifications — response */
-export type ListResponse = unknown;
+export type ListResponse = PaginatedNotificationsResponseDto;
 /** GET /notifications — query params */
 export interface ListParams {
   type?: 'manual' | 'event' | 'scheduled';
@@ -40,13 +62,13 @@ export interface ListParams {
 }
 
 /** POST /notifications/{id}/publish — response */
-export type PublishResponse = unknown;
+export type PublishResponse = NotificationResponseDto;
 
 /** GET /notifications/{id} — response */
-export type FindByIdResponse = unknown;
+export type FindByIdResponse = NotificationResponseDto;
 
 /** PATCH /notifications/{id} — response */
-export type UpdateResponse = unknown;
+export type UpdateResponse = NotificationResponseDto;
 /** PATCH /notifications/{id} — payload */
 export type UpdateBody = UpdateNotificationDTO;
 

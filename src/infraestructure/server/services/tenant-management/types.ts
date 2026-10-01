@@ -83,6 +83,21 @@ export interface TenantDeletionStatusDTO {
   deletion_reason?: string | null;
 }
 
+export interface ModuleResolutionResponseDto {
+  enabled: boolean;
+  source: 'master' | 'tenantOverride' | 'tenantTypePolicy';
+}
+
+export interface TenantCapabilitiesResponseDto {
+  tenantId: string;
+  tenantType: 'MASTER' | 'COMMON' | 'EDUCATIONAL';
+  isMasterTenant: boolean;
+  role: string;
+  /** Resolved enabled/source per gateable module */
+  modules: Record<string, ModuleResolutionResponseDto>;
+  permissions: string[];
+}
+
 // ─── Operation types ────────────────────────────────────────────────────────
 
 /** POST /tenants — response */
@@ -138,3 +153,6 @@ export type UpdateAdminRoleResponse = unknown;
 export interface UpdateAdminRoleBody {
   role?: 'manager' | 'editor' | 'viewer';
 }
+
+/** GET /tenant-capabilities — response */
+export type GetResponse = TenantCapabilitiesResponseDto;

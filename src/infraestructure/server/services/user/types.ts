@@ -11,7 +11,7 @@ export interface CreateUserDTO {
   phone_number: string;
   /** CPF (Brazilian tax ID) */
   cpf: string;
-  /** Password (min 6 characters) */
+  /** Senha (mínimo 10 caracteres, com maiúscula, minúscula, número e símbolo) */
   password: string;
 }
 

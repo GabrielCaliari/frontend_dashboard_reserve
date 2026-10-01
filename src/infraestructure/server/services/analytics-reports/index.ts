@@ -9,7 +9,7 @@ const analyticsReportsService = {
     return data;
   },
 
-  /** List all analytics report links */
+  /** List analytics report links for the current tenant */
   async findAll(params: FindAllParams = {} as FindAllParams): Promise<FindAllResponse> {
     const { data } = await apiClient.get('/api/reports', { params });
     return data;

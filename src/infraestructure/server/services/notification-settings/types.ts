@@ -2,6 +2,18 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
+export interface NotificationSettingsResponseDto {
+  id: string;
+  tenant_id: string;
+  email_enabled: boolean;
+  inapp_enabled: boolean;
+  event_settings: Record<string, boolean>;
+  cron_settings: Record<string, boolean>;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface UpdateNotificationSettingsDTO {
   email_enabled?: boolean;
   inapp_enabled?: boolean;
@@ -12,17 +24,17 @@ export interface UpdateNotificationSettingsDTO {
 // ─── Operation types ────────────────────────────────────────────────────────
 
 /** GET /notifications/settings — response */
-export type GetOwnResponse = unknown;
+export type GetOwnResponse = NotificationSettingsResponseDto;
 
 /** PATCH /notifications/settings — response */
-export type UpdateOwnResponse = unknown;
+export type UpdateOwnResponse = NotificationSettingsResponseDto;
 /** PATCH /notifications/settings — payload */
 export type UpdateOwnBody = UpdateNotificationSettingsDTO;
 
 /** GET /notifications/settings/{tenantId} — response */
-export type GetForTenantResponse = unknown;
+export type GetForTenantResponse = NotificationSettingsResponseDto;
 
 /** PATCH /notifications/settings/{tenantId} — response */
-export type UpdateForTenantResponse = unknown;
+export type UpdateForTenantResponse = NotificationSettingsResponseDto;
 /** PATCH /notifications/settings/{tenantId} — payload */
 export type UpdateForTenantBody = UpdateNotificationSettingsDTO;

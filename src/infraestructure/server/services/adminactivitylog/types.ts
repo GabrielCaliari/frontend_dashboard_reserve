@@ -2,14 +2,14 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export interface GenerateImageDTO {
-  /** Prompt used to generate the image */
-  prompt: string;
-}
+export type CreateActivityLogDto = Record<string, unknown>;
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
-/** POST /admin/post/generate-image/image-fx — response */
-export type GenerateFXImageResponse = unknown;
-/** POST /admin/post/generate-image/image-fx — payload */
-export type GenerateFXImageBody = GenerateImageDTO;
+/** POST /admin/hotel-portal/{tenantId}/activities — response */
+export type CreateResponse = unknown;
+/** POST /admin/hotel-portal/{tenantId}/activities — payload */
+export type CreateBody = CreateActivityLogDto;
+
+/** GET /admin/hotel-portal/{tenantId}/activities — response */
+export type ListResponse = unknown;

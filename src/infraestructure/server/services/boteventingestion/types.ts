@@ -2,14 +2,14 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export interface GenerateImageDTO {
-  /** Prompt used to generate the image */
-  prompt: string;
-}
+export type BotEventBatchDto = Record<string, unknown>;
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
-/** POST /admin/post/generate-image/image-fx — response */
-export type GenerateFXImageResponse = unknown;
-/** POST /admin/post/generate-image/image-fx — payload */
-export type GenerateFXImageBody = GenerateImageDTO;
+/** POST /ingest/bot-events — response */
+export type IngestResponse = unknown;
+/** POST /ingest/bot-events — payload */
+export type IngestBody = BotEventBatchDto;
+
+/** GET /ingest/bot-events/handoff-summary/{numeroContato} — response */
+export type HandoffSummaryForResponse = unknown;
