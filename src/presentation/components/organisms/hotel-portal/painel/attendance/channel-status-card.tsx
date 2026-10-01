@@ -33,6 +33,11 @@ function ChannelShell({
   );
 }
 
+const MODE_LABELS: Record<string, string> = {
+  hospedin: "Reserva direto no PMS",
+  handoff: "Qualifica e passa para a equipe",
+};
+
 /**
  * O backend nao manda `health` pronto — manda os fatos (`connected`,
  * `heartbeatStale`, contadores). A traducao fatos -> semaforo mora aqui.
@@ -52,18 +57,25 @@ export function BotChannelCards({ channels }: { channels: BotChannelsResponse })
         label="WhatsApp / bot"
         health={whatsappHealth}
         message={
-          !whatsapp.connected
+          whatsapp.heartbeatAgeMinutes === null
             ? "Integração não provisionada"
             : whatsapp.heartbeatStale
-              ? "Sem sinal recente do bot"
-              : `Ativo há ${whatsapp.heartbeatAgeMinutes ?? 0} min`
+              ? `Sem sinal do bot há ${whatsapp.heartbeatAgeMinutes} min`
+              : `Ativo há ${whatsapp.heartbeatAgeMinutes} min`
         }
       >
         <div className="space-y-1 text-sm">
           <p>Atendimento automático: {whatsapp.botEnabled ? "ligado" : "pausado"}</p>
+          {whatsapp.mode ? (
+            <p className="text-muted-foreground">Modo: {MODE_LABELS[whatsapp.mode] ?? whatsapp.mode}</p>
+          ) : null}
+          {typeof whatsapp.aiEnabled === "boolean" ? (
+            <p className="text-muted-foreground">IA: {whatsapp.aiEnabled ? "ligada" : "desligada"}</p>
+          ) : null}
           <p className="text-muted-foreground">
             {whatsapp.activeConversations} conversa
-            {whatsapp.activeConversations === 1 ? "" : "s"} nas últimas 24h
+            {whatsapp.activeConversations === 1 ? "" : "s"} ativa
+            {whatsapp.activeConversations === 1 ? "" : "s"}
           </p>
           {Boolean(whatsapp.pausedAwaitingHuman) && (
             <p className="font-medium text-amber-600">

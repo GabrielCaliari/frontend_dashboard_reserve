@@ -253,7 +253,8 @@ export interface FunnelMetricsResponse {
   taxaQualificacao: number;
   leadsProntos: number;
   taxaConversaoPorEtapa: { stage: FunnelStage; count: number; rate: number }[];
-  efetividadeFollowup: { tipoJanela: string; status: string; count: number }[];
+  /** Uma linha por regua x status (contrato v2 §4.4). */
+  efetividadeFollowup: { regua: string; status: 'respondeu' | 'sem_resposta' | string; count: number }[];
   volumePorOrigem: { origem: string; count: number }[];
   /** Conversas iniciadas por anuncio (source_id da Meta), maiores primeiro. */
   conversasPorAnuncio?: { sourceId: string; count: number }[];
