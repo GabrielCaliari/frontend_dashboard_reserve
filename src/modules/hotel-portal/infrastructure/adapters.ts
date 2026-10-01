@@ -93,6 +93,16 @@ import type {
 const adminConfig = { headers: { 'x-skip-tenant': 'true' } };
 const adminHeaders = adminConfig as never;
 
+/**
+ * Normaliza a resposta das acoes humanas repassadas ao bot. 2xx com `ok: false`
+ * = acao registrada, bot nao avisado (o backend reenvia). Resposta sem `ok`
+ * (backend anterior ao contrato) conta como entregue.
+ */
+function toPanelActionResult(raw: unknown): PanelActionResult {
+  const r = (raw ?? {}) as { ok?: unknown; state?: unknown };
+  return { ok: r.ok !== false, state: typeof r.state === "string" ? r.state : null };
+}
+
 function toArray<T>(raw: unknown): T[] {
   if (Array.isArray(raw)) return raw as T[];
   if (Array.isArray((raw as any)?.data)) return (raw as any).data as T[];
@@ -433,6 +443,7 @@ export const hotelPortalService = {
     return toArray<WhatsAppTemplate>(res.data);
   },
 
+  /** Texto livre responde 502 quando o bot esta inalcancavel (axios rejeita; nao e reenviado). */
   async sendWhatsApp(clientId: string, data: SendWhatsAppDto): Promise<WhatsAppMessage> {
     const res = await api.post<WhatsAppMessage>(
       `/admin/hotel-portal/whatsapp/${clientId}/send`,
@@ -611,13 +622,17 @@ export const hotelPortalService = {
   },
 
   /** Aprovar publica a chave no bot (Canal B, apply_config). */
-  async approveBotConfigProposal(tenantId: string, id: string): Promise<BotConfigProposal> {
+  async approveBotConfigProposal(
+    tenantId: string,
+    id: string,
+  ): Promise<BotConfigProposal & PanelActionResult> {
     const res = await api.patch(
       `/admin/hotel-portal/${tenantId}/bot-config-proposals/${id}/approve`,
       {},
       adminHeaders,
     );
-    return res.data?.data ?? res.data;
+    const data = res.data?.data ?? res.data;
+    return { ...data, ...toPanelActionResult(data) };
   },
 
   async rejectBotConfigProposal(
@@ -672,12 +687,13 @@ export const hotelPortalService = {
     tenantId: string,
     numeroContato: string,
     dto: FunnelStageChangeDto,
-  ): Promise<void> {
-    await api.patch(
+  ): Promise<PanelActionResult> {
+    const res = await api.patch(
       `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/stage`,
       dto,
       adminHeaders,
     );
+    return toPanelActionResult(res.data);
   },
 
   /** Retomada humana: despausa o bot e (opcionalmente) devolve o lead a um estagio. */
@@ -685,12 +701,13 @@ export const hotelPortalService = {
     tenantId: string,
     numeroContato: string,
     dto: { estagio?: FunnelStage },
-  ): Promise<void> {
-    await api.post(
+  ): Promise<PanelActionResult> {
+    const res = await api.post(
       `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/resume`,
       dto,
       adminHeaders,
     );
+    return toPanelActionResult(res.data);
   },
 
   /** "Assumir conversa": pausa o bot para o contato (Canal B, pause_bot). */
@@ -704,7 +721,7 @@ export const hotelPortalService = {
       dto,
       adminHeaders,
     );
-    return res.data;
+    return toPanelActionResult(res.data);
   },
 
   /** Soma minutos ao prazo do hold que esta aguardando pagamento (Canal B, extend_hold). */
@@ -718,7 +735,7 @@ export const hotelPortalService = {
       dto,
       adminHeaders,
     );
-    return res.data;
+    return toPanelActionResult(res.data);
   },
 
   async getFunnelMetrics(

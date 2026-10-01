@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { notifyBotAction } from "@/src/shared/utils/bot-action-feedback";
 import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import {
   useActiveHotelClient,
@@ -62,8 +63,8 @@ export default function HotelFunilPage() {
 
   const handleMove = async (numeroContato: string, dto: FunnelStageChangeDto) => {
     try {
-      await moveStage.mutateAsync({ numeroContato, dto });
-      toast.success(`Movido para ${stageLabel(dto.para_estagio)}.`);
+      const result = await moveStage.mutateAsync({ numeroContato, dto });
+      notifyBotAction(result, `Movido para ${stageLabel(dto.para_estagio)}.`);
     } catch (error) {
       toast.error(apiErrorMessage(error, "Não foi possível mover o card."));
       throw error; // modal aberto decide permanecer aberto
@@ -76,8 +77,7 @@ export default function HotelFunilPage() {
         numeroContato: lead.numeroContato,
         codigo: lead.holdCodigo ?? undefined,
       });
-      if (result.ok) toast.success("Prazo estendido em 60 minutos.");
-      else toast("Pedido registrado. O bot não confirmou agora; o painel vai reenviar.", { icon: "⏳" });
+      notifyBotAction(result, "Prazo estendido em 60 minutos.");
     } catch (error) {
       toast.error(apiErrorMessage(error, "Não foi possível estender o prazo."));
     }

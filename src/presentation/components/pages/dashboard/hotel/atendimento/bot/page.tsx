@@ -1,6 +1,7 @@
 "use client";
 
 import toast from "react-hot-toast";
+import { notifyBotAction } from "@/src/shared/utils/bot-action-feedback";
 import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import {
   useActiveHotelClient,
@@ -95,7 +96,7 @@ export default function HotelBotConfigPage() {
                     isBusy={approve.isPending || reject.isPending}
                     onApprove={() =>
                       approve.mutate(proposal.id, {
-                        onSuccess: () => toast.success("Proposta aprovada e enviada ao bot."),
+                        onSuccess: (result) => notifyBotAction(result, "Proposta aprovada e enviada ao bot."),
                         onError: () => toast.error("Não foi possível aprovar a proposta."),
                       })
                     }

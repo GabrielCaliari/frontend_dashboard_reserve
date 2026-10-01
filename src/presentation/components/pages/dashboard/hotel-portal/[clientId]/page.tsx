@@ -5,6 +5,7 @@ import { use } from "react";
 import { useSearchParams } from "next/navigation";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import { useRouter } from "nextjs-toploader/app";
+import { BOT_MESSAGE_NOT_SENT_MESSAGE, isBotUnreachableError } from "@/src/shared/utils/bot-action-feedback";
 import {
   useHotelClient,
   useHotelPortalDashboard,
@@ -1412,12 +1413,14 @@ function WhatsAppTab({ clientId }: { clientId: string }) {
       if (result?.foraDaJanela) {
         toast("Mensagem enviada ao bot, mas o hóspede não escreve há mais de 24h — a Meta pode não entregar.", { icon: "⚠️" });
       } else if (result?.ok === false) {
-        toast.error("O bot não confirmou o envio. Tente de novo em instantes.");
+        toast.error(BOT_MESSAGE_NOT_SENT_MESSAGE);
       } else {
         toast.success("Mensagem enviada. O bot fica pausado para este contato até você devolver.");
       }
       setSendForm({ to_phone: "", to_name: "", body: "" });
-    } catch { toast.error("Erro ao enviar mensagem."); }
+    } catch (error) {
+      toast.error(isBotUnreachableError(error) ? BOT_MESSAGE_NOT_SENT_MESSAGE : "Erro ao enviar mensagem.");
+    }
   }
 
   const MSG_STATUS_COLOR: Record<string, "success" | "warning" | "danger" | "default"> = {

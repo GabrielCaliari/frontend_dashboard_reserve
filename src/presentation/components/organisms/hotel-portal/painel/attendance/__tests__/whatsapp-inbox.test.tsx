@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { WhatsappInbox, formatPhoneBR } from "../whatsapp-inbox";
+import { BOT_NOT_NOTIFIED_MESSAGE } from "@/src/shared/utils/bot-action-feedback";
 import type { ConversationListItem } from "@/src/shared/domain/types/@hotel-painel";
+
+const toastMock = vi.hoisted(() => Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }));
+vi.mock("react-hot-toast", () => ({ default: toastMock }));
 
 const conversas: ConversationListItem[] = [
   {
@@ -139,6 +143,18 @@ describe("WhatsappInbox", () => {
         motivo: undefined,
       }),
     );
+  });
+
+  it("assumir com bot fora do ar avisa que a acao foi registrada e sera reenviada", async () => {
+    toastMock.mockClear();
+    toastMock.success.mockClear();
+    pauseMutation.mutateAsync.mockResolvedValueOnce({ ok: false, state: null });
+    render(<WhatsappInbox clientId="client_1" />);
+    fireEvent.click(screen.getByText("Ana Souza"));
+    fireEvent.click(screen.getByRole("button", { name: /assumir conversa/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^assumir$/i }));
+    await waitFor(() => expect(toastMock).toHaveBeenCalledWith(BOT_NOT_NOTIFIED_MESSAGE, expect.any(Object)));
+    expect(toastMock.success).not.toHaveBeenCalled();
   });
 
   it("conversa ja com a equipe nao oferece assumir", () => {

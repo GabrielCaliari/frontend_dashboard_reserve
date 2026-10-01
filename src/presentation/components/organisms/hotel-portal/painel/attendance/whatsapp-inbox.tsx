@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { notifyBotAction } from "@/src/shared/utils/bot-action-feedback";
 import { ArrowLeft, Bot, ExternalLink, Hand, MessageSquareText, Play, Search, UserRound } from "lucide-react";
 import {
   Button,
@@ -377,8 +378,7 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                       numeroContato: contato.numeroContato,
                       motivo: motivoAssumir.trim() || undefined,
                     });
-                    if (result.ok) toast.success("Conversa assumida — o bot parou de responder este contato.");
-                    else toast("Pausa registrada. O bot não confirmou agora; o painel vai reenviar.", { icon: "⏳" });
+                    notifyBotAction(result, "Conversa assumida — o bot parou de responder este contato.");
                     setAssumirAberto(false);
                   } catch {
                     toast.error("Não foi possível assumir a conversa.");
@@ -424,11 +424,11 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                 isLoading={retomada.isPending}
                 onPress={async () => {
                   try {
-                    await retomada.mutateAsync({
+                    const result = await retomada.mutateAsync({
                       numeroContato: contato.numeroContato,
                       estagio: estagioRetomada ?? undefined,
                     });
-                    toast.success("Conversa retomada — o bot volta a responder este contato.");
+                    notifyBotAction(result, "Conversa retomada — o bot volta a responder este contato.");
                     setRetomadaAberta(false);
                   } catch {
                     toast.error("Não foi possível retomar a conversa.");
