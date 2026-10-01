@@ -248,6 +248,7 @@ X-Reserve-Signature: <hex do HMAC-SHA256 do corpo bruto, com o segredo do tenant
 
 ```json
 {
+  "action_id": "cmg7x1k2p0000abcd1234efgh",
   "action": "move_stage",
   "tenant_id": "cli_dona_tereza",
   "phone": "553598067432",
@@ -274,6 +275,9 @@ X-Reserve-Signature: <hex do HMAC-SHA256 do corpo bruto, com o segredo do tenant
 ### 5.3 Regras
 
 - O backend grava a ação como evento próprio **antes** de chamar o bot. Se a chamada falhar, um job reconcilia depois (decisão 12).
+- `action_id` identifica a ação no painel e se repete nos reenvios. O bot ignora repetições do mesmo id sem gravar evento duplicado. É um id opaco (cuid, não UUID).
+- `phone` vai só com dígitos (55 + DDD + número); `stage` em maiúsculas, um dos 9 estágios.
+- Em produção a URL do WF6 precisa ser `https` com domínio público (o backend recusa endereço interno).
 - `send_message` só funciona dentro da janela de 24h da Meta; fora dela o bot responde `200` com `state` e o backend deve avisar o usuário que a mensagem pode não ser entregue (o bot registra o erro da Meta no evento seguinte).
 - `apply_config` não pode alterar chaves de credencial (o bot recusa).
 
@@ -333,7 +337,9 @@ As chaves `tarifa:*` e `calendario:*` são traduzidas pelo bot para as tabelas `
 | Ambiente | Bot | Painel |
 |---|---|---|
 | Desenvolvimento (hoje) | N8N local via ngrok (`https://flakily-scuff-tackle.ngrok-free.dev/webhook/painel`) | Backend local ou de homologação |
-| Produção | Servidor da RÉSERVE (a definir na fase de go-live) | `https://api.reserve.app/api/v1` |
+| Produção | `https://bot.reservemkt.com.br/webhook/painel` (servidor da RÉSERVE, confirmar quando subir) | Host da API a definir; caminhos sem `/v1`: `/api/ingest/bot-events` e `/api/webhooks/booking/:clientId` |
+
+Canal C, campo `channel`: `direct` (bot e site), `ota:booking` / `ota:airbnb` / `ota:expedia` / `ota:tripadvisor` quando o PMS identificar a OTA, `other` quando o canal do PMS não estiver mapeado (vira `OTHER_OTA` no painel). Piloto: Dona Tereza (`cli_dona_tereza`).
 
 Para testar o Canal A sem o bot, basta enviar um lote com os exemplos da Seção 3.4 (o `event_id` pode ser qualquer UUID). Para o Canal B, o bot aceita chamadas assinadas com o segredo configurado; um `return_to_bot` num número de teste é o teste mais simples.
 
