@@ -135,7 +135,7 @@ export function ManagerHome() {
                 />
                 <MetricCard
                   label="Gerado pelo bot"
-                  value={fmtBRL(home.motor.receita_bot)}
+                  value={fmtBRL(home.bot?.receitaConfirmada ?? home.motor.receita_bot)}
                   accent
                 />
               </div>
@@ -170,7 +170,11 @@ export function ManagerHome() {
               />
               <MetricCard
                 label="A recuperar"
-                value={`${formatNumber(home.motor.a_recuperar.quantidade)} holds expirados · ${fmtBRL(home.motor.a_recuperar.valor)}`}
+                value={
+                  home.bot
+                    ? `${formatNumber(home.bot.aRecuperar.quantidade)} cotações em aberto · ${fmtBRL(home.bot.aRecuperar.valor)}`
+                    : `${formatNumber(home.motor.a_recuperar.quantidade)} holds expirados · ${fmtBRL(home.motor.a_recuperar.valor)}`
+                }
                 hint="hóspedes que não concluíram o pagamento — o bot faz o follow-up"
               />
               <MetricCard

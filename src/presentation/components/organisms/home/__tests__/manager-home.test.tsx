@@ -21,6 +21,7 @@ vi.mock("@/src/shared/hooks/hotel-portal", () => ({
         receita_bot: 8000,
         por_origem: [{ origem: "BOT_WHATSAPP", reservas: 4, receita: 8000 }],
       },
+      bot: { receitaConfirmada: 9100, reservas: 6, aRecuperar: { quantidade: 2, valor: 2098 } },
     },
     isLoading: false, isError: false,
   }),
@@ -41,6 +42,12 @@ describe("ManagerHome", () => {
     expect(screen.getByText(/a recuperar/i)).toBeInTheDocument();
     expect(screen.getByText(/gerado pelo bot/i)).toBeInTheDocument();
     expect(screen.getByText(/ocupa/i)).toBeInTheDocument();
+  });
+
+  it("numeros do bot vem do bloco bot, nao do motor", () => {
+    render(<ManagerHome />);
+    expect(screen.getByText(/R\$\s?9\.100,00/)).toBeInTheDocument();
+    expect(screen.getByText(/2 cotações em aberto · R\$\s?2\.098,00/)).toBeInTheDocument();
   });
 
   it("mostra quanto foi recuperado depois de hold expirado", () => {

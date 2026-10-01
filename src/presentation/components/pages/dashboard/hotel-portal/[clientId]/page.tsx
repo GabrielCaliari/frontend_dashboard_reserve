@@ -1408,8 +1408,14 @@ function WhatsAppTab({ clientId }: { clientId: string }) {
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await sendMsg(sendForm);
-      toast.success("Mensagem enviada!");
+      const result = (await sendMsg(sendForm)) as unknown as { ok?: boolean; foraDaJanela?: boolean } | undefined;
+      if (result?.foraDaJanela) {
+        toast("Mensagem enviada ao bot, mas o hóspede não escreve há mais de 24h — a Meta pode não entregar.", { icon: "⚠️" });
+      } else if (result?.ok === false) {
+        toast.error("O bot não confirmou o envio. Tente de novo em instantes.");
+      } else {
+        toast.success("Mensagem enviada. O bot fica pausado para este contato até você devolver.");
+      }
       setSendForm({ to_phone: "", to_name: "", body: "" });
     } catch { toast.error("Erro ao enviar mensagem."); }
   }

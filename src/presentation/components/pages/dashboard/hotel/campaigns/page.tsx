@@ -3,9 +3,13 @@
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import {
   useActiveHotelClient,
+  useHotelFunnelMetrics,
   useHotelPortalCampaigns,
 } from "@/src/shared/hooks/hotel-portal";
+import { useState } from "react";
 import { Card, CardBody, Spinner } from "@heroui/react";
+import { AdConversationsTable } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/ad-conversations-table";
+import { resolvePreset } from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
 import { AlertCircle, Megaphone } from "lucide-react";
 import type { ECampaignChannel } from "@/src/shared/domain/types/@hotel-portal";
 
@@ -32,6 +36,8 @@ function fmt(n: number, style: "currency" | "decimal" = "decimal") {
 export default function HotelCampaignsPage() {
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
   const { data, isLoading, isError } = useHotelPortalCampaigns(client?.id ?? null);
+  const [funilPeriod] = useState(() => resolvePreset("current-month"));
+  const { data: funil } = useHotelFunnelMetrics(client?.id ?? null, funilPeriod);
 
   if (clientLoading || isLoading) {
     return (
@@ -205,6 +211,13 @@ export default function HotelCampaignsPage() {
             </Card>
           )}
         </div>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            Conversas no WhatsApp por anúncio (mês atual)
+          </h2>
+          <AdConversationsTable rows={funil?.conversasPorAnuncio ?? []} />
+        </section>
       </div>
     </LayoutScopeRoot>
   );

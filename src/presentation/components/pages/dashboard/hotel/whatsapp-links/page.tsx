@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
 import {
   useActiveHotelClient,
+  useHotelLeadsOverview,
   useWhatsAppLinks,
   useWhatsAppLinkStats,
   useCreateWhatsAppLink,
@@ -46,6 +47,8 @@ import {
   Cell,
 } from "recharts";
 import toast from "react-hot-toast";
+import { LinkCycleStrip } from "@/src/presentation/components/organisms/hotel-portal/painel/leads/link-cycle-strip";
+import { resolvePreset } from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("pt-BR").format(n);
@@ -221,6 +224,8 @@ export default function HotelWhatsAppLinksPage() {
   const selectedTenant = useTenantStore((s) => s.selectedTenant);
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
   const { data: links, isLoading } = useWhatsAppLinks(client?.id ?? null);
+  const [cicloPeriod] = useState(() => resolvePreset("current-month"));
+  const { data: overview } = useHotelLeadsOverview(client?.id ?? null, cicloPeriod);
 
   const { mutateAsync: create, isPending: creating } = useCreateWhatsAppLink(client?.id ?? "");
   const { mutateAsync: update, isPending: updating } = useUpdateWhatsAppLink(client?.id ?? "");
@@ -406,6 +411,15 @@ export default function HotelWhatsAppLinksPage() {
             </Button>
           )}
         </div>
+
+        {overview?.ciclo ? (
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">
+              Do clique à reserva (mês atual)
+            </h2>
+            <LinkCycleStrip ciclo={overview.ciclo} />
+          </section>
+        ) : null}
 
         {/* Create form */}
         {canManage && showForm && (
