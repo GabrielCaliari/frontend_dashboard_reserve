@@ -26,6 +26,23 @@ const CATEGORY_LABELS: Record<BotConfigProposalCategory, string> = {
   hours: "Horários",
 };
 
+/**
+ * Chaves que o bot aplica por `apply_config` (contrato v2 §6). Sao sugestoes:
+ * o campo continua livre, porque o bot pode passar a aceitar chaves novas
+ * antes de o painel ser atualizado.
+ */
+const KEY_SUGGESTIONS: Record<BotConfigProposalCategory, string[]> = {
+  pricing: [
+    "valor_pessoa_adicional_cents",
+    "valor_taxa_pet_cents",
+    "desconto_sem_cafe_cents",
+    "percentual_desconto_marina",
+  ],
+  policies: ["hold_min_pix_manual", "hold_min_cartao", "hold_min_pix_link"],
+  packages: ["hospedin_chale_familia_bloqueado"],
+  hours: ["resumo_dia_hora"],
+};
+
 export function ProposalForm({
   onSubmit,
   isSubmitting,
@@ -38,6 +55,7 @@ export function ProposalForm({
   const [campo, setCampo] = useState("");
   const [valorAtual, setValorAtual] = useState("");
   const [valorProposto, setValorProposto] = useState("");
+  const [justificativa, setJustificativa] = useState("");
 
   return (
     <form
@@ -49,10 +67,12 @@ export function ProposalForm({
           categoria,
           valor_atual: valorAtual || undefined,
           valor_proposto: valorProposto,
+          justificativa: justificativa.trim() || undefined,
         });
         setCampo("");
         setValorAtual("");
         setValorProposto("");
+        setJustificativa("");
       }}
     >
       <div className="space-y-1">
@@ -81,12 +101,22 @@ export function ProposalForm({
         </label>
         <Input
           id="proposal-campo"
-          placeholder="Ex.: diária da suíte master"
+          list="proposal-campo-sugestoes"
+          placeholder="Ex.: hold_min_pix_manual"
           value={campo}
           onChange={(e) => setCampo(e.target.value)}
           maxLength={100}
           required
         />
+        <datalist id="proposal-campo-sugestoes">
+          {KEY_SUGGESTIONS[categoria].map((key) => (
+            <option key={key} value={key} />
+          ))}
+        </datalist>
+        <p className="text-xs text-muted-foreground">
+          Para tarifa use <code>tarifa:&lt;tipo&gt;:&lt;A|B|C&gt;</code> (valor em centavos) e, para
+          feriado, <code>calendario:AAAA-MM-DD</code>.
+        </p>
       </div>
 
       <div className="space-y-1">
@@ -109,6 +139,18 @@ export function ProposalForm({
           value={valorProposto}
           onChange={(e) => setValorProposto(e.target.value)}
           required
+        />
+      </div>
+
+      <div className="space-y-1">
+        <label className="block text-sm font-medium" htmlFor="proposal-justificativa">
+          Por que mudar (opcional)
+        </label>
+        <Input
+          id="proposal-justificativa"
+          maxLength={1000}
+          value={justificativa}
+          onChange={(e) => setJustificativa(e.target.value)}
         />
       </div>
 

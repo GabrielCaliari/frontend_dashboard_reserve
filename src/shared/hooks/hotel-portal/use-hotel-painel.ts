@@ -206,6 +206,25 @@ export function useCreateBotConfigProposal(clientId: string | null) {
   });
 }
 
+export function useApproveBotConfigProposal(tenantId: string | null, clientId: string | null) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => hotelPortalService.approveBotConfigProposal(tenantId!, id),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'bot-config-proposals', clientId] }),
+  });
+}
+
+export function useRejectBotConfigProposal(tenantId: string | null, clientId: string | null) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, justificativa }: { id: string; justificativa: string }) =>
+      hotelPortalService.rejectBotConfigProposal(tenantId!, id, { justificativa }),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: ['hotel-portal', 'bot-config-proposals', clientId] }),
+  });
+}
+
 export function useHotelInstagram(clientId: string | null, period: Period) {
   return useQuery({
     queryKey: ['hotel-portal', 'instagram', clientId, period.from, period.to],

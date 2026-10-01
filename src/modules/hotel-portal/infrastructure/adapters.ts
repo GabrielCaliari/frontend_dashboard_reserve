@@ -622,6 +622,29 @@ export const hotelPortalService = {
     return (res.data?.data ?? res.data) as BotConfigProposal;
   },
 
+  /** Aprovar publica a chave no bot (Canal B, apply_config). */
+  async approveBotConfigProposal(tenantId: string, id: string): Promise<BotConfigProposal> {
+    const res = await api.patch(
+      `/admin/hotel-portal/${tenantId}/bot-config-proposals/${id}/approve`,
+      {},
+      adminHeaders,
+    );
+    return res.data?.data ?? res.data;
+  },
+
+  async rejectBotConfigProposal(
+    tenantId: string,
+    id: string,
+    dto: { justificativa: string },
+  ): Promise<BotConfigProposal> {
+    const res = await api.patch(
+      `/admin/hotel-portal/${tenantId}/bot-config-proposals/${id}/reject`,
+      dto,
+      adminHeaders,
+    );
+    return res.data?.data ?? res.data;
+  },
+
   async getBotChannels(clientId: string): Promise<BotChannelsResponse> {
     const res = await api.get<BotChannelsResponse>(
       `/hotel-portal/${clientId}/whatsapp/channels`,
