@@ -21,11 +21,20 @@ export function useMyHotelClient() {
   };
 }
 
-export function useHotelClientByUserId(userId: string | null) {
+/**
+ * HotelClient do tenant selecionado (header x-tenant-id). Usado na tela de
+ * detalhe do tenant: so devolve o cliente se ele pertencer ao tenant da pagina,
+ * para nao mostrar o hotel de outro tenant quando o selecionado for diferente.
+ */
+export function useHotelClientForTenant(tenantId: string | null) {
   return useQuery({
-    queryKey: ['hotel-portal', 'by-user', userId],
-    queryFn: () => hotelPortalService.getClientByUserId(userId!),
-    enabled: !!userId,
+    queryKey: ['hotel-portal', 'current-tenant-client', tenantId],
+    queryFn: async () => {
+      const client = await hotelPortalService.getClientForCurrentTenant();
+      const owner = (client as { tenant_id?: string } | null)?.tenant_id;
+      return client && (!owner || owner === tenantId) ? client : null;
+    },
+    enabled: !!tenantId,
     retry: false,
     staleTime: 1000 * 60 * 5,
   });

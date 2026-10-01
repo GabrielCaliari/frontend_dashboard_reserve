@@ -134,18 +134,6 @@ function normalizeWhatsAppLinkStats(raw: any): WhatsAppLinkStats {
 export const hotelPortalService = {
   // ── Admin: Clients ─────────────────────────────────────────────────────
 
-  async getClientByUserId(userId: string): Promise<HotelClient | null> {
-    try {
-      const res = await api.get<any>(`/admin/hotel-portal/clients/by-user/${userId}`, adminHeaders);
-      const raw = res.data;
-      if (raw?.id) return raw as HotelClient;
-      if (raw?.data?.id) return raw.data as HotelClient;
-      return null;
-    } catch {
-      return null;
-    }
-  },
-
   async getClientForCurrentTenant(): Promise<HotelClient | null> {
     try {
       const res = await api.get<any>('/admin/hotel-portal/clients');

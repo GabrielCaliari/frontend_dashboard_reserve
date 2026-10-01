@@ -38,7 +38,7 @@ import { useTenantById } from "@/src/shared/hooks/access-management/useTenants";
 import { AdminRole } from "@/src/shared/domain/types/@access-management";
 import { toast } from "react-hot-toast";
 import {
-  useHotelClientByUserId,
+  useHotelClientForTenant,
   useHotelPortalOtaData,
   useHotelPortalReports,
   useInsertOtaData,
@@ -320,8 +320,8 @@ function ReportsSection({ clientId }: { clientId: string }) {
 
 // ── Hotel section (wrapper) ───────────────────────────────────────────────────
 
-function HotelSection({ managerAdminId }: { managerAdminId: string }) {
-  const { data: hotelClient, isLoading } = useHotelClientByUserId(managerAdminId);
+function HotelSection({ tenantId }: { tenantId: string }) {
+  const { data: hotelClient, isLoading } = useHotelClientForTenant(tenantId);
 
   if (isLoading) {
     return (
@@ -512,7 +512,7 @@ export default function TenantDetailPage() {
           <Tab title={<div className="flex items-center gap-2"><BarChart3 className="h-4 w-4" /><span>Portal RÉSERVE</span></div>}>
             <div className="pt-6">
               {managerAdmin ? (
-                <HotelSection managerAdminId={managerAdmin.admin_id} />
+                <HotelSection tenantId={tenantId} />
               ) : (
                 <Card className="border-border bg-default-50 shadow-none border-dashed rounded-3xl">
                   <CardBody className="flex flex-col items-center justify-center py-16 text-center">
