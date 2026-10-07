@@ -42,6 +42,11 @@ export interface UpdateClientDto {
   is_active?: boolean;
 }
 
+export interface WebhookSecretResponseDto {
+  /** Segredo do Canal C (x-webhook-secret do PMS). Mostrado UMA vez. */
+  webhook_secret: string;
+}
+
 export type InsertOtaDataDto = Record<string, unknown>;
 
 // ─── Operation types ────────────────────────────────────────────────────────
@@ -66,7 +71,7 @@ export type UpdateBody = UpdateClientDto;
 export type DeactivateResponse = unknown;
 
 /** POST /admin/hotel-portal/clients/{id}/webhook-secret — response */
-export type RegenerateWebhookSecretResponse = unknown;
+export type RegenerateWebhookSecretResponse = WebhookSecretResponseDto;
 
 /** POST /admin/hotel-portal/clients/{id}/ota-data — response */
 export type InsertOtaDataResponse = unknown;
