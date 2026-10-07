@@ -234,6 +234,15 @@ Já existe (cliques nos links rastreáveis). Cruzar com `contact.link_code` dos 
 
 O WF9a passa a chamar `POST /webhooks/booking/:clientId` para cada reserva detectada no PMS, com `engine: "hospedin"`, `status`, `channel: "direct" | "ota"`, `amount` em centavos, `checkIn`, `checkOut` e os hashes de contato que o contrato atual já define. As reservas do bot chegam com `channel: "direct"` e o `pms_reservation_id` também aparece no evento `reserva.confirmada`, o que permite ligar as duas fontes.
 
+| Hospedin | Canal C `status` |
+| --- | --- |
+| `reservation` nova | `confirmed` |
+| mudança de datas ou valor | `modified` |
+| cancelamento | `cancelled` |
+| `pre_reservation`, `blocked` | não enviar |
+
+`amount` em centavos; `channel` em `direct | ota:<nome> | other`. Reenvio da mesma reserva atualiza a linha (`external_id` único por tenant).
+
 ---
 
 ## 5. Canal B · webhook reverso (painel → bot)
