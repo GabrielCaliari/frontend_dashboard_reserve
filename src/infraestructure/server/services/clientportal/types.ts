@@ -129,10 +129,10 @@ export interface CreateBotConfigProposalDto {
   campo: string;
   /** Categoria (conjunto fechado: dados sim, comportamento nao). */
   categoria: 'pricing' | 'policies' | 'packages' | 'hours';
-  /** Valor atual (qualquer JSON). */
-  valor_atual?: Record<string, unknown> | null;
-  /** Valor proposto (qualquer JSON, obrigatorio). */
-  valor_proposto: Record<string, unknown>;
+  /** Valor atual (valor simples). */
+  valor_atual?: string | number | boolean | null;
+  /** Valor simples (centavos para *_cents e tarifa:*; minutos para hold_min_*; "C" para calendario:*). */
+  valor_proposto: string | number | boolean;
   /** Por que o cliente quer a mudanca. */
   justificativa?: string;
 }

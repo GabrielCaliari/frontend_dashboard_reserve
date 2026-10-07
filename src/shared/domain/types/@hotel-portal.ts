@@ -19,6 +19,7 @@ export interface ApiCredentialStatus {
 export interface HotelClient {
   id: string;
   user_id: string;
+  tenant_id?: string;
   hotel_name: string;
   logo_url?: string;
   country: string;
@@ -27,6 +28,8 @@ export interface HotelClient {
   target_direct_pct: number;
   contract_start: string;
   is_active: boolean;
+  /** O segredo nunca volta nas respostas; ver regenerateClientWebhookSecret. */
+  webhook_secret_set?: boolean;
   created_at: string;
   updated_at: string;
   user?: { id: string; email: string; name?: string };

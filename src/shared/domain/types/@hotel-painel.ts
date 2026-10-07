@@ -294,8 +294,8 @@ export interface BotConfigProposal {
   id: string;
   campo: string;
   categoria: BotConfigProposalCategory;
-  valor_atual: unknown;
-  valor_proposto: unknown;
+  valor_atual: string | number | boolean | null;
+  valor_proposto: string | number | boolean;
   status: BotConfigProposalStatus;
   justificativa: string | null;
   justificativa_cliente?: string | null;
@@ -306,8 +306,8 @@ export interface BotConfigProposal {
 export interface CreateBotConfigProposalDto {
   campo: string;
   categoria: BotConfigProposalCategory;
-  valor_atual?: unknown;
-  valor_proposto: unknown;
+  valor_atual?: string | number | boolean;
+  valor_proposto: string | number | boolean;
   justificativa?: string;
 }
 
@@ -452,3 +452,19 @@ export interface HotelHomeResponse {
     aRecuperar: { quantidade: number; valor: number };
   };
 }
+
+// ── Integracao do bot (admin/hotel-portal/:tenantId/bot-integration-config) ──
+
+export interface BotIntegrationConfig {
+  id: string;
+  tenant_id: string;
+  active: boolean;
+  bot_tenant_ref: string | null;
+  n8n_panel_webhook_url: string | null;
+  panel_webhook_secret_set: boolean;
+  last_heartbeat_at: string | null;
+  stuck_events: number;
+}
+
+/** Resposta de create/regenerate-key: a chave so e mostrada uma vez. */
+export type BotIntegrationConfigWithKey = BotIntegrationConfig & { tenant_key: string };

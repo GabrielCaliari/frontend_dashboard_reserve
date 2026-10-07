@@ -21,6 +21,9 @@
  */
 
 import api from '@/src/infraestructure/axios/api';
+import { isAxiosError } from 'axios';
+import adminbotintegrationconfigService from '@/src/infraestructure/server/services/adminbotintegrationconfig';
+import adminhotelclientService from '@/src/infraestructure/server/services/adminhotelclient';
 import type { HotelOverviewResponse } from '@/src/shared/domain/types/@hotel-portal-v1';
 import type {
   HotelClient,
@@ -70,6 +73,8 @@ import type {
 import type {
   ActivityLogPage,
   BotChannelsResponse,
+  BotIntegrationConfig,
+  BotIntegrationConfigWithKey,
   BotConfigProposal,
   ContentPost,
   ConversationDetailResponse,
@@ -815,5 +820,53 @@ export const hotelPortalService = {
       params: { from: period.from, to: period.to },
     });
     return res.data;
+  },
+
+  // ── Integracao do bot (superadmin) ────────────────────────────────────────
+
+  /** 404 = tenant ainda sem integracao configurada. */
+  async getBotIntegrationConfig(tenantId: string): Promise<BotIntegrationConfig | null> {
+    try {
+      return await adminbotintegrationconfigService.findOne(tenantId);
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 404) return null;
+      throw error;
+    }
+  },
+
+  async createBotIntegrationConfig(
+    tenantId: string,
+    data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string },
+  ): Promise<BotIntegrationConfigWithKey> {
+    return adminbotintegrationconfigService.create(tenantId, data);
+  },
+
+  async updateBotIntegrationConfig(
+    tenantId: string,
+    data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string },
+  ): Promise<BotIntegrationConfig> {
+    return adminbotintegrationconfigService.update(tenantId, data);
+  },
+
+  /** A chave nova so aparece nesta resposta. */
+  async regenerateBotTenantKey(tenantId: string): Promise<BotIntegrationConfigWithKey> {
+    return adminbotintegrationconfigService.regenerateKey(tenantId);
+  },
+
+  /** O segredo novo so aparece nesta resposta. */
+  async regenerateBotPanelSecret(tenantId: string): Promise<{ panel_webhook_secret: string }> {
+    return adminbotintegrationconfigService.regeneratePanelSecret(tenantId);
+  },
+
+  async setBotIntegrationActive(tenantId: string, active: boolean): Promise<BotIntegrationConfig> {
+    return active
+      ? adminbotintegrationconfigService.reactivate(tenantId)
+      : adminbotintegrationconfigService.deactivate(tenantId);
+  },
+
+  /** Segredo do webhook do canal C do cliente; so aparece nesta resposta. */
+  async regenerateClientWebhookSecret(clientId: string): Promise<{ webhook_secret: string }> {
+    // O contrato OpenAPI ainda nao documenta o corpo desta resposta (gerado como unknown).
+    return (await adminhotelclientService.regenerateWebhookSecret(clientId)) as { webhook_secret: string };
   },
 };

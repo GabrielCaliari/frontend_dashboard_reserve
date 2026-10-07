@@ -2,30 +2,84 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export type CreateBotIntegrationConfigDto = Record<string, unknown>;
+export interface CreateBotIntegrationConfigDto {
+  /** Identificador do tenant no bot (vai como tenant_id no Canal B). */
+  bot_tenant_ref?: string;
+  /** URL do WF6 (Canal B). Em producao: https publico. */
+  n8n_panel_webhook_url?: string;
+  /** Write-only. Segredo HMAC do Canal B (16-200). Prefira PATCH regenerate-panel-secret. */
+  panel_webhook_secret?: string;
+}
 
-export type UpdateBotIntegrationConfigDto = Record<string, unknown>;
+export interface BotIntegrationConfigWithKeyResponseDto {
+  id: string;
+  tenant_id: string;
+  active: boolean;
+  bot_tenant_ref: string | null;
+  n8n_panel_webhook_url: string | null;
+  /** Se o segredo do Canal B ja foi gravado. O valor nunca volta. */
+  panel_webhook_secret_set: boolean;
+  last_heartbeat_at: string | null;
+  /** Eventos do Canal A presos (FAILED/RECEIVED ha mais de 5 min). */
+  stuck_events: number;
+  created_at: string;
+  updated_at: string;
+  /** Chave do tenant para o Canal A. Mostrada UMA vez. */
+  tenant_key: string;
+}
+
+export interface BotIntegrationConfigResponseDto {
+  id: string;
+  tenant_id: string;
+  active: boolean;
+  bot_tenant_ref: string | null;
+  n8n_panel_webhook_url: string | null;
+  /** Se o segredo do Canal B ja foi gravado. O valor nunca volta. */
+  panel_webhook_secret_set: boolean;
+  last_heartbeat_at: string | null;
+  /** Eventos do Canal A presos (FAILED/RECEIVED ha mais de 5 min). */
+  stuck_events: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpdateBotIntegrationConfigDto {
+  /** Identificador do tenant no bot (vai como tenant_id no Canal B). */
+  bot_tenant_ref?: string;
+  /** URL do WF6 (Canal B). Em producao: https publico. */
+  n8n_panel_webhook_url?: string;
+  /** Write-only. Segredo HMAC do Canal B (16-200). Prefira PATCH regenerate-panel-secret. */
+  panel_webhook_secret?: string;
+}
+
+export interface PanelWebhookSecretResponseDto {
+  /** Segredo HMAC do Canal B. Mostrado UMA vez. */
+  panel_webhook_secret: string;
+}
 
 // ─── Operation types ────────────────────────────────────────────────────────
 
 /** POST /admin/hotel-portal/{tenantId}/bot-integration-config — response */
-export type CreateResponse = unknown;
+export type CreateResponse = BotIntegrationConfigWithKeyResponseDto;
 /** POST /admin/hotel-portal/{tenantId}/bot-integration-config — payload */
 export type CreateBody = CreateBotIntegrationConfigDto;
 
 /** GET /admin/hotel-portal/{tenantId}/bot-integration-config — response */
-export type FindOneResponse = unknown;
+export type FindOneResponse = BotIntegrationConfigResponseDto;
 
 /** PATCH /admin/hotel-portal/{tenantId}/bot-integration-config — response */
-export type UpdateResponse = unknown;
+export type UpdateResponse = BotIntegrationConfigResponseDto;
 /** PATCH /admin/hotel-portal/{tenantId}/bot-integration-config — payload */
 export type UpdateBody = UpdateBotIntegrationConfigDto;
 
 /** PATCH /admin/hotel-portal/{tenantId}/bot-integration-config/regenerate-key — response */
-export type RegenerateKeyResponse = unknown;
+export type RegenerateKeyResponse = BotIntegrationConfigWithKeyResponseDto;
+
+/** PATCH /admin/hotel-portal/{tenantId}/bot-integration-config/regenerate-panel-secret — response */
+export type RegeneratePanelSecretResponse = PanelWebhookSecretResponseDto;
 
 /** PATCH /admin/hotel-portal/{tenantId}/bot-integration-config/deactivate — response */
-export type DeactivateResponse = unknown;
+export type DeactivateResponse = BotIntegrationConfigResponseDto;
 
 /** PATCH /admin/hotel-portal/{tenantId}/bot-integration-config/reactivate — response */
-export type ReactivateResponse = unknown;
+export type ReactivateResponse = BotIntegrationConfigResponseDto;

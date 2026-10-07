@@ -9,7 +9,7 @@ export interface BotEventV2Dto {
   tenant_id?: string;
   /** Quando ocorreu (ISO 8601). */
   occurred_at: string;
-  /** Tipo do evento do contrato v2 (contato.criado, mensagem.recebida, funil.estagio_alterado, hold.criado, ...). */
+  /** Tipo do evento (contrato v2 §3.5: contato.iniciado, mensagem, transferencia, hold.criado, reserva.confirmada, perdido, followup.enviado, heartbeat, config.aplicada, ...). Tipos fora do catalogo (ex.: aviso.<tipo>, painel.erro_envio) sao aceitos: vao para o ledger e so o snapshot do contato e aplicado. */
   type: string;
   /** Quem gerou o evento (bot, humano). */
   actor?: Record<string, unknown> | null;

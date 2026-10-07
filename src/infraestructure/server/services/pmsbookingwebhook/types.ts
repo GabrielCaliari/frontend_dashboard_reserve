@@ -7,11 +7,11 @@ export interface PmsBookingWebhookDto {
   externalId: string;
   /** Motor/PMS de origem. */
   engine?: string;
-  /** Status da reserva no PMS. */
+  /** confirmed = reservation nova no Hospedin; modified = mudanca de datas ou valor; cancelled = cancelamento. pre_reservation e blocked NAO sao enviados. */
   status: 'confirmed' | 'modified' | 'cancelled';
-  /** Canal: direct ou ota:<booking|expedia|airbnb|tripadvisor>. */
+  /** direct | ota:<booking|expedia|airbnb|tripadvisor> | other */
   channel?: string;
-  /** Valor total em centavos. */
+  /** Valor total em centavos (inteiro). */
   amount?: number;
   /** Check-in (YYYY-MM-DD). */
   checkIn: string;

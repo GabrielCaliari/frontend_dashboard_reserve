@@ -2,9 +2,45 @@
 
 // ─── Shared schemas ─────────────────────────────────────────────────────────
 
-export type CreateClientDto = Record<string, unknown>;
+export interface CreateClientDto {
+  /** Tenant (hotel) ao qual o cliente pertence */
+  tenant_id: string;
+  /** E-mail do admin do hotel; cria o admin se ainda nao existir */
+  email: string;
+  /** Senha inicial (forte); gerada se omitida */
+  password?: string;
+  /** Nome do hotel */
+  hotel_name: string;
+  /** URL do logo */
+  logo_url?: string;
+  /** Pais do hotel */
+  country: string;
+  /** Motor de reservas; ROI nivel 3 exige diferente de manual */
+  booking_engine?: string;
+  /** Meta de ocupacao (0 a 1) */
+  target_occupancy?: number;
+  /** Meta de reservas diretas (0 a 1) */
+  target_direct_pct?: number;
+  /** Inicio do contrato (ISO 8601) */
+  contract_start: string;
+}
 
-export type UpdateClientDto = Record<string, unknown>;
+export interface UpdateClientDto {
+  /** Nome do hotel */
+  hotel_name?: string;
+  /** URL do logo */
+  logo_url?: string;
+  /** Pais do hotel */
+  country?: string;
+  /** Motor de reservas; ROI nivel 3 exige diferente de manual */
+  booking_engine?: string;
+  /** Meta de ocupacao (0 a 1) */
+  target_occupancy?: number;
+  /** Meta de reservas diretas (0 a 1) */
+  target_direct_pct?: number;
+  /** Cliente ativo */
+  is_active?: boolean;
+}
 
 export type InsertOtaDataDto = Record<string, unknown>;
 
@@ -28,6 +64,9 @@ export type UpdateBody = UpdateClientDto;
 
 /** DELETE /admin/hotel-portal/clients/{id} — response */
 export type DeactivateResponse = unknown;
+
+/** POST /admin/hotel-portal/clients/{id}/webhook-secret — response */
+export type RegenerateWebhookSecretResponse = unknown;
 
 /** POST /admin/hotel-portal/clients/{id}/ota-data — response */
 export type InsertOtaDataResponse = unknown;
