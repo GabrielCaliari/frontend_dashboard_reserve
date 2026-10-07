@@ -8,6 +8,25 @@ import {
   type BotConfigProposalCategory,
   type CreateBotConfigProposalDto,
 } from "@/src/shared/domain/types/@hotel-painel";
+import { formatBRL } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
+
+/** F3: chaves de preco sao em centavos no bot; a equipe digita reais. */
+export function isCentsKey(campo: string): boolean {
+  return campo.endsWith("_cents") || campo.startsWith("tarifa:");
+}
+
+export function reaisToCents(input: string): number | null {
+  const s = input.trim();
+  if (!s) return null;
+  const normalized = s.includes(",") ? s.replace(/\./g, "").replace(",", ".") : s;
+  if (!/^\d+(\.\d{1,2})?$/.test(normalized)) return null;
+  return Math.round(Number(normalized) * 100);
+}
+
+function toProposalValue(campo: string, raw: string): string | number {
+  if (isCentsKey(campo)) return reaisToCents(raw) ?? raw;
+  return /^-?\d+(\.\d+)?$/.test(raw.trim()) ? Number(raw.trim()) : raw;
+}
 
 /**
  * Nao existe rota que liste "campos configuraveis do bot" — o backend so
@@ -56,6 +75,8 @@ export function ProposalForm({
   const [valorAtual, setValorAtual] = useState("");
   const [valorProposto, setValorProposto] = useState("");
   const [justificativa, setJustificativa] = useState("");
+  const cents = isCentsKey(campo);
+  const centsValue = cents ? reaisToCents(valorProposto) : null;
 
   return (
     <form
@@ -65,8 +86,8 @@ export function ProposalForm({
         onSubmit({
           campo,
           categoria,
-          valor_atual: valorAtual || undefined,
-          valor_proposto: valorProposto,
+          valor_atual: valorAtual ? toProposalValue(campo, valorAtual) : undefined,
+          valor_proposto: toProposalValue(campo, valorProposto),
           justificativa: justificativa.trim() || undefined,
         });
         setCampo("");
@@ -114,14 +135,14 @@ export function ProposalForm({
           ))}
         </datalist>
         <p className="text-xs text-muted-foreground">
-          Para tarifa use <code>tarifa:&lt;tipo&gt;:&lt;A|B|C&gt;</code> (valor em centavos) e, para
+          Para tarifa use <code>tarifa:&lt;tipo&gt;:&lt;A|B|C&gt;</code> (digite em reais) e, para
           feriado, <code>calendario:AAAA-MM-DD</code>.
         </p>
       </div>
 
       <div className="space-y-1">
         <label className="block text-sm font-medium" htmlFor="proposal-atual">
-          Valor atual (opcional)
+          {cents ? "Valor atual (R$, opcional)" : "Valor atual (opcional)"}
         </label>
         <Input
           id="proposal-atual"
@@ -132,7 +153,7 @@ export function ProposalForm({
 
       <div className="space-y-1">
         <label className="block text-sm font-medium" htmlFor="proposal-novo">
-          Novo valor
+          {cents ? "Novo valor (R$)" : "Novo valor"}
         </label>
         <Input
           id="proposal-novo"
@@ -140,6 +161,12 @@ export function ProposalForm({
           onChange={(e) => setValorProposto(e.target.value)}
           required
         />
+        {cents && valorProposto.trim() !== "" &&
+          (centsValue !== null ? (
+            <p className="text-xs text-muted-foreground">{formatBRL(centsValue / 100)}</p>
+          ) : (
+            <p className="text-xs text-red-600">Valor inválido</p>
+          ))}
       </div>
 
       <div className="space-y-1">
@@ -161,7 +188,7 @@ export function ProposalForm({
       <Button
         type="submit"
         size="sm"
-        disabled={isSubmitting || !campo || !valorProposto}
+        disabled={isSubmitting || !campo || !valorProposto || (cents && centsValue === null)}
       >
         {isSubmitting ? "Enviando…" : "Enviar para aprovação"}
       </Button>
