@@ -165,7 +165,7 @@ export const hotelPortalService = {
   },
 
   async getClient(id: string): Promise<HotelClient> {
-    const res = await api.get<HotelClient>(`/admin/hotel-portal/clients/${id}`, adminHeaders);
+    const res = await api.get<HotelClient>(`/admin/hotel-portal/clients/${id}`);
     return res.data;
   },
 
@@ -175,12 +175,12 @@ export const hotelPortalService = {
   },
 
   async updateClient(id: string, data: UpdateHotelClientDto): Promise<HotelClient> {
-    const res = await api.patch<HotelClient>(`/admin/hotel-portal/clients/${id}`, data, adminHeaders);
+    const res = await api.patch<HotelClient>(`/admin/hotel-portal/clients/${id}`, data);
     return res.data;
   },
 
   async deleteClient(id: string): Promise<void> {
-    await api.delete(`/admin/hotel-portal/clients/${id}`, adminHeaders);
+    await api.delete(`/admin/hotel-portal/clients/${id}`);
   },
 
   // ── Admin: OTA Data ────────────────────────────────────────────────────
@@ -189,13 +189,12 @@ export const hotelPortalService = {
     const res = await api.post<OtaMonthlyData>(
       `/admin/hotel-portal/clients/${clientId}/ota-data`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
 
   async listOtaData(clientId: string): Promise<OtaMonthlyData[]> {
-    const res = await api.get<any>(`/admin/hotel-portal/clients/${clientId}/ota-data`, adminHeaders);
+    const res = await api.get<any>(`/admin/hotel-portal/clients/${clientId}/ota-data`);
     return toArray<OtaMonthlyData>(res.data);
   },
 
@@ -866,7 +865,6 @@ export const hotelPortalService = {
 
   /** Segredo do webhook do canal C do cliente; so aparece nesta resposta. */
   async regenerateClientWebhookSecret(clientId: string): Promise<{ webhook_secret: string }> {
-    // O contrato OpenAPI ainda nao documenta o corpo desta resposta (gerado como unknown).
-    return (await adminhotelclientService.regenerateWebhookSecret(clientId)) as { webhook_secret: string };
+    return adminhotelclientService.regenerateWebhookSecret(clientId);
   },
 };
