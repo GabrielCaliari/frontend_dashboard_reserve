@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 const h = vi.hoisted(() => ({
-  config: { data: null as unknown, isLoading: false },
+  config: { data: null as unknown, isLoading: false, isError: false },
   save: vi.fn(),
   regenKey: vi.fn(),
   regenPanel: vi.fn(),
@@ -41,7 +41,11 @@ function renderCard(webhookSecretSet = false) {
 describe("BotIntegrationCard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    h.config = { data: null, isLoading: false };
+    h.config = { data: null, isLoading: false, isError: false };
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("sem integração, cria e mostra a chave do tenant uma única vez", async () => {
@@ -110,5 +114,86 @@ describe("BotIntegrationCard", () => {
     await user.click(screen.getByRole("button", { name: "Já guardei" }));
     expect(screen.queryByText("segredo-c")).toBeNull();
     expect(container.textContent).not.toContain("segredo-c");
+  });
+
+  describe("confirmacoes ao rotacionar segredos em uso", () => {
+    it("Canal B com segredo configurado: cancelar nao gera", async () => {
+      h.config = { data: { ...base, panel_webhook_secret_set: true }, isLoading: false, isError: false };
+      const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+      const user = userEvent.setup();
+      renderCard();
+      await user.click(screen.getByRole("button", { name: "Gerar segredo do Canal B" }));
+      expect(confirm).toHaveBeenCalledWith(
+        "O bot para de aceitar as ações do painel até o WF6 ser atualizado com o novo segredo. Continuar?",
+      );
+      expect(h.regenPanel).not.toHaveBeenCalled();
+    });
+
+    it("Canal B com segredo configurado: confirmar gera", async () => {
+      h.config = { data: { ...base, panel_webhook_secret_set: true }, isLoading: false, isError: false };
+      vi.spyOn(window, "confirm").mockReturnValue(true);
+      h.regenPanel.mockResolvedValue({ panel_webhook_secret: "novo-b" });
+      const user = userEvent.setup();
+      renderCard();
+      await user.click(screen.getByRole("button", { name: "Gerar segredo do Canal B" }));
+      expect(await screen.findByText("novo-b")).toBeTruthy();
+    });
+
+    it("Canal B ainda sem segredo: gera sem perguntar", async () => {
+      h.config = { data: base, isLoading: false, isError: false };
+      const confirm = vi.spyOn(window, "confirm");
+      h.regenPanel.mockResolvedValue({ panel_webhook_secret: "primeiro-b" });
+      const user = userEvent.setup();
+      renderCard();
+      await user.click(screen.getByRole("button", { name: "Gerar segredo do Canal B" }));
+      expect(await screen.findByText("primeiro-b")).toBeTruthy();
+      expect(confirm).not.toHaveBeenCalled();
+    });
+
+    it("Canal C com segredo configurado: cancelar nao gera, confirmar gera", async () => {
+      h.config = { data: base, isLoading: false, isError: false };
+      const confirm = vi.spyOn(window, "confirm").mockReturnValueOnce(false).mockReturnValueOnce(true);
+      h.regenClient.mockResolvedValue({ webhook_secret: "novo-c" });
+      const user = userEvent.setup();
+      renderCard(true);
+      await user.click(screen.getByRole("button", { name: "Gerar segredo do Canal C" }));
+      expect(confirm).toHaveBeenCalledWith(
+        "As reservas do PMS passam a ser recusadas até o WF9a ser atualizado com o novo segredo. Continuar?",
+      );
+      expect(h.regenClient).not.toHaveBeenCalled();
+      await user.click(screen.getByRole("button", { name: "Gerar segredo do Canal C" }));
+      expect(await screen.findByText("novo-c")).toBeTruthy();
+    });
+
+    it("Canal C ainda sem segredo: gera sem perguntar", async () => {
+      h.config = { data: base, isLoading: false, isError: false };
+      const confirm = vi.spyOn(window, "confirm");
+      h.regenClient.mockResolvedValue({ webhook_secret: "primeiro-c" });
+      const user = userEvent.setup();
+      renderCard(false);
+      await user.click(screen.getByRole("button", { name: "Gerar segredo do Canal C" }));
+      expect(await screen.findByText("primeiro-c")).toBeTruthy();
+      expect(confirm).not.toHaveBeenCalled();
+    });
+  });
+
+  it("erro ao carregar a integração não oferece Criar integração", () => {
+    h.config = { data: undefined, isLoading: false, isError: true };
+    renderCard();
+    expect(screen.getByText("Não foi possível carregar a integração do bot.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Criar integração" })).toBeNull();
+  });
+
+  it("na atualização, campo apagado vai como string vazia", async () => {
+    h.config = { data: base, isLoading: false, isError: false };
+    h.save.mockResolvedValue(base);
+    const user = userEvent.setup();
+    renderCard();
+    await user.clear(screen.getByLabelText("URL do WF6"));
+    await user.click(screen.getByRole("button", { name: "Salvar" }));
+    expect(h.save).toHaveBeenCalledWith({
+      exists: true,
+      data: { bot_tenant_ref: "cli_dona_tereza", n8n_panel_webhook_url: "" },
+    });
   });
 });

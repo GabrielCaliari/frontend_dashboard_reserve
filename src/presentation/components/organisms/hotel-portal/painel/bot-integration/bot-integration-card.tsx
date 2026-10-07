@@ -22,7 +22,7 @@ interface Props {
 }
 
 export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = false }: Props) {
-  const { data: config } = useBotIntegrationConfig(tenantId);
+  const { data: config, isError } = useBotIntegrationConfig(tenantId);
   const save = useSaveBotIntegration(tenantId);
   const regenKey = useRegenerateBotTenantKey(tenantId);
   const regenPanel = useRegenerateBotPanelSecret(tenantId);
@@ -37,9 +37,6 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
     setBotRef(config?.bot_tenant_ref ?? "");
     setUrl(config?.n8n_panel_webhook_url ?? "");
   }, [config?.bot_tenant_ref, config?.n8n_panel_webhook_url]);
-
-  // O segredo nunca fica alem desta tela: sai do estado ao desmontar.
-  useEffect(() => () => setRevealed(null), []);
 
   const exists = !!config;
   const busy =
@@ -60,8 +57,9 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
         save.mutateAsync({
           exists,
           data: {
-            bot_tenant_ref: botRef.trim() || undefined,
-            n8n_panel_webhook_url: url.trim() || undefined,
+            // Na atualizacao, campo apagado vai como '' (o backend grava null); na criacao, omitido.
+            bot_tenant_ref: exists ? botRef.trim() : botRef.trim() || undefined,
+            n8n_panel_webhook_url: exists ? url.trim() : url.trim() || undefined,
           },
         }),
       (r) => {
@@ -85,6 +83,12 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
   }
 
   function handleRegenPanel() {
+    if (
+      config?.panel_webhook_secret_set &&
+      !window.confirm("O bot para de aceitar as ações do painel até o WF6 ser atualizado com o novo segredo. Continuar?")
+    ) {
+      return;
+    }
     void run(
       () => regenPanel.mutateAsync(),
       (r) => setRevealed({ label: "Segredo do Canal B", value: r.panel_webhook_secret }),
@@ -93,6 +97,12 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
   }
 
   function handleRegenClient() {
+    if (
+      webhookSecretSet &&
+      !window.confirm("As reservas do PMS passam a ser recusadas até o WF9a ser atualizado com o novo segredo. Continuar?")
+    ) {
+      return;
+    }
     void run(
       () => regenClient.mutateAsync(),
       (r) => setRevealed({ label: "Segredo do Canal C", value: r.webhook_secret }),
@@ -106,6 +116,21 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
       () => setActive.mutateAsync(!config.active),
       () => toast.success(config.active ? "Integração desativada." : "Integração ativada."),
       "Erro ao alterar o status da integração.",
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="rounded-3xl shadow-none">
+        <CardHeader>
+          <CardTitle>Assistente de WhatsApp</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p role="alert" className="text-sm text-destructive">
+            Não foi possível carregar a integração do bot.
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 

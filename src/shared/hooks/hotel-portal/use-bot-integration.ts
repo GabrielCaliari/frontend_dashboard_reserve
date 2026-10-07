@@ -26,6 +26,8 @@ export interface SaveBotIntegrationInput {
 export function useSaveBotIntegration(tenantId: string | null) {
   const qc = useQueryClient();
   return useMutation({
+    // O resultado carrega um segredo exibido uma unica vez: nao fica no MutationCache.
+    gcTime: 0,
     mutationFn: ({ exists, data }: SaveBotIntegrationInput) =>
       exists
         ? hotelPortalService.updateBotIntegrationConfig(tenantId!, data)
@@ -37,6 +39,8 @@ export function useSaveBotIntegration(tenantId: string | null) {
 export function useRegenerateBotTenantKey(tenantId: string | null) {
   const qc = useQueryClient();
   return useMutation({
+    // O resultado carrega um segredo exibido uma unica vez: nao fica no MutationCache.
+    gcTime: 0,
     mutationFn: () => hotelPortalService.regenerateBotTenantKey(tenantId!),
     onSuccess: () => qc.invalidateQueries({ queryKey: key(tenantId) }),
   });
@@ -45,6 +49,8 @@ export function useRegenerateBotTenantKey(tenantId: string | null) {
 export function useRegenerateBotPanelSecret(tenantId: string | null) {
   const qc = useQueryClient();
   return useMutation({
+    // O resultado carrega um segredo exibido uma unica vez: nao fica no MutationCache.
+    gcTime: 0,
     mutationFn: () => hotelPortalService.regenerateBotPanelSecret(tenantId!),
     onSuccess: () => qc.invalidateQueries({ queryKey: key(tenantId) }),
   });
@@ -62,6 +68,8 @@ export function useSetBotIntegrationActive(tenantId: string | null) {
 export function useRegenerateClientWebhookSecret(clientId: string, tenantId: string | null = null) {
   const qc = useQueryClient();
   return useMutation({
+    // O resultado carrega um segredo exibido uma unica vez: nao fica no MutationCache.
+    gcTime: 0,
     mutationFn: () => hotelPortalService.regenerateClientWebhookSecret(clientId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: key(tenantId) });
