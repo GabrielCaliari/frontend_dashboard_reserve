@@ -22,6 +22,13 @@ import type {
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
+/**
+ * F1 (auditoria 06/10): o bot manda eventos a cada minuto pelo Canal A, entao
+ * inbox, conversa, funil e canais se atualizam sozinhos. Com a aba escondida
+ * o React Query ja nao refaz a busca (refetchIntervalInBackground = false).
+ */
+export const LIVE_REFETCH = { conversations: 30_000, funnel: 60_000, channels: 60_000 } as const;
+
 export function useHotelLeadsOverview(clientId: string | null, period: Period) {
   return useQuery({
     queryKey: ['hotel-portal', 'leads-overview', clientId, period.from, period.to],
@@ -59,6 +66,7 @@ export function useHotelBotChannels(clientId: string | null) {
     enabled: !!clientId,
     retry: false,
     staleTime: 1000 * 60,
+    refetchInterval: LIVE_REFETCH.channels,
   });
 }
 
@@ -72,6 +80,7 @@ export function useHotelConversations(
     enabled: !!clientId,
     retry: false,
     staleTime: 1000 * 60,
+    refetchInterval: LIVE_REFETCH.conversations,
   });
 }
 
@@ -85,16 +94,23 @@ export function useHotelConversationDetail(
       hotelPortalService.getConversationDetail(clientId!, numeroContato!),
     enabled: !!clientId && !!numeroContato,
     retry: false,
+    refetchInterval: LIVE_REFETCH.conversations,
   });
 }
 
-export function useHotelFunnelBoard(clientId: string | null) {
+export function useHotelFunnelBoard(
+  clientId: string | null,
+  options: { paused?: boolean } = {},
+) {
   return useQuery({
     queryKey: ['hotel-portal', 'funnel-board', clientId],
     queryFn: () => hotelPortalService.getFunnelBoard(clientId!),
     enabled: !!clientId,
     retry: false,
     staleTime: 1000 * 60,
+    // pausado durante o arrastar e enquanto o movimento otimista esta em voo,
+    // para a busca nao desfazer o card
+    refetchInterval: options.paused ? false : LIVE_REFETCH.funnel,
   });
 }
 

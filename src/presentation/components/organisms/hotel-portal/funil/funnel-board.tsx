@@ -79,9 +79,11 @@ interface FunnelBoardProps {
   canManage: boolean;
   onMove: (numeroContato: string, dto: FunnelStageChangeDto) => Promise<void>;
   onExtendHold?: (lead: FunnelBoardLead) => void;
+  /** Avisa a pagina quando o arrastar comeca/termina, para pausar a atualizacao automatica. */
+  onDraggingChange?: (dragging: boolean) => void;
 }
 
-export function FunnelBoard({ columns, canManage, onMove, onExtendHold }: FunnelBoardProps) {
+export function FunnelBoard({ columns, canManage, onMove, onExtendHold, onDraggingChange }: FunnelBoardProps) {
   const [pending, setPending] = useState<PendingMove | null>(null);
 
   function requestMove(lead: FunnelBoardLead, _deEstagio: FunnelStage, paraEstagio: FunnelStage) {
@@ -120,7 +122,16 @@ export function FunnelBoard({ columns, canManage, onMove, onExtendHold }: Funnel
   return (
     <>
       {canManage ? (
-        <DndContext onDragEnd={handleDragEnd}>{board}</DndContext>
+        <DndContext
+          onDragStart={() => onDraggingChange?.(true)}
+          onDragCancel={() => onDraggingChange?.(false)}
+          onDragEnd={(e) => {
+            onDraggingChange?.(false);
+            handleDragEnd(e);
+          }}
+        >
+          {board}
+        </DndContext>
       ) : (
         board
       )}

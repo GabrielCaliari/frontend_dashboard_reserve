@@ -55,10 +55,12 @@ export default function HotelFunilPage() {
   const [preset] = useState<"current-month">("current-month");
   const period = useMemo(() => resolvePreset(preset), [preset]);
 
-  const { data: board, isLoading: boardLoading, isError } =
-    useHotelFunnelBoard(clientId);
-  const { data: metrics } = useHotelFunnelMetrics(clientId, period);
+  const [dragging, setDragging] = useState(false);
   const moveStage = useMoveFunnelStage(tenantId, clientId);
+  // pausa a atualizacao automatica durante o arrastar e o movimento em voo
+  const { data: board, isLoading: boardLoading, isError } =
+    useHotelFunnelBoard(clientId, { paused: dragging || moveStage.isPending });
+  const { data: metrics } = useHotelFunnelMetrics(clientId, period);
   const extendHold = useExtendHold(tenantId, clientId);
 
   const handleMove = async (numeroContato: string, dto: FunnelStageChangeDto) => {
@@ -121,6 +123,7 @@ export default function HotelFunilPage() {
             canManage={canManage}
             onMove={handleMove}
             onExtendHold={canManage ? handleExtendHold : undefined}
+            onDraggingChange={setDragging}
           />
         ) : (
           <PortalCardSkeleton />
