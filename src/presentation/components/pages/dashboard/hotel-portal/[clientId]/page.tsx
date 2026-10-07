@@ -112,6 +112,7 @@ import {
   Bar,
 } from "recharts";
 import toast from "react-hot-toast";
+import { BotIntegrationCard } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-integration/bot-integration-card";
 import { EmptyState } from "@/src/presentation/components/organisms/hotel-portal/ui";
 import type {
   MonthlyReport,
@@ -880,6 +881,7 @@ function ConfigTab({ clientId }: { clientId: string }) {
   }
 
   return (
+    <div className="space-y-6">
     <form onSubmit={handleSave} className="space-y-6">
       <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
         <CardBody className="p-6 sm:p-8 space-y-5">
@@ -947,6 +949,16 @@ function ConfigTab({ clientId }: { clientId: string }) {
         </Card>
       )}
     </form>
+    {client?.tenant_id ? (
+      <BotIntegrationCard
+        tenantId={client.tenant_id}
+        clientId={clientId}
+        webhookSecretSet={client.webhook_secret_set ?? false}
+      />
+    ) : (
+      <p className="text-sm text-muted-foreground">Este cliente não tem tenant vinculado.</p>
+    )}
+    </div>
   );
 }
 
