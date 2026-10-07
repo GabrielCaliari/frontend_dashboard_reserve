@@ -28,6 +28,16 @@ function toProposalValue(campo: string, raw: string): string | number {
   return /^-?\d+(\.\d+)?$/.test(raw.trim()) ? Number(raw.trim()) : raw;
 }
 
+/** Valor atual e so informativo: em chave de centavos que nao interpreta como reais, e descartado. */
+function toValorAtual(campo: string, raw: string): string | number | undefined {
+  if (!raw.trim()) return undefined;
+  if (isCentsKey(campo)) {
+    const cents = reaisToCents(raw);
+    return cents === null ? undefined : cents;
+  }
+  return toProposalValue(campo, raw);
+}
+
 /**
  * Nao existe rota que liste "campos configuraveis do bot" — o backend so
  * aceita a proposta (`POST .../bot-config-proposals`) com campo livre dentro
@@ -86,7 +96,7 @@ export function ProposalForm({
         onSubmit({
           campo,
           categoria,
-          valor_atual: valorAtual ? toProposalValue(campo, valorAtual) : undefined,
+          valor_atual: toValorAtual(campo, valorAtual),
           valor_proposto: toProposalValue(campo, valorProposto),
           justificativa: justificativa.trim() || undefined,
         });

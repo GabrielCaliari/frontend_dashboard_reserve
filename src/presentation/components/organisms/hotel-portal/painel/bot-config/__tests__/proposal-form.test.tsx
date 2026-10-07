@@ -54,4 +54,24 @@ describe("F3 · valores em reais", () => {
     await userEvent.click(screen.getByRole("button", { name: /Enviar para aprovação/ }));
     expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ valor_proposto: 30 }));
   });
+
+  it("valor atual que nao e reais valido e descartado em chaves de centavos", async () => {
+    const onSubmit = vi.fn();
+    render(<ProposalForm onSubmit={onSubmit} isSubmitting={false} />);
+    await userEvent.type(screen.getByLabelText("O que muda"), "valor_taxa_pet_cents");
+    await userEvent.type(screen.getByLabelText(/Valor atual/), "1.339");
+    await userEvent.type(screen.getByLabelText(/Novo valor/), "50");
+    await userEvent.click(screen.getByRole("button", { name: /Enviar para aprovação/ }));
+    expect(onSubmit.mock.calls[0][0].valor_atual).toBeUndefined();
+    expect(onSubmit.mock.calls[0][0].valor_proposto).toBe(5000);
+  });
+  it("valor atual valido em reais vira centavos", async () => {
+    const onSubmit = vi.fn();
+    render(<ProposalForm onSubmit={onSubmit} isSubmitting={false} />);
+    await userEvent.type(screen.getByLabelText("O que muda"), "valor_taxa_pet_cents");
+    await userEvent.type(screen.getByLabelText(/Valor atual/), "30");
+    await userEvent.type(screen.getByLabelText(/Novo valor/), "50");
+    await userEvent.click(screen.getByRole("button", { name: /Enviar para aprovação/ }));
+    expect(onSubmit.mock.calls[0][0].valor_atual).toBe(3000);
+  });
 });
