@@ -168,6 +168,11 @@ export interface PanelActionResult {
   state: string | null;
 }
 
+/** Aprovar proposta: `pendente_no_bot` = aprovada, mas o bot ainda nao aplica a chave (tarifa/calendario). */
+export interface ApproveBotConfigProposalResult extends PanelActionResult {
+  pendente_no_bot: boolean;
+}
+
 export interface ConversationListItem {
   numeroContato: string;
   nome: string | null;

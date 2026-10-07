@@ -87,6 +87,7 @@ import type {
   FunnelStage,
   FunnelStageChangeDto,
   PanelActionResult,
+  ApproveBotConfigProposalResult,
   HotelHomeResponse,
   InstagramOverviewResponse,
   LeadsOverviewResponse,
@@ -629,14 +630,14 @@ export const hotelPortalService = {
   async approveBotConfigProposal(
     tenantId: string,
     id: string,
-  ): Promise<BotConfigProposal & PanelActionResult> {
+  ): Promise<BotConfigProposal & ApproveBotConfigProposalResult> {
     const res = await api.patch(
       `/admin/hotel-portal/${tenantId}/bot-config-proposals/${id}/approve`,
       {},
       adminHeaders,
     );
     const data = res.data?.data ?? res.data;
-    return { ...data, ...toPanelActionResult(data) };
+    return { ...data, ...toPanelActionResult(data), pendente_no_bot: data?.pendente_no_bot === true };
   },
 
   async rejectBotConfigProposal(

@@ -31,4 +31,11 @@ describe("acoes humanas repassadas ao bot (ok:false em 2xx)", () => {
     const r = await hotelPortalService.approveBotConfigProposal("t1", "p1");
     expect(r).toMatchObject({ id: "p1", status: "APROVADA", ok: false });
   });
+
+  it("aprovar proposta repassa pendente_no_bot (padrao false)", async () => {
+    apiMock.patch.mockResolvedValueOnce({ data: { id: "p1", ok: true, pendente_no_bot: true } });
+    expect((await hotelPortalService.approveBotConfigProposal("t1", "p1")).pendente_no_bot).toBe(true);
+    apiMock.patch.mockResolvedValueOnce({ data: { id: "p1", ok: true } });
+    expect((await hotelPortalService.approveBotConfigProposal("t1", "p1")).pendente_no_bot).toBe(false);
+  });
 });

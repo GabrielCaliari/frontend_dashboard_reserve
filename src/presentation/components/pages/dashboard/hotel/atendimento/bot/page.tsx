@@ -14,13 +14,18 @@ import {
   PainelPageShell,
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
-import { ProposalForm } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-config/proposal-form";
+import { ProposalForm, isCentsKey } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-config/proposal-form";
 import { ProposalReview } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-config/proposal-review";
 import { ProposalStatusBadge } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-config/proposal-status-badge";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
+import { formatBRL } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 
-function renderValor(valor: unknown): string {
+function renderValor(valor: unknown, campo?: string): string {
+  if (campo && isCentsKey(campo)) {
+    const n = typeof valor === "number" ? valor : typeof valor === "string" && valor.trim() !== "" ? Number(valor) : NaN;
+    if (Number.isFinite(n)) return formatBRL(n / 100);
+  }
   if (valor == null) return "—";
   if (typeof valor === "string") return valor;
   return JSON.stringify(valor);
@@ -76,9 +81,9 @@ export default function HotelBotConfigPage() {
                   <ProposalStatusBadge status={proposal.status} />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {renderValor(proposal.valor_atual)} →{" "}
+                  {renderValor(proposal.valor_atual, proposal.campo)} →{" "}
                   <span className="font-medium text-foreground">
-                    {renderValor(proposal.valor_proposto)}
+                    {renderValor(proposal.valor_proposto, proposal.campo)}
                   </span>
                 </p>
                 {proposal.justificativa_cliente && (
@@ -96,7 +101,16 @@ export default function HotelBotConfigPage() {
                     isBusy={approve.isPending || reject.isPending}
                     onApprove={() =>
                       approve.mutate(proposal.id, {
-                        onSuccess: (result) => notifyBotAction(result, "Proposta aprovada e enviada ao bot."),
+                        onSuccess: (result) => {
+                          if (result?.ok !== false && result?.pendente_no_bot) {
+                            toast("Aprovada — aplicação no bot pendente (o bot ainda não aplica tarifa/calendário).", {
+                              icon: "⚠️",
+                              duration: 6000,
+                            });
+                            return;
+                          }
+                          notifyBotAction(result, "Proposta aprovada e enviada ao bot.");
+                        },
                         onError: () => toast.error("Não foi possível aprovar a proposta."),
                       })
                     }
