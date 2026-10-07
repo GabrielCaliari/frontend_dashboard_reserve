@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 const h = vi.hoisted(() => ({
-  config: { data: null as unknown, isLoading: false, isError: false },
+  config: { data: null as unknown, isLoading: false, isError: false } as { data: unknown; isLoading: boolean; isError?: boolean },
   save: vi.fn(),
   regenKey: vi.fn(),
   regenPanel: vi.fn(),
