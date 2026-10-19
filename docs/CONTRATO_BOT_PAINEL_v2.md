@@ -165,6 +165,10 @@ Regras de leitura:
 | `audio.transcrito` | null | `duracao_s` | Alimenta `audiosTranscritos` |
 | `mensagem` | null | `role: user | assistant | human`, `kind: texto | audio | imagem | botoes | template | sistema`, `content_preview` (até 180 caracteres) | Uma por mensagem trocada. `actor.type` = `guest` quando `role = user` |
 | `heartbeat` | null | `bot_enabled`, `mode`, `ai_enabled`, `last_echo_at`, `last_polling_at`, `active_conversations`, `paused_awaiting_human`, `channel` | A cada minuto. `contact` é `null` |
+| `bot.erro` | null | `categoria: tecnico | conversa`, `codigo`, `gravidade: alta | media | baixa`, `workflow`, `no`, `etapa`, `mensagem`, `mensagem_hospede`, `resposta_bot`, `ultimas_mensagens`, `socorro`, `url` | v29. Vira linha em "Erros do bot"; não muda o estado do contato |
+| `bot.socorro` | null | `motivo`, `codigo_erro`, `workflow`, `no`, `estado_anterior`, `codigo_atendimento` | v29. Bot pausou e passou a conversa para a equipe: contato `PAUSADO`, card com etiqueta **SOCORRO** |
+
+**Regra do `bot.socorro`:** depois de um `bot.socorro`, o bot deve mandar `contact.bot_status: "PAUSADO"` em todos os eventos daquele contato até a conversa ser retomada (pela equipe, pelo painel ou por um timer). O painel só libera a pausa e tira a etiqueta SOCORRO com um snapshot `ATIVO` de instante **estritamente posterior** ao do socorro ou com a retomada pelo painel (`resume`). Um `ATIVO` no mesmo instante, por exemplo outro evento do mesmo lote, é ignorado para `status_bot`.
 
 ---
 
