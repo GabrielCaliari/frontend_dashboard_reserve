@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   DndContext,
   useDraggable,
@@ -16,7 +17,7 @@ import {
   DropdownSection,
   DropdownTrigger,
 } from "@heroui/react";
-import { BedDouble, Bot, CalendarRange, Clock, MoreVertical, UserRound } from "lucide-react";
+import { BedDouble, Bot, CalendarRange, Clock, LifeBuoy, MoreVertical, UserRound } from "lucide-react";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import {
   AUDIENCE_LABELS,
@@ -233,10 +234,12 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
     id: dragId(column.stage, lead.numeroContato),
   });
 
+  const emSocorro = lead.etiqueta === "SOCORRO";
   const destinos = FUNNEL_STAGES.filter((s) => s.stage !== column.stage);
 
   return (
     <Card
+      data-testid={emSocorro ? "card-socorro" : undefined}
       ref={canManage ? setNodeRef : undefined}
       {...(canManage ? attributes : {})}
       {...(canManage ? listeners : {})}
@@ -244,6 +247,8 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
       // arrasto; sem ele o drop funciona mas o card parece fixo.
       style={canManage ? { transform: CSS.Translate.toString(transform) } : undefined}
       className={`flex items-start justify-between gap-2 rounded-2xl bg-background p-3 text-sm transition-colors hover:border-primary/40 ${
+        emSocorro ? "border-danger ring-1 ring-danger/40" : ""
+      } ${
         canManage ? "cursor-grab touch-none active:cursor-grabbing" : ""
       } ${isDragging ? "relative z-50 opacity-90 shadow-none ring-1 ring-primary/50" : ""}`}
     >
@@ -297,7 +302,8 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
               </span>
             )}
             {lead.etiqueta && (
-              <span className="mt-1 inline-block rounded-full bg-danger/10 px-2 py-0.5 text-xs font-medium text-danger">
+              <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-danger/10 px-2 py-0.5 text-xs font-medium text-danger">
+                {emSocorro && <LifeBuoy aria-hidden className="h-3 w-3" />}
                 {TAG_LABELS[lead.etiqueta]}
               </span>
             )}
@@ -311,6 +317,16 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
               </span>
             )}
           </span>
+          {emSocorro && (
+            <Link
+              href={`/dashboard/hotel/atendimento/${lead.numeroContato}`}
+              // Impede que o clique no atalho inicie o arrasto do card.
+              onPointerDown={(e) => e.stopPropagation()}
+              className="mt-1 inline-block text-xs font-medium text-danger underline underline-offset-2"
+            >
+              Abrir conversa
+            </Link>
+          )}
         </div>
       </div>
 

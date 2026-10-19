@@ -158,6 +158,29 @@ describe("FunnelBoard (contrato v2)", () => {
   });
 });
 
+describe("FunnelBoard (socorro)", () => {
+  const socorro: FunnelBoardColumn[] = [
+    { ...columns[0], leads: [{ ...lead, etiqueta: "SOCORRO" as const, socorroEm: new Date().toISOString() }] },
+    ...columns.slice(1),
+  ];
+
+  it("card com socorro mostra selo e link para a conversa", () => {
+    render(<FunnelBoard columns={socorro} canManage onMove={vi.fn()} />);
+    expect(screen.getByText("Socorro")).toBeInTheDocument();
+    // o card draggable tem role=button (dnd-kit), entao o link nao aparece por role
+    const link = screen.getByText("Abrir conversa").closest("a");
+    expect(link).not.toBeNull();
+    expect(link).toHaveAttribute("href", "/dashboard/hotel/atendimento/+5511999");
+    expect(screen.getByTestId("card-socorro")).toBeInTheDocument();
+  });
+
+  it("card RECUPERAR nao tem link nem destaque de socorro", () => {
+    render(<FunnelBoard columns={columns} canManage onMove={vi.fn()} />);
+    expect(screen.queryByText("Abrir conversa")).toBeNull();
+    expect(screen.queryByTestId("card-socorro")).toBeNull();
+  });
+});
+
 describe("resolveDrop", () => {
   const evt = (activeId: string | null, overId: string | null) =>
     ({ active: activeId ? { id: activeId } : null, over: overId ? { id: overId } : null }) as unknown as DragEndEvent;
