@@ -215,6 +215,9 @@ export interface ConversationDetailResponse {
     whatsappWebLink: string;
     /** romantica | familia | grupo | descanso */
     ocasiao?: string | null;
+    /** anuncio | organico */
+    origem?: string | null;
+    sourceId?: string | null;
     hold?: HoldResumo | null;
   };
   messages: ConversationMessage[];

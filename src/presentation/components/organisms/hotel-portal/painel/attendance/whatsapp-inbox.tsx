@@ -23,7 +23,7 @@ import {
   usePauseConversation,
   useResumeConversation,
 } from "@/src/shared/hooks/hotel-portal";
-import { ConversationTranscript } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
+import { ConversationTranscript, originLabel } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
 import {
   HOLD_STATUS_LABELS,
@@ -34,6 +34,7 @@ import {
   isWithHuman,
 } from "@/src/presentation/components/organisms/hotel-portal/funil/bot-status";
 import {
+  AUDIENCE_LABELS,
   FUNNEL_STAGES,
   formatBRL,
   STAGE_TONES,
@@ -41,6 +42,7 @@ import {
   stageLabel,
 } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import type {
+  BotContactAudience,
   ConversationListItem,
   FunnelStage,
 } from "@/src/shared/domain/types/@hotel-painel";
@@ -106,6 +108,11 @@ function ContactRow({
           <span className={`rounded-full px-1.5 py-px text-[10px] font-medium ${STAGE_TONES[conv.currentStage]}`}>
             {stageLabel(conv.currentStage)}
           </span>
+          {originLabel(conv.origem) ? (
+            <span className="rounded-full bg-default-100 px-1.5 py-px text-[10px] font-medium text-foreground/70">
+              {originLabel(conv.origem)}
+            </span>
+          ) : null}
           {isWithHuman(conv.statusBot) ? (
             <UserRound aria-label="Com humano" className="h-3.5 w-3.5 text-warning-600" />
           ) : (
@@ -133,6 +140,7 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
   const [busca, setBusca] = useState("");
   const [buscaAplicada, setBuscaAplicada] = useState("");
   const [etiqueta, setEtiqueta] = useState<Etiqueta>("todas");
+  const [publico, setPublico] = useState<BotContactAudience | "">("");
   const [selecionado, setSelecionado] = useState<string | null>(null);
   const [retomadaAberta, setRetomadaAberta] = useState(false);
   const [estagioRetomada, setEstagioRetomada] = useState<FunnelStage | null>(null);
@@ -154,8 +162,14 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
   const { data: conversations, isLoading } = useHotelConversations(clientId, {
     search: buscaAplicada || undefined,
     stage: stageFilter,
+    audience: publico || undefined,
   });
-  const { data: detailPages, isLoading: detailLoading } = useHotelConversationDetail(
+  const {
+    data: detailPages,
+    isLoading: detailLoading,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useHotelConversationDetail(
     clientId,
     selecionado,
   );
@@ -194,6 +208,19 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
               onChange={(e) => setBusca(e.target.value)}
             />
           </div>
+          <select
+            aria-label="Filtrar por público"
+            className="w-full rounded-xl bg-default-100 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            value={publico}
+            onChange={(e) => setPublico(e.target.value as BotContactAudience | "")}
+          >
+            <option value="">Todos os públicos</option>
+            {(Object.entries(AUDIENCE_LABELS) as [BotContactAudience, string][]).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
           <div className="flex gap-1.5 overflow-x-auto pb-1">
             {etiquetas.map((e) => (
               <button
@@ -280,6 +307,14 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
                   <span className={`rounded-full px-1.5 py-px text-[10px] font-medium ${botStatusTone(contato.statusBot)}`}>
                     {botStatusLabel(contato.statusBot)}
                   </span>
+                  {originLabel(contato.origem) ? (
+                    <span data-testid="conversa-origem" className="text-foreground/70">
+                      {originLabel(contato.origem)}
+                      {contato.origem === "anuncio" && contato.sourceId ? (
+                        <span className="ml-1 text-foreground/50">{contato.sourceId}</span>
+                      ) : null}
+                    </span>
+                  ) : null}
                 </p>
                 {contato.ocasiao || contato.hold ? (
                   <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-foreground/70">
@@ -334,7 +369,13 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
               </a>
             </header>
             <div className="flex-1 overflow-y-auto bg-default-100/30 p-4">
-              <ConversationTranscript messages={detail.messages} />
+              <ConversationTranscript
+                key={selecionado}
+                messages={detail.messages}
+                hasMore={detail.hasMore}
+                isLoadingMore={isFetchingNextPage}
+                onLoadMore={() => fetchNextPage()}
+              />
             </div>
             <footer className="border-t border-border bg-default-50 px-4 py-2.5 text-center text-xs text-foreground/50">
               Somente leitura — a equipe responde pelo WhatsApp Business da pousada.

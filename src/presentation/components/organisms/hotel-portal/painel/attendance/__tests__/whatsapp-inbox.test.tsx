@@ -7,6 +7,8 @@ import type { ConversationListItem } from "@/src/shared/domain/types/@hotel-pain
 const toastMock = vi.hoisted(() => Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }));
 vi.mock("react-hot-toast", () => ({ default: toastMock }));
 
+const listMock = vi.hoisted(() => vi.fn());
+
 const conversas: ConversationListItem[] = [
   {
     numeroContato: "+5535999110001",
@@ -15,6 +17,8 @@ const conversas: ConversationListItem[] = [
     lastMessageAt: "2026-08-19T14:32:00.000Z",
     consentimentoLgpd: true,
     currentStage: "CONTATO_INICIADO",
+    origem: "anuncio",
+    sourceId: "AD123",
     whatsappWebLink: "https://web.whatsapp.com/send?phone=5535999110001",
   },
   {
@@ -38,7 +42,10 @@ const resumeMutation = { mutateAsync: vi.fn().mockResolvedValue(undefined), isPe
 vi.mock("@/src/shared/hooks/hotel-portal", () => ({
   useResumeConversation: () => resumeMutation,
   usePauseConversation: () => pauseMutation,
-  useHotelConversations: () => ({ data: conversas, isLoading: false }),
+  useHotelConversations: (...args: unknown[]) => {
+    listMock(...args);
+    return { data: conversas, isLoading: false };
+  },
   useHotelConversationDetail: (_clientId: string | null, numero: string | null) => {
     const first = numero === "+5535999110001"
       ? {
@@ -47,6 +54,8 @@ vi.mock("@/src/shared/hooks/hotel-portal", () => ({
             consentimentoLgpd: true, currentStage: "FECHAMENTO_INICIADO",
             whatsappWebLink: "https://web.whatsapp.com/send?phone=5535999110001",
             ocasiao: "romantica",
+            origem: "anuncio",
+            sourceId: "AD123",
             hold: {
               codigo: "M57", status: "AGUARDANDO", acomodacao: "Suíte Master",
               checkIn: "2026-11-20", checkOut: "2026-11-22", valor: 1049,
@@ -184,5 +193,24 @@ describe("WhatsappInbox", () => {
     render(<WhatsappInbox clientId="client_1" />);
     expect(screen.getByLabelText("Com humano")).toBeInTheDocument();
     expect(screen.getByLabelText("Com o bot")).toBeInTheDocument();
+  });
+
+  it("lista mostra selo de origem", () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    expect(screen.getByText("Anúncio")).toBeInTheDocument();
+  });
+
+  it("cabeçalho mostra origem com sourceId", () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    fireEvent.click(screen.getByText("Ana Souza"));
+    expect(screen.getByTestId("conversa-origem")).toHaveTextContent("AnúncioAD123");
+  });
+
+  it("filtro de público repassa audience à consulta", () => {
+    render(<WhatsappInbox clientId="client_1" />);
+    const select = screen.getByLabelText("Filtrar por público");
+    expect(screen.getByRole("option", { name: "Todos os públicos" })).toBeInTheDocument();
+    fireEvent.change(select, { target: { value: "MARINA" } });
+    expect(listMock).toHaveBeenLastCalledWith("client_1", expect.objectContaining({ audience: "MARINA" }));
   });
 });

@@ -11,7 +11,7 @@ import {
   PainelPageShell,
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
-import { ConversationTranscript } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
+import { ConversationTranscript, originLabel } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/conversation-transcript";
 import { stageLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages";
 import { botStatusLabel } from "@/src/presentation/components/organisms/hotel-portal/funil/bot-status";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
@@ -64,6 +64,15 @@ export default function HotelConversationDetailPage({
             <span className="text-muted-foreground">Bot: </span>
             {botStatusLabel(contact.statusBot)}
           </span>
+          {originLabel(contact.origem) ? (
+            <span>
+              <span className="text-muted-foreground">Origem: </span>
+              {originLabel(contact.origem)}
+              {contact.origem === "anuncio" && contact.sourceId ? (
+                <span className="ml-1 text-xs text-muted-foreground">{contact.sourceId}</span>
+              ) : null}
+            </span>
+          ) : null}
           {!contact.consentimentoLgpd && (
             <span className="text-amber-600">
               Consentimento LGPD não confirmado
@@ -73,17 +82,12 @@ export default function HotelConversationDetailPage({
       )}
 
       <PainelSection title="Transcrição">
-        {hasMore && (
-          <button
-            className="mb-3 rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent disabled:opacity-60"
-            disabled={isFetchingNextPage}
-            onClick={() => fetchNextPage()}
-            type="button"
-          >
-            {isFetchingNextPage ? "Carregando..." : "Carregar mensagens anteriores"}
-          </button>
-        )}
-        <ConversationTranscript messages={messages} />
+        <ConversationTranscript
+          messages={messages}
+          hasMore={hasMore}
+          isLoadingMore={isFetchingNextPage}
+          onLoadMore={() => fetchNextPage()}
+        />
       </PainelSection>
     </PainelPageShell>
   );
