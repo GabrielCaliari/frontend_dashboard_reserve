@@ -160,6 +160,7 @@ describe("gating do Painel Reserve", () => {
     expect(atendimento?.subItems?.map((sub) => sub.id)).toEqual([
       "hotel-conversas",
       "hotel-bot",
+      "hotel-erros",
       "hotel-funil",
       "hotel-whatsapp-links",
     ]);

@@ -1,4 +1,5 @@
 import {
+  AlertTriangle,
   BarChart3,
   BedDouble,
   BookMarked,
@@ -100,6 +101,12 @@ export function buildHotelNavItems(
           label: t("hotelBot"),
           icon: Bot,
           path: "/dashboard/hotel/atendimento/bot",
+        },
+        {
+          id: "hotel-erros",
+          label: t("hotelErros"),
+          icon: AlertTriangle,
+          path: "/dashboard/hotel/atendimento/erros",
         },
         {
           id: "hotel-funil",
