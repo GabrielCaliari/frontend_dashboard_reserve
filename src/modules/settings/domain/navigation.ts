@@ -48,6 +48,7 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
     "hotel-conversas",
     "hotel-bot",
     "hotel-erros",
+    "hotel-feedbacks",
     "hotel-funil",
     "hotel-whatsapp-links",
     // Reservas
@@ -133,6 +134,7 @@ export const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
   "hotel-conversas": ["hotel.read"],
   "hotel-bot": ["hotel.read"],
   "hotel-erros": ["hotel.read"],
+  "hotel-feedbacks": ["hotel.read"],
   "hotel-funil": ["hotel.read"],
   "hotel-calendario": ["hotel.read"],
   "hotel-retorno": ["hotel.read"],

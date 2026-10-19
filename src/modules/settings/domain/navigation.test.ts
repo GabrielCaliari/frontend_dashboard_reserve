@@ -161,6 +161,7 @@ describe("gating do Painel Reserve", () => {
       "hotel-conversas",
       "hotel-bot",
       "hotel-erros",
+      "hotel-feedbacks",
       "hotel-funil",
       "hotel-whatsapp-links",
     ]);
