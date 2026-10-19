@@ -7,6 +7,8 @@ export interface CreateBotIntegrationConfigDto {
   bot_tenant_ref?: string;
   /** URL do WF6 (Canal B). Em producao: https publico. */
   n8n_panel_webhook_url?: string;
+  /** URL do WF9 (eventos do motor para o bot). */
+  n8n_motor_webhook_url?: string;
   /** Write-only. Segredo HMAC do Canal B (16-200). Prefira PATCH regenerate-panel-secret. */
   panel_webhook_secret?: string;
 }
@@ -17,6 +19,8 @@ export interface BotIntegrationConfigWithKeyResponseDto {
   active: boolean;
   bot_tenant_ref: string | null;
   n8n_panel_webhook_url: string | null;
+  /** URL do WF9 (eventos do motor para o bot). */
+  n8n_motor_webhook_url: string | null;
   /** Se o segredo do Canal B ja foi gravado. O valor nunca volta. */
   panel_webhook_secret_set: boolean;
   last_heartbeat_at: string | null;
@@ -34,6 +38,8 @@ export interface BotIntegrationConfigResponseDto {
   active: boolean;
   bot_tenant_ref: string | null;
   n8n_panel_webhook_url: string | null;
+  /** URL do WF9 (eventos do motor para o bot). */
+  n8n_motor_webhook_url: string | null;
   /** Se o segredo do Canal B ja foi gravado. O valor nunca volta. */
   panel_webhook_secret_set: boolean;
   last_heartbeat_at: string | null;
@@ -48,6 +54,8 @@ export interface UpdateBotIntegrationConfigDto {
   bot_tenant_ref?: string;
   /** URL do WF6 (Canal B). Em producao: https publico. */
   n8n_panel_webhook_url?: string;
+  /** URL do WF9 (eventos do motor para o bot). */
+  n8n_motor_webhook_url?: string;
   /** Write-only. Segredo HMAC do Canal B (16-200). Prefira PATCH regenerate-panel-secret. */
   panel_webhook_secret?: string;
 }

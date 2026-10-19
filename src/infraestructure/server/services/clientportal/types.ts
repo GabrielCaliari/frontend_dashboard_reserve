@@ -168,6 +168,9 @@ export interface ConversationSummaryDto {
   lastMessageAt: string | null;
   consentimentoLgpd: boolean;
   tipoPublico: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE' | null;
+  /** anuncio | organico */
+  origem: string | null;
+  sourceId: string | null;
   currentStage: 'CONTATO_INICIADO' | 'PUBLICO_IDENTIFICADO' | 'QUALIFICADO' | 'ACOMODACAO_APRESENTADA' | 'OFERTA_FEITA' | 'FECHAMENTO_INICIADO' | 'COMPROVANTE_RECEBIDO' | 'RESERVA_CONFIRMADA' | 'PERDIDO';
   /** Abre a conversa no WhatsApp Web da pousada. */
   whatsappWebLink: string;
@@ -193,6 +196,9 @@ export interface ConversationDetailContactDto {
   lastMessageAt: string | null;
   consentimentoLgpd: boolean;
   tipoPublico: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE' | null;
+  /** anuncio | organico */
+  origem: string | null;
+  sourceId: string | null;
   currentStage: 'CONTATO_INICIADO' | 'PUBLICO_IDENTIFICADO' | 'QUALIFICADO' | 'ACOMODACAO_APRESENTADA' | 'OFERTA_FEITA' | 'FECHAMENTO_INICIADO' | 'COMPROVANTE_RECEBIDO' | 'RESERVA_CONFIRMADA' | 'PERDIDO';
   /** Abre a conversa no WhatsApp Web da pousada. */
   whatsappWebLink: string;
@@ -203,19 +209,31 @@ export interface ConversationDetailContactDto {
 export interface ConversationMessageDto {
   role: string;
   tipo: string;
+  /** Previa de ate 180 caracteres (lista). */
   contentPreview: string | null;
+  /** Texto inteiro da mensagem. */
+  content: string | null;
+  mediaKind: string | null;
+  /** Transcricao do audio ou descricao da midia. */
+  mediaText: string | null;
+  caption: string | null;
   ocorridoEm: string;
 }
 
 export interface ConversationDetailResponseDto {
   contact: ConversationDetailContactDto;
   messages: ConversationMessageDto[];
+  /** Ha mensagens mais antigas que as devolvidas. */
+  hasMore: boolean;
 }
 
 export interface FunnelLeadCardDto {
   numeroContato: string;
   nome: string | null;
   tipoPublico: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE' | null;
+  /** anuncio | organico */
+  origem: string | null;
+  sourceId: string | null;
   acomodacaoInteresse: string | null;
   /** Texto de apresentacao das datas. */
   datasInteresse: string | null;
@@ -224,7 +242,10 @@ export interface FunnelLeadCardDto {
   aguardandoDesde: string | null;
   /** Valor da cotacao em reais. */
   valorCotacao: number | null;
-  etiqueta: 'RECUPERAR' | null;
+  /** SOCORRO tem prioridade sobre RECUPERAR. */
+  etiqueta: 'SOCORRO' | 'RECUPERAR' | null;
+  /** Quando o bot pediu socorro (ISO); null se o bot ja retomou. */
+  socorroEm: string | null;
   motivoPerda: string | null;
   holdStatus: string | null;
   holdCodigo: string | null;
@@ -238,6 +259,115 @@ export interface FunnelColumnDto {
   /** Soma dos valores confirmados, em reais. */
   valorConfirmado: number;
   leads: FunnelLeadCardDto[];
+}
+
+export interface BotIssueItemDto {
+  id: string;
+  numeroContato: string | null;
+  nomeContato: string | null;
+  categoria: 'tecnico' | 'conversa' | 'socorro';
+  codigo: string;
+  gravidade: 'alta' | 'media' | 'baixa';
+  etapa: string | null;
+  workflow: string | null;
+  /** No do workflow onde o erro aconteceu. */
+  no: string | null;
+  mensagem: string | null;
+  /** O bot pausou e passou a conversa para a equipe. */
+  socorro: boolean;
+  status: 'ABERTO' | 'VISTO' | 'CORRIGIDO';
+  ocorridoEm: string;
+}
+
+export interface BotIssueListResponseDto {
+  items: BotIssueItemDto[];
+  /** Total que bate com os filtros (sem paginacao). */
+  total: number;
+}
+
+export interface BotIssueCodigoCountDto {
+  codigo: string;
+  categoria: 'tecnico' | 'conversa' | 'socorro';
+  quantidade: number;
+}
+
+export interface BotIssueSummaryResponseDto {
+  total: number;
+  /** Top 10 codigos, do mais frequente ao menos. */
+  porCodigo: BotIssueCodigoCountDto[];
+}
+
+export interface BotFeedbackItemDto {
+  id: string;
+  numeroContato: string;
+  nomeContato: string | null;
+  /** Texto livre do hospede. */
+  texto: string | null;
+  /** Resumo curto feito pelo bot. */
+  resumo: string | null;
+  /** Nota de 0 a 10; nulo quando o hospede nao deu nota. */
+  nota: number | null;
+  sentimento: 'positivo' | 'neutro' | 'negativo';
+  /** Data do check-out da reserva (YYYY-MM-DD). */
+  checkOut: string | null;
+  /** O bot ja enviou o link de avaliacao publica. */
+  linkEnviado: boolean;
+  ocorridoEm: string;
+}
+
+export interface BotFeedbackListResponseDto {
+  items: BotFeedbackItemDto[];
+  /** Total que bate com os filtros (sem paginacao). */
+  total: number;
+}
+
+export interface BotFeedbackSentimentoCountDto {
+  positivo: number;
+  neutro: number;
+  negativo: number;
+}
+
+export interface BotFeedbackSummaryResponseDto {
+  total: number;
+  porSentimento: BotFeedbackSentimentoCountDto;
+  /** Media das notas informadas; nulo sem nenhuma nota. */
+  notaMedia: number | null;
+  /** Top 3: positivos primeiro, maior nota, mais recente. */
+  melhores: BotFeedbackItemDto[];
+  /** Top 3: negativos primeiro, menor nota, mais recente. */
+  piores: BotFeedbackItemDto[];
+}
+
+export interface BotIssueUltimaMensagemDto {
+  /** Texto da mensagem. */
+  m: string;
+  /** Quando, no formato enviado pelo bot (ex.: 19/10 10:00). */
+  em: string;
+  /** Quem falou (user | assistant). */
+  quem: string;
+}
+
+export interface BotIssueDetailResponseDto {
+  id: string;
+  numeroContato: string | null;
+  nomeContato: string | null;
+  categoria: 'tecnico' | 'conversa' | 'socorro';
+  codigo: string;
+  gravidade: 'alta' | 'media' | 'baixa';
+  etapa: string | null;
+  workflow: string | null;
+  /** No do workflow onde o erro aconteceu. */
+  no: string | null;
+  mensagem: string | null;
+  /** O bot pausou e passou a conversa para a equipe. */
+  socorro: boolean;
+  status: 'ABERTO' | 'VISTO' | 'CORRIGIDO';
+  ocorridoEm: string;
+  mensagemHospede: string | null;
+  respostaBot: string | null;
+  ultimasMensagens: BotIssueUltimaMensagemDto[];
+  /** Link da execucao no n8n. */
+  url: string | null;
 }
 
 // ─── Operation types ────────────────────────────────────────────────────────
@@ -290,9 +420,21 @@ export type GetWhatsAppChannelsResponse = ChannelsResponseDto;
 
 /** GET /hotel-portal/{clientId}/whatsapp/conversations — response */
 export type ListWhatsAppConversationsResponse = ConversationsListResponseDto;
+/** GET /hotel-portal/{clientId}/whatsapp/conversations — query params */
+export interface ListWhatsAppConversationsParams {
+  /** Filtra pelo tipo de publico do contato. */
+  audience?: 'LEAD' | 'HOSPEDE_EM_ESTADIA' | 'MENSALISTA' | 'MARINA' | 'EQUIPE';
+}
 
 /** GET /hotel-portal/{clientId}/whatsapp/conversations/{numeroContato} — response */
 export type GetWhatsAppConversationDetailResponse = ConversationDetailResponseDto;
+/** GET /hotel-portal/{clientId}/whatsapp/conversations/{numeroContato} — query params */
+export interface GetWhatsAppConversationDetailParams {
+  /** Quantidade de mensagens mais recentes. */
+  limit?: number;
+  /** ISO: so mensagens com ocorrido_em anterior a este instante. */
+  before?: string;
+}
 
 /** GET /hotel-portal/{clientId}/whatsapp/funnel — response */
 export type GetWhatsAppFunnelBoardResponse = FunnelColumnDto[];
@@ -304,6 +446,58 @@ export interface GetWhatsAppFunnelMetricsParams {
   from: string;
   to: string;
 }
+
+/** GET /hotel-portal/{clientId}/bot-issues — response */
+export type ListBotIssuesResponse = BotIssueListResponseDto;
+/** GET /hotel-portal/{clientId}/bot-issues — query params */
+export interface ListBotIssuesParams {
+  /** ISO: so erros com ocorrido_em a partir deste instante. */
+  from?: string;
+  /** ISO: so erros com ocorrido_em ate este instante. */
+  to?: string;
+  categoria?: 'tecnico' | 'conversa' | 'socorro';
+  /** Codigo do erro (ex.: excecao, revisor_corrigiu). */
+  codigo?: string;
+  status?: 'ABERTO' | 'VISTO' | 'CORRIGIDO';
+  page?: number;
+  limit?: number;
+}
+
+/** GET /hotel-portal/{clientId}/bot-issues/resumo — response */
+export type GetBotIssuesSummaryResponse = BotIssueSummaryResponseDto;
+/** GET /hotel-portal/{clientId}/bot-issues/resumo — query params */
+export interface GetBotIssuesSummaryParams {
+  /** ISO: so erros com ocorrido_em a partir deste instante. */
+  from?: string;
+  /** ISO: so erros com ocorrido_em ate este instante. */
+  to?: string;
+}
+
+/** GET /hotel-portal/{clientId}/feedbacks — response */
+export type ListFeedbacksResponse = BotFeedbackListResponseDto;
+/** GET /hotel-portal/{clientId}/feedbacks — query params */
+export interface ListFeedbacksParams {
+  /** ISO: so feedbacks com ocorrido_em a partir deste instante. */
+  from?: string;
+  /** ISO: so feedbacks com ocorrido_em ate este instante. */
+  to?: string;
+  sentimento?: 'positivo' | 'neutro' | 'negativo';
+  page?: number;
+  limit?: number;
+}
+
+/** GET /hotel-portal/{clientId}/feedbacks/resumo — response */
+export type GetFeedbacksSummaryResponse = BotFeedbackSummaryResponseDto;
+/** GET /hotel-portal/{clientId}/feedbacks/resumo — query params */
+export interface GetFeedbacksSummaryParams {
+  /** ISO: so feedbacks com ocorrido_em a partir deste instante. */
+  from?: string;
+  /** ISO: so feedbacks com ocorrido_em ate este instante. */
+  to?: string;
+}
+
+/** GET /hotel-portal/{clientId}/bot-issues/{id} — response */
+export type GetBotIssueResponse = BotIssueDetailResponseDto;
 
 /** GET /hotel-portal/my-clients — response */
 export type GetMyClientsResponse = unknown;
