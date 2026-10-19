@@ -125,6 +125,7 @@ export function waitingLabel(iso: string | null, now: Date = new Date()): string
 
 export const TAG_LABELS: Record<FunnelLeadTag, string> = {
   RECUPERAR: "Recuperar",
+  SOCORRO: "Socorro",
 };
 
 /** Motivos de perda do contrato v2 (§3.5, evento `perdido`). Lista fechada: o backend recusa outro valor. */

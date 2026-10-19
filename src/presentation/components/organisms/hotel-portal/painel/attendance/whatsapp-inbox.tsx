@@ -18,6 +18,7 @@ import {
 import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import {
   useHotelConversationDetail,
+  flattenConversationPages,
   useHotelConversations,
   usePauseConversation,
   useResumeConversation,
@@ -154,7 +155,7 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
     search: buscaAplicada || undefined,
     stage: stageFilter,
   });
-  const { data: detail, isLoading: detailLoading } = useHotelConversationDetail(
+  const { data: detailPages, isLoading: detailLoading } = useHotelConversationDetail(
     clientId,
     selecionado,
   );
@@ -165,7 +166,8 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
   }, [conversations, etiqueta]);
 
   const pausadas = (conversations ?? []).filter((c) => isWithHuman(c.statusBot)).length;
-  const contato = detail?.contact;
+  const detail = flattenConversationPages(detailPages);
+  const contato = detail.contact;
 
   const etiquetas: { key: Etiqueta; label: string; tone?: string }[] = [
     { key: "todas", label: "Todas" },
@@ -332,7 +334,7 @@ export function WhatsappInbox({ clientId }: { clientId: string }) {
               </a>
             </header>
             <div className="flex-1 overflow-y-auto bg-default-100/30 p-4">
-              <ConversationTranscript messages={detail?.messages ?? []} />
+              <ConversationTranscript messages={detail.messages} />
             </div>
             <footer className="border-t border-border bg-default-50 px-4 py-2.5 text-center text-xs text-foreground/50">
               Somente leitura — a equipe responde pelo WhatsApp Business da pousada.

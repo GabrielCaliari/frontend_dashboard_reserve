@@ -20,7 +20,7 @@ export function useBotIntegrationConfig(tenantId: string | null) {
 
 export interface SaveBotIntegrationInput {
   exists: boolean;
-  data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string };
+  data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string; n8n_motor_webhook_url?: string };
 }
 
 export function useSaveBotIntegration(tenantId: string | null) {

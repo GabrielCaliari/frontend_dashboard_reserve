@@ -29,6 +29,7 @@ const base = {
   active: true,
   bot_tenant_ref: "cli_dona_tereza",
   n8n_panel_webhook_url: "https://bot.reservemkt.com.br/webhook/painel",
+  n8n_motor_webhook_url: "https://bot.reservemkt.com.br/webhook/motor",
   panel_webhook_secret_set: false,
   last_heartbeat_at: null as string | null,
   stuck_events: 0,
@@ -58,7 +59,7 @@ describe("BotIntegrationCard", () => {
     await user.click(screen.getByRole("button", { name: "Criar integração" }));
     expect(h.save).toHaveBeenCalledWith({
       exists: false,
-      data: { bot_tenant_ref: "cli_dona_tereza", n8n_panel_webhook_url: undefined },
+      data: { bot_tenant_ref: "cli_dona_tereza", n8n_panel_webhook_url: undefined, n8n_motor_webhook_url: undefined },
     });
     expect(await screen.findByText("Chave do tenant (Canal A)")).toBeTruthy();
     expect(screen.getByText("chave-123")).toBeTruthy();
@@ -69,6 +70,7 @@ describe("BotIntegrationCard", () => {
     renderCard();
     expect((screen.getByLabelText("Identificador do bot") as HTMLInputElement).value).toBe("cli_dona_tereza");
     expect((screen.getByLabelText("URL do WF6") as HTMLInputElement).value).toBe(base.n8n_panel_webhook_url);
+    expect((screen.getByLabelText("URL do WF9 (eventos do motor)") as HTMLInputElement).value).toBe(base.n8n_motor_webhook_url);
     expect(screen.getByText("Desativado")).toBeTruthy();
     expect(screen.getByText(/Último sinal de vida:\s*Nunca/)).toBeTruthy();
     expect(screen.getByText(/Segredo do Canal B: não configurado/)).toBeTruthy();
@@ -190,10 +192,24 @@ describe("BotIntegrationCard", () => {
     const user = userEvent.setup();
     renderCard();
     await user.clear(screen.getByLabelText("URL do WF6"));
+    await user.clear(screen.getByLabelText("URL do WF9 (eventos do motor)"));
     await user.click(screen.getByRole("button", { name: "Salvar" }));
     expect(h.save).toHaveBeenCalledWith({
       exists: true,
-      data: { bot_tenant_ref: "cli_dona_tereza", n8n_panel_webhook_url: "" },
+      data: { bot_tenant_ref: "cli_dona_tereza", n8n_panel_webhook_url: "", n8n_motor_webhook_url: "" },
+    });
+  });
+
+  it("na criação, a URL do WF9 digitada vai junto com os outros campos", async () => {
+    h.config = { data: undefined, isLoading: false, isError: false };
+    h.save.mockResolvedValue({ ...base, tenant_key: "k" });
+    const user = userEvent.setup();
+    renderCard();
+    await user.type(screen.getByLabelText("URL do WF9 (eventos do motor)"), "https://n8n.exemplo.com/webhook/motor");
+    await user.click(screen.getByRole("button", { name: "Criar integração" }));
+    expect(h.save).toHaveBeenCalledWith({
+      exists: false,
+      data: { bot_tenant_ref: undefined, n8n_panel_webhook_url: undefined, n8n_motor_webhook_url: "https://n8n.exemplo.com/webhook/motor" },
     });
   });
 });

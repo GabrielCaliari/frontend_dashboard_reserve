@@ -75,6 +75,16 @@ import type {
   BotChannelsResponse,
   BotIntegrationConfig,
   BotIntegrationConfigWithKey,
+  BotIssueDetail,
+  BotIssueFilters,
+  BotIssueItem,
+  BotIssueListResponse,
+  BotIssueStatus,
+  BotIssueSummary,
+  ConversationDetailParams,
+  FeedbackFilters,
+  FeedbackListResponse,
+  FeedbackSummary,
   BotConfigProposal,
   ContentPost,
   ConversationDetailResponse,
@@ -674,11 +684,70 @@ export const hotelPortalService = {
   async getConversationDetail(
     clientId: string,
     numeroContato: string,
+    params?: ConversationDetailParams,
   ): Promise<ConversationDetailResponse> {
     const res = await api.get<ConversationDetailResponse>(
       `/hotel-portal/${clientId}/whatsapp/conversations/${encodeURIComponent(numeroContato)}`,
+      { params },
+    );
+    return { ...res.data, hasMore: res.data?.hasMore ?? false };
+  },
+
+  async listBotIssues(clientId: string, params: BotIssueFilters = {}): Promise<BotIssueListResponse> {
+    const res = await api.get<BotIssueListResponse>(`/hotel-portal/${clientId}/bot-issues`, { params });
+    return { items: res.data?.items ?? [], total: res.data?.total ?? 0 };
+  },
+
+  async getBotIssuesSummary(
+    clientId: string,
+    period: { from: string; to: string },
+  ): Promise<BotIssueSummary> {
+    const res = await api.get<BotIssueSummary>(`/hotel-portal/${clientId}/bot-issues/resumo`, {
+      params: period,
+    });
+    return { total: res.data?.total ?? 0, porCodigo: res.data?.porCodigo ?? [] };
+  },
+
+  async getBotIssue(clientId: string, id: string): Promise<BotIssueDetail> {
+    const res = await api.get<BotIssueDetail>(
+      `/hotel-portal/${clientId}/bot-issues/${encodeURIComponent(id)}`,
     );
     return res.data;
+  },
+
+  async updateBotIssueStatus(
+    tenantId: string,
+    id: string,
+    status: BotIssueStatus,
+  ): Promise<BotIssueItem> {
+    const res = await api.patch<BotIssueItem>(
+      `/admin/hotel-portal/${tenantId}/bot-issues/${encodeURIComponent(id)}/status`,
+      { status },
+      adminHeaders,
+    );
+    return res.data;
+  },
+
+  async listFeedbacks(clientId: string, params: FeedbackFilters = {}): Promise<FeedbackListResponse> {
+    const res = await api.get<FeedbackListResponse>(`/hotel-portal/${clientId}/feedbacks`, { params });
+    return { items: res.data?.items ?? [], total: res.data?.total ?? 0 };
+  },
+
+  async getFeedbacksSummary(
+    clientId: string,
+    period: { from: string; to: string },
+  ): Promise<FeedbackSummary> {
+    const res = await api.get<FeedbackSummary>(`/hotel-portal/${clientId}/feedbacks/resumo`, {
+      params: period,
+    });
+    const d = res.data;
+    return {
+      total: d?.total ?? 0,
+      porSentimento: d?.porSentimento ?? { positivo: 0, neutro: 0, negativo: 0 },
+      notaMedia: d?.notaMedia ?? null,
+      melhores: d?.melhores ?? [],
+      piores: d?.piores ?? [],
+    };
   },
 
   async getFunnelBoard(clientId: string): Promise<FunnelBoardColumn[]> {
@@ -836,14 +905,14 @@ export const hotelPortalService = {
 
   async createBotIntegrationConfig(
     tenantId: string,
-    data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string },
+    data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string; n8n_motor_webhook_url?: string },
   ): Promise<BotIntegrationConfigWithKey> {
     return adminbotintegrationconfigService.create(tenantId, data);
   },
 
   async updateBotIntegrationConfig(
     tenantId: string,
-    data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string },
+    data: { bot_tenant_ref?: string; n8n_panel_webhook_url?: string; n8n_motor_webhook_url?: string },
   ): Promise<BotIntegrationConfig> {
     return adminbotintegrationconfigService.update(tenantId, data);
   },

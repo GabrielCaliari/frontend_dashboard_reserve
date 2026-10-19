@@ -31,12 +31,14 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
 
   const [botRef, setBotRef] = useState("");
   const [url, setUrl] = useState("");
+  const [motorUrl, setMotorUrl] = useState("");
   const [revealed, setRevealed] = useState<{ label: string; value: string } | null>(null);
 
   useEffect(() => {
     setBotRef(config?.bot_tenant_ref ?? "");
     setUrl(config?.n8n_panel_webhook_url ?? "");
-  }, [config?.bot_tenant_ref, config?.n8n_panel_webhook_url]);
+    setMotorUrl(config?.n8n_motor_webhook_url ?? "");
+  }, [config?.bot_tenant_ref, config?.n8n_panel_webhook_url, config?.n8n_motor_webhook_url]);
 
   const exists = !!config;
   const busy =
@@ -60,6 +62,7 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
             // Na atualizacao, campo apagado vai como '' (o backend grava null); na criacao, omitido.
             bot_tenant_ref: exists ? botRef.trim() : botRef.trim() || undefined,
             n8n_panel_webhook_url: exists ? url.trim() : url.trim() || undefined,
+            n8n_motor_webhook_url: exists ? motorUrl.trim() : motorUrl.trim() || undefined,
           },
         }),
       (r) => {
@@ -162,6 +165,17 @@ export function BotIntegrationCard({ tenantId, clientId, webhookSecretSet = fals
               value={url}
               placeholder="https://bot.reservemkt.com.br/webhook/painel"
               onChange={(e) => setUrl(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="block text-sm font-medium" htmlFor="bot-integration-motor-url">
+              URL do WF9 (eventos do motor)
+            </label>
+            <Input
+              id="bot-integration-motor-url"
+              value={motorUrl}
+              placeholder="https://<domínio do n8n>/webhook/motor"
+              onChange={(e) => setMotorUrl(e.target.value)}
             />
           </div>
           <Button type="submit" disabled={busy}>

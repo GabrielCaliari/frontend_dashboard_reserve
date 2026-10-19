@@ -15,3 +15,5 @@ export * from './use-hotel-portal-snapshots';
 export * from './use-hotel-painel';
 export * from './use-hotel-home';
 export * from './use-bot-integration';
+export * from './use-bot-issues';
+export * from './use-bot-feedbacks';

@@ -5,6 +5,7 @@ import { ExternalLink } from "lucide-react";
 import {
   useActiveHotelClient,
   useHotelConversationDetail,
+  flattenConversationPages,
 } from "@/src/shared/hooks/hotel-portal";
 import {
   PainelPageShell,
@@ -24,12 +25,10 @@ export default function HotelConversationDetailPage({
   const decoded = decodeURIComponent(numeroContato);
 
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
-  const { data, isLoading, isError } = useHotelConversationDetail(
-    client?.id ?? null,
-    decoded,
-  );
+  const { data: pages, isLoading, isError, fetchNextPage, isFetchingNextPage } =
+    useHotelConversationDetail(client?.id ?? null, decoded);
 
-  const contact = data?.contact;
+  const { contact, messages, hasMore } = flattenConversationPages(pages);
 
   return (
     <PainelPageShell
@@ -74,7 +73,17 @@ export default function HotelConversationDetailPage({
       )}
 
       <PainelSection title="Transcrição">
-        <ConversationTranscript messages={data?.messages ?? []} />
+        {hasMore && (
+          <button
+            className="mb-3 rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent disabled:opacity-60"
+            disabled={isFetchingNextPage}
+            onClick={() => fetchNextPage()}
+            type="button"
+          >
+            {isFetchingNextPage ? "Carregando..." : "Carregar mensagens anteriores"}
+          </button>
+        )}
+        <ConversationTranscript messages={messages} />
       </PainelSection>
     </PainelPageShell>
   );

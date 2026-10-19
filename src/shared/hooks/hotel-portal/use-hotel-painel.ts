@@ -1,9 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { hotelPortalService } from '@/src/modules/hotel-portal/infrastructure/adapters';
 import { moveLeadInBoard } from '@/src/presentation/components/organisms/hotel-portal/funil/funnel-stages';
 import type { Period } from '@/src/shared/domain/types/@hotel-portal-v1';
 import type {
+  ConversationDetailResponse,
   ConversationFilters,
+  ConversationMessage,
   CreateBotConfigProposalDto,
   FunnelBoardColumn,
   FunnelStage,
@@ -88,14 +90,46 @@ export function useHotelConversationDetail(
   clientId: string | null,
   numeroContato: string | null,
 ) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ['hotel-portal', 'conversation', clientId, numeroContato],
-    queryFn: () =>
-      hotelPortalService.getConversationDetail(clientId!, numeroContato!),
+    // `before` = ocorridoEm da mensagem mais antiga ja carregada; sem ele o
+    // backend devolve as mensagens mais recentes.
+    queryFn: ({ pageParam }) =>
+      hotelPortalService.getConversationDetail(clientId!, numeroContato!, {
+        before: pageParam,
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage: ConversationDetailResponse) =>
+      lastPage.hasMore && lastPage.messages.length > 0
+        ? lastPage.messages[0].ocorridoEm
+        : undefined,
     enabled: !!clientId && !!numeroContato,
     retry: false,
+    // O refetch automatico refaz todas as paginas carregadas (comportamento do
+    // useInfiniteQuery); a primeira traz as mensagens novas.
     refetchInterval: LIVE_REFETCH.conversations,
   });
+}
+
+/**
+ * Junta as paginas da conversa (a primeira e a mais recente; cada pagina
+ * seguinte e mais antiga) em uma unica lista em ordem cronologica crescente.
+ * `hasMore` vem da pagina mais antiga carregada.
+ */
+export function flattenConversationPages(
+  data: InfiniteData<ConversationDetailResponse, unknown> | undefined,
+): {
+  contact: ConversationDetailResponse['contact'] | undefined;
+  messages: ConversationMessage[];
+  hasMore: boolean;
+} {
+  const pages = data?.pages ?? [];
+  if (pages.length === 0) return { contact: undefined, messages: [], hasMore: false };
+  return {
+    contact: pages[0].contact,
+    messages: [...pages].reverse().flatMap((p) => p.messages),
+    hasMore: pages[pages.length - 1].hasMore,
+  };
 }
 
 export function useHotelFunnelBoard(

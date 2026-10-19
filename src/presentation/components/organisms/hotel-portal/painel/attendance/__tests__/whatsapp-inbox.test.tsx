@@ -39,8 +39,8 @@ vi.mock("@/src/shared/hooks/hotel-portal", () => ({
   useResumeConversation: () => resumeMutation,
   usePauseConversation: () => pauseMutation,
   useHotelConversations: () => ({ data: conversas, isLoading: false }),
-  useHotelConversationDetail: (_clientId: string | null, numero: string | null) => ({
-    data: numero === "+5535999110001"
+  useHotelConversationDetail: (_clientId: string | null, numero: string | null) => {
+    const first = numero === "+5535999110001"
       ? {
           contact: {
             numeroContato: numero, nome: "Ana Souza", statusBot: "AGUARDANDO_PAGAMENTO",
@@ -69,8 +69,16 @@ vi.mock("@/src/shared/hooks/hotel-portal", () => ({
             { role: "assistant", tipo: "texto", contentPreview: "Temos sim!", ocorridoEm: "2026-08-19T14:01:00.000Z" },
           ],
         }
-      : undefined,
-    isLoading: false,
+      : undefined;
+    return {
+      data: first ? { pages: [{ ...first, hasMore: false }], pageParams: [undefined] } : undefined,
+      isLoading: false,
+    };
+  },
+  flattenConversationPages: (data?: { pages: any[] }) => ({
+    contact: data?.pages[0]?.contact,
+    messages: data?.pages.flatMap((p) => p.messages) ?? [],
+    hasMore: false,
   }),
 }));
 

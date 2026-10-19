@@ -182,6 +182,10 @@ export interface ConversationListItem {
   currentStage: FunnelStage;
   /** Abre a conversa no WhatsApp Web da conta logada — a da pousada. */
   whatsappWebLink: string;
+  tipoPublico?: BotContactAudience | null;
+  /** anuncio | organico */
+  origem?: string | null;
+  sourceId?: string | null;
 }
 
 export interface ConversationListResponse {
@@ -192,6 +196,12 @@ export interface ConversationMessage {
   role: string;
   tipo: string;
   contentPreview: string | null;
+  /** Texto inteiro da mensagem. */
+  content?: string | null;
+  mediaKind?: string | null;
+  /** Transcricao do audio ou descricao da midia. */
+  mediaText?: string | null;
+  caption?: string | null;
   ocorridoEm: string;
 }
 
@@ -208,9 +218,18 @@ export interface ConversationDetailResponse {
     hold?: HoldResumo | null;
   };
   messages: ConversationMessage[];
+  /** Ha mensagens mais antigas que as devolvidas. */
+  hasMore: boolean;
+}
+
+export interface ConversationDetailParams {
+  limit?: number;
+  /** ISO de `ocorridoEm` da mensagem mais antiga ja carregada. */
+  before?: string;
 }
 
 export interface ConversationFilters {
+  audience?: BotContactAudience;
   search?: string;
   stage?: FunnelStage;
   from?: string;
@@ -219,7 +238,7 @@ export interface ConversationFilters {
 
 // ── Funil do bot (GET /hotel-portal/:clientId/whatsapp/funnel) ──────────────
 
-export type FunnelLeadTag = 'RECUPERAR';
+export type FunnelLeadTag = 'RECUPERAR' | 'SOCORRO';
 
 export interface FunnelBoardLead {
   numeroContato: string;
@@ -233,6 +252,11 @@ export interface FunnelBoardLead {
   /** Reais (nao centavos): valor_total do hold mais recente do contato. */
   valorCotacao: number | null;
   etiqueta: FunnelLeadTag | null;
+  /** ISO do pedido de socorro do bot; presente quando etiqueta = SOCORRO. */
+  socorroEm?: string | null;
+  /** anuncio | organico */
+  origem?: string | null;
+  sourceId?: string | null;
   /** caro | data | pesquisando | sumiu | outro (so em leads perdidos). */
   motivoPerda?: string | null;
   holdStatus?: string | null;
@@ -466,6 +490,8 @@ export interface BotIntegrationConfig {
   active: boolean;
   bot_tenant_ref: string | null;
   n8n_panel_webhook_url: string | null;
+  /** URL do WF9 (eventos do motor para o bot). */
+  n8n_motor_webhook_url: string | null;
   panel_webhook_secret_set: boolean;
   last_heartbeat_at: string | null;
   stuck_events: number;
@@ -473,3 +499,91 @@ export interface BotIntegrationConfig {
 
 /** Resposta de create/regenerate-key: a chave so e mostrada uma vez. */
 export type BotIntegrationConfigWithKey = BotIntegrationConfig & { tenant_key: string };
+
+// ── Erros do bot (bot_issues) ───────────────────────────────────────────────
+
+export type BotIssueCategory = 'tecnico' | 'conversa' | 'socorro';
+export type BotIssueSeverity = 'alta' | 'media' | 'baixa';
+export type BotIssueStatus = 'ABERTO' | 'VISTO' | 'CORRIGIDO';
+
+export interface BotIssueFilters {
+  from?: string;
+  to?: string;
+  categoria?: BotIssueCategory;
+  codigo?: string;
+  status?: BotIssueStatus;
+  page?: number;
+  limit?: number;
+}
+
+export interface BotIssueItem {
+  id: string;
+  numeroContato: string | null;
+  nomeContato: string | null;
+  categoria: BotIssueCategory;
+  codigo: string;
+  gravidade: BotIssueSeverity;
+  etapa: string | null;
+  workflow: string | null;
+  no: string | null;
+  mensagem: string | null;
+  socorro: boolean;
+  status: BotIssueStatus;
+  ocorridoEm: string;
+}
+
+export interface BotIssueListResponse {
+  items: BotIssueItem[];
+  total: number;
+}
+
+export interface BotIssueSummary {
+  total: number;
+  porCodigo: { codigo: string; categoria: string; quantidade: number }[];
+}
+
+export interface BotIssueDetail extends BotIssueItem {
+  mensagemHospede: string | null;
+  respostaBot: string | null;
+  ultimasMensagens: { m: string; em: string; quem: string }[];
+  url: string | null;
+}
+
+// ── Feedbacks dos hospedes (bot_feedbacks) ──────────────────────────────────
+
+export type FeedbackSentiment = 'positivo' | 'neutro' | 'negativo';
+
+export interface FeedbackFilters {
+  from?: string;
+  to?: string;
+  sentimento?: FeedbackSentiment;
+  page?: number;
+  limit?: number;
+}
+
+export interface FeedbackItem {
+  id: string;
+  numeroContato: string;
+  nomeContato: string | null;
+  texto: string | null;
+  resumo: string | null;
+  nota: number | null;
+  sentimento: FeedbackSentiment;
+  /** YYYY-MM-DD */
+  checkOut: string | null;
+  linkEnviado: boolean;
+  ocorridoEm: string;
+}
+
+export interface FeedbackListResponse {
+  items: FeedbackItem[];
+  total: number;
+}
+
+export interface FeedbackSummary {
+  total: number;
+  porSentimento: Record<FeedbackSentiment, number>;
+  notaMedia: number | null;
+  melhores: FeedbackItem[];
+  piores: FeedbackItem[];
+}
