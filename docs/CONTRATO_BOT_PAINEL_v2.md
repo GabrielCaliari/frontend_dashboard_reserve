@@ -162,11 +162,15 @@ Regras de leitura:
 | `jornada.vespera` / `jornada.checkin_dia` / `jornada.encantamento` / `jornada.avaliacao` | null | `enviado`, `pendente_template` | |
 | `painel.estagio` | o estágio escolhido | `via: painel`, `motivo` | Eco de `move_stage` (Canal B) |
 | `config.aplicada` | null | `chave` | Eco de `apply_config` |
-| `audio.transcrito` | null | `duracao_s` | Alimenta `audiosTranscritos` |
-| `mensagem` | null | `role: user | assistant | human`, `kind: texto | audio | imagem | botoes | template | sistema`, `content_preview` (até 180 caracteres) | Uma por mensagem trocada. `actor.type` = `guest` quando `role = user` |
+| `audio.transcrito` | null | `wamid`, `transcricao` | v29. Alimenta `audiosTranscritos` e grava a transcrição na mensagem de áudio de mesmo `wamid`. Sem `transcricao`, o evento só conta e não altera a mensagem |
+| `mensagem` | null | `role: user | assistant | human`, `kind: texto | audio | imagem | botoes | template | sistema`, `content_preview` (até 180 caracteres), e desde a v29: `content` (texto inteiro), `wamid`, `media` {`kind`, `transcricao` ou `descricao`, `caption`} | Uma por mensagem trocada. `actor.type` = `guest` quando `role = user` |
 | `heartbeat` | null | `bot_enabled`, `mode`, `ai_enabled`, `last_echo_at`, `last_polling_at`, `active_conversations`, `paused_awaiting_human`, `channel` | A cada minuto. `contact` é `null` |
-| `bot.erro` | null | `categoria: tecnico | conversa`, `codigo`, `gravidade: alta | media | baixa`, `workflow`, `no`, `etapa`, `mensagem`, `mensagem_hospede`, `resposta_bot`, `ultimas_mensagens`, `socorro`, `url` | v29. Vira linha em "Erros do bot"; não muda o estado do contato |
+| `bot.erro` | null | `categoria: tecnico | conversa`, `codigo`, `gravidade: alta | media | baixa`, `workflow`, `no`, `etapa`, `mensagem`, `mensagem_hospede`, `resposta_bot`, `ultimas_mensagens` (até 6), `socorro`, `execution_id`, `url` | v29. Vira linha em "Erros do bot"; não muda o estado do contato |
 | `bot.socorro` | null | `motivo`, `codigo_erro`, `workflow`, `no`, `estado_anterior`, `codigo_atendimento` | v29. Bot pausou e passou a conversa para a equipe: contato `PAUSADO`, card com etiqueta **SOCORRO** |
+| `hospede.feedback` | null | `texto`, `resumo`, `nota` (quando a pessoa escreve uma nota), `sentimento: positivo | neutro | negativo`, `link_avaliacao_enviado`, `reserva` {`check_out`} | v29. Vira linha em "Feedbacks dos hóspedes"; não muda o estado do contato |
+| `jornada.enviada` | null | `toque: vespera | checkin_dia | avaliacao`, `via: modelo | pendente`, `template`, `check_in`, `check_out`, `ref` | v29. Vira mensagem da jornada na conversa |
+
+**Valores de `media.kind`:** ainda não confirmados com o time do bot (o lote real só trouxe `audio`). O painel aceita `imagem` e `image` e grava o valor como veio. Confirmar a lista final (imagem, documento, vídeo, áudio).
 
 **Regra do `bot.socorro`:** depois de um `bot.socorro`, o bot deve mandar `contact.bot_status: "PAUSADO"` em todos os eventos daquele contato até a conversa ser retomada (pela equipe, pelo painel ou por um timer). O painel só libera a pausa e tira a etiqueta SOCORRO com um snapshot `ATIVO` de instante **estritamente posterior** ao do socorro ou com a retomada pelo painel (`resume`). Um `ATIVO` no mesmo instante, por exemplo outro evento do mesmo lote, é ignorado para `status_bot`.
 
@@ -190,7 +194,23 @@ As telas do frontend já chamam estes endpoints. A tabela diz de onde vem cada c
 
 ### 4.2 `GET /hotel-portal/{clientId}/whatsapp/conversations/{numero}` → `ConversationMessage[]`
 
-Lista dos eventos `mensagem` do contato, em ordem: `role`, `tipo` = `data.kind`, `contentPreview` = `data.content_preview`, `ocorridoEm` = `occurred_at`. Somente leitura (decisão 11 mantida).
+Resposta `{ contact, messages, hasMore, nextCursor }`. As mensagens vêm em ordem cronológica crescente, ordenadas por (`ocorrido_em`, `id`), então mensagens com o mesmo instante têm ordem estável.
+
+Campos de cada mensagem: `id`, `role`, `tipo` = `data.kind`, `contentPreview` = `data.content_preview`, `ocorridoEm` = `occurred_at` e, desde a v29, `content` (texto inteiro), `wamid`, `mediaKind`, `mediaText` (transcrição do áudio ou descrição da mídia) e `caption`.
+
+Paginação:
+
+| Parâmetro / campo | Significado |
+|---|---|
+| `limit` | Quantidade de mensagens por página (padrão e máximo definidos pelo backend) |
+| `cursor` | Cursor opaco devolvido em `nextCursor`: traz as mensagens anteriores a ele. **Preferido** |
+| `before` | Obsoleto. Instante ISO; pode pular mensagens com o mesmo instante. Ignorado quando `cursor` vem |
+| `hasMore` | Há mensagens mais antigas que as devolvidas |
+| `nextCursor` | Cursor para a página anterior; `null` quando `hasMore` é `false` |
+
+O painel carrega a primeira página sem `cursor` e usa `nextCursor` para as anteriores (botão "Carregar mensagens anteriores").
+
+**Retenção e LGPD:** desde a v29 a conversa inteira (`content`, transcrições, descrições e legendas) fica guardada no painel. Ela segue a retenção de 365 dias já existente e é apagada ou anonimizada pelo "apagar contato" (erase) por número, como o restante dos dados da conversa. Somente leitura (decisão 11 mantida).
 
 ### 4.3 `GET /hotel-portal/{clientId}/whatsapp/funnel` → `FunnelBoardColumn[]`
 
@@ -340,8 +360,10 @@ As chaves `tarifa:*` e `calendario:*` são traduzidas pelo bot para as tabelas `
 | Chave do tenant (Canal A) | Emitida pelo backend por tenant; rotacionável; o bot guarda em configuração, nunca em código |
 | Segredo do webhook (Canal B) | Um por tenant; HMAC-SHA256 do corpo bruto; comparação em tempo constante |
 | Dados sensíveis | CPF e endereço do hóspede **nunca** saem do bot: ficam no PMS. O evento `ficha.coletada` não existe por isso. O painel recebe nome e telefone |
-| `content_preview` | Limitado a 180 caracteres; o texto completo da conversa fica no bot |
+| `content_preview` / `content` | `content_preview` é limitado a 180 caracteres. Desde a v29 o texto inteiro (`content`) também é guardado no painel, sob a retenção de 365 dias e o erase por contato |
+| Webhook do motor (WF9) | O backend assina o corpo com HMAC-SHA256 no cabeçalho `X-Reserve-Signature`, usando o segredo do Canal B, e inclui `event_id` no corpo. O reenvio usa o mesmo `event_id`, então o WF9 deve descartar repetições por esse campo |
 | Credenciais do PMS e da Meta | Não trafegam em nenhum canal |
+| Crons internos | `POST /api/internal/cron/bot-sync` e `POST /api/internal/cron/motor-sync` (reprocessamento do Canal A e reenvio do motor), protegidos pelo segredo de cron |
 
 ---
 
