@@ -690,7 +690,11 @@ export const hotelPortalService = {
       `/hotel-portal/${clientId}/whatsapp/conversations/${encodeURIComponent(numeroContato)}`,
       { params },
     );
-    return { ...res.data, hasMore: res.data?.hasMore ?? false };
+    return {
+      ...res.data,
+      hasMore: res.data?.hasMore ?? false,
+      nextCursor: res.data?.nextCursor ?? null,
+    };
   },
 
   async listBotIssues(clientId: string, params: BotIssueFilters = {}): Promise<BotIssueListResponse> {

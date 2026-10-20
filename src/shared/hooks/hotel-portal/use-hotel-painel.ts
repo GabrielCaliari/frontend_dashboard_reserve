@@ -92,17 +92,15 @@ export function useHotelConversationDetail(
 ) {
   return useInfiniteQuery({
     queryKey: ['hotel-portal', 'conversation', clientId, numeroContato],
-    // `before` = ocorridoEm da mensagem mais antiga ja carregada; sem ele o
-    // backend devolve as mensagens mais recentes.
+    // `cursor` e opaco (nextCursor da pagina anterior); sem ele o backend
+    // devolve as mensagens mais recentes.
     queryFn: ({ pageParam }) =>
       hotelPortalService.getConversationDetail(clientId!, numeroContato!, {
-        before: pageParam,
+        cursor: pageParam,
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage: ConversationDetailResponse) =>
-      lastPage.hasMore && lastPage.messages.length > 0
-        ? lastPage.messages[0].ocorridoEm
-        : undefined,
+      lastPage.nextCursor ?? undefined,
     enabled: !!clientId && !!numeroContato,
     retry: false,
     // O refetch automatico refaz todas as paginas carregadas (comportamento do
@@ -125,9 +123,19 @@ export function flattenConversationPages(
 } {
   const pages = data?.pages ?? [];
   if (pages.length === 0) return { contact: undefined, messages: [], hasMore: false };
+  // Defesa: o refetch refaz as paginas em momentos diferentes e pode repetir
+  // mensagens na fronteira; deduplica por id (ou instante+papel+conteudo).
+  const seen = new Set<string>();
+  const messages: ConversationMessage[] = [];
+  for (const m of [...pages].reverse().flatMap((p) => p.messages)) {
+    const key = m.id ?? `${m.ocorridoEm}|${m.role}|${m.content ?? m.contentPreview ?? ''}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    messages.push(m);
+  }
   return {
     contact: pages[0].contact,
-    messages: [...pages].reverse().flatMap((p) => p.messages),
+    messages,
     hasMore: pages[pages.length - 1].hasMore,
   };
 }

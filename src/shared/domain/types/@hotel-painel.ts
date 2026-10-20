@@ -193,6 +193,8 @@ export interface ConversationListResponse {
 }
 
 export interface ConversationMessage {
+  /** Id estavel da mensagem (desempata mensagens com o mesmo instante). */
+  id?: string;
   role: string;
   tipo: string;
   contentPreview: string | null;
@@ -223,12 +225,14 @@ export interface ConversationDetailResponse {
   messages: ConversationMessage[];
   /** Ha mensagens mais antigas que as devolvidas. */
   hasMore: boolean;
+  /** Cursor opaco para a pagina anterior; null quando nao ha mais. */
+  nextCursor: string | null;
 }
 
 export interface ConversationDetailParams {
   limit?: number;
-  /** ISO de `ocorridoEm` da mensagem mais antiga ja carregada. */
-  before?: string;
+  /** `nextCursor` da pagina anterior. */
+  cursor?: string;
 }
 
 export interface ConversationFilters {
