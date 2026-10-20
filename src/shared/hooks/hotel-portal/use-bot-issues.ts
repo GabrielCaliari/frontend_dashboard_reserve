@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { hotelPortalService } from '@/src/modules/hotel-portal/infrastructure/adapters';
 import type { BotIssueFilters, BotIssueStatus } from '@/src/shared/domain/types/@hotel-painel';
 
@@ -11,6 +11,8 @@ export function useBotIssues(clientId: string | null, filters: BotIssueFilters =
     queryKey: [...base(clientId), 'list', filters],
     queryFn: () => hotelPortalService.listBotIssues(clientId!, filters),
     enabled: !!clientId,
+    // "Carregar mais" (limit maior) mantem a lista atual na tela enquanto busca.
+    placeholderData: keepPreviousData,
     retry: false,
     staleTime: 60_000,
   });

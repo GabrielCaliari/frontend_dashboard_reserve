@@ -10,6 +10,7 @@ import {
   PainelPageShell,
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
+import { LoadMoreFooter } from "@/src/presentation/components/organisms/hotel-portal/painel/load-more-footer";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import {
@@ -29,6 +30,8 @@ function lastDays(days: number): { from: string; to: string } {
   return { from: isoDay(from), to: isoDay(to) };
 }
 
+const PAGE_SIZE = 50;
+
 const fieldClass = "rounded-lg border border-border bg-background px-3 py-2 text-sm";
 
 /** Feedbacks dos hospedes coletados pelo bot apos a estadia. */
@@ -40,7 +43,7 @@ export default function FeedbacksPage() {
   const [period, setPeriod] = useState(() => lastDays(30));
   const [sentimento, setSentimento] = useState<FeedbackSentiment | "">("");
 
-  const filters = useMemo(
+  const baseFilters = useMemo(
     () => ({
       from: period.from,
       to: period.to,
@@ -48,8 +51,13 @@ export default function FeedbacksPage() {
     }),
     [period, sentimento],
   );
+  // O limite volta ao inicial quando qualquer filtro muda.
+  const filterKey = JSON.stringify(baseFilters);
+  const [loaded, setLoaded] = useState({ key: filterKey, limit: PAGE_SIZE });
+  const limit = loaded.key === filterKey ? loaded.limit : PAGE_SIZE;
+  const filters = useMemo(() => ({ ...baseFilters, limit }), [baseFilters, limit]);
 
-  const { data: list, isLoading, isError } = useFeedbacks(clientId, filters);
+  const { data: list, isLoading, isError, isFetching } = useFeedbacks(clientId, filters);
   const { data: summary } = useFeedbacksSummary(clientId, week);
 
   return (
@@ -122,7 +130,15 @@ export default function FeedbacksPage() {
         </div>
 
         {list && list.items.length > 0 ? (
-          <FeedbackList items={list.items} />
+          <>
+            <FeedbackList items={list.items} />
+            <LoadMoreFooter
+              shown={list.items.length}
+              total={list.total}
+              isLoading={isFetching}
+              onLoadMore={() => setLoaded({ key: filterKey, limit: limit + PAGE_SIZE })}
+            />
+          </>
         ) : (
           <PortalEmptyState
             title="Nenhum feedback encontrado"

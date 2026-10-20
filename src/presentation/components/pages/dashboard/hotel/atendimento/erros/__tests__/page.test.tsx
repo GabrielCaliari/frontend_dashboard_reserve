@@ -5,6 +5,8 @@ import userEvent from "@testing-library/user-event";
 const h = vi.hoisted(() => ({
   perm: true,
   mutate: vi.fn(),
+  list: vi.fn(),
+  total: 1,
 }));
 
 vi.mock("@/src/modules/settings/presentation/hooks/tenant-capabilities-provider", () => ({
@@ -23,7 +25,10 @@ const issue = {
 };
 vi.mock("@/src/shared/hooks/hotel-portal", () => ({
   useActiveHotelClient: () => ({ data: { id: "c1" }, isLoading: false }),
-  useBotIssues: () => ({ data: { items: [issue], total: 1 }, isLoading: false, isError: false }),
+  useBotIssues: (...args: unknown[]) => {
+    h.list(...args);
+    return { data: { items: [issue], total: h.total }, isLoading: false, isError: false, isFetching: false };
+  },
   useBotIssuesSummary: () => ({ data: { total: 1, porCodigo: [{ codigo: "WF_TIMEOUT", categoria: "tecnico", quantidade: 1 }] } }),
   useBotIssue: (_c: string, id: string | null) => ({
     data: id ? { ...issue, mensagemHospede: "oi tudo bem", respostaBot: "ola", ultimasMensagens: [], url: null } : undefined,
@@ -38,6 +43,31 @@ describe("BotErrosPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     h.perm = true;
+    h.total = 1;
+  });
+
+  it("manda datas puras e o `to` é o dia de hoje", () => {
+    render(<BotErrosPage />);
+    const filters = h.list.mock.calls.at(-1)![1];
+    expect(filters.to).toBe(new Date().toISOString().slice(0, 10));
+    expect(filters.from).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("mostra X de N e carrega mais aumentando o limit em 50", async () => {
+    h.total = 120;
+    render(<BotErrosPage />);
+    expect(screen.getByText("Mostrando 1 de 120")).toBeTruthy();
+    expect(h.list.mock.calls.at(-1)![1].limit).toBe(50);
+    await userEvent.click(screen.getByRole("button", { name: "Carregar mais" }));
+    expect(h.list.mock.calls.at(-1)![1].limit).toBe(100);
+  });
+
+  it("volta ao limit inicial ao mudar um filtro", async () => {
+    h.total = 120;
+    render(<BotErrosPage />);
+    await userEvent.click(screen.getByRole("button", { name: "Carregar mais" }));
+    await userEvent.selectOptions(screen.getByLabelText("Status"), "VISTO");
+    expect(h.list.mock.calls.at(-1)![1]).toMatchObject({ status: "VISTO", limit: 50 });
   });
 
   it("lista, abre o detalhe e muda status pelo hook", async () => {

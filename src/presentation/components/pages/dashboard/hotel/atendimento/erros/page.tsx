@@ -15,6 +15,7 @@ import {
   PainelPageShell,
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
+import { LoadMoreFooter } from "@/src/presentation/components/organisms/hotel-portal/painel/load-more-footer";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
 import { BotIssuesTable } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-issues/bot-issues-table";
 import { BotIssueDetailModal } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-issues/bot-issue-detail";
@@ -38,6 +39,8 @@ function lastDays(days: number): { from: string; to: string } {
   return { from: isoDay(from), to: isoDay(to) };
 }
 
+const PAGE_SIZE = 50;
+
 const fieldClass = "rounded-lg border border-border bg-background px-3 py-2 text-sm";
 
 /**
@@ -58,7 +61,7 @@ export default function BotErrosPage() {
   const [codigo, setCodigo] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
 
-  const filters = useMemo(
+  const baseFilters = useMemo(
     () => ({
       from: period.from,
       to: period.to,
@@ -68,8 +71,13 @@ export default function BotErrosPage() {
     }),
     [period, categoria, status, codigo],
   );
+  // O limite volta ao inicial quando qualquer filtro muda.
+  const filterKey = JSON.stringify(baseFilters);
+  const [loaded, setLoaded] = useState({ key: filterKey, limit: PAGE_SIZE });
+  const limit = loaded.key === filterKey ? loaded.limit : PAGE_SIZE;
+  const filters = useMemo(() => ({ ...baseFilters, limit }), [baseFilters, limit]);
 
-  const { data: list, isLoading, isError } = useBotIssues(clientId, filters);
+  const { data: list, isLoading, isError, isFetching } = useBotIssues(clientId, filters);
   const { data: summary } = useBotIssuesSummary(clientId, week);
   const { data: detail, isLoading: detailLoading } = useBotIssue(clientId, openId);
   const updateStatus = useUpdateBotIssueStatus(tenantId, clientId);
@@ -156,7 +164,15 @@ export default function BotErrosPage() {
         </div>
 
         {list && list.items.length > 0 ? (
-          <BotIssuesTable items={list.items} onOpen={setOpenId} />
+          <>
+            <BotIssuesTable items={list.items} onOpen={setOpenId} />
+            <LoadMoreFooter
+              shown={list.items.length}
+              total={list.total}
+              isLoading={isFetching}
+              onLoadMore={() => setLoaded({ key: filterKey, limit: limit + PAGE_SIZE })}
+            />
+          </>
         ) : (
           <PortalEmptyState
             title="Nenhum erro encontrado"

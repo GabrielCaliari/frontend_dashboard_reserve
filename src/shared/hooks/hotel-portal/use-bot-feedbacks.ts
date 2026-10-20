@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { hotelPortalService } from '@/src/modules/hotel-portal/infrastructure/adapters';
 import type { FeedbackFilters } from '@/src/shared/domain/types/@hotel-painel';
 
@@ -10,6 +10,7 @@ export function useFeedbacks(clientId: string | null, filters: FeedbackFilters =
     queryKey: [...base(clientId), 'list', filters],
     queryFn: () => hotelPortalService.listFeedbacks(clientId!, filters),
     enabled: !!clientId,
+    placeholderData: keepPreviousData,
     retry: false,
     staleTime: 60_000,
   });
