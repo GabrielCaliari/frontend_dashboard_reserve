@@ -5,9 +5,9 @@
 export interface CreateBotIntegrationConfigDto {
   /** Identificador do tenant no bot (vai como tenant_id no Canal B). */
   bot_tenant_ref?: string;
-  /** URL do WF6 (Canal B). Em producao: https publico. */
+  /** URL do WF6 (Canal B). Em producao: https publico. String vazia limpa (grava null). */
   n8n_panel_webhook_url?: string;
-  /** URL do WF9 (eventos do motor para o bot). */
+  /** URL do WF9 (eventos do motor para o bot). String vazia limpa (grava null). */
   n8n_motor_webhook_url?: string;
   /** Write-only. Segredo HMAC do Canal B (16-200). Prefira PATCH regenerate-panel-secret. */
   panel_webhook_secret?: string;
@@ -52,9 +52,9 @@ export interface BotIntegrationConfigResponseDto {
 export interface UpdateBotIntegrationConfigDto {
   /** Identificador do tenant no bot (vai como tenant_id no Canal B). */
   bot_tenant_ref?: string;
-  /** URL do WF6 (Canal B). Em producao: https publico. */
+  /** URL do WF6 (Canal B). Em producao: https publico. String vazia limpa (grava null). */
   n8n_panel_webhook_url?: string;
-  /** URL do WF9 (eventos do motor para o bot). */
+  /** URL do WF9 (eventos do motor para o bot). String vazia limpa (grava null). */
   n8n_motor_webhook_url?: string;
   /** Write-only. Segredo HMAC do Canal B (16-200). Prefira PATCH regenerate-panel-secret. */
   panel_webhook_secret?: string;

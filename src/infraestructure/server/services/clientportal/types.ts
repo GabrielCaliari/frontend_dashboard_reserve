@@ -207,6 +207,8 @@ export interface ConversationDetailContactDto {
 }
 
 export interface ConversationMessageDto {
+  /** Id estavel da mensagem (chave de lista; desempata mensagens com o mesmo instante). */
+  id: string;
   role: string;
   tipo: string;
   /** Previa de ate 180 caracteres (lista). */
@@ -225,6 +227,8 @@ export interface ConversationDetailResponseDto {
   messages: ConversationMessageDto[];
   /** Ha mensagens mais antigas que as devolvidas. */
   hasMore: boolean;
+  /** Cursor opaco para a pagina anterior (mande em ?cursor=). null quando hasMore e false. */
+  nextCursor: string | null;
 }
 
 export interface FunnelLeadCardDto {
@@ -432,7 +436,9 @@ export type GetWhatsAppConversationDetailResponse = ConversationDetailResponseDt
 export interface GetWhatsAppConversationDetailParams {
   /** Quantidade de mensagens mais recentes. */
   limit?: number;
-  /** ISO: so mensagens com ocorrido_em anterior a este instante. */
+  /** Cursor opaco devolvido em nextCursor: traz as mensagens anteriores a ele em (ocorrido_em, id). Prefira a before. */
+  cursor?: string;
+  /** Obsoleto, use cursor. ISO: so mensagens com ocorrido_em anterior a este instante (pode pular mensagens empatadas). Ignorado quando cursor vem. */
   before?: string;
 }
 
@@ -451,9 +457,9 @@ export interface GetWhatsAppFunnelMetricsParams {
 export type ListBotIssuesResponse = BotIssueListResponseDto;
 /** GET /hotel-portal/{clientId}/bot-issues — query params */
 export interface ListBotIssuesParams {
-  /** ISO: so erros com ocorrido_em a partir deste instante. */
+  /** Instante ISO (gte exato) ou data YYYY-MM-DD (00:00 desse dia em America/Sao_Paulo). */
   from?: string;
-  /** ISO: so erros com ocorrido_em ate este instante. */
+  /** Instante ISO (lte exato) ou data YYYY-MM-DD (inclui o dia inteiro em America/Sao_Paulo). */
   to?: string;
   categoria?: 'tecnico' | 'conversa' | 'socorro';
   /** Codigo do erro (ex.: excecao, revisor_corrigiu). */
@@ -467,9 +473,9 @@ export interface ListBotIssuesParams {
 export type GetBotIssuesSummaryResponse = BotIssueSummaryResponseDto;
 /** GET /hotel-portal/{clientId}/bot-issues/resumo — query params */
 export interface GetBotIssuesSummaryParams {
-  /** ISO: so erros com ocorrido_em a partir deste instante. */
+  /** Instante ISO (gte exato) ou data YYYY-MM-DD (00:00 desse dia em America/Sao_Paulo). */
   from?: string;
-  /** ISO: so erros com ocorrido_em ate este instante. */
+  /** Instante ISO (lte exato) ou data YYYY-MM-DD (inclui o dia inteiro em America/Sao_Paulo). */
   to?: string;
 }
 
@@ -477,9 +483,9 @@ export interface GetBotIssuesSummaryParams {
 export type ListFeedbacksResponse = BotFeedbackListResponseDto;
 /** GET /hotel-portal/{clientId}/feedbacks — query params */
 export interface ListFeedbacksParams {
-  /** ISO: so feedbacks com ocorrido_em a partir deste instante. */
+  /** Instante ISO (gte exato) ou data YYYY-MM-DD (00:00 desse dia em America/Sao_Paulo). */
   from?: string;
-  /** ISO: so feedbacks com ocorrido_em ate este instante. */
+  /** Instante ISO (lte exato) ou data YYYY-MM-DD (inclui o dia inteiro em America/Sao_Paulo). */
   to?: string;
   sentimento?: 'positivo' | 'neutro' | 'negativo';
   page?: number;
@@ -490,9 +496,9 @@ export interface ListFeedbacksParams {
 export type GetFeedbacksSummaryResponse = BotFeedbackSummaryResponseDto;
 /** GET /hotel-portal/{clientId}/feedbacks/resumo — query params */
 export interface GetFeedbacksSummaryParams {
-  /** ISO: so feedbacks com ocorrido_em a partir deste instante. */
+  /** Instante ISO (gte exato) ou data YYYY-MM-DD (00:00 desse dia em America/Sao_Paulo). */
   from?: string;
-  /** ISO: so feedbacks com ocorrido_em ate este instante. */
+  /** Instante ISO (lte exato) ou data YYYY-MM-DD (inclui o dia inteiro em America/Sao_Paulo). */
   to?: string;
 }
 
