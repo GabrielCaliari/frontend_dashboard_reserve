@@ -6,12 +6,13 @@ import { Info } from "lucide-react";
  */
 export function AttributionWindowBanner({ windowDays }: { windowDays: number }) {
   return (
-    <div className="flex items-start gap-2 rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
-      <Info className="mt-0.5 size-3.5 shrink-0" />
+    <p className="flex items-start gap-2 rounded-xl border border-border/70 bg-default-50 px-4 py-3 text-sm text-foreground/75">
+      <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-primary" />
       <span>
-        Os números desta seção contam conversas e reservas originadas em até {windowDays} dias após o clique no
-        anúncio ou link — essa é a janela de atribuição usada em todo o painel.
+        Os números desta tela contam conversas e reservas que começaram em até{" "}
+        <strong className="font-medium text-foreground">{windowDays} dias</strong> depois do clique no
+        anúncio ou no link — a mesma janela de atribuição usada em todo o painel.
       </span>
-    </div>
+    </p>
   );
 }

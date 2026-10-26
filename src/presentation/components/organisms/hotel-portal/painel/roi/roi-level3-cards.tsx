@@ -1,4 +1,5 @@
-import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
+import { BedDouble, Receipt, TrendingUp, Wallet } from "lucide-react";
+import { MetricCard } from "@/src/presentation/components/organisms/hotel-portal/ui/metric-card";
 import { formatMoney, formatPercent } from "@/src/shared/utils/hotel-format";
 import type { RoiNivel3 } from "@/src/shared/domain/types/@hotel-painel";
 
@@ -10,31 +11,30 @@ import type { RoiNivel3 } from "@/src/shared/domain/types/@hotel-painel";
  */
 export function RoiLevel3Cards({ data }: { data: RoiNivel3 }) {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">Receita atribuída</p>
-        <p className="text-xl font-semibold">
-          {formatMoney(data.revenueAttributed.value)}
-        </p>
-      </Card>
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">ROAS</p>
-        <p className="text-xl font-semibold">{data.roas}</p>
-      </Card>
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">Ticket médio</p>
-        <p className="text-xl font-semibold">
-          {formatMoney(data.avgTicket.value)}
-        </p>
-      </Card>
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">
-          Taxa de conversão lead → reserva
-        </p>
-        <p className="text-xl font-semibold">
-          {formatPercent(data.leadToReservationRate)}
-        </p>
-      </Card>
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <MetricCard
+        label="Receita atribuída"
+        value={formatMoney(data.revenueAttributed.value)}
+        icon={Wallet}
+        accent
+        hint="Reservas confirmadas que começaram num anúncio ou link"
+      />
+      <MetricCard
+        label="Retorno (ROAS)"
+        value={`${data.roas.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}x`}
+        icon={TrendingUp}
+        hint="Receita atribuída ÷ investimento"
+      />
+      <MetricCard
+        label="Ticket médio"
+        value={formatMoney(data.avgTicket.value)}
+        icon={Receipt}
+      />
+      <MetricCard
+        label="Conversas que viraram reserva"
+        value={formatPercent(data.leadToReservationRate)}
+        icon={BedDouble}
+      />
     </div>
   );
 }

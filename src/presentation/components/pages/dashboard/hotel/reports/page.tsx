@@ -1,285 +1,246 @@
 "use client";
 
-import { useState } from "react";
-import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
+import { useEffect, useState } from "react";
+import { CheckCircle2, ChevronRight, Clock, FileText, X } from "lucide-react";
 import {
   useActiveHotelClient,
   useHotelPortalReports,
 } from "@/src/shared/hooks/hotel-portal";
-import { Card, CardBody, Spinner, Chip } from "@heroui/react";
-import { AlertCircle, FileText, CheckCircle2, Clock, Eye } from "lucide-react";
-import type { MonthlyReport, EReportStatus } from "@/src/shared/domain/types/@hotel-portal";
+import type { EReportStatus, MonthlyReport } from "@/src/shared/domain/types/@hotel-portal";
+import {
+  PainelPageShell,
+  PainelSection,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
+import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
+import { ScreenLinks } from "@/src/presentation/components/organisms/hotel-portal/painel/screen-links";
 import { ManageDataButton } from "@/src/presentation/components/organisms/hotel-portal/manage-data-button";
+import { formatMonthLabel } from "@/src/shared/utils/hotel-format";
 
-const STATUS_CONFIG: Record<
-  EReportStatus,
-  { label: string; color: "default" | "warning" | "success" }
-> = {
-  DRAFT: { label: "Em preparação", color: "default" },
-  REVIEW: { label: "Em revisão", color: "warning" },
-  PUBLISHED: { label: "Publicado", color: "success" },
+const STATUS: Record<EReportStatus, { label: string; tone: string }> = {
+  DRAFT: { label: "Em preparação", tone: "bg-default-100 text-foreground/70" },
+  REVIEW: { label: "Em revisão", tone: "bg-warning/15 text-warning-600" },
+  PUBLISHED: { label: "Publicado", tone: "bg-success/15 text-success-600" },
 };
 
-function ReportDetail({ report, onClose }: { report: MonthlyReport; onClose: () => void }) {
-  const cfg = STATUS_CONFIG[report.status];
+const longDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
 
+/** "outubro de 2026" com a inicial maiuscula, para titulo. */
+function monthTitle(referenceMonth: string) {
+  const label = formatMonthLabel(referenceMonth);
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+function StatusChip({ status }: { status: EReportStatus }) {
+  const cfg = STATUS[status];
   return (
-    <Card className="bg-default-50 border border-border rounded-3xl shadow-none animate-fade-in">
-      <CardBody className="p-6 sm:p-8 space-y-6">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h2 className="text-xl font-bold text-foreground">
-                Relatório — {report.reference_month.slice(0, 7)}
-              </h2>
-              <Chip size="sm" variant="flat" color={cfg.color}>
-                {cfg.label}
-              </Chip>
-            </div>
-            {report.published_at && (
-              <p className="text-xs text-muted-foreground">
-                Publicado em {new Date(report.published_at).toLocaleDateString("pt-BR", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
-            )}
-          </div>
-          <button
-            onClick={onClose}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-default-100"
-          >
-            Fechar
-          </button>
-        </div>
-
-        {report.status !== "PUBLISHED" ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Clock className="h-12 w-12 text-warning mb-4 opacity-60" />
-            <p className="font-semibold text-foreground">Relatório em preparação</p>
-            <p className="text-sm text-muted-foreground mt-2 max-w-sm">
-              A equipe RÉSERVE está preparando o relatório deste mês. Você receberá um email assim que for publicado.
-            </p>
-          </div>
-        ) : (
-          <>
-            {/* Resumo executivo */}
-            {report.executive_summary && (
-              <div className="rounded-2xl bg-background border border-border p-5">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                  Resumo Executivo
-                </p>
-                <p className="text-sm text-foreground leading-relaxed">{report.executive_summary}</p>
-              </div>
-            )}
-
-            {/* Destaques */}
-            {report.highlights && report.highlights.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                  Destaques do Mês
-                </p>
-                <ul className="space-y-2">
-                  {report.highlights.map((h, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-foreground">
-                      <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0 mt-0.5" />
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Próximos passos */}
-            {report.next_steps && report.next_steps.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                  Próximos Passos
-                </p>
-                <ul className="space-y-2">
-                  {report.next_steps.map((s, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-foreground">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[10px] font-bold text-primary">{i + 1}</span>
-                      </div>
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Comentário estratégico */}
-            {report.admin_comment && (
-              <div className="rounded-2xl bg-primary/5 border border-primary/20 p-5">
-                <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
-                  Comentário Estratégico — RÉSERVE
-                </p>
-                <p className="text-sm text-foreground leading-relaxed">{report.admin_comment}</p>
-              </div>
-            )}
-          </>
-        )}
-      </CardBody>
-    </Card>
+    <span className={`inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[11px] font-medium ${cfg.tone}`}>
+      {cfg.label}
+    </span>
   );
 }
 
-export default function HotelReportsPage() {
-  const { data: client } = useActiveHotelClient();
-  const { data: reports, isLoading } = useHotelPortalReports(client?.id ?? null);
+function ReportRow({
+  report,
+  selected,
+  onSelect,
+}: {
+  report: MonthlyReport;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const published = report.status === "PUBLISHED";
+  return (
+    <li>
+      <button
+        type="button"
+        aria-current={selected ? "true" : undefined}
+        onClick={onSelect}
+        className={`flex w-full items-center gap-4 rounded-2xl border px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+          selected
+            ? "border-primary/40 bg-primary/[0.06]"
+            : "border-border/80 bg-default-50 hover:border-primary/30"
+        }`}
+      >
+        <span
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+            published ? "bg-success/10 text-success-600" : "bg-default-100 text-muted-foreground"
+          }`}
+        >
+          {published ? <FileText className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-medium text-foreground">{monthTitle(report.reference_month)}</span>
+          <span className="block text-xs text-muted-foreground">
+            {published && report.published_at
+              ? `Publicado em ${longDate(report.published_at)}`
+              : "A equipe RÉSERVE está preparando este relatório"}
+          </span>
+        </span>
+        <StatusChip status={report.status} />
+        <ChevronRight aria-hidden className="h-4 w-4 shrink-0 text-muted-foreground" />
+      </button>
+    </li>
+  );
+}
 
-  const [selected, setSelected] = useState<MonthlyReport | null>(null);
-
-  if (isLoading) {
-    return (
-      <LayoutScopeRoot>
-        <div className="flex justify-center items-center py-32">
-          <Spinner size="lg" color="primary" />
+function ReportDetail({ report, onClose }: { report: MonthlyReport; onClose: () => void }) {
+  return (
+    <article className="animate-fade-in space-y-6 rounded-2xl border border-border/80 bg-default-50 p-5 sm:p-7">
+      <header className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-foreground">
+            {monthTitle(report.reference_month)}
+          </h2>
+          <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <StatusChip status={report.status} />
+            {report.published_at && <span>Publicado em {longDate(report.published_at)}</span>}
+          </p>
         </div>
-      </LayoutScopeRoot>
-    );
-  }
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Fechar relatório"
+          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-default-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </header>
 
-  const publishedReports = (reports ?? []).filter((r: MonthlyReport) => r.status === "PUBLISHED");
-  const pendingReports = (reports ?? []).filter((r: MonthlyReport) => r.status !== "PUBLISHED");
+      {report.status !== "PUBLISHED" ? (
+        <PortalEmptyState
+          icon={Clock}
+          title="Relatório em preparação"
+          description="A equipe RÉSERVE está fechando os números deste mês. Você recebe um e-mail assim que for publicado."
+        />
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="space-y-6 lg:col-span-2">
+            {report.executive_summary && (
+              <section>
+                <h3 className="mb-2 text-sm font-medium text-foreground">Resumo do mês</h3>
+                <p className="max-w-[70ch] text-[15px] leading-relaxed text-foreground/85">
+                  {report.executive_summary}
+                </p>
+              </section>
+            )}
+          </div>
+
+          {report.highlights && report.highlights.length > 0 && (
+            <section>
+              <h3 className="mb-2 text-sm font-medium text-foreground">Destaques</h3>
+              <ul className="space-y-2">
+                {report.highlights.map((h, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/85">
+                    <CheckCircle2 aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-success-600" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {report.next_steps && report.next_steps.length > 0 && (
+            <section>
+              <h3 className="mb-2 text-sm font-medium text-foreground">Próximos passos</h3>
+              {/* Numerado porque e uma sequencia: a ordem em que a RÉSERVE vai agir. */}
+              <ol className="space-y-2">
+                {report.next_steps.map((s, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/85">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-semibold text-primary">
+                      {i + 1}
+                    </span>
+                    {s}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
+          {report.admin_comment && (
+            <section className="rounded-xl border border-primary/25 bg-primary/[0.06] p-4 lg:col-span-2">
+              <h3 className="mb-1.5 text-sm font-medium text-foreground">Comentário da RÉSERVE</h3>
+              <p className="max-w-[70ch] text-sm leading-relaxed text-foreground/85">{report.admin_comment}</p>
+            </section>
+          )}
+        </div>
+      )}
+    </article>
+  );
+}
+
+/**
+ * Relatorio mensal: a lista de meses de um lado e o relatorio aberto do
+ * outro. O mais recente publicado ja abre sozinho — e o que a pessoa veio ver.
+ */
+export default function HotelReportsPage() {
+  const { data: client, isLoading: clientLoading } = useActiveHotelClient();
+  const { data: reports, isLoading, isError } = useHotelPortalReports(client?.id ?? null);
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const list = [...(reports ?? [])].sort((a, b) => b.reference_month.localeCompare(a.reference_month));
+  const selected = list.find((r) => r.id === selectedId) ?? null;
+
+  useEffect(() => {
+    if (selectedId !== null || list.length === 0) return;
+    const first = list.find((r) => r.status === "PUBLISHED") ?? null;
+    if (first) setSelectedId(first.id);
+    // So na primeira carga: depois a escolha e da pessoa.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reports]);
 
   return (
-    <LayoutScopeRoot>
-      <div className="mx-auto space-y-8 px-4 py-8 sm:px-8 lg:px-10 max-w-[1000px] animate-fade-in">
-        {/* Header */}
-        <div className="border-b border-border/70 pb-6">
-          <div className="relative flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">Relatório Mensal</h1>
-              <p className="text-muted-foreground mt-2 text-base">
-                Acompanhe os relatórios mensais preparados pela equipe RÉSERVE.
-              </p>
-            </div>
-            <ManageDataButton clientId={client?.id} tab="report" />
+    <PainelPageShell
+      title="Relatório mensal"
+      description="Todo mês a equipe RÉSERVE fecha os números e escreve o que aconteceu, o que deu certo e o que vem a seguir."
+      isLoading={clientLoading || isLoading}
+      isError={isError}
+      errorMessage="Erro ao carregar os relatórios."
+      actions={<ManageDataButton clientId={client?.id} tab="report" />}
+    >
+      {list.length === 0 ? (
+        <PortalEmptyState
+          icon={FileText}
+          title="Nenhum relatório ainda"
+          description="O primeiro relatório mensal é publicado pela equipe RÉSERVE ao fim do mês."
+        />
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
+          <PainelSection title="Meses">
+            <ol className="space-y-2">
+              {list.map((r) => (
+                <ReportRow
+                  key={r.id}
+                  report={r}
+                  selected={r.id === selectedId}
+                  onSelect={() => setSelectedId(r.id)}
+                />
+              ))}
+            </ol>
+          </PainelSection>
+
+          <div className="min-w-0">
+            {selected ? (
+              <ReportDetail report={selected} onClose={() => setSelectedId(null)} />
+            ) : (
+              <PortalEmptyState
+                icon={FileText}
+                title="Escolha um mês"
+                description="Clique num mês ao lado para ler o relatório."
+              />
+            )}
           </div>
         </div>
+      )}
 
-        {/* Relatório selecionado */}
-        {selected && (
-          <ReportDetail report={selected} onClose={() => setSelected(null)} />
-        )}
-
-        {/* Relatórios publicados */}
-        {publishedReports.length > 0 && (
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 rounded-full bg-success" />
-              <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
-                Relatórios Disponíveis
-              </h2>
-            </div>
-            <div className="space-y-3">
-              {publishedReports.map((r: MonthlyReport) => (
-                <Card
-                  key={r.id}
-                  className="bg-default-50 border border-border rounded-2xl shadow-none hover:border-primary/30 transition-all cursor-pointer"
-                  isPressable
-                  onPress={() => setSelected(r)}
-                >
-                  <CardBody className="p-5 flex flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-xl bg-success/10 flex items-center justify-center flex-shrink-0">
-                        <FileText className="h-5 w-5 text-success" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-foreground">
-                          Relatório {r.reference_month.slice(0, 7)}
-                        </p>
-                        {r.published_at && (
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            Publicado em{" "}
-                            {new Date(r.published_at).toLocaleDateString("pt-BR", {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                            })}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {r.notification_sent && (
-                        <CheckCircle2 className="h-4 w-4 text-success" />
-                      )}
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Eye className="h-3.5 w-3.5" />
-                        Ver relatório
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Em preparação */}
-        {pendingReports.length > 0 && (
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 rounded-full bg-warning" />
-              <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
-                Em Preparação
-              </h2>
-            </div>
-            <div className="space-y-3">
-              {pendingReports.map((r: MonthlyReport) => {
-                const cfg = STATUS_CONFIG[r.status];
-                return (
-                  <Card
-                    key={r.id}
-                    className="bg-default-50 border border-border rounded-2xl shadow-none"
-                  >
-                    <CardBody className="p-5 flex flex-row items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-xl bg-warning/10 flex items-center justify-center flex-shrink-0">
-                          <Clock className="h-5 w-5 text-warning" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground">
-                            Relatório {r.reference_month.slice(0, 7)}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            A equipe RÉSERVE está preparando este relatório
-                          </p>
-                        </div>
-                      </div>
-                      <Chip size="sm" variant="flat" color={cfg.color}>
-                        {cfg.label}
-                      </Chip>
-                    </CardBody>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Estado vazio */}
-        {(!reports || reports.length === 0) && (
-          <Card className="border-border bg-default-50 shadow-none border-dashed rounded-3xl">
-            <CardBody className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-20 h-20 rounded-full bg-default-100 flex items-center justify-center mb-6">
-                <FileText className="h-10 w-10 text-muted-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">
-                Nenhum relatório ainda
-              </h3>
-              <p className="text-muted-foreground max-w-sm">
-                O primeiro relatório mensal será disponibilizado pela equipe RÉSERVE ao fim do mês.
-              </p>
-            </CardBody>
-          </Card>
-        )}
-      </div>
-    </LayoutScopeRoot>
+      <ScreenLinks
+        links={[
+          { href: "/dashboard/hotel/retorno", label: "Retorno (ROI)", hint: "Os números por trás do relatório" },
+          { href: "/dashboard/hotel/evolucao", label: "Evolução", hint: "Os marcos desde a entrada da RÉSERVE" },
+          { href: "/dashboard/hotel/plano", label: "Plano", hint: "O que está previsto para o semestre" },
+        ]}
+      />
+    </PainelPageShell>
   );
 }

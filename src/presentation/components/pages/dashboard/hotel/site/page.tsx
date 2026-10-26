@@ -1,283 +1,188 @@
 "use client";
 
-import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
+import { useMemo, useState } from "react";
+import { Globe, LogOut, Package, Users } from "lucide-react";
 import {
   useActiveHotelClient,
   useHotelPortalSite,
 } from "@/src/shared/hooks/hotel-portal";
-import type {
-  SiteMetricItem,
-  SiteMetricsTotals,
-} from "@/src/shared/domain/types/@hotel-portal";
-import { Card, CardBody, Spinner } from "@heroui/react";
-import { AlertCircle, Globe, Users, Clock } from "lucide-react";
-import { ManageDataButton } from "@/src/presentation/components/organisms/hotel-portal/manage-data-button";
-import { EmptyState } from "@/src/presentation/components/organisms/hotel-portal/ui";
-import { SourceBadge } from "@/src/presentation/components/organisms/hotel-portal/ui/source-badge";
+import type { SiteMetricsTotals } from "@/src/shared/domain/types/@hotel-portal";
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
+  PainelPageShell,
+  PainelSection,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
+import { PortalLineChart } from "@/src/presentation/components/organisms/hotel-portal/painel/charts/line-chart";
+import { CHART_COLORS } from "@/src/presentation/components/organisms/hotel-portal/painel/charts/chart-theme";
+import {
+  DateRangeFilter,
+  MONTH_PRESETS,
+  lastDays,
+  type DateRange,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/date-range-filter";
+import { ScreenLinks } from "@/src/presentation/components/organisms/hotel-portal/painel/screen-links";
+import { ManageDataButton } from "@/src/presentation/components/organisms/hotel-portal/manage-data-button";
+import { EmptyState, MetricCard } from "@/src/presentation/components/organisms/hotel-portal/ui";
+import { formatDayMonth, formatNumber, formatPercent } from "@/src/shared/utils/hotel-format";
 
-function fmt(n: number, style: "percent" | "decimal" = "decimal") {
-  if (style === "percent")
-    return new Intl.NumberFormat("pt-BR", {
-      style: "percent",
-      minimumFractionDigits: 1,
-    }).format(n);
-  return new Intl.NumberFormat("pt-BR").format(n);
-}
+const EMPTY_TOTALS: SiteMetricsTotals = {
+  organic_visitors: 0,
+  paid_visitors: 0,
+  direct_visitors: 0,
+  social_visitors: 0,
+  total_visitors: 0,
+  package_page_views: 0,
+  checkout_starts: 0,
+  checkout_completes: 0,
+  conversion_rate: 0,
+  avg_bounce_rate: 0,
+};
 
-function fmtTime(seconds: number) {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}m ${s}s`;
-}
+const ORIGENS: { key: keyof SiteMetricsTotals; label: string; tone: string; hint: string }[] = [
+  { key: "organic_visitors", label: "Busca orgânica", tone: "bg-success", hint: "Google sem pagar" },
+  { key: "paid_visitors", label: "Anúncios", tone: "bg-primary", hint: "Meta e Google Ads" },
+  { key: "direct_visitors", label: "Direto", tone: "bg-foreground/60", hint: "Digitou o endereço ou salvou" },
+  { key: "social_visitors", label: "Redes sociais", tone: "bg-warning", hint: "Instagram e Facebook" },
+];
 
-function KpiCard({
-  label,
-  value,
-  sub,
-  icon: Icon,
-  accent = false,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  icon: React.ElementType;
-  accent?: boolean;
-}) {
-  return (
-    <Card
-      className={`rounded-3xl shadow-none border ${
-        accent ? "bg-primary/5 border-primary/20" : "bg-default-50 border-border"
-      }`}
-    >
-      <CardBody className="p-6 flex flex-col gap-3">
-        <div
-          className={`h-10 w-10 rounded-xl flex items-center justify-center ${
-            accent ? "bg-primary/10" : "bg-default-100"
-          }`}
-        >
-          <Icon className={`h-5 w-5 ${accent ? "text-primary" : "text-muted-foreground"}`} />
-        </div>
-        <div>
-          <p className="text-2xl font-bold text-foreground">{value}</p>
-          <p className="text-sm text-muted-foreground mt-0.5">{label}</p>
-          {sub && <p className="text-xs text-muted-foreground/70 mt-1">{sub}</p>}
-        </div>
-      </CardBody>
-    </Card>
-  );
-}
-
-const PIE_COLORS = ["#22c55e", "#3b82f6", "#a855f7", "#f59e0b"];
-
+/**
+ * Site: o que o GA4 mede de verdade (visitas, origem, paginas de pacote,
+ * abandono). Inicio e fim de checkout vem do motor de reservas, nao do
+ * tracking do site — por isso ficam num bloco a parte, honesto sobre a fonte.
+ */
 export default function HotelSitePage() {
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
-  const { data, isLoading, isError } = useHotelPortalSite(client?.id ?? null);
+  const [period, setPeriod] = useState<DateRange>(() => lastDays(30));
+  const { data, isLoading, isError } = useHotelPortalSite(client?.id ?? null, period);
 
-  if (clientLoading || isLoading) {
-    return (
-      <LayoutScopeRoot>
-        <div className="flex justify-center items-center py-32">
-          <Spinner size="lg" color="primary" />
-        </div>
-      </LayoutScopeRoot>
-    );
-  }
+  const totals = data?.totals ?? EMPTY_TOTALS;
+  const metrics = data?.metrics ?? [];
 
-  if (isError || !data) {
-    return (
-      <LayoutScopeRoot>
-        <div className="mx-auto px-4 py-8 sm:px-8 lg:px-10 max-w-[1400px]">
-          <Card className="border-danger/20 bg-danger/5 shadow-none rounded-3xl">
-            <CardBody className="p-10 text-center">
-              <AlertCircle className="w-10 h-10 text-danger mx-auto mb-4" />
-              <p className="text-base text-danger">Erro ao carregar dados do site.</p>
-            </CardBody>
-          </Card>
-        </div>
-      </LayoutScopeRoot>
-    );
-  }
+  const origens = ORIGENS.map((o) => ({ ...o, value: totals[o.key] })).filter((o) => o.value > 0);
+  const totalOrigens = origens.reduce((s, o) => s + o.value, 0);
 
-  const totals: SiteMetricsTotals = data.totals ?? {
-    organic_visitors: 0,
-    paid_visitors: 0,
-    direct_visitors: 0,
-    social_visitors: 0,
-    total_visitors: 0,
-    package_page_views: 0,
-    checkout_starts: 0,
-    checkout_completes: 0,
-    conversion_rate: 0,
-    avg_bounce_rate: 0,
-  };
-  const metrics: SiteMetricItem[] = data.metrics ?? [];
-
-  const trafficData = [
-    { name: "Orgânico", value: totals.organic_visitors },
-    { name: "Pago", value: totals.paid_visitors },
-    { name: "Direto", value: totals.direct_visitors },
-    { name: "Social", value: totals.social_visitors },
-  ].filter((d) => d.value > 0);
-
-  const timelineData = metrics.slice(-30).map((m) => ({
-    date: m.metric_date.slice(5, 10),
-    Visitantes: m.organic_visitors + m.paid_visitors + m.direct_visitors + m.social_visitors,
-  }));
+  const timeline = useMemo(
+    () =>
+      metrics.map((m) => ({
+        date: formatDayMonth(m.metric_date),
+        visitantes: m.organic_visitors + m.paid_visitors + m.direct_visitors + m.social_visitors,
+      })),
+    [metrics],
+  );
 
   return (
-    <LayoutScopeRoot>
-      <div className="mx-auto space-y-8 px-4 py-8 sm:px-8 lg:px-10 max-w-[1400px] animate-fade-in">
-        {/* Header */}
-        <div className="border-b border-border/70 pb-6">
-          <div className="relative flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">Site</h1>
-                <SourceBadge source="auto" />
-              </div>
-              <p className="text-muted-foreground mt-2 text-base">
-                Tráfego e comportamento dos visitantes, medidos via GA4.
-              </p>
-            </div>
-            <ManageDataButton clientId={client?.id} tab="site" />
-          </div>
+    <PainelPageShell
+      title="Site"
+      description="Quem visita o site da pousada, de onde vem e o que faz lá dentro, medido pelo Google Analytics."
+      isLoading={clientLoading || isLoading}
+      isError={isError}
+      errorMessage="Erro ao carregar dados do site."
+      actions={
+        <div className="flex flex-col items-start gap-3 sm:items-end">
+          <ManageDataButton clientId={client?.id} tab="site" />
+          <DateRangeFilter value={period} onChange={setPeriod} presets={MONTH_PRESETS} />
         </div>
-
-        {/* KPIs — apenas o que GA4/pixel realmente mede */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-          <KpiCard
-            label="Total de Visitantes"
-            value={fmt(totals.total_visitors)}
-            icon={Users}
-          />
-          <KpiCard
-            label="Views de Pacotes"
-            value={fmt(totals.package_page_views)}
-            icon={Globe}
-          />
-          <KpiCard
-            label="Taxa de Abandono"
-            value={fmt(totals.avg_bounce_rate, "percent")}
-            icon={Clock}
-          />
-        </div>
-
-        {/* Charts row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Traffic origin pie */}
-          <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-            <CardBody className="p-6 sm:p-8">
-              <p className="font-semibold text-foreground mb-6">Origem do Tráfego</p>
-              {trafficData.length > 0 ? (
-                <>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={trafficData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        dataKey="value"
-                      >
-                        {trafficData.map((_, i) => (
-                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          background: "hsl(var(--background))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "12px",
-                          fontSize: 12,
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="flex flex-wrap gap-3 mt-4">
-                    {trafficData.map((d, i) => (
-                      <div key={d.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <div
-                          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                          style={{ background: PIE_COLORS[i % PIE_COLORS.length] }}
-                        />
-                        {d.name}: {fmt(d.value)}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
-                  <Globe className="h-8 w-8 mb-2 opacity-40" />
-                  <p className="text-sm">Sem dados disponíveis</p>
-                </div>
-              )}
-            </CardBody>
-          </Card>
-
-          {/* Funil de reservas — depende do motor de reservas (Plano §3.4 / §6) */}
-          <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-            <CardBody className="p-6 sm:p-8">
-              <p className="font-semibold text-foreground mb-2">Funil de Reservas</p>
-              <p className="text-xs text-muted-foreground mb-4">
-                Início de checkout e reservas concluídas vêm do motor de reservas,
-                não do tracking do site.
-              </p>
-              <EmptyState reason="via-motor-em-breve" compact />
-            </CardBody>
-          </Card>
-        </div>
-
-        {/* Timeline chart */}
-        {timelineData.length > 0 && (
-          <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-            <CardBody className="p-6 sm:p-8">
-              <div className="flex items-center justify-between mb-6">
-                <p className="font-semibold text-foreground">Visitantes — últimos 30 dias</p>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 bg-primary rounded-full inline-block" />
-                    Visitantes
-                  </span>
-                </div>
-              </div>
-              <ResponsiveContainer width="100%" height={240}>
-                <LineChart data={timelineData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} />
-                  <Tooltip
-                    contentStyle={{
-                      background: "hsl(var(--background))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "12px",
-                      fontSize: 12,
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="Visitantes"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardBody>
-          </Card>
-        )}
+      }
+    >
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <MetricCard
+          label="Visitantes"
+          value={formatNumber(totals.total_visitors)}
+          icon={Users}
+          source="auto"
+          accent
+        />
+        <MetricCard
+          label="Páginas de pacote vistas"
+          value={formatNumber(totals.package_page_views)}
+          icon={Package}
+          source="auto"
+          hint="Quando alguém abriu um pacote ou acomodação"
+        />
+        <MetricCard
+          label="Taxa de abandono"
+          value={formatPercent(totals.avg_bounce_rate * 100)}
+          icon={LogOut}
+          source="auto"
+          hint="Saiu sem interagir com nada"
+        />
+        <MetricCard
+          label="Vieram de anúncio"
+          value={totalOrigens ? formatPercent((totals.paid_visitors / totalOrigens) * 100, 0) : "—"}
+          icon={Globe}
+          source="auto"
+          hint="Parcela dos visitantes que chegou por Meta ou Google Ads"
+        />
       </div>
-    </LayoutScopeRoot>
+
+      <div className="grid gap-4 lg:grid-cols-5">
+        <div className="lg:col-span-2">
+          <PainelSection title="De onde vêm os visitantes">
+          <div className="rounded-2xl border border-border/80 bg-default-50 p-5">
+            {totalOrigens === 0 ? (
+              <EmptyState reason="sem-dados-periodo" compact />
+            ) : (
+              <>
+                <div className="flex h-2.5 overflow-hidden rounded-full bg-default-100" aria-hidden>
+                  {origens.map((o) => (
+                    <span
+                      key={o.key}
+                      className={o.tone}
+                      style={{ width: `${(o.value / totalOrigens) * 100}%` }}
+                    />
+                  ))}
+                </div>
+                <ul className="mt-4 divide-y divide-border/60">
+                  {origens.map((o) => (
+                    <li key={o.key} className="flex items-center justify-between gap-3 py-2 text-sm">
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span aria-hidden className={`size-2 shrink-0 rounded-full ${o.tone}`} />
+                        <span className="flex min-w-0 flex-col">
+                          <span className="font-medium text-foreground">{o.label}</span>
+                          <span className="truncate text-xs text-muted-foreground">{o.hint}</span>
+                        </span>
+                      </span>
+                      <span className="shrink-0 tabular-nums">
+                        {formatNumber(o.value)}
+                        <span className="ml-1.5 text-xs text-muted-foreground">
+                          {Math.round((o.value / totalOrigens) * 100)}%
+                        </span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+          </PainelSection>
+        </div>
+
+        <div className="lg:col-span-3">
+          <PainelSection title="Visitantes por dia">
+            <div className="rounded-2xl border border-border/80 bg-default-50 p-5">
+              <PortalLineChart
+                data={timeline}
+                xKey="date"
+                series={[{ key: "visitantes", label: "Visitantes", color: CHART_COLORS.primary }]}
+                valueFormatter={formatNumber}
+              />
+            </div>
+          </PainelSection>
+        </div>
+      </div>
+
+      <PainelSection
+        title="Do site à reserva"
+        description="Início de checkout e reservas concluídas vêm do motor de reservas, não do tracking do site."
+      >
+        <EmptyState reason="via-motor-em-breve" />
+      </PainelSection>
+
+      <ScreenLinks
+        links={[
+          { href: "/dashboard/hotel/trafego", label: "Tráfego pago", hint: "O que foi investido para trazer essas visitas" },
+          { href: "/dashboard/hotel/whatsapp-links", label: "Links rastreáveis", hint: "O botão de WhatsApp do site, com origem marcada" },
+        ]}
+      />
+    </PainelPageShell>
   );
 }

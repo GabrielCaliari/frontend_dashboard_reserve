@@ -4,7 +4,7 @@ import { FUNNEL_STAGES, stageLabel } from "@/src/presentation/components/organis
 import type { FunnelStage } from "@/src/shared/domain/types/@hotel-painel";
 
 /** Etapas da jornada na ordem do funil; "Perdido" nao e etapa, e desfecho. */
-const JORNADA = FUNNEL_STAGES.map((s) => s.stage).filter((s) => s !== "PERDIDO");
+const JORNADA: FunnelStage[] = FUNNEL_STAGES.map((s) => s.stage).filter((s) => s !== "PERDIDO");
 
 /**
  * Regua da jornada do hospede: onde esta conversa esta no caminho do primeiro

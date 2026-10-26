@@ -108,6 +108,10 @@ import type {
   SemesterPlan,
 } from '@/src/shared/domain/types/@hotel-painel';
 
+// So a listagem/criacao cross-tenant de clientes (super admin sem tenant
+// selecionado) dispensa o x-tenant-id. Todas as outras rotas /admin/hotel-portal
+// passam pelo TenantGuard do backend e devolvem 400 sem o header — nao usar
+// adminHeaders nelas.
 const adminConfig = { headers: { 'x-skip-tenant': 'true' } };
 const adminHeaders = adminConfig as never;
 
@@ -216,18 +220,17 @@ export const hotelPortalService = {
   async listReports(clientId: string): Promise<MonthlyReport[]> {
     const res = await api.get<any>(
       `/admin/hotel-portal/reports/client/${clientId}`,
-      adminHeaders,
     );
     return toArray<MonthlyReport>(res.data);
   },
 
   async getReport(reportId: string): Promise<MonthlyReport> {
-    const res = await api.get<MonthlyReport>(`/admin/hotel-portal/reports/${reportId}`, adminHeaders);
+    const res = await api.get<MonthlyReport>(`/admin/hotel-portal/reports/${reportId}`);
     return res.data;
   },
 
   async createReport(data: CreateReportDto): Promise<MonthlyReport> {
-    const res = await api.post<MonthlyReport>('/admin/hotel-portal/reports', data, adminHeaders);
+    const res = await api.post<MonthlyReport>('/admin/hotel-portal/reports', data);
     return res.data;
   },
 
@@ -235,7 +238,6 @@ export const hotelPortalService = {
     const res = await api.patch<MonthlyReport>(
       `/admin/hotel-portal/reports/${reportId}/submit-review`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -244,7 +246,6 @@ export const hotelPortalService = {
     const res = await api.patch<MonthlyReport>(
       `/admin/hotel-portal/reports/${reportId}/submit-review`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -253,7 +254,6 @@ export const hotelPortalService = {
     const res = await api.patch<MonthlyReport>(
       `/admin/hotel-portal/reports/${reportId}/publish`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -264,20 +264,18 @@ export const hotelPortalService = {
     const res = await api.post<ReputationEntry>(
       `/admin/hotel-portal/metrics/${clientId}/reputation`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
 
   async listReputation(clientId: string): Promise<ReputationEntry[]> {
-    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/reputation`, adminHeaders);
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/reputation`);
     return toArray<ReputationEntry>(res.data);
   },
 
   async getReputationSummary(clientId: string): Promise<ReputationSummary> {
     const res = await api.get<ReputationSummary>(
       `/admin/hotel-portal/metrics/${clientId}/reputation/summary`,
-      adminHeaders,
     );
     return res.data;
   },
@@ -288,20 +286,18 @@ export const hotelPortalService = {
     const res = await api.post<KpiEntry>(
       `/admin/hotel-portal/metrics/${clientId}/kpi`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
 
   async listKpi(clientId: string): Promise<KpiEntry[]> {
-    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/kpi`, adminHeaders);
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/kpi`);
     return toArray<KpiEntry>(res.data);
   },
 
   async getKpiSummary(clientId: string): Promise<KpiSummary> {
     const res = await api.get<KpiSummary>(
       `/admin/hotel-portal/metrics/${clientId}/kpi/summary`,
-      adminHeaders,
     );
     return res.data;
   },
@@ -312,13 +308,12 @@ export const hotelPortalService = {
     const res = await api.post<BookingWindowEntry>(
       `/admin/hotel-portal/metrics/${clientId}/booking-window`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
 
   async listBookingWindow(clientId: string): Promise<BookingWindowEntry[]> {
-    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/booking-window`, adminHeaders);
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/booking-window`);
     return toArray<BookingWindowEntry>(res.data);
   },
 
@@ -328,20 +323,18 @@ export const hotelPortalService = {
     const res = await api.post<RateParityEntry>(
       `/admin/hotel-portal/metrics/${clientId}/rate-parity`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
 
   async listRateParity(clientId: string): Promise<RateParityEntry[]> {
-    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/rate-parity`, adminHeaders);
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/rate-parity`);
     return toArray<RateParityEntry>(res.data);
   },
 
   async getRateParityViolations(clientId: string): Promise<RateParityViolation[]> {
     const res = await api.get<any>(
       `/admin/hotel-portal/metrics/${clientId}/rate-parity/violations`,
-      adminHeaders,
     );
     return toArray<RateParityViolation>(res.data);
   },
@@ -352,20 +345,18 @@ export const hotelPortalService = {
     const res = await api.post<BudgetEntry>(
       `/admin/hotel-portal/metrics/${clientId}/budget`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
 
   async listBudget(clientId: string): Promise<BudgetEntry[]> {
-    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/budget`, adminHeaders);
+    const res = await api.get<any>(`/admin/hotel-portal/metrics/${clientId}/budget`);
     return toArray<BudgetEntry>(res.data);
   },
 
   async getBudgetComparison(clientId: string): Promise<BudgetComparison[]> {
     const res = await api.get<any>(
       `/admin/hotel-portal/metrics/${clientId}/budget/comparison`,
-      adminHeaders,
     );
     return toArray<BudgetComparison>(res.data);
   },
@@ -376,7 +367,6 @@ export const hotelPortalService = {
     const res = await api.post<Reservation>(
       `/admin/hotel-portal/reservations/${tenantId}`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -403,7 +393,6 @@ export const hotelPortalService = {
     const res = await api.post<Guest>(
       `/admin/hotel-portal/guests/${clientId}`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -427,7 +416,6 @@ export const hotelPortalService = {
   async getGuest(guestId: string): Promise<GuestWithHistory> {
     const res = await api.get<GuestWithHistory>(
       `/admin/hotel-portal/guests/guest/${guestId}`,
-      adminHeaders,
     );
     return res.data;
   },
@@ -436,7 +424,6 @@ export const hotelPortalService = {
     const res = await api.post<GuestStay>(
       `/admin/hotel-portal/guests/guest/${guestId}/stays`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -447,7 +434,6 @@ export const hotelPortalService = {
     const res = await api.post<WhatsAppTemplate>(
       `/admin/hotel-portal/whatsapp/${clientId}/templates`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -455,7 +441,6 @@ export const hotelPortalService = {
   async listWhatsAppTemplates(clientId: string): Promise<WhatsAppTemplate[]> {
     const res = await api.get<any>(
       `/admin/hotel-portal/whatsapp/${clientId}/templates`,
-      adminHeaders,
     );
     return toArray<WhatsAppTemplate>(res.data);
   },
@@ -465,7 +450,6 @@ export const hotelPortalService = {
     const res = await api.post<WhatsAppMessage>(
       `/admin/hotel-portal/whatsapp/${clientId}/send`,
       data,
-      adminHeaders,
     );
     return res.data;
   },
@@ -483,7 +467,6 @@ export const hotelPortalService = {
   async listWhatsAppLinks(clientId: string): Promise<WhatsAppLink[]> {
     const res = await api.get<any>(
       `/admin/hotel-portal/whatsapp-links/${clientId}`,
-      adminHeaders,
     );
     const list = toArray<any>(res.data);
     return list.map(normalizeWhatsAppLink);
@@ -493,7 +476,6 @@ export const hotelPortalService = {
     const res = await api.post<any>(
       `/admin/hotel-portal/whatsapp-links/${clientId}`,
       data,
-      adminHeaders,
     );
     return normalizeWhatsAppLink(res.data);
   },
@@ -501,7 +483,6 @@ export const hotelPortalService = {
   async getWhatsAppLinkStats(clientId: string, id: string): Promise<WhatsAppLinkStats> {
     const res = await api.get<any>(
       `/admin/hotel-portal/whatsapp-links/${clientId}/${id}/stats`,
-      adminHeaders,
     );
     return normalizeWhatsAppLinkStats(res.data);
   },
@@ -510,13 +491,12 @@ export const hotelPortalService = {
     const res = await api.put<any>(
       `/admin/hotel-portal/whatsapp-links/${clientId}/${id}`,
       data,
-      adminHeaders,
     );
     return normalizeWhatsAppLink(res.data);
   },
 
   async deleteWhatsAppLink(clientId: string, id: string): Promise<void> {
-    await api.delete(`/admin/hotel-portal/whatsapp-links/${clientId}/${id}`, adminHeaders);
+    await api.delete(`/admin/hotel-portal/whatsapp-links/${clientId}/${id}`);
   },
 
   // ── Portal: My Clients (tenant logado) ────────────────────────────────
@@ -646,7 +626,6 @@ export const hotelPortalService = {
     const res = await api.patch(
       `/admin/hotel-portal/${tenantId}/bot-config-proposals/${id}/approve`,
       {},
-      adminHeaders,
     );
     const data = res.data?.data ?? res.data;
     return { ...data, ...toPanelActionResult(data), pendente_no_bot: data?.pendente_no_bot === true };
@@ -660,7 +639,6 @@ export const hotelPortalService = {
     const res = await api.patch(
       `/admin/hotel-portal/${tenantId}/bot-config-proposals/${id}/reject`,
       dto,
-      adminHeaders,
     );
     return res.data?.data ?? res.data;
   },
@@ -729,7 +707,6 @@ export const hotelPortalService = {
     const res = await api.patch<BotIssueItem>(
       `/admin/hotel-portal/${tenantId}/bot-issues/${encodeURIComponent(id)}/status`,
       { status },
-      adminHeaders,
     );
     return res.data;
   },
@@ -775,7 +752,6 @@ export const hotelPortalService = {
     const res = await api.patch(
       `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/stage`,
       dto,
-      adminHeaders,
     );
     return toPanelActionResult(res.data);
   },
@@ -789,7 +765,6 @@ export const hotelPortalService = {
     const res = await api.post(
       `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/resume`,
       dto,
-      adminHeaders,
     );
     return toPanelActionResult(res.data);
   },
@@ -803,7 +778,6 @@ export const hotelPortalService = {
     const res = await api.post<PanelActionResult>(
       `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/pause`,
       dto,
-      adminHeaders,
     );
     return toPanelActionResult(res.data);
   },
@@ -817,7 +791,6 @@ export const hotelPortalService = {
     const res = await api.post<PanelActionResult>(
       `/admin/hotel-portal/${tenantId}/whatsapp/funnel/${encodeURIComponent(numeroContato)}/extend-hold`,
       dto,
-      adminHeaders,
     );
     return toPanelActionResult(res.data);
   },

@@ -1,7 +1,13 @@
-import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
-import { VariationBadge } from "@/src/presentation/components/organisms/hotel-portal/painel/variation-badge";
-import { formatMoney } from "@/src/shared/utils/hotel-format";
+import { DollarSign, MessageCircle, Target } from "lucide-react";
+import { MetricCard } from "@/src/presentation/components/organisms/hotel-portal/ui/metric-card";
+import { formatMoney, formatNumber } from "@/src/shared/utils/hotel-format";
 import type { RoiNivel1 } from "@/src/shared/domain/types/@hotel-painel";
+
+/** `Metric.delta` e diferenca absoluta; o card fala em percentual. */
+function pctDelta(value: number, previous: number | null): number | null {
+  if (previous == null || previous === 0) return null;
+  return ((value - previous) / previous) * 100;
+}
 
 /**
  * §3.9, regra inegociavel: "custo por conversa em queda e positivo — inverter a
@@ -11,36 +17,37 @@ import type { RoiNivel1 } from "@/src/shared/domain/types/@hotel-painel";
 export function RoiLevel1Cards({ data }: { data: RoiNivel1 }) {
   const { spend, conversas, costPerConversation } = data;
 
-  // `delta` do backend e diferenca absoluta; a badge fala em percentual.
-  const custoVariationPct =
-    costPerConversation.previous && costPerConversation.previous !== 0
-      ? ((costPerConversation.value - costPerConversation.previous) /
-          costPerConversation.previous) *
-        100
-      : null;
-
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">Investimento total</p>
-        <p className="text-xl font-semibold">{formatMoney(spend.value)}</p>
-      </Card>
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">Conversas geradas</p>
-        <p className="text-xl font-semibold">{conversas.value}</p>
-      </Card>
-      <Card className="space-y-1 p-4">
-        <p className="text-sm text-muted-foreground">Custo por conversa</p>
-        <p className="text-xl font-semibold">
-          {formatMoney(costPerConversation.value)}
-        </p>
-        <VariationBadge value={custoVariationPct} invertColor />
-        <p className="text-xs text-muted-foreground">
-          {costPerConversation.trendDirection === "improving"
-            ? "em queda — está melhorando"
-            : "em alta — atenção"}
-        </p>
-      </Card>
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+      <MetricCard
+        label="Investimento em anúncios"
+        value={formatMoney(spend.value)}
+        delta={pctDelta(spend.value, spend.previous)}
+        source={spend.source}
+        icon={DollarSign}
+        accent
+      />
+      <MetricCard
+        label="Conversas geradas"
+        value={formatNumber(conversas.value)}
+        delta={conversas.delta}
+        deltaKind="abs"
+        source={conversas.source}
+        icon={MessageCircle}
+      />
+      <MetricCard
+        label="Custo por conversa"
+        value={formatMoney(costPerConversation.value)}
+        delta={pctDelta(costPerConversation.value, costPerConversation.previous)}
+        invertDelta
+        source={costPerConversation.source}
+        icon={Target}
+        hint={
+          costPerConversation.trendDirection === "improving"
+            ? "Em queda: cada conversa está custando menos"
+            : "Em alta: cada conversa está custando mais"
+        }
+      />
     </div>
   );
 }

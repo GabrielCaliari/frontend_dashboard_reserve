@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { TrendingUp, DollarSign, Target } from "lucide-react";
+import { DollarSign, MessageCircle, Target, TrendingUp } from "lucide-react";
 import {
   useActiveHotelClient,
   useHotelPortalOverview,
@@ -11,17 +11,20 @@ import {
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
 import { PortalLineChart } from "@/src/presentation/components/organisms/hotel-portal/painel/charts/line-chart";
+import { CHART_COLORS } from "@/src/presentation/components/organisms/hotel-portal/painel/charts/chart-theme";
+import {
+  DateRangeFilter,
+  MONTH_PRESETS,
+  currentMonth,
+  type DateRange,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/date-range-filter";
+import { ScreenLinks } from "@/src/presentation/components/organisms/hotel-portal/painel/screen-links";
 import {
   MetricCard,
   ChannelTable,
-  PeriodPicker,
   type ChannelColumn,
 } from "@/src/presentation/components/organisms/hotel-portal/ui";
-import {
-  resolvePreset,
-  type PeriodPreset,
-} from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
-import { formatMoney, formatDayMonth } from "@/src/shared/utils/hotel-format";
+import { formatDayMonth, formatMoney, formatNumber } from "@/src/shared/utils/hotel-format";
 
 const CHANNEL_LABELS: Record<string, string> = {
   meta_ads: "Meta Ads",
@@ -29,6 +32,9 @@ const CHANNEL_LABELS: Record<string, string> = {
   google_hotel_ads: "Google Hotel Ads",
   remarketing: "Remarketing",
 };
+
+const roasLabel = (roas: number | null | undefined) =>
+  roas ? `${roas.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}x` : "—";
 
 /**
  * Trafego Pago = a visao AGREGADA da midia, tirada da secao `media` do
@@ -41,8 +47,7 @@ const CHANNEL_LABELS: Record<string, string> = {
  */
 export default function HotelTrafegoPage() {
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
-  const [preset, setPreset] = useState<PeriodPreset>("current-month");
-  const period = useMemo(() => resolvePreset(preset), [preset]);
+  const [period, setPeriod] = useState<DateRange>(currentMonth);
 
   const { data, isLoading, isError } = useHotelPortalOverview(
     client?.id ?? null,
@@ -50,7 +55,6 @@ export default function HotelTrafegoPage() {
   );
 
   const media = data?.media;
-
   const channelRows = media?.byChannel ?? [];
 
   const channelColumns: ChannelColumn<(typeof channelRows)[number]>[] = [
@@ -73,29 +77,34 @@ export default function HotelTrafegoPage() {
     },
     {
       key: "roas",
-      header: "ROAS",
+      header: "Retorno (ROAS)",
       align: "right",
-      cell: (c) => (c.roas ? `${c.roas.toFixed(2)}x` : "—"),
+      cell: (c) => roasLabel(c.roas),
     },
   ];
 
-  const dailySpend =
-    data?.timeseries?.map((p) => ({
-      date: formatDayMonth(p.date),
-      investimento: p.spend / 100,
-    })) ?? [];
+  const dailySpend = useMemo(
+    () =>
+      data?.timeseries?.map((p) => ({
+        date: formatDayMonth(p.date),
+        investimento: p.spend / 100,
+      })) ?? [],
+    [data],
+  );
+
+  const totalRevenue = channelRows.reduce((s, c) => s + c.attributedRevenue, 0);
 
   return (
     <PainelPageShell
-      title="Tráfego Pago"
-      description="Quanto foi investido em mídia no período e o que voltou disso."
+      title="Tráfego pago"
+      description="Quanto foi investido em anúncios no período e o que voltou disso: receita atribuída, custo por reserva e conversas iniciadas no WhatsApp."
       isLoading={clientLoading || isLoading}
       isError={isError}
       errorMessage="Erro ao carregar os dados de tráfego."
-      actions={<PeriodPicker preset={preset} onChange={(p) => setPreset(p)} />}
+      actions={<DateRangeFilter value={period} onChange={setPeriod} presets={MONTH_PRESETS} />}
     >
       {media && (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <MetricCard
             label="Investimento"
             value={formatMoney(media.spend?.value)}
@@ -103,11 +112,12 @@ export default function HotelTrafegoPage() {
             accent
           />
           <MetricCard
-            label="ROAS"
-            value={media.roas?.value ? `${media.roas.value.toFixed(2)}x` : "—"}
+            label="Retorno (ROAS)"
+            value={roasLabel(media.roas?.value)}
             delta={media.roas?.delta}
             source={media.roas?.source}
             icon={TrendingUp}
+            hint="Receita atribuída ÷ investimento"
           />
           <MetricCard
             label="Custo por reserva"
@@ -116,16 +126,27 @@ export default function HotelTrafegoPage() {
             icon={Target}
             invertDelta
           />
+          <MetricCard
+            label="Cliques em links rastreáveis"
+            value={data?.whatsapp ? formatNumber(data.whatsapp.clicks.value) : "—"}
+            delta={data?.whatsapp?.clicks.delta}
+            deltaKind="abs"
+            source={data?.whatsapp?.clicks.source}
+            icon={MessageCircle}
+            hint="Links de WhatsApp da bio, do site e do Google"
+          />
         </div>
       )}
 
-      <PainelSection title="Investimento por dia">
+      <PainelSection
+        title="Investimento por dia"
+        description="Cada ponto é o que foi gasto nas plataformas naquele dia."
+      >
         <PortalLineChart
           data={dailySpend}
           xKey="date"
-          series={[
-            { key: "investimento", label: "Investimento (R$)", color: "#0ea5e9" },
-          ]}
+          series={[{ key: "investimento", label: "Investimento", color: CHART_COLORS.primary }]}
+          valueFormatter={(v) => formatMoney(Math.round(v * 100))}
         />
       </PainelSection>
 
@@ -135,9 +156,35 @@ export default function HotelTrafegoPage() {
             columns={channelColumns}
             rows={channelRows}
             getRowKey={(c) => c.channel}
+            footer={[
+              "Total",
+              formatMoney(media?.spend?.value),
+              formatMoney(totalRevenue),
+              roasLabel(media?.roas?.value),
+            ]}
           />
         </PainelSection>
       )}
+
+      <ScreenLinks
+        links={[
+          {
+            href: "/dashboard/hotel/campaigns",
+            label: "Campanhas",
+            hint: "Campanha a campanha, com conversas por anúncio",
+          },
+          {
+            href: "/dashboard/hotel/retorno",
+            label: "Retorno (ROI)",
+            hint: "Custo por conversa, por lead qualificado e receita",
+          },
+          {
+            href: "/dashboard/hotel/atendimento",
+            label: "Atendimento",
+            hint: "O que o bot fez com as conversas que os anúncios trouxeram",
+          },
+        ]}
+      />
     </PainelPageShell>
   );
 }

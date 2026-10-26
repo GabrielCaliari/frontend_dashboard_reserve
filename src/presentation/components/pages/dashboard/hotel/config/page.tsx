@@ -1,7 +1,21 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
+import { useEffect, useState } from "react";
+import { Button, Input } from "@heroui/react";
+import {
+  AlertCircle,
+  AlertTriangle,
+  BarChart3,
+  CheckCircle2,
+  Clock,
+  Instagram,
+  Megaphone,
+  Plus,
+  XCircle,
+  type LucideIcon,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useActiveHotelClient,
   useUpdateHotelClient,
@@ -9,30 +23,17 @@ import {
 } from "@/src/shared/hooks/hotel-portal";
 import usePermissions from "@/src/shared/hooks/use-permissions";
 import { useTenantStore } from "@/src/shared/stores/tenant-store";
+import type {
+  ApiCredentialStatus,
+  EIntegrationStatus,
+  HotelClient,
+} from "@/src/shared/domain/types/@hotel-portal";
 import {
-  Card,
-  CardBody,
-  Spinner,
-  Chip,
-  Button,
-  Input,
-} from "@heroui/react";
-import {
-  AlertCircle,
-  Settings,
-  Building2,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Clock,
-  RefreshCw,
-  Target,
-  Plug,
-  Plus,
-} from "lucide-react";
-import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
-import type { EIntegrationStatus } from "@/src/shared/domain/types/@hotel-portal";
+  PainelPageShell,
+  PainelSection,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
+import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
+import { ScreenLinks } from "@/src/presentation/components/organisms/hotel-portal/painel/screen-links";
 
 const PLATFORM_LABELS: Record<string, string> = {
   GA4: "Google Analytics 4",
@@ -40,30 +41,132 @@ const PLATFORM_LABELS: Record<string, string> = {
   GOOGLE_ADS: "Google Ads",
 };
 
-const SYNC_STATUS_CONFIG: Record<
+const SYNC_STATUS: Record<
   EIntegrationStatus,
-  { label: string; color: "success" | "danger" | "warning" | "default"; icon: React.ElementType }
+  { label: string; tone: string; dot: string; icon: LucideIcon }
 > = {
-  ACTIVE:       { label: "Sincronizado",  color: "success", icon: CheckCircle2 },
-  ERROR:        { label: "Erro na sync",  color: "danger",  icon: XCircle },
-  PENDING:      { label: "Pendente",      color: "warning", icon: Clock },
-  DISCONNECTED: { label: "Desconectado",  color: "default", icon: AlertTriangle },
+  ACTIVE: { label: "Sincronizando", tone: "bg-success/15 text-success-600", dot: "bg-success", icon: CheckCircle2 },
+  ERROR: { label: "Erro na sincronização", tone: "bg-danger/15 text-danger", dot: "bg-danger", icon: XCircle },
+  PENDING: { label: "Aguardando", tone: "bg-warning/15 text-warning-600", dot: "bg-warning", icon: Clock },
+  DISCONNECTED: { label: "Desconectado", tone: "bg-default-100 text-foreground/70", dot: "bg-default-300", icon: AlertTriangle },
 };
 
-function SectionHeader({ title, icon: Icon }: { title: string; icon: React.ElementType }) {
+const inputClassNames = { inputWrapper: "rounded-xl border-border/80 bg-background" };
+
+const longDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+const shortDateTime = (iso: string) =>
+  new Date(iso).toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+/** Valor somente leitura, no lugar do input, para quem nao pode editar. */
+function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 mb-4">
-      <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-        <Icon className="h-4 w-4 text-primary" />
-      </div>
-      <h2 className="font-semibold text-foreground">{title}</h2>
+    <div className="rounded-xl border border-border/80 bg-background px-4 py-3">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-0.5 truncate text-sm font-medium text-foreground">{value}</p>
     </div>
   );
 }
 
-// ── Create form (when no hotel client exists yet) ─────────────────────────────
+function IntegrationRow({ cred }: { cred: ApiCredentialStatus }) {
+  const st = SYNC_STATUS[cred.sync_status] ?? SYNC_STATUS.DISCONNECTED;
+  return (
+    <li className="flex items-start gap-3 px-4 py-3">
+      <span aria-hidden className={`mt-2 size-2 shrink-0 rounded-full ${st.dot}`} />
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-medium text-foreground">
+            {PLATFORM_LABELS[cred.platform] ?? cred.platform}
+          </p>
+          <span className={`rounded-md px-1.5 py-px text-[11px] font-medium ${st.tone}`}>{st.label}</span>
+        </div>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          {cred.last_sync_at ? `Última sincronização ${shortDateTime(cred.last_sync_at)}` : "Nunca sincronizou"}
+          {cred.token_expires_at && ` · acesso válido até ${new Date(cred.token_expires_at).toLocaleDateString("pt-BR")}`}
+        </p>
+        {cred.error_message && <p className="mt-1 text-xs text-danger">{cred.error_message}</p>}
+      </div>
+    </li>
+  );
+}
 
-function CreateHotelForm({ tenantId, onCreated }: { tenantId: string; onCreated: (created: import("@/src/shared/domain/types/@hotel-portal").HotelClient) => Promise<void> }) {
+/**
+ * Hoje nao existe botao "Conectar": as credenciais sao cadastradas pela
+ * equipe da RÉSERVE depois que a pousada da o acesso. Este bloco diz, em
+ * palavras simples, o que a pousada precisa liberar em cada plataforma.
+ */
+const CONNECT_GUIDE: { icon: LucideIcon; title: string; feeds: string; steps: string[] }[] = [
+  {
+    icon: Megaphone,
+    title: "Meta Ads (Facebook e Instagram)",
+    feeds: "Alimenta Tráfego pago, Campanhas e o Retorno por anúncio.",
+    steps: [
+      "No Gerenciador de Negócios da pousada, em Configurações → Parceiros, adicione a RÉSERVE como parceira.",
+      "Dê acesso à conta de anúncios, à página do Facebook e ao pixel.",
+      "Avise a equipe: a sincronização começa em até 6 horas.",
+    ],
+  },
+  {
+    icon: Instagram,
+    title: "Instagram",
+    feeds: "Alimenta a tela Instagram e, no futuro, o Direct dentro do atendimento.",
+    steps: [
+      "A conta do Instagram precisa ser profissional e estar vinculada à página do Facebook da pousada.",
+      "O mesmo acesso de parceiro do Meta Ads cobre a conta do Instagram.",
+    ],
+  },
+  {
+    icon: BarChart3,
+    title: "Google Analytics 4",
+    feeds: "Alimenta a tela Site: visitantes, origem e páginas de pacote.",
+    steps: [
+      "No GA4, em Administrador → Gerenciamento de acesso da propriedade, adicione o e-mail da RÉSERVE como Leitor.",
+      "Se o site ainda não tem o GA4 instalado, a equipe envia o código para o desenvolvedor do site.",
+    ],
+  },
+];
+
+function ConnectGuide() {
+  return (
+    <ol className="grid gap-3 lg:grid-cols-3">
+      {CONNECT_GUIDE.map((g) => (
+        <li key={g.title} className="rounded-2xl border border-border/80 bg-default-50 p-5">
+          <p className="flex items-center gap-2 font-medium text-foreground">
+            <g.icon aria-hidden className="h-4 w-4 text-primary" />
+            {g.title}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{g.feeds}</p>
+          <ol className="mt-3 space-y-2">
+            {g.steps.map((s, i) => (
+              <li key={i} className="flex gap-2 text-sm leading-relaxed text-foreground/85">
+                <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-semibold text-primary">
+                  {i + 1}
+                </span>
+                {s}
+              </li>
+            ))}
+          </ol>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+// ── Formulario de criacao (super admin, tenant sem hotel client) ────────────
+
+function CreateHotelForm({
+  tenantId,
+  onCreated,
+}: {
+  tenantId: string;
+  onCreated: (created: HotelClient) => Promise<void>;
+}) {
   const { mutateAsync: create, isPending } = useCreateHotelClient();
   const [form, setForm] = useState({
     hotel_name: "",
@@ -95,145 +198,52 @@ function CreateHotelForm({ tenantId, onCreated }: { tenantId: string; onCreated:
         target_occupancy: parseFloat(form.target_occupancy) / 100,
         target_direct_pct: parseFloat(form.target_direct_pct) / 100,
       });
-      toast.success("Portal de hotel criado com sucesso!");
+      toast.success("Portal criado.");
       await onCreated(created);
     } catch {
-      toast.error("Erro ao criar portal de hotel.");
+      toast.error("Não foi possível criar o portal.");
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Acesso */}
-      <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-        <CardBody className="p-6 sm:p-8 space-y-5">
-          <SectionHeader title="Acesso do Hotel" icon={Building2} />
-          <p className="text-sm text-muted-foreground -mt-2">
-            Crie ou vincule o usuário que o gerente do hotel usará para acessar o portal.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="E-mail do gerente"
-              type="email"
-              value={form.email}
-              onChange={set("email")}
-              isRequired
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-              placeholder="gerente@hotel.com"
-            />
-            <Input
-              label="Senha (opcional)"
-              type="password"
-              value={form.password}
-              onChange={set("password")}
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-              description="Deixe em branco para manter a senha existente"
-            />
-          </div>
-        </CardBody>
-      </Card>
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <PainelSection
+        title="Acesso do gerente"
+        description="O e-mail que o gerente da pousada usa para entrar no painel."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input label="E-mail do gerente" type="email" value={form.email} onChange={set("email")} isRequired variant="bordered" classNames={inputClassNames} placeholder="gerente@pousada.com" />
+          <Input label="Senha (opcional)" type="password" value={form.password} onChange={set("password")} variant="bordered" classNames={inputClassNames} description="Em branco, mantém a senha existente" />
+        </div>
+      </PainelSection>
 
-      {/* Dados do hotel */}
-      <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-        <CardBody className="p-6 sm:p-8 space-y-5">
-          <SectionHeader title="Dados do Hotel" icon={Building2} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="Nome do Hotel"
-              value={form.hotel_name}
-              onChange={set("hotel_name")}
-              isRequired
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-            />
-            <Input
-              label="País"
-              value={form.country}
-              onChange={set("country")}
-              isRequired
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-            />
-            <Input
-              label="Motor de Reservas"
-              value={form.booking_engine}
-              onChange={set("booking_engine")}
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-              placeholder="Ex: Omnibees, SkyBook, Opera..."
-            />
-            <Input
-              label="URL do Logo"
-              value={form.logo_url}
-              onChange={set("logo_url")}
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-              placeholder="https://..."
-            />
-            <Input
-              label="Início do Contrato"
-              type="date"
-              value={form.contract_start}
-              onChange={set("contract_start")}
-              isRequired
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-            />
-          </div>
-        </CardBody>
-      </Card>
+      <PainelSection title="Dados da pousada">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input label="Nome" value={form.hotel_name} onChange={set("hotel_name")} isRequired variant="bordered" classNames={inputClassNames} />
+          <Input label="País" value={form.country} onChange={set("country")} isRequired variant="bordered" classNames={inputClassNames} />
+          <Input label="Motor de reservas" value={form.booking_engine} onChange={set("booking_engine")} variant="bordered" classNames={inputClassNames} placeholder="Ex.: Omnibees, Hospedin, Opera" />
+          <Input label="Endereço do logo" value={form.logo_url} onChange={set("logo_url")} variant="bordered" classNames={inputClassNames} placeholder="https://" />
+          <Input label="Início do contrato" type="date" value={form.contract_start} onChange={set("contract_start")} isRequired variant="bordered" classNames={inputClassNames} />
+        </div>
+      </PainelSection>
 
-      {/* Metas */}
-      <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-        <CardBody className="p-6 sm:p-8 space-y-5">
-          <SectionHeader title="Metas de Performance" icon={Target} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="Meta de Ocupação (%)"
-              type="number"
-              min="0"
-              max="100"
-              value={form.target_occupancy}
-              onChange={set("target_occupancy")}
-              isRequired
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-              description="Percentual de ocupação alvo mensal"
-            />
-            <Input
-              label="Meta de Reserva Direta (%)"
-              type="number"
-              min="0"
-              max="100"
-              value={form.target_direct_pct}
-              onChange={set("target_direct_pct")}
-              isRequired
-              variant="bordered"
-              classNames={{ inputWrapper: "rounded-2xl border-border" }}
-              description="Percentual de reservas diretas (vs OTA) alvo"
-            />
-          </div>
-        </CardBody>
-      </Card>
+      <PainelSection title="Metas" description="Percentuais que o painel usa como referência nas telas de resultado.">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input label="Ocupação (%)" type="number" min="0" max="100" value={form.target_occupancy} onChange={set("target_occupancy")} isRequired variant="bordered" classNames={inputClassNames} />
+          <Input label="Reserva direta (%)" type="number" min="0" max="100" value={form.target_direct_pct} onChange={set("target_direct_pct")} isRequired variant="bordered" classNames={inputClassNames} description="Reservas diretas em relação às OTAs" />
+        </div>
+      </PainelSection>
 
       <div className="flex justify-end">
-        <Button
-          type="submit"
-          color="primary"
-          isLoading={isPending}
-          startContent={!isPending && <Plus className="h-4 w-4" />}
-          className="font-medium px-8"
-        >
-          Criar Portal de Hotel
+        <Button type="submit" color="primary" isLoading={isPending} startContent={!isPending && <Plus className="h-4 w-4" />} className="rounded-xl font-medium px-6">
+          Criar portal
         </Button>
       </div>
     </form>
   );
 }
 
-// ── Edit form (when hotel client already exists) ──────────────────────────────
+// ── Tela ───────────────────────────────────────────────────────────────────
 
 export default function HotelConfigPage() {
   const { isSuperAdmin } = usePermissions();
@@ -241,7 +251,9 @@ export default function HotelConfigPage() {
   const qc = useQueryClient();
 
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
   const { mutateAsync: update, isPending } = useUpdateHotelClient(client?.id ?? "");
@@ -255,7 +267,7 @@ export default function HotelConfigPage() {
     target_direct_pct: "50",
   });
 
-  useMemo(() => {
+  useEffect(() => {
     if (client) {
       setForm({
         hotel_name: client.hotel_name,
@@ -282,270 +294,179 @@ export default function HotelConfigPage() {
         target_occupancy: parseFloat(form.target_occupancy) / 100,
         target_direct_pct: parseFloat(form.target_direct_pct) / 100,
       });
-      toast.success("Configurações salvas!");
+      toast.success("Alterações salvas.");
     } catch {
-      toast.error("Erro ao salvar configurações.");
+      toast.error("Não foi possível salvar.");
     }
   }
 
   async function handleToggleActive() {
     try {
       await update({ is_active: !client?.is_active });
-      toast.success(client?.is_active ? "Hotel desativado." : "Hotel ativado.");
+      toast.success(client?.is_active ? "Portal desativado." : "Portal ativado.");
     } catch {
-      toast.error("Erro ao alterar status.");
+      toast.error("Não foi possível alterar o status.");
     }
   }
 
-  // ── Loading ──────────────────────────────────────────────────────────────
-
-  if (!mounted || clientLoading) {
+  if (isSuperAdmin && mounted && !clientLoading && !selectedTenant) {
     return (
-      <LayoutScopeRoot>
-        <div className="flex justify-center items-center py-32">
-          <Spinner size="lg" color="primary" />
-        </div>
-      </LayoutScopeRoot>
+      <PainelPageShell title="Configurações">
+        <PortalEmptyState
+          icon={AlertCircle}
+          title="Selecione um tenant"
+          description="Escolha um tenant no seletor acima para configurar o portal da pousada."
+        />
+      </PainelPageShell>
     );
   }
 
-  // ── Admin sem tenant selecionado ─────────────────────────────────────────
-
-  if (isSuperAdmin && !selectedTenant) {
+  if (mounted && !clientLoading && !client) {
     return (
-      <LayoutScopeRoot>
-        <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-          <AlertCircle className="h-12 w-12 text-warning mx-auto mb-4" />
-          <p className="text-foreground font-semibold">Selecione um tenant</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Escolha um tenant no seletor acima para configurar o portal de hotel.
-          </p>
-        </div>
-      </LayoutScopeRoot>
+      <PainelPageShell
+        title="Configurações"
+        description="Este tenant ainda não tem um portal de pousada. Preencha os dados para criar."
+      >
+        <CreateHotelForm
+          tenantId={selectedTenant!.id}
+          onCreated={async (created) => {
+            // Seed o cache diretamente — não depende do GET funcionar imediatamente
+            qc.setQueryData(["hotel-portal", "current-tenant", selectedTenant?.id], created);
+            qc.invalidateQueries({ queryKey: ["hotel-portal", "clients"] });
+          }}
+        />
+      </PainelPageShell>
     );
   }
 
-  // ── Sem hotel client → mostrar formulário de criação ────────────────────
-
-  if (!client) {
-    return (
-      <LayoutScopeRoot>
-        <div className="mx-auto max-w-[900px] px-4 py-8 sm:px-8 space-y-6 animate-fade-in">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Settings className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">Configurações</h1>
-              <p className="text-sm text-muted-foreground">
-                Nenhum portal configurado para este tenant — crie agora.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 rounded-2xl border border-warning/30 bg-warning/5 px-4 py-3 text-sm text-warning">
-            <AlertCircle className="h-4 w-4 flex-shrink-0" />
-            Este tenant ainda não possui um portal de hotel. Preencha os dados abaixo para criar.
-          </div>
-
-          <CreateHotelForm
-            tenantId={selectedTenant!.id}
-            onCreated={async (created) => {
-              // Seed o cache diretamente — não depende do GET funcionar imediatamente
-              qc.setQueryData(
-                ["hotel-portal", "current-tenant", selectedTenant?.id],
-                created,
-              );
-              // Invalida o resto para sincronizar em background
-              qc.invalidateQueries({ queryKey: ["hotel-portal", "clients"] });
-            }}
-          />
-        </div>
-      </LayoutScopeRoot>
-    );
-  }
-
-  // ── Hotel client existe ──────────────────────────────────────────────────
-
-  const isReadOnly = !isSuperAdmin;
+  const readOnly = !isSuperAdmin;
+  const credentials = client?.credentials ?? [];
 
   return (
-    <LayoutScopeRoot>
-      <div className="mx-auto max-w-[900px] px-4 py-8 sm:px-8 space-y-8 animate-fade-in">
-
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+    <PainelPageShell
+      title="Configurações"
+      description={
+        client
+          ? `${client.hotel_name} · cliente desde ${longDate(client.contract_start)}`
+          : undefined
+      }
+      isLoading={!mounted || clientLoading}
+      actions={
+        client && (
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Settings className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">Configurações</h1>
-              <p className="text-sm text-muted-foreground">{client.hotel_name}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Chip size="sm" variant="flat" color={client.is_active ? "success" : "danger"}>
-              {client.is_active ? "Ativo" : "Inativo"}
-            </Chip>
+            <span
+              className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${
+                client.is_active ? "bg-success/15 text-success-600" : "bg-danger/15 text-danger"
+              }`}
+            >
+              {client.is_active ? "Portal ativo" : "Portal inativo"}
+            </span>
             {isSuperAdmin && (
               <Button
                 size="sm"
                 variant="flat"
                 color={client.is_active ? "danger" : "success"}
+                className="rounded-xl"
                 onPress={handleToggleActive}
                 isLoading={isPending}
               >
-                {client.is_active ? "Desativar Hotel" : "Ativar Hotel"}
+                {client.is_active ? "Desativar" : "Ativar"}
               </Button>
             )}
           </div>
-        </div>
-
-        {/* Dados do Hotel */}
-        <form onSubmit={handleSave} className="space-y-6">
-          <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-            <CardBody className="p-6 sm:p-8 space-y-5">
-              <SectionHeader title="Dados do Hotel" icon={Building2} />
-              {isReadOnly ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { label: "Nome do Hotel", value: client.hotel_name },
-                    { label: "País", value: client.country },
-                    { label: "Motor de Reservas", value: client.booking_engine ?? "—" },
-                    { label: "URL do Logo", value: client.logo_url ?? "—" },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="rounded-2xl border border-border bg-background px-4 py-3">
-                      <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
-                      <p className="text-sm font-medium text-foreground truncate">{value}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input label="Nome do Hotel" value={form.hotel_name} onChange={set("hotel_name")} isRequired variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
-                  <Input label="País" value={form.country} onChange={set("country")} isRequired variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} />
-                  <Input label="Motor de Reservas" value={form.booking_engine} onChange={set("booking_engine")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} placeholder="Ex: Omnibees, SkyBook, Opera..." />
-                  <Input label="URL do Logo" value={form.logo_url} onChange={set("logo_url")} variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} placeholder="https://..." />
-                </div>
-              )}
-            </CardBody>
-          </Card>
-
-          <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-            <CardBody className="p-6 sm:p-8 space-y-5">
-              <SectionHeader title="Metas de Performance" icon={Target} />
-              {isReadOnly ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { label: "Meta de Ocupação", value: `${Math.round(client.target_occupancy * 100)}%` },
-                    { label: "Meta de Reserva Direta", value: `${Math.round(client.target_direct_pct * 100)}%` },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="rounded-2xl border border-border bg-background px-4 py-3">
-                      <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
-                      <p className="text-sm font-medium text-foreground">{value}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input label="Meta de Ocupação (%)" type="number" min="0" max="100" value={form.target_occupancy} onChange={set("target_occupancy")} isRequired variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} description="Percentual de ocupação alvo mensal" />
-                  <Input label="Meta de Reserva Direta (%)" type="number" min="0" max="100" value={form.target_direct_pct} onChange={set("target_direct_pct")} isRequired variant="bordered" classNames={{ inputWrapper: "rounded-2xl border-border" }} description="Percentual de reservas diretas (vs OTA) alvo" />
-                </div>
-              )}
-              <p className="text-xs text-muted-foreground">
-                Início do contrato:{" "}
-                <span className="font-medium text-foreground">
-                  {new Date(client.contract_start).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
-                </span>
-              </p>
-            </CardBody>
-          </Card>
-
-          {!isReadOnly && (
-            <div className="flex justify-end">
-              <Button type="submit" color="primary" isLoading={isPending} className="font-medium px-8">
-                Salvar Configurações
-              </Button>
-            </div>
-          )}
-        </form>
-
-        {/* Integrações */}
-        <Card className="bg-default-50 border border-border rounded-3xl shadow-none">
-          <CardBody className="p-6 sm:p-8 space-y-5">
-            <SectionHeader title="Integrações e Sincronização" icon={Plug} />
-
-            {!client.credentials || client.credentials.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-10 text-center">
-                <RefreshCw className="h-10 w-10 text-muted-foreground mb-3" />
-                <p className="font-medium text-foreground">Nenhuma integração configurada</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  As integrações com Meta Ads, Google Ads e GA4 são adicionadas pela equipe da RÉSERVE
-                  após receber as credenciais de acesso do hotel.
-                </p>
+        )
+      }
+    >
+      {client && (
+        <>
+          <form onSubmit={handleSave} className="space-y-8">
+            <PainelSection
+              title="Dados da pousada"
+              description={readOnly ? "Para alterar, fale com a equipe da RÉSERVE." : undefined}
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                {readOnly ? (
+                  <>
+                    <Fact label="Nome" value={client.hotel_name} />
+                    <Fact label="País" value={client.country} />
+                    <Fact label="Motor de reservas" value={client.booking_engine ?? "—"} />
+                    <Fact label="Endereço do logo" value={client.logo_url ?? "—"} />
+                  </>
+                ) : (
+                  <>
+                    <Input label="Nome" value={form.hotel_name} onChange={set("hotel_name")} isRequired variant="bordered" classNames={inputClassNames} />
+                    <Input label="País" value={form.country} onChange={set("country")} isRequired variant="bordered" classNames={inputClassNames} />
+                    <Input label="Motor de reservas" value={form.booking_engine} onChange={set("booking_engine")} variant="bordered" classNames={inputClassNames} placeholder="Ex.: Omnibees, Hospedin, Opera" />
+                    <Input label="Endereço do logo" value={form.logo_url} onChange={set("logo_url")} variant="bordered" classNames={inputClassNames} placeholder="https://" />
+                  </>
+                )}
               </div>
-            ) : (
-              <div className="space-y-3">
-                {client.credentials.map((cred) => {
-                  const cfg = SYNC_STATUS_CONFIG[cred.sync_status] ?? SYNC_STATUS_CONFIG.DISCONNECTED;
-                  const StatusIcon = cfg.icon;
-                  return (
-                    <div
-                      key={cred.platform}
-                      className="flex items-center justify-between p-4 bg-background rounded-2xl border border-border gap-4"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="h-9 w-9 rounded-xl bg-default-100 flex items-center justify-center flex-shrink-0">
-                          <StatusIcon className="h-4 w-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-foreground text-sm">
-                            {PLATFORM_LABELS[cred.platform] ?? cred.platform}
-                          </p>
-                          <div className="flex flex-wrap gap-x-4 gap-y-0.5 mt-0.5">
-                            {cred.last_sync_at && (
-                              <p className="text-xs text-muted-foreground">
-                                Última sync:{" "}
-                                {new Date(cred.last_sync_at).toLocaleString("pt-BR", {
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                  year: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </p>
-                            )}
-                            {cred.token_expires_at && (
-                              <p className="text-xs text-muted-foreground">
-                                Token expira:{" "}
-                                {new Date(cred.token_expires_at).toLocaleDateString("pt-BR")}
-                              </p>
-                            )}
-                          </div>
-                          {cred.error_message && (
-                            <p className="text-xs text-danger mt-1">{cred.error_message}</p>
-                          )}
-                        </div>
-                      </div>
-                      <Chip size="sm" variant="flat" color={cfg.color} className="flex-shrink-0">
-                        {cfg.label}
-                      </Chip>
-                    </div>
-                  );
-                })}
+            </PainelSection>
+
+            <PainelSection
+              title="Metas"
+              description="Percentuais que o painel usa como referência nas telas de resultado."
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                {readOnly ? (
+                  <>
+                    <Fact label="Ocupação" value={`${Math.round(client.target_occupancy * 100)}%`} />
+                    <Fact label="Reserva direta" value={`${Math.round(client.target_direct_pct * 100)}%`} />
+                  </>
+                ) : (
+                  <>
+                    <Input label="Ocupação (%)" type="number" min="0" max="100" value={form.target_occupancy} onChange={set("target_occupancy")} isRequired variant="bordered" classNames={inputClassNames} />
+                    <Input label="Reserva direta (%)" type="number" min="0" max="100" value={form.target_direct_pct} onChange={set("target_direct_pct")} isRequired variant="bordered" classNames={inputClassNames} description="Reservas diretas em relação às OTAs" />
+                  </>
+                )}
+              </div>
+            </PainelSection>
+
+            {!readOnly && (
+              <div className="flex justify-end">
+                <Button type="submit" color="primary" isLoading={isPending} className="rounded-xl px-6 font-medium">
+                  Salvar alterações
+                </Button>
               </div>
             )}
+          </form>
 
-            <div className="pt-2 border-t border-border">
-              <p className="text-xs text-muted-foreground">
-                As sincronizações ocorrem automaticamente a cada 6 horas. Em caso de erro ou token
-                expirado, entre em contato com a equipe da RÉSERVE para reconectar a integração.
-              </p>
-            </div>
-          </CardBody>
-        </Card>
+          <PainelSection
+            title="Contas conectadas"
+            description="As plataformas de onde o painel puxa números. A sincronização roda a cada 6 horas."
+          >
+            {credentials.length === 0 ? (
+              <PortalEmptyState
+                title="Nenhuma conta conectada ainda"
+                description="Assim que a pousada liberar o acesso (veja abaixo como), a equipe da RÉSERVE ativa a sincronização."
+              />
+            ) : (
+              <ul className="divide-y divide-border/60 rounded-2xl border border-border/80 bg-default-50">
+                {credentials.map((cred) => (
+                  <IntegrationRow key={cred.platform} cred={cred} />
+                ))}
+              </ul>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Erro ou acesso vencido? Fale com a equipe da RÉSERVE para reconectar.
+            </p>
+          </PainelSection>
 
-      </div>
-    </LayoutScopeRoot>
+          <PainelSection
+            title="Como conectar cada conta"
+            description="O painel não pede senha de nada: a pousada libera o acesso dentro de cada plataforma e a RÉSERVE faz o resto."
+          >
+            <ConnectGuide />
+          </PainelSection>
+
+          <ScreenLinks
+            links={[
+              { href: "/dashboard/hotel/atendimento/bot", label: "Bot do WhatsApp", hint: "Como o atendimento automático está configurado" },
+              { href: "/dashboard/hotel/whatsapp-links", label: "Links rastreáveis", hint: "Os links de WhatsApp com origem marcada" },
+            ]}
+          />
+        </>
+      )}
+    </PainelPageShell>
   );
 }

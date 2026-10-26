@@ -1,24 +1,32 @@
 "use client";
 
-import { LayoutScopeRoot } from "@/src/presentation/components/layouts/root-layout";
+import { useState } from "react";
+import { Megaphone } from "lucide-react";
 import {
   useActiveHotelClient,
   useHotelFunnelMetrics,
   useHotelPortalCampaigns,
+  useHotelRoi,
 } from "@/src/shared/hooks/hotel-portal";
-import { useState } from "react";
-import { Card, CardBody, Spinner } from "@heroui/react";
-import { AdConversationsTable } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/ad-conversations-table";
-import { resolvePreset } from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
-import { AlertCircle, Megaphone } from "lucide-react";
-import type { ECampaignChannel } from "@/src/shared/domain/types/@hotel-portal";
-
-const CHANNEL_COLORS: Record<string, string> = {
-  META_ADS: "#1877f2",
-  GOOGLE_ADS: "#ea4335",
-  GOOGLE_HOTEL_ADS: "#fbbc04",
-  REMARKETING: "#34a853",
-};
+import {
+  PainelPageShell,
+  PainelSection,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
+import {
+  DateRangeFilter,
+  MONTH_PRESETS,
+  currentMonth,
+  type DateRange,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/date-range-filter";
+import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
+import { ScreenLinks } from "@/src/presentation/components/organisms/hotel-portal/painel/screen-links";
+import { ChannelTable, type ChannelColumn } from "@/src/presentation/components/organisms/hotel-portal/ui";
+import type {
+  CampaignMetricItem,
+  CampaignSummary,
+  ECampaignChannel,
+} from "@/src/shared/domain/types/@hotel-portal";
+import type { RoiByCampaignRow } from "@/src/shared/domain/types/@hotel-painel";
 
 const CHANNEL_LABELS: Record<ECampaignChannel, string> = {
   META_ADS: "Meta Ads",
@@ -27,195 +35,187 @@ const CHANNEL_LABELS: Record<ECampaignChannel, string> = {
   REMARKETING: "Remarketing",
 };
 
-function fmt(n: number, style: "currency" | "decimal" = "decimal") {
-  if (style === "currency")
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
-  return new Intl.NumberFormat("pt-BR").format(n);
+const CHANNEL_TONE: Record<ECampaignChannel, string> = {
+  META_ADS: "bg-primary",
+  GOOGLE_ADS: "bg-warning",
+  GOOGLE_HOTEL_ADS: "bg-success",
+  REMARKETING: "bg-foreground/40",
+};
+
+// Este endpoint manda dinheiro em REAIS (campaign_metrics), nao em centavos.
+const reais = (n: number) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
+const inteiro = (n: number) => new Intl.NumberFormat("pt-BR").format(n);
+const roasLabel = (roas: number | null | undefined) =>
+  roas ? `${roas.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}x` : "—";
+
+function channelLabel(channel: string) {
+  return CHANNEL_LABELS[channel as ECampaignChannel] ?? channel;
 }
 
+function ChannelDot({ channel }: { channel: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`inline-block size-2 shrink-0 rounded-full ${
+        CHANNEL_TONE[channel as ECampaignChannel] ?? "bg-foreground/40"
+      }`}
+    />
+  );
+}
+
+/** Resumo de um canal: o investimento grande, o resto em pares. */
+function ChannelSummaryCard({ s }: { s: CampaignSummary }) {
+  return (
+    <article className="rounded-2xl border border-border/80 bg-default-50 p-5">
+      <p className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <ChannelDot channel={s.channel} />
+        {channelLabel(s.channel)}
+      </p>
+      <p className="mt-3 font-display text-[1.65rem] font-semibold leading-tight tracking-[-0.02em] tabular-nums text-foreground [overflow-wrap:normal] [word-break:keep-all]">
+        {reais(s.total_spend)}
+      </p>
+      <p className="text-sm text-muted-foreground">investidos</p>
+      <dl className="mt-4 grid grid-cols-3 gap-3 border-t border-border/60 pt-4 text-sm">
+        <div>
+          <dt className="text-xs text-muted-foreground">Cliques</dt>
+          <dd className="font-medium tabular-nums">{inteiro(s.total_clicks)}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">Conversas</dt>
+          <dd className="font-medium tabular-nums">{inteiro(s.total_conversions)}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">Retorno</dt>
+          <dd className="font-medium tabular-nums">{roasLabel(s.avg_roas)}</dd>
+        </div>
+      </dl>
+    </article>
+  );
+}
+
+const campaignColumns: ChannelColumn<CampaignMetricItem>[] = [
+  {
+    key: "campaign",
+    header: "Campanha",
+    cell: (m) => (
+      <span className="flex items-center gap-2">
+        <ChannelDot channel={m.channel} />
+        <span className="flex min-w-0 flex-col">
+          <span className="truncate">{m.campaign_name}</span>
+          <span className="text-xs font-normal text-muted-foreground">{channelLabel(m.channel)}</span>
+        </span>
+      </span>
+    ),
+  },
+  { key: "spend", header: "Investimento", align: "right", cell: (m) => reais(m.spend) },
+  { key: "impressions", header: "Impressões", align: "right", cell: (m) => inteiro(m.impressions) },
+  { key: "clicks", header: "Cliques", align: "right", cell: (m) => inteiro(m.clicks) },
+  { key: "conversions", header: "Conversas", align: "right", cell: (m) => inteiro(m.conversions) },
+  { key: "roas", header: "Retorno (ROAS)", align: "right", cell: (m) => roasLabel(m.roas) },
+];
+
+const adColumns: ChannelColumn<RoiByCampaignRow>[] = [
+  {
+    key: "ad",
+    header: "Anúncio",
+    cell: (r) => (
+      <span className="flex min-w-0 flex-col">
+        <span className="truncate">{r.adName ?? `Anúncio ${r.campaignId}`}</span>
+        {r.campaignName && (
+          <span className="text-xs font-normal text-muted-foreground">{r.campaignName}</span>
+        )}
+      </span>
+    ),
+  },
+  { key: "conversas", header: "Conversas iniciadas", align: "right", cell: (r) => inteiro(r.conversas) },
+  { key: "qualificados", header: "Qualificadas pelo bot", align: "right", cell: (r) => inteiro(r.qualificados) },
+  {
+    key: "taxa",
+    header: "Taxa",
+    align: "right",
+    cell: (r) =>
+      r.conversas > 0 ? `${Math.round((r.qualificados / r.conversas) * 100)}%` : "—",
+  },
+];
+
+/**
+ * Campanhas: o resumo por canal, a lista campanha a campanha e, embaixo, as
+ * conversas do WhatsApp que cada anuncio trouxe (com nome, quando a Meta ja
+ * entregou o nome; o id cru so aparece enquanto isso).
+ */
 export default function HotelCampaignsPage() {
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
-  const { data, isLoading, isError } = useHotelPortalCampaigns(client?.id ?? null);
-  const [funilPeriod] = useState(() => resolvePreset("current-month"));
-  const { data: funil } = useHotelFunnelMetrics(client?.id ?? null, funilPeriod);
+  const clientId = client?.id ?? null;
+  const [period, setPeriod] = useState<DateRange>(currentMonth);
 
-  if (clientLoading || isLoading) {
-    return (
-      <LayoutScopeRoot>
-        <div className="flex justify-center items-center py-32">
-          <Spinner size="lg" color="primary" />
-        </div>
-      </LayoutScopeRoot>
-    );
-  }
+  const { data, isLoading, isError } = useHotelPortalCampaigns(clientId, period);
+  const { data: roi } = useHotelRoi(clientId, period);
+  const { data: funil } = useHotelFunnelMetrics(clientId, period);
 
-  if (isError || !data) {
-    return (
-      <LayoutScopeRoot>
-        <div className="mx-auto px-4 py-8 sm:px-8 lg:px-10 max-w-[1400px]">
-          <Card className="border-danger/20 bg-danger/5 shadow-none rounded-3xl">
-            <CardBody className="p-10 text-center">
-              <AlertCircle className="w-10 h-10 text-danger mx-auto mb-4" />
-              <p className="text-base text-danger">Erro ao carregar dados de campanhas.</p>
-            </CardBody>
-          </Card>
-        </div>
-      </LayoutScopeRoot>
-    );
-  }
+  const summary = data?.summary ?? [];
+  const metrics = data?.metrics ?? [];
 
-  const summary = data.summary ?? [];
-  const metrics = data.metrics ?? [];
+  // Nivel 2 do ROI tem nome do anuncio; o funil so tem o id. Prefere o nome.
+  const adRows: RoiByCampaignRow[] =
+    roi?.nivel2?.roiByCampaign?.length
+      ? roi.nivel2.roiByCampaign
+      : (funil?.conversasPorAnuncio ?? []).map((r) => ({
+          campaignId: r.sourceId,
+          conversas: r.count,
+          qualificados: 0,
+        }));
 
   return (
-    <LayoutScopeRoot>
-      <div className="mx-auto space-y-8 px-4 py-8 sm:px-8 lg:px-10 max-w-[1400px] animate-fade-in">
-        {/* Header */}
-        <div className="border-b border-border/70 pb-6">
-          <div className="relative">
-            <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">Campanhas</h1>
-            <p className="text-muted-foreground mt-2 text-base">
-              Performance das suas campanhas no Meta Ads e Google Ads.
-            </p>
-          </div>
+    <PainelPageShell
+      title="Campanhas"
+      description="Cada campanha no Meta Ads e Google Ads: quanto custou, quantos cliques trouxe e quantas conversas começaram no WhatsApp por causa dela."
+      isLoading={clientLoading || isLoading}
+      isError={isError}
+      errorMessage="Erro ao carregar dados de campanhas."
+      actions={<DateRangeFilter value={period} onChange={setPeriod} presets={MONTH_PRESETS} />}
+    >
+      {summary.length > 0 && (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {summary.map((s) => (
+            <ChannelSummaryCard key={s.channel} s={s} />
+          ))}
         </div>
+      )}
 
-        {/* Channel summary cards */}
-        {summary.length > 0 && (
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">Resumo por Canal</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {summary.map((s) => (
-                <Card
-                  key={s.channel}
-                  className="bg-default-50 border border-border rounded-3xl shadow-none"
-                >
-                  <CardBody className="p-6 space-y-5">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="h-3 w-3 rounded-full flex-shrink-0"
-                        style={{ background: CHANNEL_COLORS[s.channel] ?? "#888" }}
-                      />
-                      <p className="font-semibold text-foreground">
-                        {CHANNEL_LABELS[s.channel as ECampaignChannel] ?? s.channel}
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-xs text-muted-foreground">Investimento</p>
-                        <p className="font-semibold text-foreground mt-0.5">{fmt(s.total_spend, "currency")}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">Cliques</p>
-                        <p className="font-semibold text-foreground mt-0.5">{fmt(s.total_clicks)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">Conversas iniciadas</p>
-                        <p className="font-semibold text-foreground mt-0.5">{fmt(s.total_conversions)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">ROAS</p>
-                        <p className="font-semibold text-foreground mt-0.5">
-                          {s.avg_roas ? `${s.avg_roas.toFixed(2)}x` : "—"}
-                        </p>
-                      </div>
-                    </div>
-                    {s.cost_per_booking != null && (
-                      <div className="rounded-xl bg-background border border-border px-4 py-3">
-                        <p className="text-xs text-muted-foreground">Custo por reserva</p>
-                        <p className="font-bold text-foreground mt-0.5">{fmt(s.cost_per_booking, "currency")}</p>
-                      </div>
-                    )}
-                  </CardBody>
-                </Card>
-              ))}
-            </div>
-          </div>
+      <PainelSection title="Campanha a campanha" description="Somatório do período, da que mais investiu para a que menos.">
+        {metrics.length === 0 ? (
+          <PortalEmptyState
+            icon={Megaphone}
+            title="Nenhuma campanha no período"
+            description="Os números chegam das plataformas de anúncio a cada 6 horas. Se há campanha rodando e nada aparece, veja as integrações em Configurações."
+          />
+        ) : (
+          <ChannelTable columns={campaignColumns} rows={metrics} getRowKey={(m) => m.id} />
         )}
+      </PainelSection>
 
-        {/* Detailed metrics table */}
-        <div>
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">Campanhas Detalhadas</h2>
-          </div>
+      <PainelSection
+        title="Conversas no WhatsApp por anúncio"
+        description="Quem clicou num anúncio de clique para WhatsApp e falou com o bot, agrupado pelo anúncio que trouxe a pessoa."
+      >
+        {adRows.length === 0 ? (
+          <PortalEmptyState
+            title="Nenhuma conversa veio de anúncio no período"
+            description="Quando alguém clicar em um anúncio de clique para WhatsApp e falar com o bot, a conversa aparece aqui."
+          />
+        ) : (
+          <ChannelTable columns={adColumns} rows={adRows} getRowKey={(r) => r.campaignId} />
+        )}
+      </PainelSection>
 
-          {metrics.length === 0 ? (
-            <Card className="border-border bg-default-50 shadow-none border-dashed rounded-3xl">
-              <CardBody className="flex flex-col items-center justify-center py-20 text-center">
-                <Megaphone className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-foreground font-semibold text-lg">Nenhuma campanha ativa</p>
-                <p className="text-sm text-muted-foreground mt-2 max-w-sm">
-                  Os dados são sincronizados automaticamente a cada 6 horas das plataformas de anúncio.
-                </p>
-              </CardBody>
-            </Card>
-          ) : (
-            <Card className="bg-default-50 border border-border rounded-3xl shadow-none overflow-hidden">
-              <CardBody className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-border bg-default-100/50">
-                        {["Canal", "Campanha", "Investimento", "Impressões", "Cliques", "Conversas", "ROAS"].map((h) => (
-                          <th
-                            key={h}
-                            className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider"
-                          >
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {metrics.map((m, i) => (
-                        <tr
-                          key={m.id}
-                          className={`border-b border-border/50 hover:bg-default-100/40 transition-colors ${
-                            i % 2 === 0 ? "" : "bg-default-50/50"
-                          }`}
-                        >
-                          <td className="px-5 py-3.5">
-                            <div className="flex items-center gap-2">
-                              <div
-                                className="h-2 w-2 rounded-full flex-shrink-0"
-                                style={{ background: CHANNEL_COLORS[m.channel] ?? "#888" }}
-                              />
-                              <span className="text-xs font-medium">
-                                {CHANNEL_LABELS[m.channel as ECampaignChannel] ?? m.channel}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-5 py-3.5 max-w-[200px]">
-                            <span className="truncate block text-foreground font-medium">
-                              {m.campaign_name}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3.5 text-foreground">{fmt(m.spend, "currency")}</td>
-                          <td className="px-5 py-3.5 text-foreground">{fmt(m.impressions)}</td>
-                          <td className="px-5 py-3.5 text-foreground">{fmt(m.clicks)}</td>
-                          <td className="px-5 py-3.5 text-foreground">{fmt(m.conversions)}</td>
-                          <td className="px-5 py-3.5 text-foreground font-medium">
-                            {m.roas ? `${m.roas.toFixed(2)}x` : "—"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardBody>
-            </Card>
-          )}
-        </div>
-
-        <section className="space-y-4">
-          <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
-            Conversas no WhatsApp por anúncio (mês atual)
-          </h2>
-          <AdConversationsTable rows={funil?.conversasPorAnuncio ?? []} />
-        </section>
-      </div>
-    </LayoutScopeRoot>
+      <ScreenLinks
+        links={[
+          { href: "/dashboard/hotel/trafego", label: "Tráfego pago", hint: "A soma dos canais e o investimento dia a dia" },
+          { href: "/dashboard/hotel/funil", label: "Funil do bot", hint: "Em que etapa está cada conversa que o anúncio trouxe" },
+          { href: "/dashboard/hotel/retorno", label: "Retorno (ROI)", hint: "Custo por conversa e por lead qualificado" },
+        ]}
+      />
+    </PainelPageShell>
   );
 }

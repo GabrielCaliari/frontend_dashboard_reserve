@@ -36,8 +36,8 @@ export function PainelPageShell({
       >
         {/* Cabecalho aberto, sem caixa: o titulo carrega a tela e uma linha fina
             separa do conteudo. */}
-        <header className="flex flex-col gap-4 border-b border-border/70 pb-6 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
+        <header className="flex flex-col gap-4 border-b border-border/70 pb-6 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+          <div className="max-w-2xl lg:flex-1 lg:basis-[26rem]">
             <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">
               {title}
             </h1>
@@ -47,7 +47,7 @@ export function PainelPageShell({
               </p>
             )}
           </div>
-          {actions ? <div className="shrink-0">{actions}</div> : null}
+          {actions ? <div className="min-w-0">{actions}</div> : null}
         </header>
 
         {isLoading ? (
