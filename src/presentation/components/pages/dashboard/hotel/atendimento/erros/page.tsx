@@ -15,7 +15,13 @@ import {
   PainelPageShell,
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
-import { LoadMoreFooter } from "@/src/presentation/components/organisms/hotel-portal/painel/load-more-footer";
+import {
+  DateRangeFilter,
+  filterFieldClass,
+  lastDays,
+  type DateRange,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/date-range-filter";
+import { Pagination } from "@/src/presentation/components/organisms/hotel-portal/painel/pagination";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
 import { BotIssuesTable } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-issues/bot-issues-table";
 import { BotIssueDetailModal } from "@/src/presentation/components/organisms/hotel-portal/painel/bot-issues/bot-issue-detail";
@@ -29,23 +35,13 @@ import type {
   BotIssueStatus,
 } from "@/src/shared/domain/types/@hotel-painel";
 
-function isoDay(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-function lastDays(days: number): { from: string; to: string } {
-  const to = new Date();
-  const from = new Date(to.getTime() - (days - 1) * 24 * 60 * 60 * 1000);
-  return { from: isoDay(from), to: isoDay(to) };
-}
-
-const PAGE_SIZE = 50;
-
-const fieldClass = "rounded-lg border border-border bg-background px-3 py-2 text-sm";
+/** 20 por pagina: uma tela, sem rolar sem fim. */
+const PAGE_SIZE = 20;
 
 /**
  * Erros do bot: falhas e pedidos de socorro reportados pelo WhatsApp.
- * A triagem muda so o status (aberto/visto/corrigido).
+ * A triagem muda so o status (aberto/visto/corrigido); o detalhe mostra o
+ * trecho da conversa onde o bot errou e abre a conversa inteira.
  */
 export default function BotErrosPage() {
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
@@ -55,7 +51,7 @@ export default function BotErrosPage() {
   const { isSuperAdmin } = usePermissions();
 
   const week = useMemo(() => lastDays(7), []);
-  const [period, setPeriod] = useState(week);
+  const [period, setPeriod] = useState<DateRange>(week);
   const [categoria, setCategoria] = useState<BotIssueCategory | "">("");
   const [status, setStatus] = useState<BotIssueStatus | "">("");
   const [codigo, setCodigo] = useState("");
@@ -71,11 +67,11 @@ export default function BotErrosPage() {
     }),
     [period, categoria, status, codigo],
   );
-  // O limite volta ao inicial quando qualquer filtro muda.
+  // A pagina volta para a primeira quando qualquer filtro muda.
   const filterKey = JSON.stringify(baseFilters);
-  const [loaded, setLoaded] = useState({ key: filterKey, limit: PAGE_SIZE });
-  const limit = loaded.key === filterKey ? loaded.limit : PAGE_SIZE;
-  const filters = useMemo(() => ({ ...baseFilters, limit }), [baseFilters, limit]);
+  const [paged, setPaged] = useState({ key: filterKey, page: 1 });
+  const page = paged.key === filterKey ? paged.page : 1;
+  const filters = useMemo(() => ({ ...baseFilters, page, limit: PAGE_SIZE }), [baseFilters, page]);
 
   const { data: list, isLoading, isError, isFetching } = useBotIssues(clientId, filters);
   const { data: summary } = useBotIssuesSummary(clientId, week);
@@ -95,7 +91,7 @@ export default function BotErrosPage() {
   return (
     <PainelPageShell
       title="Erros do bot"
-      description="Falhas técnicas, problemas de conversa e pedidos de socorro reportados pelo bot do WhatsApp."
+      description="Falhas técnicas, problemas de conversa e pedidos de socorro reportados pelo bot do WhatsApp. Clique numa ocorrência para ver onde o bot errou."
       isLoading={clientLoading || isLoading}
       isError={isError}
       errorMessage="Erro ao carregar os erros do bot."
@@ -103,29 +99,11 @@ export default function BotErrosPage() {
       {summary && <TopCodesCard porCodigo={summary.porCodigo} />}
 
       <PainelSection title="Ocorrências">
-        <div className="flex flex-wrap items-end gap-3">
-          <label className="flex flex-col gap-1 text-xs">
-            De
-            <input
-              type="date"
-              className={fieldClass}
-              value={period.from}
-              onChange={(e) => setPeriod((p) => ({ ...p, from: e.target.value }))}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs">
-            Até
-            <input
-              type="date"
-              className={fieldClass}
-              value={period.to}
-              onChange={(e) => setPeriod((p) => ({ ...p, to: e.target.value }))}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs">
+        <DateRangeFilter value={period} onChange={setPeriod}>
+          <label className="flex items-center gap-1.5 text-xs text-foreground/60">
             Categoria
             <select
-              className={fieldClass}
+              className={filterFieldClass}
               value={categoria}
               onChange={(e) => setCategoria(e.target.value as BotIssueCategory | "")}
             >
@@ -137,10 +115,10 @@ export default function BotErrosPage() {
               ))}
             </select>
           </label>
-          <label className="flex flex-col gap-1 text-xs">
+          <label className="flex items-center gap-1.5 text-xs text-foreground/60">
             Status
             <select
-              className={fieldClass}
+              className={filterFieldClass}
               value={status}
               onChange={(e) => setStatus(e.target.value as BotIssueStatus | "")}
             >
@@ -152,25 +130,26 @@ export default function BotErrosPage() {
               ))}
             </select>
           </label>
-          <label className="flex flex-col gap-1 text-xs">
+          <label className="flex items-center gap-1.5 text-xs text-foreground/60">
             Código
             <input
-              className={fieldClass}
+              className={filterFieldClass}
               placeholder="Ex.: WF_TIMEOUT"
               value={codigo}
               onChange={(e) => setCodigo(e.target.value)}
             />
           </label>
-        </div>
+        </DateRangeFilter>
 
         {list && list.items.length > 0 ? (
           <>
             <BotIssuesTable items={list.items} onOpen={setOpenId} />
-            <LoadMoreFooter
-              shown={list.items.length}
+            <Pagination
+              page={page}
+              pageSize={PAGE_SIZE}
               total={list.total}
               isLoading={isFetching}
-              onLoadMore={() => setLoaded({ key: filterKey, limit: limit + PAGE_SIZE })}
+              onChange={(p) => setPaged({ key: filterKey, page: p })}
             />
           </>
         ) : (

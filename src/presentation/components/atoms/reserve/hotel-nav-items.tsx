@@ -21,6 +21,7 @@ import {
   Share2,
   Target,
   History,
+  LayoutDashboard,
 } from "lucide-react";
 
 export interface HotelNavItem {
@@ -92,10 +93,16 @@ export function buildHotelNavItems(
       icon: MessageCircle,
       subItems: [
         {
+          id: "hotel-atendimento",
+          label: t("hotelAtendimentoResumo"),
+          icon: LayoutDashboard,
+          path: "/dashboard/hotel/atendimento",
+        },
+        {
           id: "hotel-conversas",
           label: t("hotelConversas"),
           icon: MessageCircle,
-          path: "/dashboard/hotel/atendimento",
+          path: "/dashboard/hotel/atendimento/conversas",
         },
         {
           id: "hotel-bot",

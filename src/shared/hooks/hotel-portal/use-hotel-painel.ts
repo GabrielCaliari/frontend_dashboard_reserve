@@ -142,11 +142,12 @@ export function flattenConversationPages(
 
 export function useHotelFunnelBoard(
   clientId: string | null,
-  options: { paused?: boolean } = {},
+  options: { paused?: boolean; period?: Period; limit?: number } = {},
 ) {
+  const params = { from: options.period?.from, to: options.period?.to, limit: options.limit };
   return useQuery({
-    queryKey: ['hotel-portal', 'funnel-board', clientId],
-    queryFn: () => hotelPortalService.getFunnelBoard(clientId!),
+    queryKey: ['hotel-portal', 'funnel-board', clientId, params],
+    queryFn: () => hotelPortalService.getFunnelBoard(clientId!, params),
     enabled: !!clientId,
     retry: false,
     staleTime: 1000 * 60,
@@ -171,14 +172,15 @@ export function useMoveFunnelStage(tenantId: string | null, clientId: string | n
       hotelPortalService.moveFunnelStage(tenantId!, numeroContato, dto),
     onMutate: async ({ numeroContato, dto }) => {
       await qc.cancelQueries({ queryKey: boardKey });
-      const previous = qc.getQueryData<FunnelBoardColumn[]>(boardKey);
-      if (previous) {
-        qc.setQueryData(boardKey, moveLeadInBoard(previous, numeroContato, dto.para_estagio));
+      // O board e cacheado por periodo/limite: move o card em todas as variantes.
+      const previous = qc.getQueriesData<FunnelBoardColumn[]>({ queryKey: boardKey });
+      for (const [key, data] of previous) {
+        if (data) qc.setQueryData(key, moveLeadInBoard(data, numeroContato, dto.para_estagio));
       }
       return { previous };
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx?.previous) qc.setQueryData(boardKey, ctx.previous);
+      for (const [key, data] of ctx?.previous ?? []) qc.setQueryData(key, data);
     },
     onSettled: () => {
       qc.invalidateQueries({ queryKey: boardKey });

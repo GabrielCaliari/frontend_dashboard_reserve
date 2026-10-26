@@ -17,7 +17,8 @@ import {
   DropdownSection,
   DropdownTrigger,
 } from "@heroui/react";
-import { BedDouble, Bot, CalendarRange, Clock, LifeBuoy, MoreVertical, UserRound } from "lucide-react";
+import { BedDouble, Bot, CalendarRange, Clock, LifeBuoy, MessageSquareText, MoreVertical, UserRound } from "lucide-react";
+import { conversationHref } from "@/src/presentation/components/organisms/hotel-portal/painel/conversation-link";
 import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
 import {
   AUDIENCE_LABELS,
@@ -82,9 +83,12 @@ interface FunnelBoardProps {
   onExtendHold?: (lead: FunnelBoardLead) => void;
   /** Avisa a pagina quando o arrastar comeca/termina, para pausar a atualizacao automatica. */
   onDraggingChange?: (dragging: boolean) => void;
+  /** Coluna com mais leads do que cards: pede o proximo lote ao backend. */
+  onLoadMore?: () => void;
+  isLoadingMore?: boolean;
 }
 
-export function FunnelBoard({ columns, canManage, onMove, onExtendHold, onDraggingChange }: FunnelBoardProps) {
+export function FunnelBoard({ columns, canManage, onMove, onExtendHold, onDraggingChange, onLoadMore, isLoadingMore }: FunnelBoardProps) {
   const [pending, setPending] = useState<PendingMove | null>(null);
 
   function requestMove(lead: FunnelBoardLead, _deEstagio: FunnelStage, paraEstagio: FunnelStage) {
@@ -107,7 +111,9 @@ export function FunnelBoard({ columns, canManage, onMove, onExtendHold, onDraggi
   const board = (
     // Desktop: colunas de largura fixa com scroll horizontal — 9 estagios
     // espremidos em flex-1 viravam tiras ilegiveis.
-    <div className="flex flex-col gap-3 md:flex-row md:items-start md:overflow-x-auto md:pb-3">
+    // Cada coluna rola por dentro (altura da tela); o quadro rola de lado. Assim
+    // dois meses de bot nao viram uma pagina sem fim nem escondem a barra lateral.
+    <div className="flex flex-col gap-3 md:flex-row md:items-start md:gap-3 md:overflow-x-auto md:pb-3 md:[scrollbar-gutter:stable]">
       {columns.map((column) => (
         <FunnelColumnView
           key={column.stage}
@@ -115,6 +121,8 @@ export function FunnelBoard({ columns, canManage, onMove, onExtendHold, onDraggi
           canManage={canManage}
           onRequestMove={requestMove}
           onExtendHold={onExtendHold}
+          onLoadMore={onLoadMore}
+          isLoadingMore={isLoadingMore}
         />
       ))}
     </div>
@@ -152,21 +160,23 @@ interface FunnelColumnViewProps {
   canManage: boolean;
   onRequestMove: (lead: FunnelBoardLead, deEstagio: FunnelStage, paraEstagio: FunnelStage) => void;
   onExtendHold?: (lead: FunnelBoardLead) => void;
+  onLoadMore?: () => void;
+  isLoadingMore?: boolean;
 }
 
-function FunnelColumnView({ column, canManage, onRequestMove, onExtendHold }: FunnelColumnViewProps) {
+function FunnelColumnView({ column, canManage, onRequestMove, onExtendHold, onLoadMore, isLoadingMore }: FunnelColumnViewProps) {
   const { setNodeRef, isOver } = useDroppable({ id: column.stage });
 
   return (
     <div
       ref={canManage ? setNodeRef : undefined}
-      className={`flex flex-col gap-2 rounded-3xl md:w-72 md:flex-none ${
+      className={`flex flex-col gap-2 rounded-2xl md:w-72 md:flex-none ${
         canManage && isOver ? "ring-1 ring-primary/40" : ""
       }`}
     >
       <div
         data-testid="coluna-header"
-        className="flex flex-col gap-1 rounded-2xl border border-border bg-default-50 px-3 py-2.5"
+        className="flex flex-col gap-1 rounded-xl border border-border bg-default-50 px-3 py-2.5"
       >
         <div className="flex items-center gap-2">
           <span aria-hidden className={`h-2.5 w-2.5 shrink-0 rounded-full ${STAGE_ACCENTS[column.stage]}`} />
@@ -187,7 +197,7 @@ function FunnelColumnView({ column, canManage, onRequestMove, onExtendHold }: Fu
         )}
       </div>
 
-      <div className="min-h-12 space-y-1.5 rounded-2xl bg-default-100/40 p-1.5">
+      <div className="min-h-12 max-h-[55vh] space-y-1.5 overflow-y-auto rounded-xl bg-default-100/40 p-1.5 md:max-h-[calc(100dvh-360px)] md:min-h-[200px]">
         {column.leads.map((lead) => (
           <FunnelLeadCard
             key={lead.numeroContato}
@@ -202,10 +212,14 @@ function FunnelColumnView({ column, canManage, onRequestMove, onExtendHold }: Fu
           <p className="px-2 py-3 text-center text-xs text-foreground/40">Sem conversas aqui</p>
         )}
         {column.count > column.leads.length && (
-          <p className="px-1 text-xs text-muted-foreground">
-            +{column.count - column.leads.length} não exibido
-            {column.count - column.leads.length === 1 ? "" : "s"}
-          </p>
+          <button
+            className="w-full rounded-lg px-2 py-2 text-center text-xs font-medium text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60"
+            disabled={!onLoadMore || isLoadingMore}
+            type="button"
+            onClick={onLoadMore}
+          >
+            {isLoadingMore ? "Carregando…" : `Ver mais ${column.count - column.leads.length}`}
+          </button>
         )}
       </div>
 
@@ -246,7 +260,7 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
       // O transform do dnd-kit e o que faz o card SEGUIR o cursor durante o
       // arrasto; sem ele o drop funciona mas o card parece fixo.
       style={canManage ? { transform: CSS.Translate.toString(transform) } : undefined}
-      className={`flex items-start justify-between gap-2 rounded-2xl bg-background p-3 text-sm transition-colors hover:border-primary/40 ${
+      className={`group flex items-start justify-between gap-2 rounded-xl bg-background p-3 text-sm transition-colors hover:border-primary/40 ${
         emSocorro ? "border-danger ring-1 ring-danger/40" : ""
       } ${
         canManage ? "cursor-grab touch-none active:cursor-grabbing" : ""
@@ -255,7 +269,7 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
       <div className="flex min-w-0 items-start gap-2.5">
         <span
           aria-hidden
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-default-100 font-display text-xs font-semibold text-foreground/75"
         >
           {contactInitials(lead.nome, lead.numeroContato)}
         </span>
@@ -267,7 +281,16 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
             ) : (
               <Bot aria-label="Com o bot" className="h-3.5 w-3.5 shrink-0 text-primary" />
             )}
-            <span className="truncate">{lead.nome ?? lead.numeroContato}</span>
+            {/* O nome abre a conversa: cada card e uma conversa real, nao so o socorro. */}
+            <Link
+              href={conversationHref(lead.numeroContato)}
+              title="Abrir conversa"
+              onPointerDown={(e) => e.stopPropagation()}
+              className="truncate hover:text-primary hover:underline"
+            >
+              {lead.nome ?? lead.numeroContato}
+            </Link>
+            <MessageSquareText aria-hidden className="h-3 w-3 shrink-0 text-foreground/0 transition-colors group-hover:text-primary/60" />
           </p>
           {lead.acomodacaoInteresse && (
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -319,7 +342,7 @@ function FunnelLeadCard({ lead, column, canManage, onRequestMove, onExtendHold }
           </span>
           {emSocorro && (
             <Link
-              href={`/dashboard/hotel/atendimento/${lead.numeroContato}`}
+              href={conversationHref(lead.numeroContato)}
               // Impede que o clique no atalho inicie o arrasto do card.
               onPointerDown={(e) => e.stopPropagation()}
               className="mt-1 inline-block text-xs font-medium text-danger underline underline-offset-2"

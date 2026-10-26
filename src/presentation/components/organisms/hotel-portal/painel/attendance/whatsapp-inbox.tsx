@@ -178,13 +178,20 @@ function diaMes(iso: string | null): string {
  * pelo WhatsApp Business da pousada; daqui so se abre a conversa no WhatsApp
  * Web. Mobile alterna lista <-> conversa.
  */
-export function WhatsappInbox({ clientId }: { clientId: string }) {
+export function WhatsappInbox({
+  clientId,
+  initialContato = null,
+}: {
+  clientId: string;
+  /** Contato a abrir ao entrar (link vindo do funil, dos erros ou dos feedbacks). */
+  initialContato?: string | null;
+}) {
   const [busca, setBusca] = useState("");
   const [buscaAplicada, setBuscaAplicada] = useState("");
   const [etiqueta, setEtiqueta] = useState<Etiqueta>("todas");
   const [publico, setPublico] = useState<BotContactAudience | "">("");
   const [estagio, setEstagio] = useState<FunnelStage | "">("");
-  const [selecionado, setSelecionado] = useState<string | null>(null);
+  const [selecionado, setSelecionado] = useState<string | null>(initialContato);
   const [retomadaAberta, setRetomadaAberta] = useState(false);
   const [estagioRetomada, setEstagioRetomada] = useState<FunnelStage | null>(null);
 

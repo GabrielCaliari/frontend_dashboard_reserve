@@ -45,6 +45,7 @@ export const MODULE_NAV_IDS: Record<GateableModule, readonly string[]> = {
     "hotel-instagram",
     "hotel-site",
     // Atendimento
+    "hotel-atendimento",
     "hotel-conversas",
     "hotel-bot",
     "hotel-erros",

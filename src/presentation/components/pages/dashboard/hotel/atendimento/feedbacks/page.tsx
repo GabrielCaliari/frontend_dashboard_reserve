@@ -10,9 +10,15 @@ import {
   PainelPageShell,
   PainelSection,
 } from "@/src/presentation/components/organisms/hotel-portal/painel/painel-page-shell";
-import { LoadMoreFooter } from "@/src/presentation/components/organisms/hotel-portal/painel/load-more-footer";
+import {
+  DateRangeFilter,
+  filterFieldClass,
+  lastDays,
+  type DateRange,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/date-range-filter";
+import { Pagination } from "@/src/presentation/components/organisms/hotel-portal/painel/pagination";
 import { PortalEmptyState } from "@/src/presentation/components/organisms/hotel-portal/painel/empty-state";
-import { Card } from "@/src/presentation/components/atoms/shadcn-ui/card";
+import { MetricCard } from "@/src/presentation/components/organisms/hotel-portal/ui";
 import {
   FeedbackList,
   SENTIMENT_LABELS,
@@ -20,19 +26,8 @@ import {
 import { FeedbackHighlights } from "@/src/presentation/components/organisms/hotel-portal/painel/feedbacks/feedback-highlights";
 import type { FeedbackSentiment } from "@/src/shared/domain/types/@hotel-painel";
 
-function isoDay(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-function lastDays(days: number): { from: string; to: string } {
-  const to = new Date();
-  const from = new Date(to.getTime() - (days - 1) * 24 * 60 * 60 * 1000);
-  return { from: isoDay(from), to: isoDay(to) };
-}
-
-const PAGE_SIZE = 50;
-
-const fieldClass = "rounded-lg border border-border bg-background px-3 py-2 text-sm";
+/** 20 por pagina: uma tela, sem rolar sem fim. */
+const PAGE_SIZE = 20;
 
 /** Feedbacks dos hospedes coletados pelo bot apos a estadia. */
 export default function FeedbacksPage() {
@@ -40,7 +35,7 @@ export default function FeedbacksPage() {
   const clientId = client?.id ?? null;
 
   const week = useMemo(() => lastDays(7), []);
-  const [period, setPeriod] = useState(() => lastDays(30));
+  const [period, setPeriod] = useState<DateRange>(() => lastDays(30));
   const [sentimento, setSentimento] = useState<FeedbackSentiment | "">("");
 
   const baseFilters = useMemo(
@@ -51,11 +46,11 @@ export default function FeedbacksPage() {
     }),
     [period, sentimento],
   );
-  // O limite volta ao inicial quando qualquer filtro muda.
+  // A pagina volta para a primeira quando qualquer filtro muda.
   const filterKey = JSON.stringify(baseFilters);
-  const [loaded, setLoaded] = useState({ key: filterKey, limit: PAGE_SIZE });
-  const limit = loaded.key === filterKey ? loaded.limit : PAGE_SIZE;
-  const filters = useMemo(() => ({ ...baseFilters, limit }), [baseFilters, limit]);
+  const [paged, setPaged] = useState({ key: filterKey, page: 1 });
+  const page = paged.key === filterKey ? paged.page : 1;
+  const filters = useMemo(() => ({ ...baseFilters, page, limit: PAGE_SIZE }), [baseFilters, page]);
 
   const { data: list, isLoading, isError, isFetching } = useFeedbacks(clientId, filters);
   const { data: summary } = useFeedbacksSummary(clientId, week);
@@ -70,52 +65,34 @@ export default function FeedbacksPage() {
     >
       {summary && (
         <>
-          <div className="grid gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {(Object.keys(SENTIMENT_LABELS) as FeedbackSentiment[]).map((key) => (
-              <Card key={key} className="p-4">
-                <p className="text-xs text-muted-foreground">
-                  {SENTIMENT_LABELS[key]} (últimos 7 dias)
-                </p>
-                <p className="text-2xl font-semibold">{summary.porSentimento[key]}</p>
-              </Card>
+              <MetricCard
+                key={key}
+                label={`${SENTIMENT_LABELS[key]} (últimos 7 dias)`}
+                value={String(summary.porSentimento[key])}
+                accent={key === "positivo"}
+              />
             ))}
-            <Card className="p-4">
-              <p className="text-xs text-muted-foreground">Nota média</p>
-              <p className="text-2xl font-semibold">
-                {summary.notaMedia === null
+            <MetricCard
+              label="Nota média"
+              value={
+                summary.notaMedia === null
                   ? "—"
-                  : summary.notaMedia.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}
-              </p>
-            </Card>
+                  : summary.notaMedia.toLocaleString("pt-BR", { maximumFractionDigits: 1 })
+              }
+            />
           </div>
           <FeedbackHighlights melhores={summary.melhores} piores={summary.piores} />
         </>
       )}
 
       <PainelSection title="Todos os feedbacks">
-        <div className="flex flex-wrap items-end gap-3">
-          <label className="flex flex-col gap-1 text-xs">
-            De
-            <input
-              type="date"
-              className={fieldClass}
-              value={period.from}
-              onChange={(e) => setPeriod((p) => ({ ...p, from: e.target.value }))}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs">
-            Até
-            <input
-              type="date"
-              className={fieldClass}
-              value={period.to}
-              onChange={(e) => setPeriod((p) => ({ ...p, to: e.target.value }))}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs">
+        <DateRangeFilter value={period} onChange={setPeriod}>
+          <label className="flex items-center gap-1.5 text-xs text-foreground/60">
             Sentimento
             <select
-              className={fieldClass}
+              className={filterFieldClass}
               value={sentimento}
               onChange={(e) => setSentimento(e.target.value as FeedbackSentiment | "")}
             >
@@ -127,16 +104,17 @@ export default function FeedbacksPage() {
               ))}
             </select>
           </label>
-        </div>
+        </DateRangeFilter>
 
         {list && list.items.length > 0 ? (
           <>
             <FeedbackList items={list.items} />
-            <LoadMoreFooter
-              shown={list.items.length}
+            <Pagination
+              page={page}
+              pageSize={PAGE_SIZE}
               total={list.total}
               isLoading={isFetching}
-              onLoadMore={() => setLoaded({ key: filterKey, limit: limit + PAGE_SIZE })}
+              onChange={(p) => setPaged({ key: filterKey, page: p })}
             />
           </>
         ) : (

@@ -47,7 +47,7 @@ describe("FeedbackList", () => {
     expect(screen.getByText("Reclamou do ruido")).toBeTruthy();
     expect(screen.getAllByText("Link de avaliação enviado").length).toBe(2);
     expect(screen.getAllByRole("link", { name: /Abrir conversa/ })[0].getAttribute("href")).toBe(
-      "/dashboard/hotel/atendimento/5511999990000",
+      "/dashboard/hotel/atendimento/conversas?contato=5511999990000",
     );
   });
 });

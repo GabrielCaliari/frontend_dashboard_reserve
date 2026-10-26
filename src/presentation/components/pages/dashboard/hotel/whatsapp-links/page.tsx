@@ -12,6 +12,7 @@ import {
   useDeleteWhatsAppLink,
 } from "@/src/shared/hooks/hotel-portal";
 import usePermissions from "@/src/shared/hooks/use-permissions";
+import { useTenantCapabilities } from "@/src/modules/settings/presentation/hooks/tenant-capabilities-provider";
 import { useTenantStore } from "@/src/shared/stores/tenant-store";
 import {
   Card,
@@ -221,6 +222,7 @@ function LinkStatsPanel({ clientId, linkId }: { clientId: string; linkId: string
 
 export default function HotelWhatsAppLinksPage() {
   const { isSuperAdmin } = usePermissions();
+  const { hasPermission } = useTenantCapabilities();
   const selectedTenant = useTenantStore((s) => s.selectedTenant);
   const { data: client, isLoading: clientLoading } = useActiveHotelClient();
   const { data: links, isLoading } = useWhatsAppLinks(client?.id ?? null);
@@ -381,7 +383,9 @@ export default function HotelWhatsAppLinksPage() {
     );
   }
 
-  const canManage = isSuperAdmin;
+  // O backend exige hotel-portal.whatsapp-links.manage, que o gerente da pousada
+  // tem; so o super admin podia criar links por engano do front.
+  const canManage = isSuperAdmin || hasPermission("hotel-portal.whatsapp-links.manage");
 
   return (
     <LayoutScopeRoot>

@@ -21,7 +21,11 @@ import { FollowupEffectivenessChart } from "@/src/presentation/components/organi
 import { HandoffMetrics } from "@/src/presentation/components/organisms/hotel-portal/painel/attendance/handoff-metrics";
 import { PortalCardSkeleton } from "@/src/presentation/components/organisms/hotel-portal/painel/skeletons";
 import { MetricCard } from "@/src/presentation/components/organisms/hotel-portal/ui";
-import { resolvePreset } from "@/src/presentation/components/organisms/hotel-portal/ui/period-picker";
+import {
+  DateRangeFilter,
+  currentMonth,
+  type DateRange,
+} from "@/src/presentation/components/organisms/hotel-portal/painel/date-range-filter";
 import { formatNumber, formatPercent } from "@/src/shared/utils/hotel-format";
 import type { FunnelBoardLead, FunnelStageChangeDto } from "@/src/shared/domain/types/@hotel-painel";
 
@@ -52,14 +56,18 @@ export default function HotelFunilPage() {
   const clientId = client?.id ?? null;
   const { tenantId, hasPermission } = useTenantCapabilities();
   const canManage = hasPermission("hotel-portal.whatsapp-funnel.manage");
-  const [preset] = useState<"current-month">("current-month");
-  const period = useMemo(() => resolvePreset(preset), [preset]);
+  // Periodo = ultimo movimento do lead. Sem isso, dois meses de bot viram colunas sem fim.
+  const [period, setPeriod] = useState<DateRange>(currentMonth);
+  const periodKey = `${period.from}|${period.to}`;
+  // Cards por coluna: 20 e o painel pede mais de 20 em 20 (teto de 100 no backend).
+  const [loaded, setLoaded] = useState({ key: periodKey, limit: 20 });
+  const limit = loaded.key === periodKey ? loaded.limit : 20;
 
   const [dragging, setDragging] = useState(false);
   const moveStage = useMoveFunnelStage(tenantId, clientId);
   // pausa a atualizacao automatica durante o arrastar e o movimento em voo
-  const { data: board, isLoading: boardLoading, isError } =
-    useHotelFunnelBoard(clientId, { paused: dragging || moveStage.isPending });
+  const { data: board, isLoading: boardLoading, isError, isFetching } =
+    useHotelFunnelBoard(clientId, { paused: dragging || moveStage.isPending, period, limit });
   const { data: metrics } = useHotelFunnelMetrics(clientId, period);
   const extendHold = useExtendHold(tenantId, clientId);
 
@@ -93,6 +101,7 @@ export default function HotelFunilPage() {
       isLoading={clientLoading || boardLoading}
       isError={isError}
       errorMessage="Erro ao carregar o funil."
+      actions={<DateRangeFilter value={period} onChange={setPeriod} />}
     >
       {metrics && (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -116,7 +125,10 @@ export default function HotelFunilPage() {
         </div>
       )}
 
-      <PainelSection title="Quadro do funil">
+      <PainelSection
+        title="Quadro do funil"
+        description="Clique no nome para abrir a conversa. Cada coluna rola por dentro; arraste o quadro para o lado para ver as etapas seguintes."
+      >
         {board ? (
           <FunnelBoard
             columns={board}
@@ -124,6 +136,8 @@ export default function HotelFunilPage() {
             onMove={handleMove}
             onExtendHold={canManage ? handleExtendHold : undefined}
             onDraggingChange={setDragging}
+            onLoadMore={limit < 100 ? () => setLoaded({ key: periodKey, limit: Math.min(limit + 20, 100) }) : undefined}
+            isLoadingMore={isFetching && !boardLoading}
           />
         ) : (
           <PortalCardSkeleton />

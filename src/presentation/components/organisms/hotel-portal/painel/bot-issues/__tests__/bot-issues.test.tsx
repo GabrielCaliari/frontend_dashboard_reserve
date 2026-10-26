@@ -72,7 +72,7 @@ describe("BotIssueDetailModal", () => {
     expect(screen.getByText("Quero reservar")).toBeTruthy();
     expect(screen.getByText("Um instante")).toBeTruthy();
     expect(screen.getByText("Oi")).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Abrir conversa/ }).getAttribute("href")).toBe("/dashboard/hotel/atendimento/5511999990000");
+    expect(screen.getByRole("link", { name: /Abrir conversa/ }).getAttribute("href")).toBe("/dashboard/hotel/atendimento/conversas?contato=5511999990000");
     expect(screen.getByRole("link", { name: /n8n/i })).toBeTruthy();
     await userEvent.click(screen.getByRole("button", { name: "Marcar como visto" }));
     expect(onChangeStatus).toHaveBeenCalledWith("i1", "VISTO");

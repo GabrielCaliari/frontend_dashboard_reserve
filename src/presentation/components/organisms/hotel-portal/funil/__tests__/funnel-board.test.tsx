@@ -170,7 +170,7 @@ describe("FunnelBoard (socorro)", () => {
     // o card draggable tem role=button (dnd-kit), entao o link nao aparece por role
     const link = screen.getByText("Abrir conversa").closest("a");
     expect(link).not.toBeNull();
-    expect(link).toHaveAttribute("href", "/dashboard/hotel/atendimento/+5511999");
+    expect(link).toHaveAttribute("href", "/dashboard/hotel/atendimento/conversas?contato=%2B5511999");
     expect(screen.getByTestId("card-socorro")).toBeInTheDocument();
   });
 

@@ -36,13 +36,13 @@ describe("FeedbacksPage", () => {
     expect(filters.to).toBe(new Date().toISOString().slice(0, 10));
   });
 
-  it("mostra X de N e carrega mais aumentando o limit em 50", async () => {
+  it("pagina de 20 em 20 e pede a pagina certa ao backend", async () => {
     h.total = 120;
     render(<FeedbacksPage />);
-    expect(screen.getByText("Mostrando 1 de 120")).toBeTruthy();
-    expect(h.list.mock.calls.at(-1)![1].limit).toBe(50);
-    await userEvent.click(screen.getByRole("button", { name: "Carregar mais" }));
-    expect(h.list.mock.calls.at(-1)![1].limit).toBe(100);
+    expect(screen.getByText("1–20 de 120")).toBeTruthy();
+    expect(h.list.mock.calls.at(-1)![1]).toMatchObject({ page: 1, limit: 20 });
+    await userEvent.click(screen.getByRole("button", { name: "Página 2" }));
+    expect(h.list.mock.calls.at(-1)![1]).toMatchObject({ page: 2, limit: 20 });
   });
 
   it("mostra nota media, destaques, lista e filtra por sentimento", async () => {

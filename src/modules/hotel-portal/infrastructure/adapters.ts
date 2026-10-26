@@ -756,9 +756,13 @@ export const hotelPortalService = {
     };
   },
 
-  async getFunnelBoard(clientId: string): Promise<FunnelBoardColumn[]> {
+  async getFunnelBoard(
+    clientId: string,
+    params?: { from?: string; to?: string; limit?: number },
+  ): Promise<FunnelBoardColumn[]> {
     const res = await api.get<FunnelBoardColumn[]>(
       `/hotel-portal/${clientId}/whatsapp/funnel`,
+      { params },
     );
     return toArray<FunnelBoardColumn>(res.data);
   },

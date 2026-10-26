@@ -4,13 +4,13 @@
     {
       "name": "backend-local",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["../backend_reserve/scripts/demo/start-local.cjs", "--port", "3012"],
-      "port": 3012
+      "runtimeArgs": ["../backend_reserve/scripts/demo/start-local.cjs", "--port", "3013"],
+      "port": 3013
     },
     {
       "name": "painel-local",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["scripts/dev-local-api.cjs", "--api", "http://localhost:3012/api"],
+      "runtimeArgs": ["scripts/dev-local-api.cjs", "--api", "http://localhost:3013/api"],
       "port": 3000
     }
   ]

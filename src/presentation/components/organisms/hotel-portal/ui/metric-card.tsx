@@ -63,9 +63,9 @@ export function MetricCard({
           {/* keep-all: valor so quebra entre palavras ("R$" | "58.800,00"),
               nunca no meio do numero quando o card fica estreito. */}
           <p
-            className={`font-display font-semibold leading-tight tracking-[-0.02em] tabular-nums [word-break:keep-all] ${
+            className={`font-display font-semibold leading-tight tracking-[-0.02em] tabular-nums [overflow-wrap:normal] [word-break:keep-all] ${
               // Valor composto ("3 cotações · R$ 1.200,00") nao cabe no corpo de numero.
-              value.length > 16 ? "text-lg" : "text-[1.65rem]"
+              value.length > 16 ? "text-lg" : "text-[clamp(1.2rem,4.5vw,1.65rem)]"
             } ${
               accent ? "text-primary" : "text-foreground"
             }`}
