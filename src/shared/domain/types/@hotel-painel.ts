@@ -40,7 +40,10 @@ export interface LeadsOverviewResponse {
  * Nao inventar join no front: mostre o id ate o backend enriquecer.
  */
 export interface RoiByCampaignRow {
+  /** ID do anuncio no Meta (a atribuicao guarda o ad_id). */
   campaignId: string;
+  adName?: string | null;
+  campaignName?: string | null;
   conversas: number;
   qualificados: number;
 }

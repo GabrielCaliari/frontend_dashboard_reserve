@@ -278,14 +278,14 @@ export function ManagerHome() {
                     </p>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Meta: {fmt(dashboard.kpi.target_occupancy, "percent")}
+                    Meta: {fmt(client.target_occupancy ?? 0, "percent")}
                   </p>
                 </div>
                 <div className="h-2.5 rounded-full bg-default-100 overflow-hidden">
                   <div
                     className="h-full rounded-full bg-primary"
                     style={{
-                      width: `${Math.min(100, Math.max(0, dashboard.kpi.occupancy_rate))}%`,
+                      width: `${Math.min(100, Math.max(0, dashboard.kpi.occupancy_rate * 100))}%`,
                     }}
                   />
                 </div>

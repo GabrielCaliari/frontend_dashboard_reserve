@@ -124,23 +124,10 @@ export const NAV_READ_PERMISSIONS: Record<string, readonly string[]> = {
   admins: ["admins.read"],
   users: ["users.read"],
   tenants: ["tenants.read"],
-  "hotel-config": ["hotel.read"],
-  "hotel-campaigns": ["hotel.read"],
-  "hotel-reports": ["hotel.read"],
-  "hotel-site": ["hotel.read"],
-  "hotel-whatsapp-links": ["hotel.read"],
-  "hotel-trafego": ["hotel.read"],
-  "hotel-instagram": ["hotel.read"],
-  "hotel-conversas": ["hotel.read"],
-  "hotel-bot": ["hotel.read"],
-  "hotel-erros": ["hotel.read"],
-  "hotel-feedbacks": ["hotel.read"],
-  "hotel-funil": ["hotel.read"],
-  "hotel-calendario": ["hotel.read"],
-  "hotel-retorno": ["hotel.read"],
-  "hotel-evolucao": ["hotel.read"],
-  "hotel-plano": ["hotel.read"],
-  "hotel-atividades": ["hotel.read"],
+  // Painel do hotel: sem permissao de leitura. As rotas /hotel-portal so exigem o
+  // modulo client-portal (ModuleAccessGuard), entao o menu e gateado so pelo
+  // modulo "hotel" em MODULE_NAV_IDS. A antiga "hotel.read" nunca existiu no
+  // backend e escondia o menu inteiro de todo gerente de pousada.
   "motor-calendario": ["motor.read"],
   "motor-tarifas": ["motor.read"],
   "motor-reservas": ["motor.read"],

@@ -25,6 +25,8 @@ import { isAxiosError } from 'axios';
 import adminbotintegrationconfigService from '@/src/infraestructure/server/services/adminbotintegrationconfig';
 import adminhotelclientService from '@/src/infraestructure/server/services/adminhotelclient';
 import type { HotelOverviewResponse } from '@/src/shared/domain/types/@hotel-portal-v1';
+import { toHotelDashboard, type BackendDashboardResponse } from './dashboard-mapper';
+import { toHotelCampaigns } from './campaigns-mapper';
 import type {
   HotelClient,
   HotelDashboardResponse,
@@ -530,10 +532,10 @@ export const hotelPortalService = {
     clientId: string,
     params?: { from?: string; to?: string },
   ): Promise<HotelDashboardResponse> {
-    const res = await api.get<HotelDashboardResponse>(`/hotel-portal/${clientId}/dashboard`, {
+    const res = await api.get<BackendDashboardResponse>(`/hotel-portal/${clientId}/dashboard`, {
       params,
     });
-    return res.data;
+    return toHotelDashboard(res.data);
   },
 
   // ── Portal: Snapshots ──────────────────────────────────────────────────
@@ -549,10 +551,10 @@ export const hotelPortalService = {
     clientId: string,
     params?: { from?: string; to?: string },
   ): Promise<HotelCampaignsResponse> {
-    const res = await api.get<HotelCampaignsResponse>(`/hotel-portal/${clientId}/campaigns`, {
+    const res = await api.get<Parameters<typeof toHotelCampaigns>[0]>(`/hotel-portal/${clientId}/campaigns`, {
       params,
     });
-    return res.data;
+    return toHotelCampaigns(res.data);
   },
 
   // ── Portal: Site Metrics ───────────────────────────────────────────────

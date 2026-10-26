@@ -12,7 +12,16 @@ import type {
 const columns: PortalDataTableColumn<RoiByCampaignRow>[] = [
   // O backend agrupa por `campaign_id` cru e nao devolve nome — exibir o id e
   // honesto; inventar um join no front nao seria.
-  { key: "campaignId", header: "Campanha", render: (r) => r.campaignId },
+  {
+    key: "campaignId",
+    header: "Anúncio",
+    render: (r) => (
+      <span className="flex flex-col">
+        <span className="font-medium text-foreground">{r.adName ?? `Anúncio ${r.campaignId}`}</span>
+        {r.campaignName && <span className="text-xs text-muted-foreground">{r.campaignName}</span>}
+      </span>
+    ),
+  },
   { key: "conversas", header: "Conversas", render: (r) => r.conversas },
   { key: "qualificados", header: "Qualificados", render: (r) => r.qualificados },
 ];

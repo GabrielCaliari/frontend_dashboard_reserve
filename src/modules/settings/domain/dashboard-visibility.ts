@@ -35,7 +35,8 @@ const GROUP_RULES: Record<string, AccessRule> = {
   email: { modules: ["mailer"], permissions: ["mailer.campaign.manage"] },
   users: { permissions: ["users.read"] },
   payments: { modules: ["payments"], permissions: ["payments.read"] },
-  hotel: { modules: ["hotel"], permissions: ["hotel.read"] },
+  // Sem permissao: as rotas do painel do hotel so exigem o modulo (ver navigation.ts).
+  hotel: { modules: ["hotel"] },
 };
 
 export function metricModuleFor(
