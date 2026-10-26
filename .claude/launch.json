@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend-local",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["../backend_reserve/scripts/demo/start-local.cjs"],
+      "port": 3002
+    },
+    {
+      "name": "painel-local",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["scripts/dev-local-api.cjs"],
+      "port": 3000
+    }
+  ]
+}
