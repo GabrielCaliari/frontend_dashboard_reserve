@@ -71,10 +71,9 @@ export default function HotelCampaignsPage() {
     <LayoutScopeRoot>
       <div className="mx-auto space-y-8 px-4 py-8 sm:px-8 lg:px-10 max-w-[1400px] animate-fade-in">
         {/* Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-default-50 border border-border p-8 sm:p-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
+        <div className="border-b border-border/70 pb-6">
           <div className="relative">
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">Campanhas</h1>
+            <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">Campanhas</h1>
             <p className="text-muted-foreground mt-2 text-base">
               Performance das suas campanhas no Meta Ads e Google Ads.
             </p>
@@ -85,8 +84,7 @@ export default function HotelCampaignsPage() {
         {summary.length > 0 && (
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 rounded-full bg-primary" />
-              <h2 className="text-lg font-semibold tracking-tight text-foreground">Resumo por Canal</h2>
+              <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">Resumo por Canal</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {summary.map((s) => (
@@ -114,7 +112,7 @@ export default function HotelCampaignsPage() {
                         <p className="font-semibold text-foreground mt-0.5">{fmt(s.total_clicks)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground">Conversões</p>
+                        <p className="text-xs text-muted-foreground">Conversas iniciadas</p>
                         <p className="font-semibold text-foreground mt-0.5">{fmt(s.total_conversions)}</p>
                       </div>
                       <div>
@@ -140,8 +138,7 @@ export default function HotelCampaignsPage() {
         {/* Detailed metrics table */}
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-1.5 h-6 rounded-full bg-primary" />
-            <h2 className="text-lg font-semibold tracking-tight text-foreground">Campanhas Detalhadas</h2>
+            <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">Campanhas Detalhadas</h2>
           </div>
 
           {metrics.length === 0 ? (
@@ -161,7 +158,7 @@ export default function HotelCampaignsPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border bg-default-100/50">
-                        {["Canal", "Campanha", "Investimento", "Impressões", "Cliques", "Conversões", "ROAS"].map((h) => (
+                        {["Canal", "Campanha", "Investimento", "Impressões", "Cliques", "Conversas", "ROAS"].map((h) => (
                           <th
                             key={h}
                             className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider"
@@ -213,7 +210,7 @@ export default function HotelCampaignsPage() {
         </div>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+          <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
             Conversas no WhatsApp por anúncio (mês atual)
           </h2>
           <AdConversationsTable rows={funil?.conversasPorAnuncio ?? []} />

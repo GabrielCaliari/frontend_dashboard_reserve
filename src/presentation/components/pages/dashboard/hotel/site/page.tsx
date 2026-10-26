@@ -140,12 +140,11 @@ export default function HotelSitePage() {
     <LayoutScopeRoot>
       <div className="mx-auto space-y-8 px-4 py-8 sm:px-8 lg:px-10 max-w-[1400px] animate-fade-in">
         {/* Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-default-50 border border-border p-8 sm:p-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
+        <div className="border-b border-border/70 pb-6">
           <div className="relative flex items-start justify-between gap-4 flex-wrap">
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold text-foreground tracking-tight">Site</h1>
+                <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">Site</h1>
                 <SourceBadge source="auto" />
               </div>
               <p className="text-muted-foreground mt-2 text-base">

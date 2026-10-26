@@ -33,13 +33,13 @@ export function MetricCard({
 }) {
   return (
     <Card
-      className={`rounded-3xl shadow-none border ${
+      className={`rounded-2xl shadow-none border ${
         accent
-          ? "bg-primary/5 border-primary/20"
-          : "bg-default-50 border-border"
+          ? "bg-primary/[0.07] border-primary/25"
+          : "bg-default-50 border-border/80"
       }`}
     >
-      <CardBody className="p-5 sm:p-6 flex flex-col gap-3">
+      <CardBody className="p-5 flex flex-col gap-3">
         <div className="flex items-start justify-between gap-2">
           {Icon ? (
             <div
@@ -60,7 +60,16 @@ export function MetricCard({
         </div>
 
         <div>
-          <p className="text-2xl font-semibold text-foreground tracking-tight">
+          {/* keep-all: valor so quebra entre palavras ("R$" | "58.800,00"),
+              nunca no meio do numero quando o card fica estreito. */}
+          <p
+            className={`font-display font-semibold leading-tight tracking-[-0.02em] tabular-nums [word-break:keep-all] ${
+              // Valor composto ("3 cotações · R$ 1.200,00") nao cabe no corpo de numero.
+              value.length > 16 ? "text-lg" : "text-[1.65rem]"
+            } ${
+              accent ? "text-primary" : "text-foreground"
+            }`}
+          >
             {value}
           </p>
           <div className="mt-1 flex items-center gap-2 flex-wrap">

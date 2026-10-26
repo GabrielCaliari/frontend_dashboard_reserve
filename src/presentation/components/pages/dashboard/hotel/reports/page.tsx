@@ -150,11 +150,10 @@ export default function HotelReportsPage() {
     <LayoutScopeRoot>
       <div className="mx-auto space-y-8 px-4 py-8 sm:px-8 lg:px-10 max-w-[1000px] animate-fade-in">
         {/* Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-default-50 border border-border p-8 sm:p-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
+        <div className="border-b border-border/70 pb-6">
           <div className="relative flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <h1 className="text-3xl font-bold text-foreground tracking-tight">Relatório Mensal</h1>
+              <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">Relatório Mensal</h1>
               <p className="text-muted-foreground mt-2 text-base">
                 Acompanhe os relatórios mensais preparados pela equipe RÉSERVE.
               </p>
@@ -173,7 +172,7 @@ export default function HotelReportsPage() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 rounded-full bg-success" />
-              <h2 className="text-lg font-semibold tracking-tight text-foreground">
+              <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
                 Relatórios Disponíveis
               </h2>
             </div>
@@ -227,7 +226,7 @@ export default function HotelReportsPage() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 rounded-full bg-warning" />
-              <h2 className="text-lg font-semibold tracking-tight text-foreground">
+              <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
                 Em Preparação
               </h2>
             </div>

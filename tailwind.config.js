@@ -12,7 +12,8 @@ module.exports = {
     extend: {
       fontFamily: {
         nunito: ["var(--font-nunito)", "sans-serif"],
-        sans: ["var(--font-nunito)", "var(--font-sans)"],
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
         mono: ["var(--font-mono)"],
         portalDisplay: ["var(--font-portal-display)", "ui-serif", "Georgia", "serif"],
       },

@@ -150,7 +150,7 @@ export function ManagerHome() {
           </PainelSection>
 
           <PainelSection title="Motor de reservas">
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
               <MetricCard
                 label="Receita"
                 value={fmtBRL(home.motor.receita)}

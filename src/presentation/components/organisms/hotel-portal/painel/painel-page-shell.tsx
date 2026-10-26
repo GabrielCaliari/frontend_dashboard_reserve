@@ -34,22 +34,21 @@ export function PainelPageShell({
       <div
         className={`mx-auto ${wide ? "max-w-[1840px]" : "max-w-[1400px]"} animate-fade-in space-y-8 px-4 py-8 sm:px-8 lg:px-10`}
       >
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-default-50 p-8 sm:p-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-xl">
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                {title}
-              </h1>
-              {description && (
-                <p className="mt-2 text-base text-muted-foreground">
-                  {description}
-                </p>
-              )}
-            </div>
-            {actions}
+        {/* Cabecalho aberto, sem caixa: o titulo carrega a tela e uma linha fina
+            separa do conteudo. */}
+        <header className="flex flex-col gap-4 border-b border-border/70 pb-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl">
+            <h1 className="font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[2.5rem]">
+              {title}
+            </h1>
+            {description && (
+              <p className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-muted-foreground">
+                {description}
+              </p>
+            )}
           </div>
-        </div>
+          {actions ? <div className="shrink-0">{actions}</div> : null}
+        </header>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-32">
@@ -86,14 +85,11 @@ export function PainelSection({
   return (
     <section className="space-y-4">
       <div className="space-y-1">
-        <div className="flex items-center gap-3">
-          <div className="h-6 w-1.5 rounded-full bg-primary" />
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">
-            {title}
-          </h2>
-        </div>
+        <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
+          {title}
+        </h2>
         {description ? (
-          <p className="pl-[18px] text-sm text-foreground/60">{description}</p>
+          <p className="max-w-[70ch] text-sm text-foreground/60">{description}</p>
         ) : null}
       </div>
       {children}

@@ -414,7 +414,7 @@ export default function HotelWhatsAppLinksPage() {
 
         {overview?.ciclo ? (
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            <h2 className="font-display text-xl font-semibold tracking-[-0.01em] text-foreground">
               Do clique à reserva (mês atual)
             </h2>
             <LinkCycleStrip ciclo={overview.ciclo} />

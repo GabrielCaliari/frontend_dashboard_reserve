@@ -5,10 +5,27 @@ import { format, isSameDay, isValid, subDays } from "date-fns";
 import { cn } from "@/src/shared/lib/utils";
 import type { ConversationMessage } from "@/src/shared/domain/types/@hotel-painel";
 
-const roleStyles: Record<string, string> = {
-  user: "self-start bg-muted",
-  assistant: "self-end bg-primary/10",
-  human: "self-end bg-emerald-100",
+/**
+ * Quem fala decide lado e cor: hospede a esquerda em superficie neutra; bot e
+ * equipe a direita (o lado da pousada), bot em salvia (cor da marca) e equipe
+ * em ambar, para a passagem bot -> humano saltar aos olhos.
+ */
+const roleStyles: Record<string, { side: "left" | "right"; bubble: string; label: string }> = {
+  user: {
+    side: "left",
+    bubble: "bg-content1 text-foreground border border-border/70",
+    label: "text-foreground/55",
+  },
+  assistant: {
+    side: "right",
+    bubble: "bg-primary/[0.16] text-foreground border border-primary/20",
+    label: "text-primary",
+  },
+  human: {
+    side: "right",
+    bubble: "bg-warning/[0.14] text-foreground border border-warning/30",
+    label: "text-warning-600",
+  },
 };
 
 const roleLabel: Record<string, string> = {
@@ -16,6 +33,9 @@ const roleLabel: Record<string, string> = {
   assistant: "Bot",
   human: "Equipe do hotel",
 };
+
+/** Mensagens do mesmo autor com ate 5 min de intervalo formam um bloco. */
+const GROUP_GAP_MS = 5 * 60 * 1000;
 
 const mediaLabel: Record<string, string> = {
   audio: "Áudio",
@@ -99,11 +119,12 @@ export function ConversationTranscript({
   }, [messages.length]);
 
   let lastDay: Date | null = null;
+  let prev: { role: string; at: number } | null = null;
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       {hasMore && (
         <button
-          className="self-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent disabled:opacity-60"
+          className="mb-3 self-center rounded-full border border-border bg-background/80 px-3.5 py-1.5 text-xs font-medium text-foreground/80 backdrop-blur transition-colors hover:bg-default-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60"
           disabled={isLoadingMore}
           onClick={onLoadMore}
           type="button"
@@ -115,21 +136,34 @@ export function ConversationTranscript({
         const when = parse(msg.ocorridoEm);
         const showDay = when !== null && (lastDay === null || !isSameDay(lastDay, when));
         if (when) lastDay = when;
+
+        const isSystem = msg.tipo === "sistema";
+        const at = when?.getTime() ?? 0;
+        // Novo bloco quando muda o autor, o dia ou passa do intervalo.
+        const startsGroup =
+          isSystem || showDay || !prev || prev.role !== msg.role || at - prev.at > GROUP_GAP_MS;
+        prev = isSystem ? null : { role: msg.role, at };
+
+        const style = roleStyles[msg.role] ?? roleStyles.user;
+        const right = style.side === "right";
         return (
-          <div key={`${msg.ocorridoEm}-${index}`} className="flex flex-col gap-2">
+          <div
+            key={msg.id ?? `${msg.ocorridoEm}-${index}`}
+            className={cn("flex flex-col", startsGroup ? "mt-3 first:mt-0" : "mt-0.5")}
+          >
             {showDay && when && (
               <div
                 data-testid="day-separator"
-                className="self-center rounded-full bg-muted px-3 py-0.5 text-xs text-muted-foreground"
+                className="sticky top-0 z-10 mb-3 self-center rounded-full border border-border/60 bg-background/85 px-3 py-0.5 text-[11px] font-medium text-foreground/60 backdrop-blur"
               >
                 {dayLabel(when, now)}
               </div>
             )}
-            {msg.tipo === "sistema" ? (
+            {isSystem ? (
               <p
                 data-role={msg.role}
                 data-tipo="sistema"
-                className="self-center text-center text-xs text-muted-foreground"
+                className="self-center max-w-[80%] text-center text-[11px] italic leading-snug text-foreground/50"
               >
                 {msg.content ?? msg.contentPreview ?? "—"}
               </p>
@@ -137,16 +171,25 @@ export function ConversationTranscript({
               <div
                 data-role={msg.role}
                 className={cn(
-                  "max-w-[85%] rounded-lg px-3 py-2 text-sm",
-                  roleStyles[msg.role] ?? "self-start bg-muted",
+                  "relative max-w-[78%] px-3 py-2 text-[13.5px] leading-relaxed shadow-[0_1px_0_hsl(var(--foreground)/0.04)]",
+                  right ? "self-end" : "self-start",
+                  style.bubble,
+                  // Cauda so na primeira bolha do bloco, como no WhatsApp.
+                  startsGroup
+                    ? right
+                      ? "rounded-2xl rounded-tr-md"
+                      : "rounded-2xl rounded-tl-md"
+                    : "rounded-2xl",
                 )}
               >
-                <p className="mb-0.5 text-xs font-medium text-muted-foreground">
-                  {roleLabel[msg.role] ?? msg.role}
-                </p>
+                {startsGroup && (
+                  <p className={cn("mb-0.5 text-[11px] font-semibold", style.label)}>
+                    {roleLabel[msg.role] ?? msg.role}
+                  </p>
+                )}
                 <MessageBody msg={msg} />
                 {when && (
-                  <p className="mt-0.5 text-right text-[10px] text-muted-foreground">
+                  <p className="mt-0.5 text-right text-[10px] tabular-nums text-foreground/45">
                     {format(when, "HH:mm")}
                   </p>
                 )}
@@ -164,5 +207,6 @@ export function ConversationTranscript({
 export function originLabel(origem: string | null | undefined): string | null {
   if (origem === "anuncio") return "Anúncio";
   if (origem === "organico") return "Orgânico";
+  if (origem === "link") return "Link rastreável";
   return null;
 }
