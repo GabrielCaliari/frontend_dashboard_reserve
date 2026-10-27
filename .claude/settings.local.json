@@ -1,10 +1,5 @@
 {
-  "skipDangerousModePermissionPrompt": true,
   "permissions": {
-    "defaultMode": "bypassPermissions",
-    "additionalDirectories": [
-      "C:\\Users\\gabri\\OneDrive\\Documents\\GitHub\\backend_reserve"
-    ],
     "allow": [
       "Bash(npx tsc --noEmit --skipLibCheck)",
       "Bash(npx tsc --noEmit --project tsconfig.json)",
@@ -127,10 +122,16 @@
       "Bash(echo \"EXIT=$?\")",
       "Bash(echo \"DONE exit=$?\")",
       "Bash(git push *)",
-      "Bash(python -)"
+      "Bash(python -)",
+      "PowerShell(git *)"
+    ],
+    "defaultMode": "bypassPermissions",
+    "additionalDirectories": [
+      "C:\\Users\\gabri\\OneDrive\\Documents\\GitHub\\backend_reserve"
     ]
   },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }
