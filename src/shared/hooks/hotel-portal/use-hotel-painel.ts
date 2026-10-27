@@ -26,10 +26,12 @@ const FIVE_MINUTES = 1000 * 60 * 5;
 
 /**
  * F1 (auditoria 06/10): o bot manda eventos a cada minuto pelo Canal A, entao
- * inbox, conversa, funil e canais se atualizam sozinhos. Com a aba escondida
- * o React Query ja nao refaz a busca (refetchIntervalInBackground = false).
+ * inbox, conversa, funil, metricas e canais se atualizam sozinhos, sem F5.
+ * Intervalos curtos (15-30 s) para a tela acompanhar a conversa quase em tempo
+ * real; com a aba escondida o React Query ja nao refaz a busca
+ * (refetchIntervalInBackground = false).
  */
-export const LIVE_REFETCH = { conversations: 30_000, funnel: 60_000, channels: 60_000 } as const;
+export const LIVE_REFETCH = { conversations: 15_000, funnel: 20_000, channels: 30_000, metrics: 30_000 } as const;
 
 export function useHotelLeadsOverview(clientId: string | null, period: Period) {
   return useQuery({
@@ -241,7 +243,8 @@ export function useHotelFunnelMetrics(clientId: string | null, period: Period) {
     queryFn: () => hotelPortalService.getFunnelMetrics(clientId!, period),
     enabled: !!clientId,
     retry: false,
-    staleTime: FIVE_MINUTES,
+    staleTime: 1000 * 30,
+    refetchInterval: LIVE_REFETCH.metrics,
   });
 }
 
