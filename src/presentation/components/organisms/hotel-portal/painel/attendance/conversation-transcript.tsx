@@ -61,9 +61,42 @@ function parse(iso: string): Date | null {
   return isValid(d) ? d : null;
 }
 
+/**
+ * O bot guarda "[tipo]" quando a mensagem do WhatsApp nao e texto. O caso
+ * "[unsupported]" e o proprio WhatsApp dizendo que nao entrega aquele tipo ao
+ * bot (figurinha animada, enquete, visualizacao unica, convite de grupo...):
+ * o conteudo nunca chega, entao a tela explica em vez de mostrar o colchete.
+ */
+const PLACEHOLDERS: Record<string, string> = {
+  unsupported: "Mensagem que o WhatsApp não entrega ao bot (figurinha animada, enquete, visualização única ou convite). Veja no celular.",
+  sticker: "Figurinha",
+  reaction: "Reação a uma mensagem",
+  video: "Vídeo",
+  location: "Localização",
+  contacts: "Contato compartilhado",
+  documento: "Documento",
+  document: "Documento",
+  ephemeral: "Mensagem temporária",
+  system: "Aviso do sistema do WhatsApp",
+  midia: "Mídia",
+};
+
+function placeholderLabel(text: string): string | null {
+  // "[unsupported]" sozinho ou seguido do motivo que o WhatsApp mandou.
+  const m = /^\[([a-z_]+)\]\s*(.*)$/is.exec(text.trim());
+  if (!m) return null;
+  const base = PLACEHOLDERS[m[1].toLowerCase()] ?? `Mensagem do tipo "${m[1]}"`;
+  return m[2] ? `${base} (${m[2].trim()})` : base;
+}
+
 function MessageBody({ msg }: { msg: ConversationMessage }) {
   const text = msg.content ?? msg.contentPreview ?? "—";
   const kind = msg.mediaKind ?? (msg.tipo === "audio" || msg.tipo === "imagem" ? msg.tipo : null);
+  const placeholder = !kind ? placeholderLabel(text) : null;
+
+  if (placeholder) {
+    return <p className="italic text-foreground/60">{placeholder}</p>;
+  }
 
   if (kind === "audio") {
     return (

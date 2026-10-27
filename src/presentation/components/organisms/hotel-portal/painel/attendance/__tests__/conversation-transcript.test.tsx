@@ -55,6 +55,22 @@ describe("ConversationTranscript", () => {
     expect(screen.getByText("Vídeo")).toBeInTheDocument();
   });
 
+  it("'[unsupported]' do WhatsApp vira explicação em vez do colchete", () => {
+    render(
+      <ConversationTranscript
+        messages={[
+          msg({ content: "[unsupported]" }),
+          msg({ content: "[sticker]", ocorridoEm: "2026-10-19T12:10:00" }),
+          msg({ content: "[unsupported] Message type unknown", ocorridoEm: "2026-10-19T12:20:00" }),
+        ]}
+      />,
+    );
+    expect(screen.queryByText("[unsupported]")).not.toBeInTheDocument();
+    expect(screen.getAllByText(/não entrega ao bot/)).toHaveLength(2);
+    expect(screen.getByText(/Message type unknown/)).toBeInTheDocument();
+    expect(screen.getByText("Figurinha")).toBeInTheDocument();
+  });
+
   it("linha de sistema é centralizada e sem bolha", () => {
     render(
       <ConversationTranscript
